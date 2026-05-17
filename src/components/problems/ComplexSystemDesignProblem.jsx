@@ -186,7 +186,7 @@ function SectionBreakdown({ result }) {
   );
 }
 
-export default function ComplexSystemDesignProblem({ question, completed, onToggle }) {
+export default function ComplexSystemDesignProblem({ question, completed, onToggle, onMarkComplete }) {
   const savedSubmission = storageService.getComplexDesignSubmission(question.id);
   const [answer, setAnswer] = useState(savedSubmission?.answer || '');
   const [result, setResult] = useState(savedSubmission?.result || null);
@@ -204,6 +204,7 @@ export default function ComplexSystemDesignProblem({ question, completed, onTogg
       result: nextResult,
       submittedAt: new Date().toISOString()
     });
+    onMarkComplete?.(question.id);
   }
 
   return (
