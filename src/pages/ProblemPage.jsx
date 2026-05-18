@@ -118,8 +118,14 @@ export default function ProblemPage() {
     recordQuestionOpen(entry.question);
   }, [entry?.question?.id, entry?.question]);
 
-  function handleToggle(id) {
-    const updated = storageService.toggleComplete(id);
+  function handleCompletionClick(id) {
+    if (completed[id]) {
+      const updated = storageService.resetQuestionProgress(id);
+      setCompleted(updated.completed);
+      return;
+    }
+
+    const updated = storageService.markComplete(id);
     setCompleted(updated);
   }
 
@@ -184,8 +190,8 @@ export default function ProblemPage() {
           <NavLink className="btn ghost" to={categoryBackPath}>Back to category</NavLink>
 
           {!isComplexSystemDesign ? (
-            <button className="mark reference-mark" onClick={() => handleToggle(entry.question.id)}>
-              {completed[entry.question.id] ? 'Completed' : 'Mark complete'}
+            <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
+              {completed[entry.question.id] ? 'Reset progress' : 'Mark complete'}
             </button>
           ) : null}
         </div>
@@ -195,14 +201,15 @@ export default function ProblemPage() {
         <ComplexSystemDesignProblem
           question={entry.question}
           completed={!!completed[entry.question.id]}
-          onToggle={handleToggle}
+          onToggle={handleCompletionClick}
           onMarkComplete={handleMarkComplete}
         />
       ) : (
         <FocusedProblemWorkspace
           question={entry.question}
           completed={!!completed[entry.question.id]}
-          onToggle={handleToggle}
+          onToggle={handleCompletionClick}
+          onMarkComplete={handleMarkComplete}
           hideTopline
         />
       )}
