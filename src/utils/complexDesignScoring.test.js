@@ -100,6 +100,13 @@ test('scores the issue #49 natural wording sample higher than the old overly str
   assert.ok(result.sectionScores.some((section) => section.id === 'scaling-performance' && section.score > 0));
 });
 
+test('does not award full redirect flow credit when cache miss incorrectly returns 404 before database lookup', () => {
+  const result = scoreComplexDesignAnswer(question, issue49SampleAnswer);
+  const readWrite = result.sectionScores.find((section) => section.id === 'read-write-flows');
+
+  assert.ok(readWrite.score < readWrite.maxScore, `Expected read/write score below full marks, got ${readWrite.score}/${readWrite.maxScore}`);
+});
+
 test('keeps short keyword-stuffed answers capped', () => {
   const result = scoreComplexDesignAnswer(
     question,
