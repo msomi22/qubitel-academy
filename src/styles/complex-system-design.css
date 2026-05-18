@@ -66,6 +66,7 @@
   align-items: baseline;
   flex-wrap: wrap;
   gap: 10px 14px;
+  width: calc(50% - 8px);
   padding: 10px 16px;
 }
 
@@ -83,10 +84,6 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
-}
-
-.complex-design-feedback-grid > .complex-design-card:only-child {
-  grid-column: 1 / -1;
 }
 
 .complex-design-reveal-grid {
@@ -313,6 +310,10 @@
 }
 
 @media (max-width: 980px) {
+  .complex-design-score-card {
+    width: 100%;
+  }
+
   .complex-design-section-list,
   .complex-design-model-answer[open] > .complex-design-card ul {
     grid-template-columns: 1fr;
