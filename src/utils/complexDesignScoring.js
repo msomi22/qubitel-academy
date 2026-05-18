@@ -88,6 +88,7 @@ const SCORING_SIGNALS = [
   'question-specific scoring dictionary',
   'natural wording aliases',
   'typo-tolerant matching',
+  'critical concept caps',
   'partial credit',
   'reasoning signals',
   'trade-off signals',
@@ -160,6 +161,12 @@ function criterionPhrases(question, criterion) {
   return [...sharedTerms, ...questionTerms, ...(criterion.aliases || [])];
 }
 
+function criterionCriticalPhrases(question, criterion) {
+  const sharedTerms = dictionaryTermsFor(criterion.criticalConcepts, COMMON_SYSTEM_DESIGN_DICTIONARY);
+  const questionTerms = dictionaryTermsFor(criterion.criticalQuestionConcepts, questionDictionaryFor(question));
+  return [...sharedTerms, ...questionTerms, ...(criterion.criticalAliases || [])];
+}
+
 function countSignalFamilies(answerText) {
   return [
     includesAny(answerText, REASONING_WORDS),
@@ -190,6 +197,9 @@ function scoreCriterion(answerText, criterion, question) {
   const targetCoverage = Math.max(1, Math.min(phrases.length, Number(criterion.minimumMatches || 3)));
   const aliasCoverage = Math.min(1, matches.length / targetCoverage);
   const signalFamilies = countSignalFamilies(answerText);
+  const criticalPhrases = criterionCriticalPhrases(question, criterion);
+  const criticalMatched = !criticalPhrases.length || includesAny(answerText, criticalPhrases);
+  const criticalCap = Number(criterion.maxRatioWithoutCritical || 0.65);
 
   let ratio = 0.42 + aliasCoverage * 0.38;
 
@@ -202,7 +212,15 @@ function scoreCriterion(answerText, criterion, question) {
     ratio = Math.min(ratio, 0.65);
   }
 
-  if (matches.length >= targetCoverage && (!criterion.requiresReasoning || includesAny(answerText, REASONING_WORDS))) {
+  if (!criticalMatched) {
+    ratio = Math.min(ratio, criticalCap);
+  }
+
+  if (
+    matches.length >= targetCoverage
+    && criticalMatched
+    && (!criterion.requiresReasoning || includesAny(answerText, REASONING_WORDS))
+  ) {
     ratio = Math.max(ratio, 1);
   }
 
