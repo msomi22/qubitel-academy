@@ -85,6 +85,10 @@
   gap: 16px;
 }
 
+.complex-design-feedback-grid > .complex-design-card:only-child {
+  grid-column: 1 / -1;
+}
+
 .complex-design-reveal-grid {
   display: grid;
   grid-template-columns: 1fr;
