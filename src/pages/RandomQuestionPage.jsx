@@ -44,7 +44,15 @@ export default function RandomQuestionPage() {
     pickQuestion(next, false);
   }
 
-  const toggle = (id) => setCompleted(storageService.toggleComplete(id));
+  function handleCompletionClick(id) {
+    if (completed[id]) {
+      const updated = storageService.resetQuestionProgress(id);
+      setCompleted(updated.completed);
+      return;
+    }
+
+    setCompleted(storageService.markComplete(id));
+  }
 
   return (
     <main className="page random-page">
@@ -97,7 +105,7 @@ export default function RandomQuestionPage() {
         <QuestionCard
           question={q}
           completed={!!completed[q.id]}
-          onToggle={toggle}
+          onToggle={handleCompletionClick}
         />
       )}
     </main>
