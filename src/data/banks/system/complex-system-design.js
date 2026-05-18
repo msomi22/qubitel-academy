@@ -72,7 +72,7 @@ const topic = {
           weight: 10,
           criteria: [
             { id: 'functional-requirements', label: 'Functional requirements', points: 4, concepts: ['requirements'], questionConcepts: ['urlShortenerBasics', 'customAlias', 'urlMetadata', 'clickAnalytics'], aliases: ['create short url', 'expiry', 'analytics', 'click count'] },
-            { id: 'non-functional-requirements', label: 'Non-functional requirements', points: 4, concepts: ['requirements', 'loadBalancing'], aliases: ['latency', 'availability', 'scale', 'throughput', 'read heavy', 'network traffic'] },
+            { id: 'non-functional-requirements', label: 'Non-functional requirements', points: 4, concepts: ['requirements', 'loadBalancing', 'orchestration'], aliases: ['latency', 'availability', 'scale', 'throughput', 'read heavy', 'network traffic'] },
             { id: 'assumptions', label: 'Assumptions and traffic estimates', points: 2, concepts: ['requirements'], aliases: ['assume', 'traffic', 'qps', 'read write ratio', 'estimate'] }
           ]
         },
@@ -92,9 +92,9 @@ const topic = {
           title: 'Storage Design',
           weight: 10,
           criteria: [
-            { id: 'url-mapping', label: 'URL mapping table', points: 4, concepts: ['storage'], questionConcepts: ['urlMapping'], aliases: ['mapping', 'url table'] },
-            { id: 'metadata', label: 'Metadata', points: 3, concepts: ['storage'], questionConcepts: ['urlMetadata'], aliases: ['metadata', 'other metadata'] },
-            { id: 'indexes', label: 'Indexes', points: 3, concepts: ['storage'], aliases: ['index', 'primary key', 'lookup index', 'unique index', 'database lookup'] }
+            { id: 'url-mapping', label: 'URL mapping table', points: 4, concepts: ['storageWrite', 'storageModel'], questionConcepts: ['urlMapping'], aliases: ['mapping', 'url table'] },
+            { id: 'metadata', label: 'Metadata', points: 3, concepts: ['metadata'], questionConcepts: ['urlMetadata'], aliases: ['metadata', 'other metadata'] },
+            { id: 'indexes', label: 'Indexes', points: 3, concepts: ['indexing'], aliases: ['index', 'primary key', 'lookup index', 'unique index', 'database lookup'] }
           ]
         },
         {
@@ -102,7 +102,7 @@ const topic = {
           title: 'Read and Write Flows',
           weight: 10,
           criteria: [
-            { id: 'create-flow', label: 'Create short URL flow', points: 4, concepts: ['writePath', 'idGeneration', 'storage', 'cache'], questionConcepts: ['urlShortenerBasics'], aliases: ['shortening request', 'receive request'] },
+            { id: 'create-flow', label: 'Create short URL flow', points: 4, concepts: ['writePath', 'idGeneration', 'storageWrite', 'cache'], questionConcepts: ['urlShortenerBasics'], aliases: ['shortening request', 'receive request'] },
             { id: 'redirect-flow', label: 'Redirect flow', points: 4, concepts: ['readPath', 'cache'], questionConcepts: ['redirect', 'urlMapping'], aliases: ['redirect flow', 'lookup short code'] },
             { id: 'retry-idempotency', label: 'Retry and idempotency behavior', points: 2, concepts: ['writePath', 'collisionHandling'], aliases: ['same result', 'return cached value'] }
           ]
@@ -115,7 +115,7 @@ const topic = {
             { id: 'cache', label: 'Caching hot links', points: 5, concepts: ['cache'], aliases: ['hot link'] },
             { id: 'partitioning', label: 'Partitioning or sharding', points: 4, concepts: ['partitioning'], aliases: ['split by code'] },
             { id: 'read-heavy-optimization', label: 'Read-heavy optimization', points: 3, concepts: ['readPath', 'cache'], aliases: ['read heavy', 'cache lookup', 'check cache'] },
-            { id: 'backpressure', label: 'Backpressure and rate limits', points: 3, concepts: ['apiGateway'], aliases: ['backpressure', 'protect service'] }
+            { id: 'backpressure', label: 'Backpressure and rate limits', points: 3, concepts: ['apiGateway', 'rateLimiting'], aliases: ['backpressure', 'protect service'] }
           ]
         },
         {
@@ -123,9 +123,9 @@ const topic = {
           title: 'Reliability and Consistency',
           weight: 15,
           criteria: [
-            { id: 'high-availability', label: 'High availability', points: 4, concepts: ['reliability', 'loadBalancing'], aliases: ['high availability'] },
+            { id: 'high-availability', label: 'High availability', points: 4, concepts: ['availability', 'loadBalancing', 'orchestration'], aliases: ['high availability'] },
             { id: 'consistency-tradeoffs', label: 'Consistency trade-offs', points: 4, concepts: ['consistency', 'tradeoffs'], aliases: ['eventual consistency', 'strong consistency', 'stale'] },
-            { id: 'failure-modes', label: 'Failure modes', points: 4, concepts: ['reliability'], aliases: ['database down', 'cache down', 'cache miss', 'if cache fails'] },
+            { id: 'failure-modes', label: 'Failure modes', points: 4, concepts: ['failureHandling'], aliases: ['database down', 'cache down', 'cache miss', 'if cache fails'] },
             { id: 'analytics-consistency', label: 'Analytics consistency', points: 3, concepts: ['queue', 'consistency'], questionConcepts: ['clickAnalytics'], aliases: ['async analytics', 'eventual analytics'] }
           ]
         },
@@ -134,9 +134,9 @@ const topic = {
           title: 'Security and Abuse Prevention',
           weight: 10,
           criteria: [
-            { id: 'malicious-url-protection', label: 'Malicious URL protection', points: 4, concepts: ['security'], questionConcepts: ['urlAbuse'], aliases: ['ssl termination'] },
-            { id: 'rate-limiting', label: 'Rate limiting', points: 3, concepts: ['apiGateway', 'security'], aliases: ['per user', 'ip address'] },
-            { id: 'custom-alias-protection', label: 'Custom alias protection', points: 3, concepts: ['security'], questionConcepts: ['customAlias'], aliases: ['authentication'] }
+            { id: 'malicious-url-protection', label: 'Malicious URL protection', points: 4, concepts: ['abusePrevention'], questionConcepts: ['urlAbuse'], aliases: ['ssl termination'] },
+            { id: 'rate-limiting', label: 'Rate limiting', points: 3, concepts: ['rateLimiting'], aliases: ['api gateway', 'per user', 'ip address'] },
+            { id: 'custom-alias-protection', label: 'Custom alias protection', points: 3, concepts: ['authentication'], questionConcepts: ['customAlias'], aliases: ['reserved alias'] }
           ]
         },
         {
