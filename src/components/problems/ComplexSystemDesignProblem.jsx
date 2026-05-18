@@ -154,8 +154,8 @@ function SectionBreakdown({ result }) {
       <div className="complex-design-section-heading">
         <span className="mini-label">{result.scoringModel || SCORING_MODEL_LABEL}</span>
         <p>
-          Combines rubric criteria, partial credit, concept aliases, reasoning, trade-offs,
-          failure-mode coverage, and observability signals.
+          Scored based on key design coverage, clear reasoning, trade-offs,
+          reliability, security, scaling, and observability.
         </p>
       </div>
 
@@ -173,7 +173,9 @@ function SectionBreakdown({ result }) {
               <span>{section.score}/{section.maxScore}</span>
             </div>
             <p>{section.feedback}</p>
-            {section.missedCriteria.length ? <small>Missing: {section.missedCriteria.join(', ')}</small> : null}
+            {section.missedCriteria.length ? (
+              <small>Missing: {(section.missedLabels || section.missedCriteria).join(', ')}</small>
+            ) : null}
           </article>
         ))}
       </div>

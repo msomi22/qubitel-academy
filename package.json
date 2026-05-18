@@ -12,8 +12,8 @@
     "preview": "vite preview",
     "lint": "npm run build",
     "test": "node --test",
-    "test:unit": "node --test src/config/*.test.js src/services/*.test.js",
-    "test:integration": "node --test src/config/*.test.js src/services/*.test.js",
+    "test:unit": "node --test src/config/*.test.js src/services/*.test.js src/utils/*.test.js",
+    "test:integration": "node --test src/config/*.test.js src/services/*.test.js src/utils/*.test.js",
     "test:ci": "node --test"
   },
   "dependencies": {
