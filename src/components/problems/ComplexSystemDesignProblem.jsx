@@ -121,14 +121,9 @@ function ScoreMeter({ result }) {
 
   return (
     <section className="complex-design-score-card" aria-live="polite">
-      <div>
-        <span className="mini-label">{result.scoringModel || SCORING_MODEL_LABEL}</span>
-        <strong>{result.totalScore}/{result.maxScore}</strong>
-        <p>{result.percentage}% · {result.level}</p>
-      </div>
-      <div className="complex-design-score-bar" aria-hidden="true">
-        <span style={{ width: `${Math.min(100, result.percentage)}%` }} />
-      </div>
+      <span className="mini-label">{result.scoringModel || SCORING_MODEL_LABEL}</span>
+      <strong>{result.totalScore}/{result.maxScore}</strong>
+      <p>{result.percentage}% · {result.level}</p>
     </section>
   );
 }
