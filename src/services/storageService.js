@@ -29,6 +29,29 @@ export const storageService = {
     this.write({ completed });
     return completed;
   },
+  resetQuestionProgress(questionId) {
+    const state = this.read();
+
+    const completed = { ...state.completed };
+    const selectedAnswers = { ...state.selectedAnswers };
+    const complexDesignSubmissions = { ...state.complexDesignSubmissions };
+
+    delete completed[questionId];
+    delete selectedAnswers[questionId];
+    delete complexDesignSubmissions[questionId];
+
+    this.write({
+      completed,
+      selectedAnswers,
+      complexDesignSubmissions
+    });
+
+    return {
+      completed,
+      selectedAnswers,
+      complexDesignSubmissions
+    };
+  },
   setSelectedAnswer(questionId, answerIndex) {
     const state = this.read();
     const selectedAnswers = {
