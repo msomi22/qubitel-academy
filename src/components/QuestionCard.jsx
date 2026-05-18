@@ -329,7 +329,7 @@ function QuestionCard({
           </div>
 
           <button className="mark" onClick={() => onToggle?.(question.id)}>
-            {completed ? '✓ Done' : 'Mark done'}
+            {completed ? 'Reset progress' : 'Mark complete'}
           </button>
         </div>
 
@@ -363,7 +363,7 @@ function QuestionCard({
         </div>
 
         <button className="mark" onClick={() => onToggle?.(question.id)}>
-          {completed ? '✓ Completed' : 'Mark done'}
+          {completed ? 'Reset progress' : 'Mark complete'}
         </button>
       </div>
 
