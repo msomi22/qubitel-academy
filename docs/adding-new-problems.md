@@ -90,7 +90,50 @@ Use `coding` for existing DSA-style coding questions because that is the current
 
 Each discovered problem is normalized, validated, and then merged into the matching topic by `questionBankService`.
 
-Legacy bank files under `src/data/banks` still load first. If a discovered problem accidentally uses the same `id` as a legacy bank question, the legacy question wins and the discovered duplicate is skipped for that topic. This keeps old behavior stable.
+Legacy bank files under `src/data/banks` are now compatibility fallbacks. If a discovered problem and a legacy bank question use the same `id`, the discovered problem wins and the legacy duplicate is skipped for that topic. This lets migration happen gradually without showing duplicate questions or breaking old topics that still rely on banks.
+
+## Migrating legacy bank questions
+
+Legacy banks are being phased out. New authored content should use `src/data/problems` only, while `src/data/banks` remains a temporary compatibility layer for topics that have not been migrated yet.
+
+When migrating a topic:
+
+1. Pick one source file: `src/data/banks/<category>/<topicId>.js`.
+2. Create one file per question under `src/data/problems/<category>/<topicId>/<problem-id>.js`.
+3. Preserve the original `id` exactly. Do not rename, prefix, suffix, slugify, or regenerate it because progress and completed status are keyed by ID.
+4. Preserve existing authored fields unless a compatibility layer already normalizes them safely.
+5. Add `category: '<category>'` if the legacy object did not already have it.
+6. Preserve `topicId`; if missing, infer it from the legacy bank file name and add it explicitly.
+7. Keep complex system design problems conservative: preserve scoring dictionaries, model answers, weak-answer examples, final patterns, and evaluation fields.
+8. Leave the old bank file as a compatibility shell or fallback until tests prove it is safe to remove its questions.
+
+A migrated problem should look like this:
+
+```js
+const problem = {
+  id: 'scalability-001',
+  type: 'system-design',
+  category: 'system',
+  topicId: 'scalability',
+  title: 'Scale a URL Shortener',
+  difficulty: 'Medium',
+  question: 'Preserve the original question text and related fields.'
+};
+
+export default problem;
+```
+
+After migrating a topic, verify:
+
+- `npm run test:unit` passes.
+- `npm run build` passes.
+- The topic still displays the same problem IDs.
+- No duplicate IDs appear in the topic.
+- `findQuestionById` can still locate migrated IDs.
+- Completed and incomplete filters still match existing saved progress.
+- Difficulty filters still work.
+- Topic and progress counts remain correct.
+- Complex system design rendering and scoring still work when the topic includes those problems.
 
 ## Validation
 
