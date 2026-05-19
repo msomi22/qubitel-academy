@@ -10,8 +10,21 @@ const discoveredProblemModules = typeof import.meta.glob === 'function'
 let discoveryCache;
 let validationCache;
 
-function readProblemExport(module) {
-  return module?.default || module?.problem || null;
+function readProblemExports(module) {
+  const exported = module?.default || module?.problem || module?.problems || null;
+  if (!exported) return [];
+  return Array.isArray(exported) ? exported : [exported];
+}
+
+function normalizeDiscoveredProblem(problem, path, index) {
+  return normalizeProblem({
+    ...problem,
+    metadata: {
+      ...(problem.metadata || {}),
+      sourcePath: path,
+      sourceIndex: index
+    }
+  });
 }
 
 function reportValidationIssues(result) {
@@ -33,12 +46,11 @@ export async function discoverProblems(options = {}) {
   const entries = await Promise.all(
     Object.entries(modules).map(async ([path, loader]) => {
       const module = typeof loader === 'function' ? await loader() : loader;
-      const problem = readProblemExport(module);
-      return problem ? normalizeProblem({ ...problem, metadata: { ...(problem.metadata || {}), sourcePath: path } }) : null;
+      return readProblemExports(module).map((problem, index) => normalizeDiscoveredProblem(problem, path, index));
     })
   );
 
-  const problems = entries.filter(Boolean);
+  const problems = entries.flat().filter(Boolean);
   const validation = validateProblemCollection(problems, { topics, registry });
   reportValidationIssues(validation);
 
