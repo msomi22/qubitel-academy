@@ -189,10 +189,54 @@
   align-items: center;
 }
 
+.complex-design-actions .btn:disabled {
+  cursor: wait;
+  opacity: 0.78;
+}
+
 .complex-design-actions span,
 .complex-design-section-heading > span {
   color: var(--text-secondary);
   font-size: 0.92rem;
+}
+
+.complex-design-evaluation-progress {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-subtle);
+}
+
+.complex-design-progress-copy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.complex-design-progress-copy strong {
+  color: var(--text-primary);
+  font-size: 0.84rem;
+}
+
+.complex-design-progress-track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border), transparent 35%);
+}
+
+.complex-design-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  transition: width 180ms ease;
 }
 
 .complex-design-score-card .mini-label {
