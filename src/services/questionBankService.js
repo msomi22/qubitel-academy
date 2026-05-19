@@ -9,7 +9,9 @@ import {
   getProblemValidationResult
 } from '../problems/problemDiscovery.js';
 
-const bankModules = import.meta.glob('../data/banks/**/*.js');
+const bankModules = typeof import.meta.glob === 'function'
+  ? import.meta.glob('../data/banks/**/*.js')
+  : {};
 const SIMPLE_SYSTEM_DESIGN_TYPES = new Set(['system-design', 'production-scenario']);
 const COMPLEX_SYSTEM_DESIGN_BANK_PATH = '../data/banks/system/complex-system-design.js';
 
