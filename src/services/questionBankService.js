@@ -9,15 +9,9 @@ import {
   getProblemValidationResult
 } from '../problems/problemDiscovery.js';
 
-const bankModules = typeof import.meta.glob === 'function'
-  ? import.meta.glob('../data/banks/**/*.js')
-  : {};
-const bitManipulationProblemModules = typeof import.meta.glob === 'function'
-  ? import.meta.glob('../data/problems/dsa/bit-manipulation/*.js')
-  : {};
+const bankModules = import.meta.glob('../data/banks/**/*.js');
 const SIMPLE_SYSTEM_DESIGN_TYPES = new Set(['system-design', 'production-scenario']);
 const COMPLEX_SYSTEM_DESIGN_BANK_PATH = '../data/banks/system/complex-system-design.js';
-const MIGRATED_TOPIC_IDS = new Set(['bit-manipulation']);
 
 function getBankPath(topicId) {
   const topic = topicManifest.find((item) => item.id === topicId);
@@ -87,48 +81,17 @@ async function mergeComplexDesignQuestions(bank) {
   };
 }
 
-export function isMigratedTopic(topicId) {
-  return MIGRATED_TOPIC_IDS.has(topicId);
-}
-
-export function mergeQuestionsById(primaryQuestions = [], fallbackQuestions = []) {
-  const seenIds = new Set();
-  const mergedQuestions = [];
-
-  [...primaryQuestions, ...fallbackQuestions].forEach((question) => {
-    if (!question?.id || seenIds.has(question.id)) return;
-    seenIds.add(question.id);
-    mergedQuestions.push(question);
-  });
-
-  return mergedQuestions;
-}
-
-async function getMigratedQuestionsForTopic(topicId) {
-  if (!isMigratedTopic(topicId)) return [];
-
-  try {
-    return await getDiscoveredQuestionsForTopic(topicId, {
-      modules: bitManipulationProblemModules
-    });
-  } catch (error) {
-    if (typeof console !== 'undefined') {
-      console.warn(
-        `[problem-discovery] Failed to load migrated ${topicId} problems; using legacy bank fallback.`,
-        error
-      );
-    }
-
-    return [];
-  }
-}
-
 function mergeDiscoveredQuestions(bank, discoveredQuestions = []) {
   if (!discoveredQuestions.length) return bank;
 
+  const existingIds = new Set((bank.questions || []).map((question) => question.id));
+  const additiveQuestions = discoveredQuestions.filter((question) => !existingIds.has(question.id));
+
+  if (!additiveQuestions.length) return bank;
+
   return {
     ...bank,
-    questions: mergeQuestionsById(discoveredQuestions, bank.questions || [])
+    questions: [...(bank.questions || []), ...additiveQuestions]
   };
 }
 
@@ -165,7 +128,7 @@ export async function loadTopicBank(topicId) {
         const overridden = applyQuestionOverrides(module.default);
         const merged = await mergeComplexDesignQuestions(overridden);
         const normalized = normalizeQuestionTypes(merged);
-        const discoveredQuestions = await getMigratedQuestionsForTopic(topicId);
+        const discoveredQuestions = await getDiscoveredQuestionsForTopic(topicId);
         const withDiscoveredQuestions = mergeDiscoveredQuestions(normalized, discoveredQuestions);
         return applyContentProfileToBank(withDiscoveredQuestions);
       })

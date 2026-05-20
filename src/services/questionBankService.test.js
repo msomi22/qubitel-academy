@@ -1,41 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-  isMigratedTopic,
-  mergeQuestionsById,
-  topicProgress
-} from './questionBankService.js';
+import { mergeQuestionsById, topicProgress } from './questionBankService.js';
 
-test('bit manipulation is the only migrated topic in this incremental PR', () => {
-  assert.equal(isMigratedTopic('bit-manipulation'), true);
-  assert.equal(isMigratedTopic('sliding-window'), false);
-  assert.equal(isMigratedTopic('scalability'), false);
-});
-
-test('mergeQuestionsById prefers primary questions and avoids duplicate IDs', () => {
-  const primaryQuestions = [
-    { id: 'bit-manipulation-001', title: 'Migrated Bitwise AND', category: 'dsa', topicId: 'bit-manipulation' },
-    { id: 'bit-manipulation-002', title: 'Migrated Power of Two', category: 'dsa', topicId: 'bit-manipulation' }
+test('mergeQuestionsById prefers migrated problem files and avoids duplicate IDs', () => {
+  const migratedProblems = [
+    { id: 'scalability-001', title: 'Migrated A', category: 'system', topicId: 'scalability' },
+    { id: 'scalability-002', title: 'Migrated B', category: 'system', topicId: 'scalability' }
   ];
 
-  const fallbackQuestions = [
-    { id: 'bit-manipulation-001', title: 'Legacy Bitwise AND', category: 'dsa', topicId: 'bit-manipulation' },
-    { id: 'bit-manipulation-003', title: 'Legacy Single Number', category: 'dsa', topicId: 'bit-manipulation' }
+  const legacyQuestions = [
+    { id: 'scalability-001', title: 'Legacy A', category: 'system', topicId: 'scalability' },
+    { id: 'scalability-003', title: 'Legacy C', category: 'system', topicId: 'scalability' }
   ];
 
-  const merged = mergeQuestionsById(primaryQuestions, fallbackQuestions);
+  const merged = mergeQuestionsById(migratedProblems, legacyQuestions);
 
-  assert.deepEqual(
-    merged.map((question) => question.id),
-    ['bit-manipulation-001', 'bit-manipulation-002', 'bit-manipulation-003']
-  );
-  assert.equal(merged.find((question) => question.id === 'bit-manipulation-001').title, 'Migrated Bitwise AND');
+  assert.deepEqual(merged.map((question) => question.id), ['scalability-001', 'scalability-002', 'scalability-003']);
+  assert.equal(merged.find((question) => question.id === 'scalability-001').title, 'Migrated A');
 });
 
 test('mergeQuestionsById keeps legacy questions visible when migrated discovery is empty', () => {
   const legacyQuestions = [
     { id: 'api-design-001', title: 'Legacy API item', category: 'system', topicId: 'api-design' }
+  ];
+
+  assert.deepEqual(mergeQuestionsById([], legacyQuestions), legacyQuestions);
+});
+
+test('mergeQuestionsById keeps all fallback questions from an approved topic', () => {
+  const legacyQuestions = [
+    { id: 'sliding-window-001', title: 'Question A', category: 'dsa', topicId: 'sliding-window' },
+    { id: 'sliding-window-002', title: 'Question B', category: 'dsa', topicId: 'sliding-window' }
   ];
 
   assert.deepEqual(mergeQuestionsById([], legacyQuestions), legacyQuestions);
