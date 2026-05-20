@@ -12,6 +12,9 @@ import {
 const bankModules = typeof import.meta.glob === 'function'
   ? import.meta.glob('../data/banks/**/*.js')
   : {};
+const bitManipulationProblemModules = typeof import.meta.glob === 'function'
+  ? import.meta.glob('../data/problems/dsa/bit-manipulation/*.js')
+  : {};
 const SIMPLE_SYSTEM_DESIGN_TYPES = new Set(['system-design', 'production-scenario']);
 const COMPLEX_SYSTEM_DESIGN_BANK_PATH = '../data/banks/system/complex-system-design.js';
 const MIGRATED_TOPIC_IDS = new Set(['bit-manipulation']);
@@ -103,7 +106,21 @@ export function mergeQuestionsById(primaryQuestions = [], fallbackQuestions = []
 
 async function getMigratedQuestionsForTopic(topicId) {
   if (!isMigratedTopic(topicId)) return [];
-  return getDiscoveredQuestionsForTopic(topicId);
+
+  try {
+    return await getDiscoveredQuestionsForTopic(topicId, {
+      modules: bitManipulationProblemModules
+    });
+  } catch (error) {
+    if (typeof console !== 'undefined') {
+      console.warn(
+        `[problem-discovery] Failed to load migrated ${topicId} problems; using legacy bank fallback.`,
+        error
+      );
+    }
+
+    return [];
+  }
 }
 
 function mergeDiscoveredQuestions(bank, discoveredQuestions = []) {
