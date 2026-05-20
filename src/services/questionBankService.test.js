@@ -5,52 +5,33 @@ import { mergeQuestionsById, topicProgress } from './questionBankService.js';
 
 test('mergeQuestionsById prefers migrated problem files and avoids duplicate IDs', () => {
   const migratedProblems = [
-    {
-      id: 'scalability-001',
-      title: 'Migrated URL Shortener',
-      category: 'system',
-      topicId: 'scalability'
-    },
-    {
-      id: 'scalability-002',
-      title: 'Migrated News Feed',
-      category: 'system',
-      topicId: 'scalability'
-    }
+    { id: 'scalability-001', title: 'Migrated A', category: 'system', topicId: 'scalability' },
+    { id: 'scalability-002', title: 'Migrated B', category: 'system', topicId: 'scalability' }
   ];
 
   const legacyQuestions = [
-    {
-      id: 'scalability-001',
-      title: 'Legacy URL Shortener',
-      category: 'system',
-      topicId: 'scalability'
-    },
-    {
-      id: 'scalability-003',
-      title: 'Legacy Chat App',
-      category: 'system',
-      topicId: 'scalability'
-    }
+    { id: 'scalability-001', title: 'Legacy A', category: 'system', topicId: 'scalability' },
+    { id: 'scalability-003', title: 'Legacy C', category: 'system', topicId: 'scalability' }
   ];
 
   const merged = mergeQuestionsById(migratedProblems, legacyQuestions);
 
-  assert.deepEqual(
-    merged.map((question) => question.id),
-    ['scalability-001', 'scalability-002', 'scalability-003']
-  );
-  assert.equal(merged.find((question) => question.id === 'scalability-001').title, 'Migrated URL Shortener');
+  assert.deepEqual(merged.map((question) => question.id), ['scalability-001', 'scalability-002', 'scalability-003']);
+  assert.equal(merged.find((question) => question.id === 'scalability-001').title, 'Migrated A');
 });
 
 test('mergeQuestionsById keeps legacy questions visible when migrated discovery is empty', () => {
   const legacyQuestions = [
-    {
-      id: 'api-design-001',
-      title: 'Legacy API Versioning',
-      category: 'system',
-      topicId: 'api-design'
-    }
+    { id: 'api-design-001', title: 'Legacy API item', category: 'system', topicId: 'api-design' }
+  ];
+
+  assert.deepEqual(mergeQuestionsById([], legacyQuestions), legacyQuestions);
+});
+
+test('mergeQuestionsById keeps all fallback questions from an approved topic', () => {
+  const legacyQuestions = [
+    { id: 'sliding-window-001', title: 'Question A', category: 'dsa', topicId: 'sliding-window' },
+    { id: 'sliding-window-002', title: 'Question B', category: 'dsa', topicId: 'sliding-window' }
   ];
 
   assert.deepEqual(mergeQuestionsById([], legacyQuestions), legacyQuestions);
@@ -62,10 +43,7 @@ test('mergeQuestionsById ignores malformed entries without IDs', () => {
     [{ id: 'graphs-001', title: 'Legacy Graph BFS' }, { id: 'graphs-002', title: 'Graph DFS' }]
   );
 
-  assert.deepEqual(
-    merged.map((question) => question.id),
-    ['graphs-001', 'graphs-002']
-  );
+  assert.deepEqual(merged.map((question) => question.id), ['graphs-001', 'graphs-002']);
 });
 
 test('topicProgress keeps existing ID-prefix completed status behavior', () => {
