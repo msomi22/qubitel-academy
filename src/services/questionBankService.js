@@ -101,19 +101,17 @@ export function mergeQuestionsById(primaryQuestions = [], fallbackQuestions = []
   return mergedQuestions;
 }
 
+async function getMigratedQuestionsForTopic(topicId) {
+  if (!isMigratedTopic(topicId)) return [];
+  return getDiscoveredQuestionsForTopic(topicId);
+}
+
 function mergeDiscoveredQuestions(bank, discoveredQuestions = []) {
   if (!discoveredQuestions.length) return bank;
 
-  const primaryQuestions = isMigratedTopic(bank.id)
-    ? discoveredQuestions
-    : bank.questions || [];
-  const fallbackQuestions = isMigratedTopic(bank.id)
-    ? bank.questions || []
-    : discoveredQuestions;
-
   return {
     ...bank,
-    questions: mergeQuestionsById(primaryQuestions, fallbackQuestions)
+    questions: mergeQuestionsById(discoveredQuestions, bank.questions || [])
   };
 }
 
@@ -150,7 +148,7 @@ export async function loadTopicBank(topicId) {
         const overridden = applyQuestionOverrides(module.default);
         const merged = await mergeComplexDesignQuestions(overridden);
         const normalized = normalizeQuestionTypes(merged);
-        const discoveredQuestions = await getDiscoveredQuestionsForTopic(topicId);
+        const discoveredQuestions = await getMigratedQuestionsForTopic(topicId);
         const withDiscoveredQuestions = mergeDiscoveredQuestions(normalized, discoveredQuestions);
         return applyContentProfileToBank(withDiscoveredQuestions);
       })
