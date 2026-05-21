@@ -156,6 +156,21 @@ test('defineMcqProblem accepts correctAnswer as exact option string', () => {
   assert.equal(validateProblem(problem, { topics }).valid, true);
 });
 
+test('defineMcqProblem forces mcq type for legacy multiple-choice input', () => {
+  const problem = defineMcqProblem({
+    id: 'mcq-legacy-type',
+    type: 'multiple-choice',
+    topicId: 'sliding-window',
+    title: 'Legacy type',
+    prompt: 'Pick one.',
+    options: ['A', 'B'],
+    correctAnswer: 'B'
+  }, { topics });
+
+  assert.equal(problem.type, 'mcq');
+  assert.equal(problem.correctAnswer, 1);
+});
+
 test('defineMcqProblem preserves answer when provided', () => {
   const problem = defineMcqProblem({
     id: 'mcq-preserve-answer',

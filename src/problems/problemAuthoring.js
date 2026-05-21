@@ -65,7 +65,7 @@ export function defineMcqProblem(problem = {}, options = {}) {
 
   return defineProblem({
     ...problem,
-    type: problem.type ?? 'mcq',
+    type: 'mcq',
     ...(correctAnswer === undefined ? {} : { correctAnswer }),
     answer: problem.answer ?? correctAnswer
   }, options);
