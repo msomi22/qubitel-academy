@@ -34,6 +34,48 @@ const topics = [
     name: 'Missing Bank Topic',
     category: 'dsa',
     description: 'A topic missing its legacy bank unexpectedly.'
+  },
+  {
+    id: 'scalability',
+    name: 'Scalability',
+    category: 'system',
+    description: 'A system design topic with metadata-driven legacy merges.',
+    questionBank: {
+      legacyMerges: [
+        {
+          path: '../data/banks/system/complex-system-design.js',
+          idPrefixFrom: 'complex-system-design-',
+          idPrefixTo: 'scalability-',
+          topicId: 'scalability',
+          finalPattern: 'Scalability',
+          tags: ['scalability']
+        }
+      ]
+    }
+  },
+  {
+    id: 'custom-merge-topic',
+    name: 'Custom Merge Topic',
+    category: 'system',
+    description: 'A topic that proves legacy merges are config-driven.',
+    questionBank: {
+      legacyMerges: [
+        {
+          path: '../data/banks/system/custom-complex.js',
+          idPrefixFrom: 'complex-system-design-',
+          idPrefixTo: 'custom-merge-topic-',
+          topicId: 'custom-merge-topic',
+          tags: ['custom-merge-topic']
+        }
+      ]
+    }
+  },
+  {
+    id: 'plain-system-topic',
+    name: 'Plain System Topic',
+    category: 'system',
+    description: 'A system topic without legacy merge metadata.',
+    questionBank: { mode: 'empty' }
   }
 ];
 
@@ -64,6 +106,170 @@ test('legacy topic loads as before when a legacy bank exists', async () => {
   assert.equal(bank.name, legacyBank.name);
   assert.equal(bank.category, legacyBank.category);
   assert.deepEqual(bank.questions, legacyBank.questions);
+});
+
+test('legacy system-design type normalizes to simple-system-design from registry metadata', async () => {
+  const legacyBank = createVirtualBank(topics[4], [
+    {
+      id: 'scalability-legacy-system-design',
+      type: 'system-design',
+      topicId: 'scalability',
+      title: 'Legacy system design question',
+      tags: ['system-design']
+    }
+  ]);
+
+  const bank = await loadTopicBankFromSources('scalability', {
+    topics,
+    modules: {
+      '../data/banks/system/scalability.js': moduleLoader(legacyBank)
+    },
+    getDiscoveredQuestions: async () => []
+  });
+
+  assert.equal(bank.questions[0].type, 'simple-system-design');
+  assert.equal(bank.questions[0].difficulty, 'Easy');
+  assert.deepEqual(bank.questions[0].tags, ['simple-system-design']);
+});
+
+test('legacy production-scenario type normalizes to simple-system-design from registry metadata', async () => {
+  const legacyBank = createVirtualBank(topics[4], [
+    {
+      id: 'scalability-legacy-production-scenario',
+      type: 'production-scenario',
+      topicId: 'scalability',
+      title: 'Legacy production scenario',
+      tags: ['production-scenario', 'system']
+    }
+  ]);
+
+  const bank = await loadTopicBankFromSources('scalability', {
+    topics,
+    modules: {
+      '../data/banks/system/scalability.js': moduleLoader(legacyBank)
+    },
+    getDiscoveredQuestions: async () => []
+  });
+
+  assert.equal(bank.questions[0].type, 'simple-system-design');
+  assert.equal(bank.questions[0].difficulty, 'Easy');
+  assert.deepEqual(bank.questions[0].tags, ['simple-system-design', 'system']);
+});
+
+test('normal simple-system-design problems continue working', async () => {
+  const simpleProblem = {
+    id: 'scalability-simple-001',
+    type: 'simple-system-design',
+    topicId: 'scalability',
+    title: 'Normal simple system design question',
+    difficulty: 'Medium',
+    tags: ['simple-system-design']
+  };
+  const legacyBank = createVirtualBank(topics[4], [simpleProblem]);
+
+  const bank = await loadTopicBankFromSources('scalability', {
+    topics,
+    modules: {
+      '../data/banks/system/scalability.js': moduleLoader(legacyBank)
+    },
+    getDiscoveredQuestions: async () => []
+  });
+
+  assert.deepEqual(bank.questions[0], {
+    ...simpleProblem,
+    difficulty: 'Easy',
+    tags: ['simple-system-design'],
+    prompt: '',
+    question: '',
+    options: undefined,
+    answer: undefined,
+    correctAnswer: undefined,
+    explanation: undefined,
+    hints: undefined,
+    starterThought: undefined,
+    relatedConcepts: undefined,
+    references: undefined,
+    followUpQuestions: undefined,
+    scoring: undefined,
+    metadata: {}
+  });
+});
+
+test('complex system-design questions still merge into scalability from manifest metadata', async () => {
+  const scalabilityBank = createVirtualBank(topics[4], [
+    { id: 'scalability-existing-001', type: 'simple-system-design', topicId: 'scalability', title: 'Existing simple question' }
+  ]);
+  const complexBank = createVirtualBank(
+    { id: 'complex-system-design', name: 'Complex System Design', category: 'system' },
+    [
+      {
+        id: 'complex-system-design-url-shortener-001',
+        type: 'complex-system-design',
+        topicId: 'complex-system-design',
+        title: 'Design a URL Shortener',
+        tags: ['complex-system-design']
+      }
+    ]
+  );
+
+  const bank = await loadTopicBankFromSources('scalability', {
+    topics,
+    modules: {
+      '../data/banks/system/scalability.js': moduleLoader(scalabilityBank),
+      '../data/banks/system/complex-system-design.js': moduleLoader(complexBank)
+    },
+    getDiscoveredQuestions: async () => []
+  });
+
+  const mergedQuestion = bank.questions.find((question) => question.id === 'scalability-url-shortener-001');
+  assert.ok(mergedQuestion);
+  assert.equal(mergedQuestion.topicId, 'scalability');
+  assert.equal(mergedQuestion.finalPattern, 'Scalability');
+  assert.deepEqual(mergedQuestion.tags, ['complex-system-design', 'scalability']);
+});
+
+test('question bank service does not merge complex system design without topic metadata', async () => {
+  const plainBank = createVirtualBank(topics[6], []);
+  const complexBank = createVirtualBank(
+    { id: 'complex-system-design', name: 'Complex System Design', category: 'system' },
+    [
+      { id: 'complex-system-design-url-shortener-001', type: 'complex-system-design', topicId: 'complex-system-design', title: 'Design a URL Shortener' }
+    ]
+  );
+
+  const bank = await loadTopicBankFromSources('plain-system-topic', {
+    topics,
+    modules: {
+      '../data/banks/system/plain-system-topic.js': moduleLoader(plainBank),
+      '../data/banks/system/complex-system-design.js': moduleLoader(complexBank)
+    },
+    getDiscoveredQuestions: async () => []
+  });
+
+  assert.deepEqual(bank.questions, []);
+});
+
+test('metadata-driven complex merge supports configurable source paths', async () => {
+  const baseBank = createVirtualBank(topics[5], []);
+  const customComplexBank = createVirtualBank(
+    { id: 'complex-system-design', name: 'Complex System Design', category: 'system' },
+    [
+      { id: 'complex-system-design-custom-001', type: 'complex-system-design', topicId: 'complex-system-design', title: 'Custom complex prompt' }
+    ]
+  );
+
+  const bank = await loadTopicBankFromSources('custom-merge-topic', {
+    topics,
+    modules: {
+      '../data/banks/system/custom-merge-topic.js': moduleLoader(baseBank),
+      '../data/banks/system/custom-complex.js': moduleLoader(customComplexBank)
+    },
+    getDiscoveredQuestions: async () => []
+  });
+
+  assert.deepEqual(bank.questions.map((question) => question.id), ['custom-merge-topic-custom-001']);
+  assert.equal(bank.questions[0].topicId, 'custom-merge-topic');
+  assert.deepEqual(bank.questions[0].tags, ['custom-merge-topic']);
 });
 
 test('discovered-only topic loads without a legacy bank by creating a virtual bank', async () => {

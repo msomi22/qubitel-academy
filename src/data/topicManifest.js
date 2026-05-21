@@ -93,7 +93,19 @@ export const topicManifest = [
     "id": "scalability",
     "name": "Scalability",
     "category": "system",
-    "description": "Design systems that keep working as users, traffic, data, and teams grow."
+    "description": "Design systems that keep working as users, traffic, data, and teams grow.",
+    "questionBank": {
+      "legacyMerges": [
+        {
+          "path": "../data/banks/system/complex-system-design.js",
+          "idPrefixFrom": "complex-system-design-",
+          "idPrefixTo": "scalability-",
+          "topicId": "scalability",
+          "finalPattern": "Scalability",
+          "tags": ["scalability"]
+        }
+      ]
+    }
   },
   {
     "id": "databases",

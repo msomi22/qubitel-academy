@@ -40,6 +40,8 @@ export const problemTypeRegistry = {
   debugging: legacyDsaType('Debugging'),
   'simple-system-design': {
     label: 'Simple System Design',
+    legacyAliases: ['system-design', 'production-scenario'],
+    defaultDifficulty: 'Easy',
     normalize: defaultNormalize,
     validate: defaultValidate,
     scorer: defaultScorer,
@@ -54,10 +56,34 @@ export const problemTypeRegistry = {
   }
 };
 
-export function getProblemType(type) {
-  return problemTypeRegistry[type] || null;
+export function getProblemType(type, registry = problemTypeRegistry) {
+  return registry[type] || null;
 }
 
-export function isSupportedProblemType(type) {
-  return Boolean(getProblemType(type));
+export function getCanonicalProblemType(type, registry = problemTypeRegistry) {
+  if (!type) return type;
+  if (registry[type]) return type;
+
+  const canonicalEntry = Object.entries(registry).find(([, metadata]) => (
+    Array.isArray(metadata.legacyAliases) && metadata.legacyAliases.includes(type)
+  ));
+
+  return canonicalEntry ? canonicalEntry[0] : type;
+}
+
+export function getProblemTypeMetadata(type, registry = problemTypeRegistry) {
+  return getProblemType(getCanonicalProblemType(type, registry), registry);
+}
+
+export function normalizeProblemTypeAlias(type, registry = problemTypeRegistry) {
+  return getCanonicalProblemType(type, registry);
+}
+
+export function normalizeProblemTypeTags(tags = [], registry = problemTypeRegistry) {
+  const normalizedTags = tags.map((tag) => normalizeProblemTypeAlias(tag, registry));
+  return [...new Set(normalizedTags)];
+}
+
+export function isSupportedProblemType(type, registry = problemTypeRegistry) {
+  return Boolean(getProblemTypeMetadata(type, registry));
 }

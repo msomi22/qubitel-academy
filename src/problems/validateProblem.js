@@ -1,5 +1,5 @@
 import { topicManifest } from '../data/topicManifest.js';
-import { problemTypeRegistry } from './problemTypeRegistry.js';
+import { isSupportedProblemType, problemTypeRegistry } from './problemTypeRegistry.js';
 
 function error(problemId, field, message) {
   return { problemId: problemId || 'unknown', field, message };
@@ -38,7 +38,7 @@ export function validateProblem(problem, options = {}) {
 
   if (!problemId) errors.push(error(problemId, 'id', 'Problem id is required.'));
   if (!problem?.type) errors.push(error(problemId, 'type', 'Problem type is required.'));
-  if (problem?.type && !registry[problem.type]) {
+  if (problem?.type && !isSupportedProblemType(problem.type, registry)) {
     errors.push(error(problemId, 'type', `Unsupported problem type: ${problem.type}.`));
   }
   if (!problem?.category) errors.push(error(problemId, 'category', 'Problem category is required.'));

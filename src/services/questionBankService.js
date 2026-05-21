@@ -8,12 +8,11 @@ import {
   getDiscoveredQuestionsForTopic,
   getProblemValidationResult
 } from '../problems/problemDiscovery.js';
+import { normalizeProblem } from '../problems/normalizeProblem.js';
 
 const bankModules = import.meta.env
   ? import.meta.glob('../data/banks/**/*.js')
   : {};
-const SIMPLE_SYSTEM_DESIGN_TYPES = new Set(['system-design', 'production-scenario']);
-const COMPLEX_SYSTEM_DESIGN_BANK_PATH = '../data/banks/system/complex-system-design.js';
 
 function getTopic(topicId, topics = topicManifest) {
   const topic = topics.find((item) => item.id === topicId);
@@ -63,12 +62,15 @@ export async function loadLegacyBankIfPresent(topic, modules = bankModules) {
   return applyQuestionOverrides(module.default);
 }
 
-function normalizeSimpleSystemDesignTags(tags = []) {
-  const normalizedTags = tags.map((tag) => (
-    SIMPLE_SYSTEM_DESIGN_TYPES.has(tag) ? 'simple-system-design' : tag
-  ));
+function normalizeSystemQuestion(question) {
+  const normalized = normalizeProblem(question);
 
-  return [...new Set(normalizedTags)];
+  if (normalized.type === 'complex-system-design') return normalized;
+
+  return {
+    ...normalized,
+    difficulty: 'Easy'
+  };
 }
 
 function normalizeQuestionTypes(bank) {
@@ -76,46 +78,56 @@ function normalizeQuestionTypes(bank) {
 
   return {
     ...bank,
-    questions: (bank.questions || []).map((question) => {
-      if (question.type === 'complex-system-design') return question;
-
-      if (SIMPLE_SYSTEM_DESIGN_TYPES.has(question.type)) {
-        return {
-          ...question,
-          type: 'simple-system-design',
-          difficulty: 'Easy',
-          tags: normalizeSimpleSystemDesignTags(question.tags)
-        };
-      }
-
-      return {
-        ...question,
-        difficulty: 'Easy'
-      };
-    })
+    questions: (bank.questions || []).map((question) => normalizeSystemQuestion(question))
   };
 }
 
-async function mergeComplexDesignQuestions(bank, modules = bankModules) {
-  if (bank.id !== 'scalability') return bank;
-  if (!modules[COMPLEX_SYSTEM_DESIGN_BANK_PATH]) return bank;
+function resolveLegacyMergePath(mergeConfig) {
+  if (typeof mergeConfig === 'string') return mergeConfig;
+  return mergeConfig?.path || null;
+}
 
-  const module = await modules[COMPLEX_SYSTEM_DESIGN_BANK_PATH]();
-  const complexBank = module.default;
-  const existingIds = new Set((bank.questions || []).map((question) => question.id));
-  const complexQuestions = (complexBank.questions || [])
-    .map((question) => ({
-      ...question,
-      id: question.id.replace(/^complex-system-design-/, 'scalability-'),
-      topicId: 'scalability',
-      finalPattern: 'Scalability',
-      tags: [...new Set([...(question.tags || []), 'scalability'])]
-    }))
-    .filter((question) => !existingIds.has(question.id));
+function applyLegacyMergeConfig(question, mergeConfig = {}) {
+  const idPrefixFrom = mergeConfig.idPrefixFrom || '';
+  const idPrefixTo = mergeConfig.idPrefixTo || '';
+  const mergedTags = [...new Set([...(question.tags || []), ...(mergeConfig.tags || [])])];
+
+  return {
+    ...question,
+    id: idPrefixFrom ? question.id.replace(new RegExp(`^${idPrefixFrom}`), idPrefixTo) : question.id,
+    topicId: mergeConfig.topicId ?? question.topicId,
+    finalPattern: mergeConfig.finalPattern ?? question.finalPattern,
+    tags: mergedTags
+  };
+}
+
+export async function mergeLegacyQuestionSources(bank, topic, modules = bankModules) {
+  const legacyMerges = topic?.questionBank?.legacyMerges || [];
+  if (!legacyMerges.length) return bank;
+
+  let mergedQuestions = [...(bank.questions || [])];
+  const existingIds = new Set(mergedQuestions.map((question) => question.id));
+
+  for (const mergeConfig of legacyMerges) {
+    const path = resolveLegacyMergePath(mergeConfig);
+    if (!path || !modules[path]) continue;
+
+    const module = await modules[path]();
+    const sourceBank = module.default;
+    const sourceQuestions = (sourceBank.questions || [])
+      .map((question) => applyLegacyMergeConfig(question, mergeConfig))
+      .filter((question) => !existingIds.has(question.id));
+
+    for (const question of sourceQuestions) {
+      existingIds.add(question.id);
+    }
+
+    mergedQuestions = [...mergedQuestions, ...sourceQuestions];
+  }
 
   return {
     ...bank,
-    questions: [...(bank.questions || []), ...complexQuestions]
+    questions: mergedQuestions
   };
 }
 
@@ -164,11 +176,11 @@ export async function loadTopicBankFromSources(topicId, options = {}) {
   }
 
   const baseBank = legacyBank || createVirtualBank(topic);
-  const merged = await mergeComplexDesignQuestions(baseBank, modules);
-  const normalized = normalizeQuestionTypes(merged);
-  const withDiscoveredQuestions = mergeDiscoveredQuestions(normalized, discoveredQuestions);
+  const withLegacySources = await mergeLegacyQuestionSources(baseBank, topic, modules);
+  const withDiscoveredQuestions = mergeDiscoveredQuestions(withLegacySources, discoveredQuestions);
+  const normalized = normalizeQuestionTypes(withDiscoveredQuestions);
 
-  return applyContentProfileToBank(withDiscoveredQuestions);
+  return applyContentProfileToBank(normalized);
 }
 
 const bankCache = new Map();
