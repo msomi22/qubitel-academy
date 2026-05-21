@@ -81,17 +81,30 @@ async function mergeComplexDesignQuestions(bank) {
   };
 }
 
+export function mergeQuestionsById(primaryQuestions = [], fallbackQuestions = []) {
+  const mergedQuestions = [];
+  const seenIds = new Set();
+
+  for (const question of [...primaryQuestions, ...fallbackQuestions]) {
+    if (!question?.id || seenIds.has(question.id)) continue;
+
+    seenIds.add(question.id);
+    mergedQuestions.push(question);
+  }
+
+  return mergedQuestions;
+}
+
 function mergeDiscoveredQuestions(bank, discoveredQuestions = []) {
   if (!discoveredQuestions.length) return bank;
 
-  const existingIds = new Set((bank.questions || []).map((question) => question.id));
-  const additiveQuestions = discoveredQuestions.filter((question) => !existingIds.has(question.id));
+  const questions = mergeQuestionsById(discoveredQuestions, bank.questions || []);
 
-  if (!additiveQuestions.length) return bank;
+  if (questions.length === (bank.questions || []).length) return bank;
 
   return {
     ...bank,
-    questions: [...(bank.questions || []), ...additiveQuestions]
+    questions
   };
 }
 
