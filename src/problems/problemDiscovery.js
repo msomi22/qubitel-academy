@@ -3,7 +3,7 @@ import { problemTypeRegistry } from './problemTypeRegistry.js';
 import { normalizeProblem } from './normalizeProblem.js';
 import { validateProblemCollection } from './validateProblem.js';
 
-const discoveredProblemModules = typeof import.meta.glob === 'function'
+const discoveredProblemModules = import.meta.env
   ? import.meta.glob('../data/problems/**/*.js')
   : {};
 

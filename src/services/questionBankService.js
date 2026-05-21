@@ -9,20 +9,58 @@ import {
   getProblemValidationResult
 } from '../problems/problemDiscovery.js';
 
-const bankModules = import.meta.glob('../data/banks/**/*.js');
+const bankModules = import.meta.env
+  ? import.meta.glob('../data/banks/**/*.js')
+  : {};
 const SIMPLE_SYSTEM_DESIGN_TYPES = new Set(['system-design', 'production-scenario']);
 const COMPLEX_SYSTEM_DESIGN_BANK_PATH = '../data/banks/system/complex-system-design.js';
 
-function getBankPath(topicId) {
-  const topic = topicManifest.find((item) => item.id === topicId);
+function getTopic(topicId, topics = topicManifest) {
+  const topic = topics.find((item) => item.id === topicId);
   if (!topic) throw new Error(`Unknown topic bank: ${topicId}`);
+  return topic;
+}
+
+export function getOptionalBankPath(topic, modules = bankModules) {
+  if (!topic?.category || !topic?.id) return null;
 
   const path = `../data/banks/${topic.category}/${topic.id}.js`;
-  if (!bankModules[path]) {
-    throw new Error(`Missing quiz bank file for ${topicId}. Expected: src/data/banks/${topic.category}/${topic.id}.js`);
-  }
+  return modules[path] ? path : null;
+}
 
-  return path;
+export function createVirtualBank(topic, questions = []) {
+  return {
+    id: topic.id,
+    name: topic.name,
+    category: topic.category,
+    description: topic.description,
+    questions
+  };
+}
+
+export function canUseVirtualBank(topic, discoveredQuestions = []) {
+  return discoveredQuestions.length > 0
+    || topic?.allowVirtualBank === true
+    || topic?.questionBank?.allowVirtual === true
+    || topic?.questionBank?.mode === 'discovered'
+    || topic?.questionBank?.mode === 'empty';
+}
+
+export function assertCanUseVirtualBank(topic, discoveredQuestions = []) {
+  if (canUseVirtualBank(topic, discoveredQuestions)) return;
+
+  throw new Error(
+    `Missing quiz bank file for ${topic.id}. Expected: src/data/banks/${topic.category}/${topic.id}.js. `
+    + 'Add discovered problems for this topic or set questionBank.mode to "discovered" or "empty" in topicManifest.'
+  );
+}
+
+export async function loadLegacyBankIfPresent(topic, modules = bankModules) {
+  const path = getOptionalBankPath(topic, modules);
+  if (!path) return null;
+
+  const module = await modules[path]();
+  return applyQuestionOverrides(module.default);
 }
 
 function normalizeSimpleSystemDesignTags(tags = []) {
@@ -58,11 +96,11 @@ function normalizeQuestionTypes(bank) {
   };
 }
 
-async function mergeComplexDesignQuestions(bank) {
+async function mergeComplexDesignQuestions(bank, modules = bankModules) {
   if (bank.id !== 'scalability') return bank;
-  if (!bankModules[COMPLEX_SYSTEM_DESIGN_BANK_PATH]) return bank;
+  if (!modules[COMPLEX_SYSTEM_DESIGN_BANK_PATH]) return bank;
 
-  const module = await bankModules[COMPLEX_SYSTEM_DESIGN_BANK_PATH]();
+  const module = await modules[COMPLEX_SYSTEM_DESIGN_BANK_PATH]();
   const complexBank = module.default;
   const existingIds = new Set((bank.questions || []).map((question) => question.id));
   const complexQuestions = (complexBank.questions || [])
@@ -96,11 +134,9 @@ export function mergeQuestionsById(primaryQuestions = [], fallbackQuestions = []
 }
 
 function mergeDiscoveredQuestions(bank, discoveredQuestions = []) {
-  if (!discoveredQuestions.length) return bank;
-
   const questions = mergeQuestionsById(discoveredQuestions, bank.questions || []);
 
-  if (questions.length === (bank.questions || []).length) return bank;
+  if (questions.length === (bank.questions || []).length && !discoveredQuestions.length) return bank;
 
   return {
     ...bank,
@@ -113,6 +149,26 @@ function applyContentProfileToBank(bank) {
     ...bank,
     questions: filterQuestionsForActiveProfile(bank.questions || [])
   };
+}
+
+export async function loadTopicBankFromSources(topicId, options = {}) {
+  const topic = getTopic(topicId, options.topics || topicManifest);
+  const modules = options.modules || bankModules;
+  const getDiscoveredQuestions = options.getDiscoveredQuestions || getDiscoveredQuestionsForTopic;
+
+  const discoveredQuestions = await getDiscoveredQuestions(topicId);
+  const legacyBank = await loadLegacyBankIfPresent(topic, modules);
+
+  if (!legacyBank) {
+    assertCanUseVirtualBank(topic, discoveredQuestions);
+  }
+
+  const baseBank = legacyBank || createVirtualBank(topic);
+  const merged = await mergeComplexDesignQuestions(baseBank, modules);
+  const normalized = normalizeQuestionTypes(merged);
+  const withDiscoveredQuestions = mergeDiscoveredQuestions(normalized, discoveredQuestions);
+
+  return applyContentProfileToBank(withDiscoveredQuestions);
 }
 
 const bankCache = new Map();
@@ -133,19 +189,7 @@ export function getTopicsForCategory(categoryId) {
 
 export async function loadTopicBank(topicId) {
   if (!bankCache.has(topicId)) {
-    const path = getBankPath(topicId);
-
-    bankCache.set(
-      topicId,
-      bankModules[path]().then(async (module) => {
-        const overridden = applyQuestionOverrides(module.default);
-        const merged = await mergeComplexDesignQuestions(overridden);
-        const normalized = normalizeQuestionTypes(merged);
-        const discoveredQuestions = await getDiscoveredQuestionsForTopic(topicId);
-        const withDiscoveredQuestions = mergeDiscoveredQuestions(normalized, discoveredQuestions);
-        return applyContentProfileToBank(withDiscoveredQuestions);
-      })
-    );
+    bankCache.set(topicId, loadTopicBankFromSources(topicId));
   }
 
   return bankCache.get(topicId);
@@ -216,11 +260,15 @@ export async function getRandomQuestion(filters = {}) {
     return true;
   });
 
-  const pickedTopic = candidates[Math.floor(Math.random() * candidates.length)] || allTopics[0];
-  const bank = await loadTopicBank(pickedTopic.id);
-  const question = bank.questions[Math.floor(Math.random() * bank.questions.length)];
+  for (const pickedTopic of candidates.sort(() => Math.random() - 0.5)) {
+    const bank = await loadTopicBank(pickedTopic.id);
+    if (!bank.questions.length) continue;
 
-  return { ...question, parentTopic: bank.name, category: bank.category };
+    const question = bank.questions[Math.floor(Math.random() * bank.questions.length)];
+    return { ...question, parentTopic: bank.name, category: bank.category };
+  }
+
+  throw new Error('No questions available for the selected filters.');
 }
 
 export async function findQuestionById(questionId) {
