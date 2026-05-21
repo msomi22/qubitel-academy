@@ -5,6 +5,31 @@ function error(problemId, field, message) {
   return { problemId: problemId || 'unknown', field, message };
 }
 
+function isMcqProblem(problem) {
+  return problem?.type === 'mcq' || problem?.type === 'multiple-choice';
+}
+
+function validateMcqProblem(problem, errors) {
+  if (!isMcqProblem(problem)) return;
+
+  if (problem.options !== undefined && !Array.isArray(problem.options)) {
+    errors.push(error(problem.id, 'options', 'MCQ options must be an array when provided.'));
+    return;
+  }
+
+  const answerIndex = problem.correctAnswer ?? (Number.isInteger(problem.answer) ? problem.answer : undefined);
+  if (answerIndex === undefined) return;
+
+  if (!Array.isArray(problem.options)) {
+    errors.push(error(problem.id, 'options', 'MCQ correctAnswer requires an options array.'));
+    return;
+  }
+
+  if (!Number.isInteger(answerIndex) || answerIndex < 0 || answerIndex >= problem.options.length) {
+    errors.push(error(problem.id, 'correctAnswer', `MCQ correctAnswer must point to a real option index between 0 and ${problem.options.length - 1}.`));
+  }
+}
+
 export function validateProblem(problem, options = {}) {
   const topics = options.topics || topicManifest;
   const registry = options.registry || problemTypeRegistry;
@@ -32,6 +57,8 @@ export function validateProblem(problem, options = {}) {
   if (topic && problem?.category && topic.category !== problem.category) {
     errors.push(error(problemId, 'category', `Category must match topicManifest category: ${topic.category}.`));
   }
+
+  validateMcqProblem(problem, errors);
 
   return { valid: errors.length === 0, errors };
 }
