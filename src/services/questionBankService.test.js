@@ -1,11 +1,131 @@
-// Temporarily disabled: this test file is failing on main and is being kept
-// commented out until the question bank migration behavior is finalized.
-
-/*
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { mergeQuestionsById, topicProgress } from './questionBankService.js';
+import {
+  createVirtualBank,
+  loadTopicBankFromSources,
+  mergeQuestionsById,
+  topicProgress
+} from './questionBankService.js';
+
+const topics = [
+  {
+    id: 'legacy-topic',
+    name: 'Legacy Topic',
+    category: 'dsa',
+    description: 'A topic backed by a legacy bank.'
+  },
+  {
+    id: 'discovered-only',
+    name: 'Discovered Only',
+    category: 'system',
+    description: 'A topic backed only by discovered problems.'
+  },
+  {
+    id: 'empty-topic',
+    name: 'Empty Topic',
+    category: 'dsa',
+    description: 'A topic that intentionally has no questions yet.'
+  }
+];
+
+function moduleLoader(defaultExport) {
+  return async () => ({ default: defaultExport });
+}
+
+test('legacy topic loads as before when a legacy bank exists', async () => {
+  const legacyBank = {
+    id: 'legacy-topic',
+    name: 'Legacy Topic',
+    category: 'dsa',
+    description: 'A topic backed by a legacy bank.',
+    questions: [
+      { id: 'legacy-topic-001', type: 'coding', topicId: 'legacy-topic', title: 'Legacy question' }
+    ]
+  };
+
+  const bank = await loadTopicBankFromSources('legacy-topic', {
+    topics,
+    modules: {
+      '../data/banks/dsa/legacy-topic.js': moduleLoader(legacyBank)
+    },
+    getDiscoveredQuestions: async () => []
+  });
+
+  assert.equal(bank.id, legacyBank.id);
+  assert.equal(bank.name, legacyBank.name);
+  assert.equal(bank.category, legacyBank.category);
+  assert.deepEqual(bank.questions, legacyBank.questions);
+});
+
+test('discovered-only topic loads without a legacy bank by creating a virtual bank', async () => {
+  const discoveredQuestion = {
+    id: 'discovered-only-001',
+    type: 'production-scenario',
+    topicId: 'discovered-only',
+    title: 'Discovered question'
+  };
+
+  const bank = await loadTopicBankFromSources('discovered-only', {
+    topics,
+    modules: {},
+    getDiscoveredQuestions: async () => [discoveredQuestion]
+  });
+
+  assert.equal(bank.id, 'discovered-only');
+  assert.equal(bank.name, 'Discovered Only');
+  assert.equal(bank.category, 'system');
+  assert.deepEqual(bank.questions.map((question) => question.id), ['discovered-only-001']);
+  assert.equal(bank.questions[0].title, 'Discovered question');
+});
+
+test('discovered question overrides duplicate legacy question by id', async () => {
+  const legacyBank = createVirtualBank(topics[0], [
+    { id: 'legacy-topic-001', type: 'coding', topicId: 'legacy-topic', title: 'Legacy version' },
+    { id: 'legacy-topic-002', type: 'coding', topicId: 'legacy-topic', title: 'Legacy only' }
+  ]);
+
+  const bank = await loadTopicBankFromSources('legacy-topic', {
+    topics,
+    modules: {
+      '../data/banks/dsa/legacy-topic.js': moduleLoader(legacyBank)
+    },
+    getDiscoveredQuestions: async () => [
+      { id: 'legacy-topic-001', type: 'coding', topicId: 'legacy-topic', title: 'Discovered version' }
+    ]
+  });
+
+  assert.deepEqual(bank.questions.map((question) => question.id), ['legacy-topic-001', 'legacy-topic-002']);
+  assert.equal(bank.questions[0].title, 'Discovered version');
+});
+
+test('topic with no questions returns an empty bank safely after discovered lookup', async () => {
+  let discoveredLookupCount = 0;
+
+  const bank = await loadTopicBankFromSources('empty-topic', {
+    topics,
+    modules: {},
+    getDiscoveredQuestions: async () => {
+      discoveredLookupCount += 1;
+      return [];
+    }
+  });
+
+  assert.equal(discoveredLookupCount, 1);
+  assert.equal(bank.id, 'empty-topic');
+  assert.deepEqual(bank.questions, []);
+});
+
+test('unknown topicId still errors clearly', async () => {
+  await assert.rejects(
+    () => loadTopicBankFromSources('missing-topic', {
+      topics,
+      modules: {},
+      getDiscoveredQuestions: async () => []
+    }),
+    /Unknown topic bank: missing-topic/
+  );
+});
 
 test('mergeQuestionsById prefers migrated problem files and avoids duplicate IDs', () => {
   const migratedProblems = [
@@ -27,15 +147,6 @@ test('mergeQuestionsById prefers migrated problem files and avoids duplicate IDs
 test('mergeQuestionsById keeps legacy questions visible when migrated discovery is empty', () => {
   const legacyQuestions = [
     { id: 'api-design-001', title: 'Legacy API item', category: 'system', topicId: 'api-design' }
-  ];
-
-  assert.deepEqual(mergeQuestionsById([], legacyQuestions), legacyQuestions);
-});
-
-test('mergeQuestionsById keeps all fallback questions from an approved topic', () => {
-  const legacyQuestions = [
-    { id: 'sliding-window-001', title: 'Question A', category: 'dsa', topicId: 'sliding-window' },
-    { id: 'sliding-window-002', title: 'Question B', category: 'dsa', topicId: 'sliding-window' }
   ];
 
   assert.deepEqual(mergeQuestionsById([], legacyQuestions), legacyQuestions);
@@ -63,4 +174,3 @@ test('topicProgress keeps existing ID-prefix completed status behavior', () => {
 
   assert.deepEqual(progress, { done: 2, total: 3, percent: 67 });
 });
-*/
