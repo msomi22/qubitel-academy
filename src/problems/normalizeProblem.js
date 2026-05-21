@@ -9,12 +9,10 @@ export function normalizeProblem(problem = {}) {
   const question = problem.question ?? problem.prompt ?? '';
   const type = normalizeProblemTypeAlias(problem.type);
   const typeMetadata = getProblemTypeMetadata(problem.type);
-
-  return {
+  const normalized = {
     ...problem,
     id: problem.id,
     type,
-    category: problem.category,
     topicId: problem.topicId,
     title: problem.title,
     difficulty: problem.difficulty ?? typeMetadata?.defaultDifficulty,
@@ -33,4 +31,10 @@ export function normalizeProblem(problem = {}) {
     scoring: problem.scoring,
     metadata: problem.metadata ?? {}
   };
+
+  if (problem.category !== undefined) {
+    normalized.category = problem.category;
+  }
+
+  return normalized;
 }
