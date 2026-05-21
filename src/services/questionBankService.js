@@ -63,6 +63,8 @@ export async function loadLegacyBankIfPresent(topic, modules = bankModules) {
 }
 
 function normalizeQuestionTypes(bank) {
+  if (bank.category !== 'system') return bank;
+
   return {
     ...bank,
     questions: (bank.questions || []).map((question) => normalizeProblem(question))
@@ -163,11 +165,11 @@ export async function loadTopicBankFromSources(topicId, options = {}) {
   }
 
   const baseBank = legacyBank || createVirtualBank(topic);
-  const merged = await mergeLegacyQuestionSources(baseBank, topic, modules);
-  const normalized = normalizeQuestionTypes(merged);
-  const withDiscoveredQuestions = mergeDiscoveredQuestions(normalized, discoveredQuestions);
+  const withLegacySources = await mergeLegacyQuestionSources(baseBank, topic, modules);
+  const withDiscoveredQuestions = mergeDiscoveredQuestions(withLegacySources, discoveredQuestions);
+  const normalized = normalizeQuestionTypes(withDiscoveredQuestions);
 
-  return applyContentProfileToBank(withDiscoveredQuestions);
+  return applyContentProfileToBank(normalized);
 }
 
 const bankCache = new Map();
