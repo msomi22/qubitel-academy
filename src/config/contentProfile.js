@@ -9,8 +9,15 @@ function readContentProfile() {
 
 const CONTENT_PROFILE = readContentProfile();
 
+// Intentionally empty after production-visible System Design and DSA content moved
+// to discovered problem files under src/data/problems/**. Keep this hook only so
+// older callers can safely ask whether a legacy question has explicit production
+// approval without reintroducing per-question allow-list approvals.
 const APPROVED_PROD_QUESTION_IDS = new Set([]);
 
+// Topic fallback keeps production topic/category pages stable for callers that do
+// not yet pass discovered questions into the visibility filter. This is a topic
+// visibility compatibility hook only; it must not approve individual questions.
 const APPROVED_PROD_TOPIC_IDS = new Set([
   'sliding-window',
   'dynamic-programming',
