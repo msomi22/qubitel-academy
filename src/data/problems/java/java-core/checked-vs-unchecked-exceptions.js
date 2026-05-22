@@ -22,8 +22,8 @@ const problem = defineLearningProblem({
   ],
   explanation: 'A good answer separates compiler rules from design intent: checked exceptions are part of the method contract, while unchecked exceptions usually signal bugs or invalid usage.',
   metadata: {
-    reviewStatus: 'draft',
-    visibility: ['dev']
+    reviewStatus: 'approved',
+    visibility: ['dev', 'prod']
   }
 });
 
