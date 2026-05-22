@@ -5,25 +5,7 @@ const problem = defineMcqProblem({
   topicId: 'java-core',
   title: 'Java Pass-by-Value and Object References',
   difficulty: 'Medium',
-  prompt: `Given this Java code:
-
-class Dog {
-    String name;
-
-    Dog(String name) {
-        this.name = name;
-    }
-}
-
-static void changeName(Dog pet) {
-    pet = new Dog("Max");
-}
-
-Dog dog = new Dog("Buddy");
-changeName(dog);
-System.out.println(dog.name);
-
-What is printed, and what happens to the caller's original dog variable?`,
+  prompt: 'A method receives a Dog object reference, then reassigns the method parameter to a new Dog. What is printed, and what happens to the caller\'s original dog variable?',
   options: [
     'It prints Max because the caller\'s dog variable is reassigned to the new Dog("Max").',
     'It prints Buddy because the caller\'s dog variable still points to the original Dog("Buddy").',
@@ -41,14 +23,20 @@ What is printed, and what happens to the caller's original dog variable?`,
   body: [
     {
       type: 'section',
-      title: 'The code in question',
-      content: 'This example separates two ideas that people often mix up: reassigning a parameter versus mutating the object that the parameter points to.'
+      title: 'Problem setup',
+      content: 'We want to know whether assigning a method parameter to a new object changes the original variable in the caller. The example below keeps the code in one proper block so it is easier to read.'
     },
     {
       type: 'code',
-      title: 'Parameter reassignment example',
+      title: 'Code example: parameter reassignment',
       language: 'java',
-      code: 'class Dog {\n    String name;\n\n    Dog(String name) {\n        this.name = name;\n    }\n}\n\npublic class Demo {\n    static void changeName(Dog pet) {\n        pet = new Dog("Max");\n    }\n\n    public static void main(String[] args) {\n        Dog dog = new Dog("Buddy");\n\n        changeName(dog);\n\n        System.out.println(dog.name); // Buddy\n    }\n}'
+      code: 'class Dog {\n    String name;\n\n    Dog(String name) {\n        this.name = name;\n    }\n}\n\npublic class Demo {\n    static void changeName(Dog pet) {\n        pet = new Dog("Max");\n    }\n\n    public static void main(String[] args) {\n        Dog dog = new Dog("Buddy");\n\n        changeName(dog);\n\n        System.out.println(dog.name);\n    }\n}'
+    },
+    {
+      type: 'callout',
+      tone: 'info',
+      title: 'Question to answer',
+      content: 'What does this print, and did changeName replace the caller\'s original dog variable?'
     },
     {
       type: 'section',
