@@ -25,7 +25,8 @@ const APPROVED_PROD_TOPIC_IDS = new Set([
   'caching',
   'messaging-queues',
   'scalability',
-  'databases'
+  'databases',
+  'java-core'
 ]);
 
 function resolveProfile(options = {}) {

@@ -23,10 +23,12 @@ function compactJoin(parts) {
 
 function buildSearchText(question, topic) {
   return normalize(compactJoin([
+    topic.id,
     topic.name,
     topic.description,
     topic.category,
     question.id,
+    question.category,
     question.topicId,
     question.type,
     question.title,
@@ -34,6 +36,7 @@ function buildSearchText(question, topic) {
     question.estimatedTime,
     question.tags,
     question.scenario,
+    question.prompt,
     question.question,
     question.starterThought,
     question.constraints,
@@ -58,7 +61,7 @@ function buildSearchText(question, topic) {
 }
 
 function makeSnippet(question) {
-  const text = question.scenario || question.question || question.explanation || '';
+  const text = question.scenario || question.question || question.prompt || question.explanation || '';
   if (text.length <= searchConfig.maxIndexedSnippetLength) return text;
   return `${text.slice(0, searchConfig.maxIndexedSnippetLength).trim()}…`;
 }
@@ -69,22 +72,31 @@ function scoreEntry(entry, tokens, rawQuery) {
   const title = normalize(entry.question.title);
   const tags = normalize(entry.question.tags?.join(' '));
   const scenario = normalize(entry.question.scenario);
-  const prompt = normalize(entry.question.question);
+  const prompt = normalize(compactJoin([entry.question.prompt, entry.question.question]));
   const topicName = normalize(entry.topicName);
+  const topicId = normalize(entry.topicId);
+  const category = normalize(entry.category);
+  const finalPattern = normalize(entry.question.finalPattern);
 
   let score = 0;
 
   if (title.includes(rawQuery)) score += 30;
   if (tags.includes(rawQuery)) score += 22;
   if (topicName.includes(rawQuery)) score += 18;
+  if (topicId.includes(rawQuery)) score += 16;
+  if (category.includes(rawQuery)) score += 15;
   if (prompt.includes(rawQuery)) score += 14;
+  if (finalPattern.includes(rawQuery)) score += 12;
   if (scenario.includes(rawQuery)) score += 10;
 
   for (const token of tokens) {
     if (title.includes(token)) score += 8;
     if (tags.includes(token)) score += 7;
     if (topicName.includes(token)) score += 5;
+    if (topicId.includes(token)) score += 5;
+    if (category.includes(token)) score += 5;
     if (prompt.includes(token)) score += 4;
+    if (finalPattern.includes(token)) score += 4;
     if (scenario.includes(token)) score += 3;
     if (entry.searchText.includes(token)) score += 1;
   }
@@ -121,7 +133,7 @@ export function searchQuestionIndex(index, filters = {}) {
   const query = normalize(filters.query);
   const tokens = query.split(' ').filter(Boolean);
   const hasSearch = query.length >= searchConfig.minimumQueryLength;
-  const hasFilters = [filters.topicId, filters.difficulty, filters.type].some(
+  const hasFilters = [filters.category, filters.topicId, filters.difficulty, filters.type].some(
     (value) => value && value !== EMPTY_FILTER
   );
 
@@ -129,6 +141,7 @@ export function searchQuestionIndex(index, filters = {}) {
 
   return index
     .map((entry) => {
+      if (filters.category && filters.category !== EMPTY_FILTER && entry.category !== filters.category) return null;
       if (filters.topicId && filters.topicId !== EMPTY_FILTER && entry.topicId !== filters.topicId) return null;
       if (filters.difficulty && filters.difficulty !== EMPTY_FILTER && entry.difficulty !== filters.difficulty) return null;
       if (filters.type && filters.type !== EMPTY_FILTER && entry.type !== filters.type) return null;
