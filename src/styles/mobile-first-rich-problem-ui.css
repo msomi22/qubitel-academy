@@ -1,0 +1,323 @@
+/* Mobile-first refinements for quiz and rich problem detail pages. */
+
+.focused-problem-page,
+.focused-problem-workspace,
+.focused-workspace-layout,
+.focused-tab-content,
+.focused-panel-stack,
+.focused-rich-body-stack,
+.problem-rich-block,
+.problem-table-scroll,
+.visual-walkthrough-panel,
+.visual-diagram,
+.visual-diagram-frames,
+.visual-frame,
+.visual-frame-side,
+.problem-support-panel,
+.focused-mcq-panel,
+.option-list,
+.option-btn {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.focused-rich-body-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.focused-tabs,
+.focused-tabs-wrap .focused-tabs {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.focused-tab-btn {
+  flex: 0 0 auto;
+  min-width: max-content;
+  min-height: 48px;
+  touch-action: manipulation;
+}
+
+.option-btn {
+  min-height: 54px;
+  touch-action: manipulation;
+  overflow-wrap: anywhere;
+}
+
+.option-btn span,
+.answer-banner,
+.workspace-block,
+.problem-rich-block,
+.problem-support-panel,
+.visual-frame-side {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.focused-code-block pre,
+.focused-code-block code,
+.problem-code-block pre,
+.problem-code-block code,
+.problem-diagram-block pre,
+.visual-frame code {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.problem-table-scroll {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.problem-image-block img,
+.visual-image-panel,
+.visual-frame-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.visual-frame code {
+  display: block;
+}
+
+.visual-diagram-frames {
+  max-width: 100%;
+  scroll-padding-inline: 12px;
+}
+
+.visual-frame-button {
+  max-width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .focused-workspace-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .focused-problem-workspace.focus-mode .problem-support-panel,
+  .problem-support-panel {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 760px) {
+  .focused-problem-page {
+    gap: 14px;
+    padding-top: 8px;
+  }
+
+  .reference-problem-intro,
+  .focused-tabs-wrap,
+  .focused-workspace-layout,
+  .focused-panel-stack,
+  .focused-two-col,
+  .learning-reinforcement-grid,
+  .visual-frame,
+  .problem-comparison-grid,
+  .problem-decision-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .reference-problem-intro {
+    gap: 14px;
+    padding-bottom: 14px;
+  }
+
+  .reference-action-group {
+    justify-content: stretch;
+  }
+
+  .reference-action-group .btn,
+  .reference-action-group .mark {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .focused-tabs-wrap {
+    gap: 0;
+  }
+
+  .focused-tabs,
+  .focused-tabs-wrap .focused-tabs {
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 12px;
+  }
+
+  .focused-tab-btn {
+    min-height: 52px;
+    padding: 0 12px;
+    font-size: 0.9rem;
+  }
+
+  .focus-mode-toggle {
+    width: calc(100% - 24px);
+    min-height: 42px;
+    margin: 0 12px 12px;
+  }
+
+  .focused-tab-content {
+    padding: 14px;
+    overflow: visible;
+  }
+
+  .focused-panel-stack,
+  .focused-rich-body-stack {
+    gap: 12px;
+  }
+
+  .problem-support-panel {
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .problem-support-panel section,
+  .reinforcement-card,
+  .workspace-empty-state,
+  .focused-mcq-panel,
+  .workspace-block,
+  .scenario-box,
+  .question-prompt,
+  .learning-panel,
+  .think-box,
+  .visual-model,
+  .practice-mode-banner,
+  .answer-banner,
+  .reference-box,
+  .option-btn {
+    border-radius: 12px;
+  }
+
+  .focused-mcq-panel {
+    padding: 12px;
+  }
+
+  .option-list {
+    gap: 10px;
+  }
+
+  .option-btn {
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: flex-start;
+    width: 100%;
+    min-height: 58px;
+    padding: 12px;
+  }
+
+  .option-btn strong {
+    width: 30px;
+    height: 30px;
+  }
+
+  .option-btn em {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 2px;
+  }
+
+  .visual-walkthrough-panel.reference-visual-panel,
+  .focused-problem-workspace .visual-walkthrough-panel.reference-visual-panel {
+    padding: 12px;
+  }
+
+  .visual-state-hud {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow-x: visible;
+  }
+
+  .visual-state-hud div {
+    border-radius: 12px;
+  }
+
+  .visual-playback-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .visual-playback-controls button,
+  .visual-playback-controls span {
+    width: 100%;
+    min-height: 40px;
+    text-align: center;
+  }
+
+  .visual-playback-controls span {
+    grid-column: 1 / -1;
+  }
+
+  .visual-frame-button,
+  .focused-problem-workspace .visual-frame-button {
+    flex-basis: calc(100vw - 48px);
+  }
+
+  .visual-frame,
+  .focused-problem-workspace .visual-frame {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .visual-metrics-grid,
+  .production-mapping-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .problem-flow-list li,
+  .problem-checklist li {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  .problem-table-block table,
+  .problem-table-block thead,
+  .problem-table-block tbody,
+  .problem-table-block th,
+  .problem-table-block td,
+  .problem-table-block tr {
+    max-width: 100%;
+  }
+
+  .problem-table-block td {
+    grid-template-columns: minmax(88px, 0.38fr) minmax(0, 1fr);
+    padding: 10px;
+  }
+
+  .problem-code-block pre,
+  .problem-diagram-block pre,
+  .focused-code-block pre,
+  .visual-frame code {
+    padding: 12px;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .focused-tab-content,
+  .problem-support-panel {
+    padding: 12px;
+  }
+
+  .visual-playback-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .visual-frame-button,
+  .focused-problem-workspace .visual-frame-button {
+    flex-basis: calc(100vw - 40px);
+  }
+
+  .problem-table-block td {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
