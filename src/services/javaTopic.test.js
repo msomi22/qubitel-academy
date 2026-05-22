@@ -6,6 +6,7 @@ import {
   getCategory,
   getOptionalBankPath,
   getTopicsForCategory,
+  getVisibleTopicsForCategory,
   loadTopicBankFromSources
 } from './questionBankService.js';
 
@@ -39,6 +40,15 @@ test('getTopicsForCategory("java") includes java-core discovered topic', () => {
 
   assert.ok(topics.some((topic) => topic.id === 'java-core'));
   assert.equal(javaCoreTopic().questionBank.mode, 'discovered');
+});
+
+test('visible Java category topics include java-core when discovered prod questions exist', async () => {
+  const topics = await getVisibleTopicsForCategory('java', {
+    profile: 'prod',
+    questions: javaProblems
+  });
+
+  assert.deepEqual(topics.map((topic) => topic.id), ['java-core']);
 });
 
 test('java-core loads from discovered problems without a legacy bank', async () => {
@@ -76,16 +86,14 @@ test('Java rich body exists and validates', () => {
   assert.equal(validation.valid, true, JSON.stringify(validation.errors));
 });
 
-test('Java prod visibility only exposes approved prod problem', async () => {
+test('Java prod visibility exposes all approved Java problems', async () => {
   const bank = await loadTopicBankFromSources('java-core', {
     profile: 'prod',
     modules: {},
     getDiscoveredQuestions: async () => javaProblems
   });
 
-  assert.deepEqual(bank.questions.map((problem) => problem.id), [
-    'java-core-pass-by-value-object-references-001'
-  ]);
+  assert.deepEqual(bank.questions.map((problem) => problem.id), javaProblems.map((problem) => problem.id));
 });
 
 test('existing legacy/discovered topic behavior still works alongside Java', async () => {
