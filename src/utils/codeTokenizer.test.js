@@ -14,7 +14,7 @@ test('tokenizeCode preserves line structure and indentation as plain tokens', ()
 });
 
 test('tokenizeCode marks Java-like keywords, strings, comments, and numbers', () => {
-  const types = flattenTypes('public String name = "Ada"; // user 42');
+  const types = flattenTypes('public String name = "Ada"; int count = 42; // user');
 
   assert.ok(types.includes('keyword'));
   assert.ok(types.includes('string'));
