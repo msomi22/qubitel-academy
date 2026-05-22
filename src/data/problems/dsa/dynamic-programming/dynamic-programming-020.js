@@ -1,7 +1,5 @@
 import { defineProblem } from '../../../../problems/problemAuthoring.js';
-import topic from '../../../banks/dsa/sliding-window.js';
-
-const legacyProblem = topic.questions.find((question) => question.id === 'sliding-window-001');
+import legacyProblem from '../../../banks/dsa/minimum-sideway-jumps.js';
 
 const problem = defineProblem({
   ...legacyProblem,

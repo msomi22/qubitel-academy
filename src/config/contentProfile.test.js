@@ -68,13 +68,13 @@ test('prod hides approved discovered problem without prod visibility', () => {
   assert.equal(isQuestionApprovedForProfile(approvedWithoutProd, prod), false);
 });
 
-test('legacy allow-list still works in prod', () => {
-  const approved = {
-    id: 'sliding-window-001',
-    topicId: 'sliding-window'
-  };
+test('migrated DSA IDs are no longer approved by the legacy allow-list alone', () => {
+  const legacyOnlyQuestions = [
+    { id: 'sliding-window-001', topicId: 'sliding-window' },
+    { id: 'dynamic-programming-020', topicId: 'dynamic-programming' }
+  ];
 
-  assert.equal(isQuestionApprovedForProfile(approved, prod), true);
+  assert.deepEqual(filterQuestionsForActiveProfile(legacyOnlyQuestions, prod), []);
 });
 
 test('keeps multi-hyphen legacy approved production topics visible', () => {
@@ -82,9 +82,13 @@ test('keeps multi-hyphen legacy approved production topics visible', () => {
   assert.equal(isTopicVisibleForActiveProfile('messaging-queues', [], prod), true);
 });
 
-test('filters arrays safely', () => {
+test('filters arrays safely using discovered production metadata', () => {
   const questions = [
-    { id: 'sliding-window-001', topicId: 'sliding-window' },
+    {
+      id: 'sliding-window-001',
+      topicId: 'sliding-window',
+      metadata: { reviewStatus: 'approved', visibility: ['dev', 'prod'], authoringVersion: 2 }
+    },
     { id: 'draft-question-001', topicId: 'draft-question' }
   ];
 
