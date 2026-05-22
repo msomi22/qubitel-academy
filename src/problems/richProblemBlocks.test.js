@@ -75,6 +75,22 @@ test('malformed rich body blocks produce useful validation errors', () => {
   assert.ok(result.errors.some((item) => item.field === 'rendering.variant'));
 });
 
+test('validateProblem reports malformed problem entries instead of throwing', () => {
+  const result = validateProblem(undefined, { topics });
+
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((item) => item.field === 'problem'));
+});
+
+test('validateProblem rejects dot-relative image paths', () => {
+  const result = validateProblem(baseProblem({
+    body: [{ type: 'image', src: './images/url-shortener.png' }]
+  }), { topics });
+
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((item) => item.field === 'body[0].src'));
+});
+
 test('defineProblem preserves rich body and rendering metadata through helper normalization', () => {
   const problem = defineProblem({
     id: 'rich-helper-1',
