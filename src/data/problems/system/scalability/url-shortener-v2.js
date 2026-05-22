@@ -70,10 +70,10 @@ const problem = defineComplexSystemDesignProblem({
       type: 'comparison',
       title: 'Short code strategy trade-offs',
       items: [
-        { title: 'Random Base62', content: 'Simple, hard to guess, horizontally friendly. It needs collision retry logic and good randomness.' },
-        { title: 'Counter + Base62', content: 'No random collision and compact codes. It can reveal scale, needs careful sharding, and may create hot counters.' },
-        { title: 'Hash long URL', content: 'Deterministic and easy to reproduce. It may leak patterns, needs collision handling, and duplicate-long-URL semantics must be clear.' },
-        { title: 'Custom alias', content: 'Human friendly and useful for campaigns. It needs strong uniqueness checks, moderation, reserved words, and abuse controls.' }
+        { label: 'Random Base62', content: 'Simple, hard to guess, horizontally friendly. It needs collision retry logic and good randomness.' },
+        { label: 'Counter + Base62', content: 'No random collision and compact codes. It can reveal scale, needs careful sharding, and may create hot counters.' },
+        { label: 'Hash long URL', content: 'Deterministic and easy to reproduce. It may leak patterns, needs collision handling, and duplicate-long-URL semantics must be clear.' },
+        { label: 'Custom alias', content: 'Human friendly and useful for campaigns. It needs strong uniqueness checks, moderation, reserved words, and abuse controls.' }
       ]
     },
     {
@@ -116,7 +116,11 @@ const problem = defineComplexSystemDesignProblem({
       type: 'architectureDecision',
       title: 'Availability decision',
       decision: 'Prefer serving redirects from replicated mapping storage and cache, while analytics degrades independently.',
-      consequences: 'Users can still be redirected when the analytics pipeline is delayed. The trade-off is eventual consistency for click counts and extra replay/idempotency handling in analytics workers.'
+      consequences: [
+        'Users can still be redirected when the analytics pipeline is delayed.',
+        'Click counts become eventually consistent, so dashboards may lag briefly.',
+        'Analytics workers need idempotency and replay handling to recover from queue or worker failures.'
+      ]
     },
     {
       type: 'section',
