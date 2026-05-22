@@ -107,7 +107,8 @@ test('production Java search excludes unapproved or dev-only Java questions', as
   const devOnlyQuestion = {
     ...hashmapBehavior,
     id: 'java-core-dev-only-001',
-    title: 'Dev Only Java Question',
+    title: 'Unreleased Sentinel Concept',
+    prompt: 'This draft question covers unreleased-sentinel-concept.',
     metadata: {
       reviewStatus: 'draft',
       visibility: ['dev']
@@ -124,7 +125,7 @@ test('production Java search excludes unapproved or dev-only Java questions', as
   const prodQuestions = filterQuestionsForActiveProfile(questions, { profile: 'prod' });
   const index = makeSearchIndex(prodQuestions);
 
-  assert.equal(titlesFor('Dev Only Java Question', index).length, 0);
+  assert.equal(titlesFor('unreleased-sentinel-concept', index).length, 0);
 });
 
 test('search regression keeps System Design and DSA results working', () => {
