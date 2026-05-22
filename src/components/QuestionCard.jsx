@@ -1,6 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button.jsx';
+import ProblemBodyRenderer from './rich-problem/ProblemBodyRenderer.jsx';
 import VisualRail from './visuals/VisualRail.jsx';
 import { loadVisualWalkthrough } from '../services/visualWalkthroughService.js';
 import { storageService } from '../services/storageService.js';
@@ -376,6 +377,8 @@ function QuestionCard({
       <TextBlock title="Problem" className="question-prompt">
         {question.question}
       </TextBlock>
+
+      <ProblemBodyRenderer body={question.body} rendering={question.rendering} />
 
       <VisualWalkthrough question={question} />
 
