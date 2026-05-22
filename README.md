@@ -64,6 +64,10 @@ npm run build
 npm run preview
 ```
 
+## Documentation
+
+Problem authoring guide: `docs/problem-authoring.md`
+
 ## Configure the PayPal coffee button
 
 Copy `.env.example` to `.env` and set your real PayPal hosted donation button ID:
