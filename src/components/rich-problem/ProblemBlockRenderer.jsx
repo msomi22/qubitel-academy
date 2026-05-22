@@ -1,3 +1,4 @@
+import CodeBlock from '../code/CodeBlock.jsx';
 import ProblemCalloutBlock from './ProblemCalloutBlock.jsx';
 import ProblemFlowBlock from './ProblemFlowBlock.jsx';
 import ProblemImageBlock, { isTrustedStaticImageSrc } from './ProblemImageBlock.jsx';
@@ -37,9 +38,17 @@ function DiagramBlock({ block }) {
   );
 }
 
-function CodeBlock({ block }) {
-  const code = block.code ?? block.content ?? '';
-  return <section className="workspace-block problem-rich-block problem-code-block">{block.title ? <span className="mini-label">{block.title}</span> : <span className="mini-label">Code</span>}<pre><code>{code}</code></pre>{block.caption ? <p className="problem-rich-caption">{block.caption}</p> : null}</section>;
+function RichCodeBlock({ block }) {
+  return (
+    <CodeBlock
+      code={block.code ?? block.content ?? ''}
+      language={block.language || 'java'}
+      title={block.title || 'Code'}
+      caption={block.caption}
+      filename={block.filename}
+      className="workspace-block problem-rich-block problem-code-block"
+    />
+  );
 }
 
 function ChecklistBlock({ block }) {
@@ -70,7 +79,7 @@ export default function ProblemBlockRenderer({ block, index = 0 }) {
     case 'image': return <ProblemImageBlock block={block} />;
     case 'diagram': return <DiagramBlock block={block} />;
     case 'flow': return <ProblemFlowBlock block={block} />;
-    case 'code': return <CodeBlock block={block} />;
+    case 'code': return <RichCodeBlock block={block} />;
     case 'checklist': return <ChecklistBlock block={block} />;
     case 'comparison': return <ComparisonBlock block={block} />;
     case 'architectureDecision': return <ArchitectureDecisionBlock block={block} />;
