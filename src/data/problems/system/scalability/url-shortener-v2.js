@@ -5,8 +5,34 @@ const problem = defineComplexSystemDesignProblem({
   topicId: 'scalability',
   title: 'Design a URL Shortener',
   difficulty: 'Medium',
+  scenario: 'You are asked to design a URL shortener similar to Bitly.',
   prompt: 'Design a URL shortener that supports creating short links, redirecting users, tracking analytics, link expiry, custom aliases, abuse prevention, and high availability.',
   tags: ['system-design', 'scalability', 'url-shortener', 'high-availability'],
+  requirements: {
+    functional: [
+      'Create a short link from a long URL.',
+      'Redirect users from a short code to the original long URL.',
+      'Support optional custom aliases with uniqueness checks.',
+      'Support link expiry and disabled-link behavior.',
+      'Track analytics such as clicks, referrer, device, timestamp, and coarse location.',
+      'Provide basic create/manage APIs for authenticated users.'
+    ],
+    nonFunctional: [
+      'Keep redirect latency low because redirect is the hottest path.',
+      'Design for high availability across multiple instances or zones.',
+      'Optimize for read-heavy traffic and hot short links.',
+      'Keep analytics eventually consistent so click tracking does not slow redirects.',
+      'Use safe uniqueness guarantees for generated codes and custom aliases.',
+      'Make the system observable with metrics, logs, alerts, and operational controls.'
+    ]
+  },
+  constraints: [
+    'Assume redirect traffic is much higher than create-link traffic.',
+    'Assume some links can become very hot and should be cached.',
+    'Assume users may retry create requests, so collision and idempotency behavior matter.',
+    'Assume analytics can lag briefly and be eventually consistent.',
+    'Assume abusive users may try to create phishing, malware, spam, or brand-impersonation links.'
+  ],
   rendering: {
     variant: 'architecture-case-study',
     density: 'detailed',
@@ -332,6 +358,18 @@ const problem = defineComplexSystemDesignProblem({
     'Explain what happens when a link is expired, disabled, or missing.',
     'Mention cache invalidation when a link is disabled or expires.',
     'Discuss trade-offs between random codes, counters, hashes, and custom aliases.'
+  ],
+  expectedAnswerOutline: [
+    'Clarify requirements, assumptions, and read-heavy traffic shape.',
+    'Define create, redirect, analytics, and management APIs.',
+    'Design the short-code mapping table and metadata fields.',
+    'Explain short-code generation, custom aliases, uniqueness, and collision handling.',
+    'Walk through create-link and redirect flows.',
+    'Use cache and database fallback for fast redirects.',
+    'Collect analytics asynchronously through a queue or stream.',
+    'Handle expiry, cleanup, disabled links, and cache invalidation.',
+    'Add rate limiting, malicious URL scanning, reserved aliases, and takedown workflows.',
+    'Discuss scaling, partitioning, high availability, consistency, failure modes, and observability.'
   ],
   followUpQuestions: [
     'How would you support custom domains for enterprise users?',
