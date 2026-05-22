@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 
 import TopicSection from '../components/TopicSection.jsx';
 import TopicLibrary from '../components/TopicLibrary.jsx';
@@ -10,6 +10,10 @@ import {
   ALL_FILTER,
   getFilteredTopicQuestions
 } from '../services/topicFilterService.js';
+import {
+  buildCategorySearchParams,
+  readCategorySearchState
+} from '../services/categoryNavigationService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 
 import {
@@ -20,6 +24,12 @@ import {
 
 export default function CategoryPage({ fixedCategoryId }) {
   const params = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchState = useMemo(
+    () => readCategorySearchState(searchParams),
+    [searchParams]
+  );
+
   const categoryId = fixedCategoryId || params.categoryId;
   const category = getCategory(categoryId);
 
@@ -30,14 +40,25 @@ export default function CategoryPage({ fixedCategoryId }) {
   const [completed, setCompleted] = useState(pref.completed);
 
   const [selectedId, setSelectedId] = useState(
-    pref.selectedTopics?.[categoryId] || ''
+    searchState.topicId || pref.selectedTopics?.[categoryId] || ''
   );
 
-  const [topicDifficulty, setTopicDifficulty] = useState(ALL_FILTER);
-  const [completionFilter, setCompletionFilter] = useState('all');
+  const [topicDifficulty, setTopicDifficulty] = useState(searchState.difficulty || ALL_FILTER);
+  const [completionFilter, setCompletionFilter] = useState(searchState.completionFilter || 'all');
+  const [currentPage, setCurrentPage] = useState(searchState.page || 1);
 
   const [loadingTopics, setLoadingTopics] = useState(true);
   const [loadingBanks, setLoadingBanks] = useState(true);
+
+  useEffect(() => {
+    setTopicDifficulty(searchState.difficulty || ALL_FILTER);
+    setCompletionFilter(searchState.completionFilter || 'all');
+    setCurrentPage(searchState.page || 1);
+
+    if (searchState.topicId) {
+      setSelectedId(searchState.topicId);
+    }
+  }, [searchState.topicId, searchState.page, searchState.difficulty, searchState.completionFilter]);
 
   useEffect(() => {
     let alive = true;
@@ -52,7 +73,9 @@ export default function CategoryPage({ fixedCategoryId }) {
         setTopics(nextTopics);
 
         const storedSelectedId =
-          storageService.getSelectedTopic?.(categoryId) || selectedId;
+          searchState.topicId ||
+          storageService.getSelectedTopic?.(categoryId) ||
+          selectedId;
 
         const validSelectedId = nextTopics.some(
           (topic) => topic.id === storedSelectedId
@@ -90,6 +113,30 @@ export default function CategoryPage({ fixedCategoryId }) {
       storageService.setSelectedTopic(categoryId, selectedId);
     }
   }, [categoryId, selectedId]);
+
+  useEffect(() => {
+    if (loadingTopics || loadingBanks || !selectedId) return;
+
+    const nextParams = buildCategorySearchParams({
+      topicId: selectedId,
+      page: currentPage,
+      difficulty: topicDifficulty,
+      completionFilter
+    });
+
+    if (nextParams.toString() !== searchParams.toString()) {
+      setSearchParams(nextParams, { replace: true });
+    }
+  }, [
+    completionFilter,
+    currentPage,
+    loadingBanks,
+    loadingTopics,
+    searchParams,
+    selectedId,
+    setSearchParams,
+    topicDifficulty
+  ]);
 
   const topicsWithBanks = useMemo(() => {
     return topics.map((topic) => {
@@ -165,8 +212,24 @@ export default function CategoryPage({ fixedCategoryId }) {
 
     if (!selectedStillVisible) {
       setSelectedId(filteredTopics[0].id);
+      setCurrentPage(1);
     }
   }, [filteredTopics, selectedId]);
+
+  const handleTopicSelect = (id) => {
+    setSelectedId(id);
+    setCurrentPage(1);
+  };
+
+  const handleDifficultyChange = (difficulty) => {
+    setTopicDifficulty(difficulty);
+    setCurrentPage(1);
+  };
+
+  const handleCompletionFilterChange = (filter) => {
+    setCompletionFilter(filter);
+    setCurrentPage(1);
+  };
 
   const handleCompletionClick = (id) => {
     if (completed[id]) {
@@ -177,6 +240,14 @@ export default function CategoryPage({ fixedCategoryId }) {
 
     setCompleted(storageService.markComplete(id));
   };
+
+  const returnContext = useMemo(() => ({
+    categoryId,
+    topicId: selectedId,
+    page: currentPage,
+    difficulty: topicDifficulty,
+    completionFilter
+  }), [categoryId, completionFilter, currentPage, selectedId, topicDifficulty]);
 
   if (!category) {
     return (
@@ -210,12 +281,12 @@ export default function CategoryPage({ fixedCategoryId }) {
             allTopicsCount={topics.length}
             selectedId={selectedId}
             completed={completed}
-            onSelect={setSelectedId}
+            onSelect={handleTopicSelect}
             difficulty={topicDifficulty}
-            onDifficultyChange={setTopicDifficulty}
+            onDifficultyChange={handleDifficultyChange}
             difficultyOptions={topicDifficultyOptions}
             completionFilter={completionFilter}
-            onCompletionFilterChange={setCompletionFilter}
+            onCompletionFilterChange={handleCompletionFilterChange}
           />
 
           {selectedTopic ? (
@@ -225,6 +296,9 @@ export default function CategoryPage({ fixedCategoryId }) {
               completed={completed}
               onToggle={handleCompletionClick}
               activeDifficulty={topicDifficulty}
+              currentPage={currentPage}
+              onPageChange={setCurrentPage}
+              returnContext={returnContext}
             />
           ) : null}
 
