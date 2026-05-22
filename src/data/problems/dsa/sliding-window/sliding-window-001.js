@@ -8,14 +8,7 @@ const problem = defineProblem({
   category: 'dsa',
   scenario: 'You are solving Maximum Sum Subarray of Size K. Given an array of numbers and a fixed window size k, find the largest sum of any contiguous subarray of length k. The learning goal is to see exactly how a fixed-size window reuses work instead of recomputing each subarray from scratch.',
   starterThought: 'Before writing code, make the window visible. For a fixed-size window, the invariant is: after each move, the active window contains exactly k contiguous elements, windowSum equals the sum of those k elements, and bestSum is the largest valid window sum seen so far.',
-  hints: [
-    'Start by computing the first k values once.',
-    'When the window moves one step right, only two values change: one leaves and one enters.',
-    'Reuse the old sum: newWindowSum = oldWindowSum - outgoing + incoming.',
-    'Update bestSum only after the window again has exactly k elements.'
-  ],
   intuition: 'A fixed-size sliding window is like moving a picture frame across the array. Most of the frame stays the same between moves. Instead of adding all k values again, subtract the value that leaves the frame and add the value that enters.',
-  visualExplanation: 'arr = [2, 1, 5, 1, 3, 2], k = 3\n[2, 1, 5] sum=8 best=8\n    [1, 5, 1] sum=7 best=8  subtract 2, add 1\n        [5, 1, 3] sum=9 best=9  subtract 1, add 3\n            [1, 3, 2] sum=6 best=9  subtract 5, add 2',
   stepByStepBreakdown: [
     'Build the first window: 2 + 1 + 5 = 8, so windowSum = 8 and bestSum = 8.',
     'Move right once: remove 2 and add 1. The new sum is 8 - 2 + 1 = 7. bestSum stays 8.',
