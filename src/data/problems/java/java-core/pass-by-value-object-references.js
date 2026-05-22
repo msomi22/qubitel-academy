@@ -28,6 +28,7 @@ const problem = defineMcqProblem({
     },
     {
       type: 'code',
+      title: 'Parameter reassignment example',
       language: 'java',
       code: 'class Dog {\n    String name;\n\n    Dog(String name) {\n        this.name = name;\n    }\n}\n\npublic class Demo {\n    static void changeName(Dog pet) {\n        pet = new Dog("Max");\n    }\n\n    public static void main(String[] args) {\n        Dog dog = new Dog("Buddy");\n\n        changeName(dog);\n\n        System.out.println(dog.name); // Buddy\n    }\n}'
     },
@@ -37,28 +38,119 @@ const problem = defineMcqProblem({
       content: 'Think of dog as a remote control pointing to a Dog object. When changeName(dog) is called, Java copies the remote control and gives the copy to the method. Inside the method, pet is the copied remote. When pet = new Dog("Max") runs, only the copied remote points to a new dog. The original dog remote in main still points to Buddy.'
     },
     {
+      type: 'diagram',
+      title: 'Visual walkthrough',
+      lines: [
+        '1) Before method call',
+        '',
+        'main stack:',
+        '  dog ───────────────┐',
+        '                      ▼',
+        'heap:',
+        '  Dog object #1 { name: "Buddy" }',
+        '',
+        '2) When changeName(dog) is called',
+        '',
+        'main stack:             changeName stack:',
+        '  dog ───────────────┐     pet ─────────┐',
+        '                      ▼                 │',
+        'heap:                                   │',
+        '  Dog object #1 { name: "Buddy" } ◄─────┘',
+        '',
+        'Both dog and pet point to the same Dog object, but dog and pet are two different variables.',
+        '',
+        '3) Inside changeName: pet = new Dog("Max")',
+        '',
+        'main stack:             changeName stack:',
+        '  dog ───────────────┐     pet ─────────┐',
+        '                      ▼                 ▼',
+        'heap:',
+        '  Dog object #1 { name: "Buddy" }   Dog object #2 { name: "Max" }',
+        '',
+        'Only pet was redirected. dog was not touched.',
+        '',
+        '4) After the method returns',
+        '',
+        'main stack:',
+        '  dog ───────────────┐',
+        '                      ▼',
+        'heap:',
+        '  Dog object #1 { name: "Buddy" }',
+        '',
+        'So System.out.println(dog.name) prints Buddy.'
+      ],
+      caption: 'The key mental picture: Java copied the reference value into pet. It did not give the method access to the caller\'s dog variable slot.'
+    },
+    {
+      type: 'flow',
+      title: 'Visual walkthrough as steps',
+      steps: [
+        {
+          title: 'Create the original object',
+          detail: 'Dog dog = new Dog("Buddy") creates one Dog object on the heap and stores a reference to it in the dog variable.'
+        },
+        {
+          title: 'Call the method',
+          detail: 'changeName(dog) copies the reference value from dog into the method parameter pet.'
+        },
+        {
+          title: 'Reassign the parameter',
+          detail: 'pet = new Dog("Max") creates another Dog object and makes only pet point to it.'
+        },
+        {
+          title: 'Return to the caller',
+          detail: 'The pet variable disappears when the method ends. The original dog variable still points to Dog("Buddy").'
+        }
+      ]
+    },
+    {
       type: 'comparison',
+      title: 'Reassignment versus mutation',
       items: [
         {
-          title: 'Parameter reassignment',
+          label: 'Parameter reassignment',
           content: 'pet = new Dog("Max") changes only the local parameter variable. The caller\'s dog variable is unchanged.'
         },
         {
-          title: 'Object mutation',
+          label: 'Object mutation',
           content: 'pet.name = "Max" would change the object that both dog and pet currently point to, so the caller would see the new name.'
         }
       ]
     },
     {
       type: 'code',
+      title: 'Mutation example: this changes the shared object',
       language: 'java',
       code: 'static void mutateName(Dog pet) {\n    pet.name = "Max";\n}\n\nDog dog = new Dog("Buddy");\nmutateName(dog);\nSystem.out.println(dog.name); // Max'
+    },
+    {
+      type: 'diagram',
+      title: 'Mutation visual picture',
+      lines: [
+        'Before pet.name = "Max"',
+        '',
+        'dog ──┐',
+        '      ▼',
+        '  Dog object #1 { name: "Buddy" }',
+        '      ▲',
+        'pet ──┘',
+        '',
+        'After pet.name = "Max"',
+        '',
+        'dog ──┐',
+        '      ▼',
+        '  Dog object #1 { name: "Max" }',
+        '      ▲',
+        'pet ──┘',
+        '',
+        'Here pet did not point to a new object. It changed the object that dog also points to.'
+      ]
     },
     {
       type: 'callout',
       tone: 'success',
       title: 'Memory sentence',
-      content: 'Java passes everything by value. With objects, the copied value is a reference to an object, not the object variable itself.'
+      content: 'Java passes everything by value. With objects, the copied value is a reference to an object, not the caller\'s variable itself.'
     }
   ],
   metadata: {
