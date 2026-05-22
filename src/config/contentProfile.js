@@ -9,10 +9,7 @@ function readContentProfile() {
 
 const CONTENT_PROFILE = readContentProfile();
 
-const APPROVED_PROD_QUESTION_IDS = new Set([
-  'sliding-window-001',
-  'dynamic-programming-020'
-]);
+const APPROVED_PROD_QUESTION_IDS = new Set([]);
 
 const APPROVED_PROD_TOPIC_IDS = new Set([
   'sliding-window',
