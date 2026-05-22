@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import CodeBlock from './code/CodeBlock.jsx';
 import VisualRail from './visuals/VisualRail.jsx';
 import ProblemBlockRenderer from './rich-problem/ProblemBlockRenderer.jsx';
 import { loadVisualWalkthrough } from '../services/visualWalkthroughService.js';
@@ -231,7 +232,7 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
           {activeTab === 'visual' ? <div className="focused-panel-stack">{hasVisualRichBody ? <RichBodyBlocks blocks={question.body} mode="visual" /> : <VisualBlock question={question} showFallback />}{hasVisualRichBody ? <VisualBlock question={question} /> : null}</div> : null}
           {activeTab === 'intuition' ? <div className="focused-two-col"><TextBlock title="Think first" className="think-box">{question.starterThought}</TextBlock><TextBlock title="Why this pattern fits">{question.intuition || question.visualExplanation}</TextBlock><TextBlock title="Recognition signal">{question.patternSignal}</TextBlock><TextBlock title="Invariant to maintain">{question.invariant}</TextBlock></div> : null}
           {activeTab === 'approach' ? <div className="focused-panel-stack"><ListBlock title="Step-by-step breakdown" items={question.stepByStepBreakdown} ordered /><div className="focused-two-col"><TextBlock title="Brute-force thought">{question.bruteForceThought}</TextBlock><TextBlock title="Optimization journey">{question.optimizationJourney}</TextBlock><TextBlock title="Edge cases">{question.edgeCases}</TextBlock></div></div> : null}
-          {activeTab === 'solution' ? <div className="focused-panel-stack"><TextBlock title="Solution explanation">{explanation}</TextBlock><section className="workspace-block focused-code-block"><span className="mini-label">Implementation notes</span><pre><code>{codeContent || 'No code sample is configured yet.'}</code></pre></section></div> : null}
+          {activeTab === 'solution' ? <div className="focused-panel-stack"><TextBlock title="Solution explanation">{explanation}</TextBlock><CodeBlock code={codeContent || 'No code sample is configured yet.'} language={question.language || 'java'} title="Implementation notes" className="workspace-block focused-code-block" /></div> : null}
           {activeTab === 'answer' ? <div className="focused-panel-stack"><McqBlock question={question} selected={selected} onSelect={handleMcqSelect} /><TextBlock title="Explanation">{explanation || question.intuition}</TextBlock><ListBlock title="Why other options are wrong" items={question.optionExplanations || question.wrongOptionExplanations} /></div> : null}
           {activeTab === 'complexity' ? <div className="focused-two-col"><TextBlock title="Complexity / trade-off analysis">{question.complexityAnalysis}</TextBlock><TextBlock title="Production reality">{question.productionReality}</TextBlock></div> : null}
           <ReinforcementCards question={question} />
