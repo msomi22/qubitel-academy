@@ -77,7 +77,7 @@ test('legacy allow-list still works in prod', () => {
   assert.equal(isQuestionApprovedForProfile(approved, prod), true);
 });
 
-test.skip('keeps multi-hyphen legacy approved production topics visible', () => {
+test('keeps multi-hyphen legacy approved production topics visible', () => {
   assert.equal(isTopicVisibleForActiveProfile('api-design', [], prod), true);
   assert.equal(isTopicVisibleForActiveProfile('messaging-queues', [], prod), true);
 });
