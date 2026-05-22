@@ -19,6 +19,18 @@ const problem = defineLearningProblem({
       content: 'A checked exception is an exception Java forces you to think about at compile time. An unchecked exception is an exception Java allows to happen at runtime without forcing every caller to catch or declare it.'
     },
     {
+      type: 'diagram',
+      title: 'Exception hierarchy mental model',
+      content: 'Throwable\n├── Error                          usually serious JVM/system problems\n└── Exception\n    ├── checked exceptions          must be caught or declared\n    └── RuntimeException            unchecked; compiler does not force handling',
+      caption: 'The key split is whether the exception is under RuntimeException or not.'
+    },
+    {
+      type: 'callout',
+      tone: 'question',
+      title: 'Predict before reveal',
+      content: 'A method reads a file from disk. Should callers be forced to handle failure? Now compare that to a method receiving a negative withdrawal amount. Which one sounds recoverable by the caller?'
+    },
+    {
       type: 'table',
       columns: ['Type', 'Compiler forces handling?', 'Common parent', 'Simple meaning'],
       rows: [
@@ -85,6 +97,12 @@ const problem = defineLearningProblem({
         ['Database temporarily unavailable', 'Often translated at service boundary', 'The API should expose a meaningful failure, not raw internals.'],
         ['Null where null is not allowed', 'Unchecked NullPointerException or validation exception', 'Usually a programming or validation problem.']
       ]
+    },
+    {
+      type: 'callout',
+      tone: 'question',
+      title: 'Self-explanation prompt',
+      content: 'Explain the difference using this sentence frame: checked exceptions are for failures the caller may reasonably handle; unchecked exceptions are often for violated assumptions or invalid usage.'
     },
     {
       type: 'checklist',

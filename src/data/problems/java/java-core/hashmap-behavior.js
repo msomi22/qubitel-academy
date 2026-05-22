@@ -19,6 +19,18 @@ const problem = defineLearningProblem({
       content: 'A HashMap stores key-value pairs. You give it a key, and it tries to find the value quickly without checking every entry one by one. It does this by using the key\'s hashCode() to decide where the entry should live internally.'
     },
     {
+      type: 'diagram',
+      title: 'Bucket mental picture',
+      content: 'key -> hashCode() -> bucket index -> small bucket scan with equals() -> value\n\nSame bucket does not mean same key. HashMap still checks equals() before it returns or replaces a value.',
+      caption: 'Hashing gets close to the answer; equality confirms the exact key.'
+    },
+    {
+      type: 'callout',
+      tone: 'info',
+      title: 'Predict before reveal',
+      content: 'If two different keys land in the same bucket, does HashMap overwrite the first value immediately? Predict the answer before reading the collision section.'
+    },
+    {
       type: 'code',
       language: 'java',
       code: 'Map<String, Integer> ages = new HashMap<>();\n\nages.put("Amina", 12);\nages.put("Brian", 14);\n\nInteger age = ages.get("Amina"); // 12'
@@ -56,6 +68,12 @@ const problem = defineLearningProblem({
       content: 'A collision does not mean the map is broken. It only means two keys ended up in the same bucket area. HashMap handles this by storing multiple entries in that bucket and checking keys with equals(). In modern Java, very crowded buckets can be organized more efficiently internally, but your high-level mental model should remain: hash first, then equality check.'
     },
     {
+      type: 'callout',
+      tone: 'info',
+      title: 'Self-explanation prompt',
+      content: 'In your own words, explain why same hash or same bucket is not enough to prove two keys are the same.'
+    },
+    {
       type: 'section',
       title: 'Why mutable keys are dangerous',
       content: 'A key should not change in a way that affects hashCode() or equals() after it is inserted. If the key changes, HashMap may look in the wrong bucket later and fail to find an entry that is still inside the map.'
@@ -64,6 +82,12 @@ const problem = defineLearningProblem({
       type: 'code',
       language: 'java',
       code: 'class UserKey {\n    String email;\n\n    UserKey(String email) {\n        this.email = email;\n    }\n\n    @Override\n    public boolean equals(Object other) {\n        if (!(other instanceof UserKey user)) return false;\n        return email.equals(user.email);\n    }\n\n    @Override\n    public int hashCode() {\n        return email.hashCode();\n    }\n}\n\nUserKey key = new UserKey("a@example.com");\nMap<UserKey, String> map = new HashMap<>();\nmap.put(key, "Amina");\n\nkey.email = "changed@example.com";\nSystem.out.println(map.get(key)); // likely null or unexpected'
+    },
+    {
+      type: 'callout',
+      tone: 'warning',
+      title: 'Mutable key prediction',
+      content: 'After key.email changes, HashMap may search a different bucket than the one used during put(). The entry can still exist internally but become hard to retrieve through that mutated key.'
     },
     {
       type: 'comparison',
