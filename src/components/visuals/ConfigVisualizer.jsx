@@ -146,6 +146,8 @@ function VisualStyles() {
 }
 
 function VisualShell({ diagram, activeFrame, activeIndex, frameCount, playing, onPrevious, onNext, onTogglePlay, children, showStatePanel = true }) {
+  const isFinalStep = activeIndex >= frameCount - 1;
+
   return (
     <section className={`config-visual config-visual-${diagram.type || 'generic'} config-visual-${diagram.variant || 'default'}`} aria-label={diagram.title || 'Visual walkthrough'}>
       <VisualStyles />
@@ -158,8 +160,8 @@ function VisualShell({ diagram, activeFrame, activeIndex, frameCount, playing, o
           {frameCount > 1 ? (
             <div className="config-visual-controls" data-no-card-nav>
               <button type="button" onClick={onPrevious} disabled={activeIndex === 0}>Previous</button>
-              <button type="button" onClick={onTogglePlay}>{playing ? 'Pause' : activeIndex >= frameCount - 1 ? 'Replay' : 'Play'}</button>
-              <button type="button" onClick={onNext} disabled={activeIndex >= frameCount - 1}>Next</button>
+              <button type="button" onClick={onTogglePlay}>{playing ? 'Pause' : isFinalStep ? 'Replay' : 'Play'}</button>
+              <button type="button" onClick={onNext}>{isFinalStep ? 'Restart' : 'Next'}</button>
               <span>Step {activeIndex + 1} of {frameCount}</span>
             </div>
           ) : null}
@@ -408,7 +410,7 @@ export default function ConfigVisualizer({ diagram }) {
   };
   const goNext = () => {
     setPlaying(false);
-    setActiveIndex((current) => Math.min(frames.length - 1, current + 1));
+    setActiveIndex((current) => (current >= frames.length - 1 ? 0 : current + 1));
   };
   const togglePlay = () => {
     if (activeIndex >= frames.length - 1) {
