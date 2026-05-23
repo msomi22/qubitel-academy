@@ -25,7 +25,7 @@ const problem = defineLearningProblem({
   commonMistakes: ['Including nums[i] in output[i].', 'Using division even though the constraint disallows it.', 'Forgetting that edge positions still need a neutral multiplication value.', 'Counting the returned output array as extra space when the problem allows it.'],
   edgeCases: ['One zero in the array', 'Multiple zeros', 'Negative numbers', 'Array length two', 'Values of one'],
   complexityAnalysis: 'Time is O(n) because each index is visited from the left side and from the right side. Extra space is O(1) beyond the output array because the returned answer array is required.',
-  explanation: 'The code below represents the visual idea as two sides around each index. answer is the array we return. leftProduct holds the product of values before the current index, so the first loop writes that left-side product into answer[i]. Then it updates leftProduct with nums[i] for the next index. rightProduct holds the product of values after the current index, so the second loop multiplies answer[i] by that right-side product. Then it updates rightProduct with nums[i] for the next index to the left. The update lines change leftProduct or rightProduct only; they are not writing into answer[i].',
+  explanation: '',
   approach: 'Break every answer into two pieces: product before the index and product after the index. For [1, 2, 3, 4], index 2 skips 3. The answer is 1 × 2 × 4. That can be seen as left side 1 × 2 and right side 4, so answer[2] = 2 × 4 = 8.',
   solutionCode: `class Solution {
     public int[] productExceptSelf(int[] nums) {
@@ -124,6 +124,9 @@ const problem = defineLearningProblem({
     }
   },
   body: [
+    { type: 'checklist', title: 'Mistakes to avoid', items: ['Do not include nums[i] in output[i].', 'Do not rely on division.', 'Do not use 0 as the multiplication starting value.'] }
+  ],
+  solutionBody: [
     {
       type: 'table',
       title: 'Before and after products for the given example',
@@ -135,7 +138,12 @@ const problem = defineLearningProblem({
         ['3', '4', '1 × 2 × 3 = 6', '1', '6 × 1 = 6']
       ]
     },
-    { type: 'checklist', title: 'Mistakes to avoid', items: ['Do not include nums[i] in output[i].', 'Do not rely on division.', 'Do not use 0 as the multiplication starting value.'] }
+    {
+      type: 'section',
+      label: 'Info',
+      title: 'Why the edge product is 1',
+      content: 'At index 0, there is no product before the index yet. At index 3, there is no product after the index yet. We use 1 as the multiplication starting value because it does not change the other side of the answer.'
+    }
   ],
   relatedConcepts: ['prefix products', 'suffix products', 'running accumulator'],
   metadata: { reviewStatus: 'approved', visibility: ['dev', 'prod'] }
