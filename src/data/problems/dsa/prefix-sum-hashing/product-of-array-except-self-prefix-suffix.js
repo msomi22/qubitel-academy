@@ -25,7 +25,7 @@ const problem = defineLearningProblem({
   commonMistakes: ['Including nums[i] in output[i].', 'Using division even though the constraint disallows it.', 'Forgetting that edge positions still need a neutral multiplication value.', 'Counting the returned output array as extra space when the problem allows it.'],
   edgeCases: ['One zero in the array', 'Multiple zeros', 'Negative numbers', 'Array length two', 'Values of one'],
   complexityAnalysis: 'Time is O(n) because each index is visited from the left side and from the right side. Extra space is O(1) beyond the output array because the returned answer array is required.',
-  explanation: 'Read the code in two parts. First, answer is created to hold the result. In the left-to-right loop, answer[i] is assigned leftProduct before leftProduct is updated with nums[i]. That means answer[i] receives only values before index i. For nums = [1, 2, 3, 4], this first pass creates answer = [1, 1, 2, 6]. The first 1 does not mean “nothing equals 1”; it means no earlier values have been multiplied yet, so leftProduct is still its multiplication starting value. Next, the right-to-left loop uses rightProduct. answer[i] is multiplied by rightProduct before rightProduct is updated with nums[i]. That means answer[i] receives only values after index i. For the same input, the second pass changes [1, 1, 2, 6] into [24, 12, 8, 6]. The current value nums[i] is excluded because each product is used before nums[i] is added to that product.',
+  explanation: 'Read the code in two parts. First, answer is created to hold the result. In the left-to-right loop, answer[i] is assigned leftProduct before leftProduct is updated with nums[i]. That means answer[i] receives only values before index i. The line leftProduct *= nums[i] means leftProduct = leftProduct * nums[i]; it updates leftProduct using the current input value, not answer[i]. For nums = [1, 2, 3, 4], this first pass creates answer = [1, 1, 2, 6]. The first 1 does not mean “nothing equals 1”; it means no earlier values have been multiplied yet, so leftProduct is still its multiplication starting value. Next, the right-to-left loop uses rightProduct. answer[i] is multiplied by rightProduct before rightProduct is updated with nums[i]. That means answer[i] receives only values after index i. The line rightProduct *= nums[i] means rightProduct = rightProduct * nums[i]; it updates rightProduct using the current input value for the next index to the left. For the same input, the second pass changes [1, 1, 2, 6] into [24, 12, 8, 6]. The current value nums[i] is excluded because each product is used before nums[i] is added to that product.',
   approach: 'Break every answer into two pieces: product before the index and product after the index. For [1, 2, 3, 4], the before-products are [1, 1, 2, 6]. The after-products are [24, 12, 4, 1]. Multiply matching positions: [1×24, 1×12, 2×4, 6×1] = [24, 12, 8, 6].',
   solutionCode: `class Solution {
     public int[] productExceptSelf(int[] nums) {
@@ -34,13 +34,21 @@ const problem = defineLearningProblem({
 
         int leftProduct = 1;
         for (int i = 0; i < n; i++) {
+            // Save the product before index i.
             answer[i] = leftProduct;
+
+            // Update leftProduct with nums[i] for future indexes.
+            // This means: leftProduct = leftProduct * nums[i]
             leftProduct *= nums[i];
         }
 
         int rightProduct = 1;
         for (int i = n - 1; i >= 0; i--) {
+            // Multiply by the product after index i.
             answer[i] *= rightProduct;
+
+            // Update rightProduct with nums[i] for earlier indexes.
+            // This means: rightProduct = rightProduct * nums[i]
             rightProduct *= nums[i];
         }
 
