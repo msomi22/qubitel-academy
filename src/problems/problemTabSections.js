@@ -27,14 +27,15 @@ export const PROBLEM_TAB_RESPONSIBILITIES = Object.freeze({
   ],
   visual: [
     'visualWalkthrough',
+    'visualExplanation',
     'visual body blocks',
     'worked examples',
     'state transitions'
   ],
   intuition: [
     'starterThought',
+    'mentalPicture',
     'intuition',
-    'visualExplanation',
     'patternSignal',
     'invariant'
   ],
@@ -44,6 +45,7 @@ export const PROBLEM_TAB_RESPONSIBILITIES = Object.freeze({
     'optimizationJourney',
     'edgeCases',
     'keyTakeaway',
+    'finalTakeaway',
     'commonMistake',
     'commonMistakes'
   ],
@@ -58,24 +60,29 @@ export const PROBLEM_TAB_RESPONSIBILITIES = Object.freeze({
     'options',
     'correctAnswer',
     'explanation',
-    'optionExplanations'
+    'finalTakeaway',
+    'optionExplanations',
+    'distractorExplanations'
   ],
   complexity: [
     'complexityAnalysis',
-    'productionReality'
+    'productionReality',
+    'commonMistake'
   ]
 });
 
 export function getFocusedProblemTabs({ question, codeContent, explanation, hasMcq = false, hasVisualRichBody = false }) {
   return [
     ['overview', 'Overview', true],
-    ['visual', 'Visual Walkthrough', hasVisualRichBody || true],
+    ['visual', 'Visual Walkthrough', hasVisualRichBody || hasProblemTabContent(question.visualExplanation)],
     [
       'intuition',
       'Intuition',
       hasProblemTabContent(question.intuition) ||
         hasProblemTabContent(question.starterThought) ||
-        hasProblemTabContent(question.visualExplanation)
+        hasProblemTabContent(question.mentalPicture) ||
+        hasProblemTabContent(question.patternSignal) ||
+        hasProblemTabContent(question.invariant)
     ],
     [
       'approach',
@@ -85,6 +92,7 @@ export function getFocusedProblemTabs({ question, codeContent, explanation, hasM
         hasProblemTabContent(question.optimizationJourney) ||
         hasProblemTabContent(question.edgeCases) ||
         hasProblemTabContent(question.keyTakeaway) ||
+        hasProblemTabContent(question.finalTakeaway) ||
         hasProblemTabContent(question.takeaway) ||
         hasProblemTabContent(question.engineeringInsight) ||
         hasProblemTabContent(question.commonMistake) ||
@@ -95,7 +103,13 @@ export function getFocusedProblemTabs({ question, codeContent, explanation, hasM
       hasMcq ? 'Answer' : 'Solution',
       hasMcq || hasProblemTabContent(codeContent) || hasProblemTabContent(explanation)
     ],
-    ['complexity', 'Complexity', hasProblemTabContent(question.complexityAnalysis) || hasProblemTabContent(question.productionReality)]
+    [
+      'complexity',
+      'Complexity',
+      hasProblemTabContent(question.complexityAnalysis) ||
+        hasProblemTabContent(question.productionReality) ||
+        hasProblemTabContent(question.commonMistake)
+    ]
   ].filter(([, , available]) => available);
 }
 
@@ -105,7 +119,7 @@ export function getReinforcementCardsForTab(question, activeTab) {
   const commonMistakes = [question.commonMistake, ...list(question.commonMistakes)].filter(hasProblemTabContent);
 
   return [
-    ['Key takeaway', question.keyTakeaway || question.takeaway || question.engineeringInsight],
+    ['Key takeaway', question.finalTakeaway || question.keyTakeaway || question.takeaway || question.engineeringInsight],
     ['Common mistakes', commonMistakes]
   ].filter(([, value]) => hasProblemTabContent(value));
 }

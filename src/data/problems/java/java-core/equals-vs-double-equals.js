@@ -14,6 +14,11 @@ const problem = defineMcqProblem({
   ],
   correctAnswer: '== asks whether two variables point to the same object, while equals() can ask whether two objects mean the same value.',
   explanation: 'For objects, == is like asking, "Are these two names pointing to the very same box?" equals() is like asking, "Do the things inside the boxes represent the same value?" For String, equals() compares the characters, so two different String objects can still be logically equal.',
+  mentalPicture: 'Imagine two separate boxes with the same label inside. == asks whether both variables point to the exact same box. equals() can ask whether the labels inside the boxes mean the same value.',
+  visualExplanation: 'Reference vs value meaning\na -> String object #1 containing "Java"\nb -> String object #2 containing "Java"\na == b       -> false, because they are different objects\na.equals(b) -> true, because String compares the text value',
+  productionReality: 'In production Java code, using == for object content can create subtle bugs in authentication checks, request validation, cache keys, tests, and business rules. For object meaning, use equals() and make sure domain classes implement equals() and hashCode() consistently.',
+  commonMistake: 'A common mistake is seeing == work for some string literals and assuming it compares text. That can happen because of string interning, but it is not the rule to rely on for object content.',
+  finalTakeaway: 'For objects, == compares identity; equals() compares logical meaning when the class implements it correctly.',
   tags: ['java', 'objects', 'equality'],
   rendering: {
     variant: 'deep-dive',

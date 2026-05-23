@@ -128,8 +128,13 @@ function VisualBlock({ question, showFallback = false }) {
   }, [question.id, question.visualWalkthrough]);
 
   const visual = question.visualWalkthrough || loadedVisual;
-  const hasVisual = Boolean(visual?.summary || visual?.steps?.length || visual?.diagram?.frames?.length || visual?.image);
-  if (!hasVisual) return showFallback ? <EmptyState title="Visual walkthrough">Visual walkthrough is not available for this problem yet.</EmptyState> : null;
+  const fallbackVisualExplanation = text(question.visualExplanation);
+  const hasStructuredVisual = Boolean(visual?.summary || visual?.steps?.length || visual?.diagram?.frames?.length || visual?.image);
+  const hasVisualExplanation = fallbackVisualExplanation.trim().length > 0;
+
+  if (!hasStructuredVisual && !hasVisualExplanation) {
+    return showFallback ? <EmptyState title="Visual walkthrough">Visual walkthrough is not available for this problem yet.</EmptyState> : null;
+  }
 
   return (
     <section className="learning-panel visual-walkthrough-panel reference-visual-panel">
@@ -138,6 +143,7 @@ function VisualBlock({ question, showFallback = false }) {
         <strong>{visual?.title || 'Mental model walkthrough'}</strong>
       </div>
       {visual?.summary ? <p className="visual-summary">{visual.summary}</p> : null}
+      {hasVisualExplanation ? <p className="visual-summary">{fallbackVisualExplanation}</p> : null}
       {visual?.image ? <img className="visual-image-panel" src={visual.image} alt={visual.imageAlt || visual.title || 'Problem visual walkthrough'} loading="lazy" /> : null}
       <VisualRail diagram={visual?.diagram} />
       {visual?.steps?.length ? (
@@ -190,14 +196,15 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
   const richBody = list(question.body);
   const hasOverviewRichBody = richBody.some((block) => !isVisualRichBlock(block));
   const hasVisualRichBody = richBody.some(isVisualRichBlock);
+  const hasVisualExplanation = text(question.visualExplanation).trim().length > 0;
 
   const tabs = useMemo(() => getFocusedProblemTabs({
     question,
     codeContent,
     explanation,
     hasMcq,
-    hasVisualRichBody
-  }), [codeContent, explanation, hasMcq, hasVisualRichBody, question]);
+    hasVisualRichBody: hasVisualRichBody || hasVisualExplanation
+  }), [codeContent, explanation, hasMcq, hasVisualRichBody, hasVisualExplanation, question]);
 
   useEffect(() => {
     if (!tabs.some(([id]) => id === activeTab)) setActiveTab(tabs[0]?.[0] || 'overview');
@@ -230,11 +237,11 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
         <div className="focused-tab-content">
           {activeTab === 'overview' ? <div className="focused-panel-stack"><div className="focused-two-col"><TextBlock title="Scenario" className="scenario-box">{question.scenario}</TextBlock>{!hasOverviewRichBody ? <TextBlock title={hasMcq ? 'Question' : 'Problem'} className="question-prompt">{question.question}</TextBlock> : null}</div><RichBodyBlocks blocks={question.body} mode="overview" />{hasMcq ? <McqBlock question={question} selected={selected} onSelect={handleMcqSelect} /> : null}<ListBlock title="Examples" items={question.examples} /><ListBlock title="Constraints" items={question.constraints} /></div> : null}
           {activeTab === 'visual' ? <div className="focused-panel-stack">{hasVisualRichBody ? <RichBodyBlocks blocks={question.body} mode="visual" /> : <VisualBlock question={question} showFallback />}{hasVisualRichBody ? <VisualBlock question={question} /> : null}</div> : null}
-          {activeTab === 'intuition' ? <div className="focused-two-col"><TextBlock title="Think first" className="think-box">{question.starterThought}</TextBlock><TextBlock title="Why this pattern fits">{question.intuition || question.visualExplanation}</TextBlock><TextBlock title="Recognition signal">{question.patternSignal}</TextBlock><TextBlock title="Invariant to maintain">{question.invariant}</TextBlock></div> : null}
+          {activeTab === 'intuition' ? <div className="focused-two-col"><TextBlock title="Think first" className="think-box">{question.starterThought}</TextBlock><TextBlock title="Mental picture">{question.mentalPicture}</TextBlock><TextBlock title="Why this pattern fits">{question.intuition}</TextBlock><TextBlock title="Recognition signal">{question.patternSignal}</TextBlock><TextBlock title="Invariant to maintain">{question.invariant}</TextBlock></div> : null}
           {activeTab === 'approach' ? <div className="focused-panel-stack"><ListBlock title="Step-by-step breakdown" items={question.stepByStepBreakdown} ordered /><div className="focused-two-col"><TextBlock title="Brute-force thought">{question.bruteForceThought}</TextBlock><TextBlock title="Optimization journey">{question.optimizationJourney}</TextBlock><TextBlock title="Edge cases">{question.edgeCases}</TextBlock></div><ApproachReinforcementCards question={question} /></div> : null}
           {activeTab === 'solution' ? <div className="focused-panel-stack"><TextBlock title="Solution explanation">{explanation}</TextBlock><CodeBlock code={codeContent || 'No code sample is configured yet.'} language={question.language || 'java'} title="Implementation notes" className="workspace-block focused-code-block" /></div> : null}
-          {activeTab === 'answer' ? <div className="focused-panel-stack"><McqBlock question={question} selected={selected} onSelect={handleMcqSelect} /><TextBlock title="Explanation">{explanation || question.intuition}</TextBlock><ListBlock title="Why other options are wrong" items={question.optionExplanations || question.wrongOptionExplanations} /></div> : null}
-          {activeTab === 'complexity' ? <div className="focused-two-col"><TextBlock title="Complexity / trade-off analysis">{question.complexityAnalysis}</TextBlock><TextBlock title="Production reality">{question.productionReality}</TextBlock></div> : null}
+          {activeTab === 'answer' ? <div className="focused-panel-stack"><McqBlock question={question} selected={selected} onSelect={handleMcqSelect} /><TextBlock title="Explanation">{explanation || question.intuition}</TextBlock><TextBlock title="Final takeaway">{question.finalTakeaway || question.keyTakeaway || question.takeaway}</TextBlock><ListBlock title="Why other options are wrong" items={question.optionExplanations || question.wrongOptionExplanations || question.distractorExplanations} /></div> : null}
+          {activeTab === 'complexity' ? <div className="focused-two-col"><TextBlock title="Complexity / trade-off analysis">{question.complexityAnalysis}</TextBlock><TextBlock title="Production reality">{question.productionReality}</TextBlock><TextBlock title="Common mistake">{question.commonMistake}</TextBlock></div> : null}
         </div>
         {!focusMode ? <SupportPanel question={question} /> : null}
       </div>

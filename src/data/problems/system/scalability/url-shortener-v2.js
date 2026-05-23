@@ -1,3 +1,11 @@
+// Canonical URL shortener system-design walkthrough.
+// This is the current learner-facing implementation that follows the newer
+// rich content approach: requirements, APIs, data model, flows, trade-offs,
+// scoring rubric, observability, and production considerations.
+// Related legacy wrapper: `scalability-url-shortener-001.js`, which is kept as
+// a review/scoring drill for the legacy bank version, not as the primary
+// teaching walkthrough.
+
 import { defineComplexSystemDesignProblem } from '../../../../problems/problemAuthoring.js';
 
 const problem = defineComplexSystemDesignProblem({

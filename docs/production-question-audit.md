@@ -4,14 +4,9 @@
 
 This audit supports #95, the epic to expand the production question bank with world-class clarity and intuition.
 
-The purpose is to protect the learning quality of Senior Dev Accelerator as the project begins receiving global users. Before adding more production content, this audit maps the current production-visible question bank so follow-up work can clearly see:
+The purpose is to protect the learning quality of Senior Dev Accelerator as the project begins receiving global users. Before adding more production content, this audit maps the current production-visible question bank and records the quality fixes completed from the audit.
 
-- which questions are strong enough to keep;
-- which questions need minor polish;
-- which questions need deeper revision;
-- which areas should not be expanded until the current standard is clearer.
-
-This audit is documentation-only. It does not rewrite questions, add new batches, change visibility, or change app behavior.
+This audit now reflects the resolved production question quality pass completed in PR #129.
 
 ## Audit scope
 
@@ -61,15 +56,15 @@ Assumptions:
 
 - The audit treats `metadata.reviewStatus: 'approved'` plus `visibility` containing `prod` as the source of truth for production question visibility.
 - Files under `src/data/problems/**` that wrap legacy bank content were judged using both the wrapper and the inherited legacy content when visible from imports.
-- No production visibility changes were made. Even weaker items are left visible unless follow-up work explicitly decides to hide or revise them.
-- The audit is intentionally practical rather than academic: each note should be easy to turn into a follow-up implementation issue.
+- PR #129 removes the legacy URL shortener wrapper from production by changing its metadata to `reviewStatus: 'legacy'` and `visibility: ['dev']`.
+- The audit is intentionally practical rather than academic: each note should be easy to verify in the related production problem files.
 
 ## Rating definitions
 
 | Rating | Meaning | Action |
 | --- | --- | --- |
 | Excellent | Keep as-is. The question is technically correct, clear, intuitive, practical, memorable, and production-ready. | Keep as-is. |
-| Good | Minor clarity improvement needed. The question is usable in production but could be clearer, more intuitive, or more polished. | Minor polish when convenient. |
+| Good | Minor clarity improvement needed. The question is usable in production but could be clearer, more intuitive, or more polished. | Improve during quality pass. |
 | Needs revision | Technically useful but unclear, shallow, incomplete, repetitive, missing important learning support, or hard to picture. | Improve before expanding similar content. |
 | Not production-ready | Should be hidden from prod or fixed before being treated as production-quality. The question may be incorrect, confusing, too shallow, missing required metadata, or not useful enough for learners. | Hide from prod until improved or fix quickly. |
 
@@ -79,50 +74,57 @@ Priority values:
 | --- | --- |
 | P0 | Production risk or clearly broken. |
 | P1 | Important quality issue affecting learner understanding. |
-| P2 | Useful improvement but not urgent. |
+| P2 | Useful improvement affecting consistency and learning quality. |
 | P3 | Polish only. |
 
-## Summary findings
+## Summary findings after remediation
 
-The current production-visible question bank is small and mostly strong. The best content already follows the rubric well: it starts with a plain-language story, creates a mental picture, guides attention through tables or diagrams, explains common mistakes, and ends with a memorable takeaway.
+The current production-visible question bank is small and now consistent enough to keep as the production baseline.
 
-The main quality risk is inconsistency. Some production-visible questions are excellent deep dives, while some MCQs are production-safe but still depend heavily on concise inherited legacy prompts. They have good distractor explanations and visual summaries, but several would be stronger with a fuller `finalTakeaway`, clearer mental-picture wording, or a more explicit production-reality section.
+The strongest content already had strong teaching structure: plain-language explanations, mental pictures, visual support, common mistakes, practical production notes, and memorable takeaways.
 
-No P0 issues were found in the reviewed production-visible set. The most important P1 issue is that the legacy URL shortener scoring-drill question is production-visible beside a stronger URL shortener teaching walkthrough. Its role is explained in metadata, but the learner experience could still feel repetitive unless the UI or copy makes the distinction obvious.
+The previous inconsistency came from several production-visible MCQs that were correct but too concise. PR #129 upgrades those MCQs with explicit `mentalPicture`, `productionReality`, `commonMistake`, `finalTakeaway`, and stronger `visualExplanation` content where useful.
 
-## Current production question inventory
+No P0, P1, or P2 audit issues remain open in the reviewed production-visible set.
+
+## Production question summary by category
 
 | Category | Production-visible count | Excellent | Good | Needs revision | Not production-ready | Notes |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
 | DSA | 2 | 2 | 0 | 0 | 0 | Both have strong intuition and visual support; Dynamic Programming is especially complete. |
-| Java | 4 | 3 | 1 | 0 | 0 | Strong beginner-friendly explanations; one MCQ could use a stronger final takeaway. |
-| System / API design | 2 | 0 | 2 | 0 | 0 | Concise MCQs with good distractor explanations; final takeaways could be more explicit. |
-| System / caching | 1 | 0 | 1 | 0 | 0 | Good MCQ, but could benefit from explicit stale-cache takeaway. |
-| System / databases | 1 | 0 | 1 | 0 | 0 | Good trade-off framing; could add clearer final memory sentence. |
-| System / messaging queues | 1 | 0 | 1 | 0 | 0 | Good production framing; could add clearer failure-mode takeaway. |
-| System / scalability | 3 | 1 | 1 | 1 | 0 | URL shortener v2 is strong; legacy review drill needs clearer separation from v2. |
-| **Total** | **14** | **6** | **7** | **1** | **0** | No clearly broken production-visible question found. |
+| Java | 4 | 4 | 0 | 0 | 0 | Java production questions now include strong beginner-friendly explanations and explicit final takeaways where needed. |
+| System / API design | 2 | 2 | 0 | 0 | 0 | Rate limiting and payment idempotency now include stronger mental pictures, production notes, common mistakes, and final takeaways. |
+| System / caching | 1 | 1 | 0 | 0 | 0 | Cache-aside now explicitly covers stale data, TTL/invalidation, and freshness trade-offs. |
+| System / databases | 1 | 1 | 0 | 0 | 0 | Multi-region consistency now has a clearer two-lane mental model and business-risk takeaway. |
+| System / messaging queues | 1 | 1 | 0 | 0 | 0 | Queue-based notifications now cover idempotent workers, retries, backoff, and dead-letter queues. |
+| System / scalability | 2 | 2 | 0 | 0 | 0 | URL shortener v2 is the only production-visible URL shortener walkthrough; realtime updates now covers connection ownership and fan-out. |
+| **Total** | **13** | **13** | **0** | **0** | **0** | No pending production-quality issue remains from this audit. |
 
 > Note: `dynamic-programming-020` is counted under DSA even though most learner content is inherited from `src/data/banks/dsa/minimum-sideway-jumps.js`.
 
 ## Current production-visible question inventory
 
-| Question ID | Category | Topic | Type | Rating | Main issue | Recommended action | Priority |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `sliding-window-001` | DSA | sliding-window | coding | Excellent | Strong mental picture, rolling-sum invariant, brute-force contrast, mistakes, and follow-ups. Could add a richer rendered step-frame later, but content is already production-ready. | Keep as-is | P3 |
-| `dynamic-programming-020` | DSA | dynamic-programming | coding | Excellent | Excellent state-compression explanation, visual walkthrough, invariant, common mistakes, and production connection. | Keep as-is | P3 |
-| `scalability-url-shortener-v2` | System design | scalability | complex system design | Excellent | Very strong full walkthrough with requirements, APIs, data model, flows, trade-offs, abuse controls, observability, and scoring rubric. Long content may need UI scanning support, but the learning quality is high. | Keep as-is | P3 |
-| `scalability-url-shortener-001` | System design | scalability | complex system design / review drill | Needs revision | Production-visible beside the stronger URL shortener v2. It is intentionally framed as a scoring drill, but the learner distinction may still be unclear and repetitive without stronger separation. | Split into follow-up issue | P1 |
-| `scalability-realtime-updates-001` | System design | scalability | MCQ | Good | Clear pub/sub and WebSocket routing idea. Needs a more memorable final takeaway and perhaps a small note about connection ownership and fan-out failure modes. | Improve final takeaway | P2 |
-| `caching-product-details-001` | System design | caching | MCQ | Good | Good cache-aside explanation and distractor coverage. Could make stale-cache risk and invalidation decision more explicit. | Improve final takeaway | P2 |
-| `api-design-rate-limiting-001` | System design | api-design | MCQ | Good | Correct and practical fixed-window explanation. Could mention sliding window/token bucket as follow-up contrast so learners do not overgeneralize fixed windows. | Add common mistake | P2 |
-| `api-design-payment-idempotency-001` | System design | api-design | MCQ | Good | Strong practical scenario. Could add a final takeaway about storing request fingerprint and outcome together. | Improve final takeaway | P2 |
-| `messaging-queues-email-notification-001` | System design | messaging-queues | MCQ | Good | Clear queue decoupling explanation. Could add a stronger production-reality note about retries, idempotent consumers, and dead-letter queues. | Improve production connection | P2 |
-| `databases-multi-region-consistency-001` | System design | databases | MCQ | Good | Good consistency trade-off framing. Could use a stronger mental picture for two paths and a more explicit final takeaway. | Add mental picture | P2 |
-| `java-core-equals-vs-double-equals-001` | Java | java-core | MCQ | Good | Very beginner-friendly story, table, and common trap. Missing explicit `finalTakeaway` field, though body has a remember-this checklist. | Improve final takeaway | P2 |
-| `java-core-checked-vs-unchecked-exceptions-001` | Java | java-core | learning | Excellent | Strong hierarchy diagram, predict-before-reveal prompt, examples, API design warning, production boundary note, and memory sentence. | Keep as-is | P3 |
-| `java-core-pass-by-value-object-references-001` | Java | java-core | MCQ | Excellent | Excellent remote-control mental model, diagrams, reassignment vs mutation contrast, and memory sentence. | Keep as-is | P3 |
-| `java-core-hashmap-behavior-001` | Java | java-core | learning | Excellent | Strong bucket mental picture, collision misconception coverage, mutable-key warning, and production performance intuition. | Keep as-is | P3 |
+| Question ID | Category | Topic | Type | Current rating | Remediation status | Priority |
+| --- | --- | --- | --- | --- | --- | --- |
+| `sliding-window-001` | DSA | sliding-window | coding | Excellent | Already production-ready. | P3 |
+| `dynamic-programming-020` | DSA | dynamic-programming | coding | Excellent | Already production-ready. | P3 |
+| `scalability-url-shortener-v2` | System design | scalability | complex system design | Excellent | Current canonical learner-facing walkthrough and only URL shortener visible in production/search. | P3 |
+| `scalability-realtime-updates-001` | System design | scalability | MCQ | Excellent | Added mental picture, stronger event-routing visual, production reality, common mistake, and final takeaway. | P3 |
+| `caching-product-details-001` | System design | caching | MCQ | Excellent | Added cache shelf mental picture, freshness/invalidation production note, common mistake, and final takeaway. | P3 |
+| `api-design-rate-limiting-001` | System design | api-design | MCQ | Excellent | Added turnstile mental picture, distributed counter note, anonymous/authenticated caller warning, common mistake, and final takeaway. | P3 |
+| `api-design-payment-idempotency-001` | System design | api-design | MCQ | Excellent | Added receipt-number mental picture, request-fingerprint flow, production retention note, common mistake, and final takeaway. | P3 |
+| `messaging-queues-email-notification-001` | System design | messaging-queues | MCQ | Excellent | Added queue/work-tray mental picture, retry/backoff/DLQ production note, common mistake, and final takeaway. | P3 |
+| `databases-multi-region-consistency-001` | System design | databases | MCQ | Excellent | Added two-lane mental picture, business-risk production note, common mistake, and final takeaway. | P3 |
+| `java-core-equals-vs-double-equals-001` | Java | java-core | MCQ | Excellent | Added explicit mental picture, visual explanation, production reality, common mistake, and final takeaway. | P3 |
+| `java-core-checked-vs-unchecked-exceptions-001` | Java | java-core | learning | Excellent | Already production-ready. | P3 |
+| `java-core-pass-by-value-object-references-001` | Java | java-core | MCQ | Excellent | Already production-ready. | P3 |
+| `java-core-hashmap-behavior-001` | Java | java-core | learning | Excellent | Already production-ready. | P3 |
+
+## Dev-only legacy reference
+
+| Question ID | Status | Replacement | Notes |
+| --- | --- | --- | --- |
+| `scalability-url-shortener-001` | Dev-only legacy reference | `scalability-url-shortener-v2` | Removed from production/search by setting `reviewStatus: 'legacy'` and `visibility: ['dev']`. Retained only as a reference to the migrated legacy bank wrapper. |
 
 ## High-priority issues found
 
@@ -132,18 +134,25 @@ No P0 production risk was found in the reviewed production-visible set.
 
 ### P1 issues
 
-1. **Clarify the role of `scalability-url-shortener-001`.**
-   - The richer `scalability-url-shortener-v2` is the better learner-facing walkthrough.
-   - The older `scalability-url-shortener-001` is positioned as a design-review drill, but it is still production-visible.
-   - Follow-up work should make the distinction unmistakable, possibly by improving title/body copy, linking both questions intentionally, or considering whether the review-drill variant should remain production-visible.
+No P1 issue remains after removing the legacy URL shortener wrapper from production.
 
-## Common quality gaps
+Resolved clarification:
 
-### 1. MCQs often explain the correct answer well but lack explicit final takeaways
+1. **Removed `scalability-url-shortener-001` from production visibility.**
+   - `scalability-url-shortener-v2` is the current canonical learner-facing walkthrough.
+   - `scalability-url-shortener-001` is the older legacy wrapper retained only for dev/reference use.
+   - The legacy wrapper now has `metadata.reviewStatus: 'legacy'` and `metadata.visibility: ['dev']`.
+   - Both files include comments explaining the relationship and reducing future confusion.
 
-Several MCQs include good `distractorExplanations` and a `selfExplanationPrompt`, but do not have a clear final memory sentence. The rubric expects learners to leave with a memorable takeaway.
+### P2 issues
 
-Affected examples:
+No P2 issue remains open from the audit. The previous P2 quality gaps were remediated in PR #129.
+
+## Resolved quality gaps
+
+### 1. Explicit final takeaways added to MCQs
+
+Resolved for:
 
 - `caching-product-details-001`
 - `api-design-rate-limiting-001`
@@ -153,80 +162,86 @@ Affected examples:
 - `scalability-realtime-updates-001`
 - `java-core-equals-vs-double-equals-001`
 
-### 2. Some visual explanations are useful but compressed
+### 2. Mental pictures strengthened where concepts were abstract
 
-The concise string-based `visualExplanation` fields help, but several system-design MCQs would be stronger with a small table or flow block where the app already supports it. This is especially useful for flow, state changes, and trade-offs.
-
-Affected examples:
+Resolved for:
 
 - `databases-multi-region-consistency-001`
 - `scalability-realtime-updates-001`
 - `api-design-payment-idempotency-001`
+- `api-design-rate-limiting-001`
+- `caching-product-details-001`
+- `messaging-queues-email-notification-001`
+- `java-core-equals-vs-double-equals-001`
 
-### 3. Production reality is uneven across categories
+### 3. Visual explanations improved where useful and made visible in the UI
 
-The Java learning problems and URL shortener v2 connect well to real developer work. Some MCQs have practical scenarios but do not always explain the production consequence deeply enough.
+Resolved for:
 
-Affected examples:
+- `databases-multi-region-consistency-001`
+- `scalability-realtime-updates-001`
+- `api-design-payment-idempotency-001`
+- `api-design-rate-limiting-001`
+- `caching-product-details-001`
+- `messaging-queues-email-notification-001`
+- `java-core-equals-vs-double-equals-001`
 
-- `messaging-queues-email-notification-001`: add idempotent consumer and dead-letter queue consequence.
-- `api-design-rate-limiting-001`: add consequences of anonymous requests and distributed counters.
-- `caching-product-details-001`: add stale data and invalidation trade-off.
+`visualExplanation` now appears in the focused Visual Walkthrough tab when a question does not have a structured `visualWalkthrough` object.
 
-### 4. Duplicate-topic risk exists in URL shortener content
+### 4. Production-reality notes added to system MCQs
 
-There are two production-visible URL shortener questions. This can be valid if one is a teaching walkthrough and one is a scoring drill, but the separation should be extremely clear to avoid learners feeling that the bank repeats itself.
+Resolved for:
 
-### 5. Metadata is present for production-visible questions, but content-role metadata is rare
+- `messaging-queues-email-notification-001`: idempotent workers, retries, backoff, and dead-letter queues.
+- `api-design-rate-limiting-001`: shared counters, caller identity, and anonymous traffic fallback keys.
+- `caching-product-details-001`: stale data, TTLs, invalidation, and freshness contracts.
+- `api-design-payment-idempotency-001`: request fingerprint, processing state, final outcome, and retention period.
+- `databases-multi-region-consistency-001`: per-workflow consistency based on business risk.
+- `scalability-realtime-updates-001`: connection ownership, reconnects, fan-out, and broker bottlenecks.
 
-The required production metadata is present in the reviewed production-visible set. However, only the URL shortener review drill uses `contentRole` and `relatedTeachingProblemId`. More metadata like this may help distinguish teaching walkthroughs, review drills, MCQs, and practice prompts as the bank grows.
+### 5. Common mistakes added where needed
 
-## Missing or weak fields by pattern
+Resolved for all previously `Good` MCQs listed in the audit.
 
-| Field / support area | Current pattern | Recommended follow-up |
-| --- | --- | --- |
-| `finalTakeaway` | Often implicit in body/checklist/callout, especially MCQs. | Add explicit final memory sentences to MCQs. |
-| `mentalPicture` | Strong in DSA and Java learning problems; less explicit in some system MCQs. | Add compact mental-picture wording where concepts are abstract. |
-| `visualExplanation` | Present in many MCQs, but sometimes compressed as plain text. | Upgrade high-value flow/trade-off questions to supported rich blocks where useful. |
-| `productionReality` | Strong in URL shortener v2 and some Java learning content; lighter in MCQs. | Add one production consequence per system MCQ. |
-| `commonMistake` | Strong in DSA/Java; system MCQs rely mostly on distractor explanations. | Add common mistake callouts where the misconception is common in interviews. |
-| `metadata` | Required production metadata appears present in reviewed prod-visible questions. | Continue enforcing metadata during future question batches. |
+### 6. Duplicate-topic risk removed from production
+
+Only one URL shortener problem is now production-visible:
+
+- `scalability-url-shortener-v2` is the canonical teaching walkthrough.
+
+The legacy wrapper remains dev-only:
+
+- `scalability-url-shortener-001` is retained only as a legacy reference and is not production-visible.
+
+### 7. Metadata guardrail status
+
+No required production metadata gaps were found in the reviewed production-visible set.
+
+This audit does not add a new automated metadata test because the reviewed production set already has the required metadata and the current PR is focused on remediating the audited production content. Future batches should continue enforcing:
+
+```js
+metadata: {
+  reviewStatus: 'approved',
+  visibility: ['dev', 'prod']
+}
+```
 
 ## Recommended follow-up issues
 
-1. **Improve production DSA questions that need revision**
-   - Current DSA set is strong, so this can focus on maintaining standard and adding richer step-frame support where useful.
+No follow-up issue is required to complete this audit.
 
-2. **Add visual walkthroughs to high-value DSA questions**
-   - Prioritize questions involving pointer movement, DP tables, graph traversal, stack state, and queue state.
+Future improvements can be treated as new enhancement work, not pending audit remediation:
 
-3. **Improve MCQ distractor explanations**
-   - Current migrated MCQs already have useful distractor explanations. Follow-up should standardize format and ensure each distractor maps to a real misconception.
+1. Add automated production metadata guardrails for future batches.
+2. Add richer step-frame support for future DSA questions involving pointer movement, DP tables, graph traversal, stack state, and queue state.
+3. Continue using role metadata such as `contentRole`, `productionReplacementId`, and `relatedTeachingProblemId` when keeping legacy references beside canonical content.
 
-4. **Improve system design production question clarity**
-   - Start with `scalability-url-shortener-001` and clarify its role as a scoring drill versus the v2 teaching walkthrough.
+## Suggested future quality order
 
-5. **Improve backend engineering production question clarity**
-   - As backend topics grow, require a production-reality note, common mistake, and final takeaway before prod approval.
-
-6. **Fix production metadata gaps**
-   - No required metadata gaps were found in the reviewed set, but add automated or documented checks to prevent future gaps.
-
-7. **Add missing mental pictures and final takeaways to production questions**
-   - Begin with MCQs listed in the common gaps section.
-
-8. **Add missing production-reality notes to system MCQs**
-   - Add one practical consequence, failure mode, or operational warning to each high-value system-design MCQ.
-
-## Suggested fix order
-
-1. Fix P0 production risks and metadata issues.
-2. Improve production-visible questions rated Not production-ready.
-3. Clarify or revise `scalability-url-shortener-001` because it is the only P1 item.
-4. Improve high-traffic or high-value questions rated Needs revision.
-5. Add missing mental pictures and final takeaways to MCQs.
-6. Add visual explanations where they improve understanding.
-7. Add new question batches only after weak existing content is mapped.
+1. Keep the current 13 production-visible questions as the baseline standard.
+2. Add automated checks before scaling the question bank further.
+3. Add new production batches only when they meet the same content standard.
+4. When duplicate-looking problems are discovered, confirm which one is legacy and which one is current before hiding, deleting, or rewriting either file.
 
 ## Reviewer checklist used
 
@@ -251,15 +266,15 @@ This checklist is adapted from `docs/content-quality-rubric.md`:
 
 ## Notes and assumptions
 
-- This audit intentionally does not perform large rewrites.
-- This audit intentionally does not add new question batches.
-- This audit intentionally does not change UI, routing, styling, rendering components, or app behavior.
+- This audit now records the completed remediation, not only the original findings.
+- This PR does not add new question batches.
+- This PR does not change routing, styling, rendering components unrelated to focused problem field visibility, or production visibility beyond removing the legacy URL shortener wrapper from prod/search.
 - The audit found no clearly broken production-visible question.
-- The main improvement opportunity is consistency: make every production-visible question feel as intuitive and memorable as the strongest Java, DSA, and URL shortener v2 examples.
+- The main improvement opportunity was consistency, and the reviewed production-visible MCQs were upgraded to match the strongest Java, DSA, and URL shortener v2 examples.
 
 ## Validation
 
-Documentation-only change. Suggested validation commands for the PR:
+Content and documentation change. Suggested validation commands for the PR:
 
 ```bash
 npm run lint
@@ -268,4 +283,4 @@ npm run test:integration
 npm run build
 ```
 
-Validation status for this audit PR should be recorded in the PR body after commands are run locally or in CI.
+Validation status for this PR should be recorded in the PR body after commands are run locally or in CI.
