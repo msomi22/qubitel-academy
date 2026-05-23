@@ -113,11 +113,12 @@ export default function Home() {
     <div className="learning-dashboard-page">
       <section className="hero-card glass learning-hero">
         <div>
-          <p className="eyebrow">Engineering mastery command center</p>
-          <h1>Build senior-level instincts one learning path at a time.</h1>
+          <p className="eyebrow">Senior developer learning platform</p>
+          <h1>Master DSA, algorithms, system design, and backend engineering.</h1>
           <p>
-            Use the dashboard to decide what to study next, track real completion,
-            and keep DSA plus system design practice moving with purpose.
+            Senior Dev Accelerator helps developers prepare for coding interviews,
+            strengthen computer science fundamentals, practice scalable architecture,
+            and build the practical software engineering skills expected from senior engineers.
           </p>
           <div className="hero-actions">
             <Link className="btn" to={nextTopic ? `/category/${nextTopic.category}` : '/random'}>
@@ -181,7 +182,12 @@ export default function Home() {
       </section>
 
       <section className="learning-map glass">
-        <h2>Senior thinking loop</h2>
+        <h2>Practical senior software engineering roadmap</h2>
+        <p>
+          Follow a focused path across data structures and algorithms, LeetCode-style
+          patterns, system design diagrams, microservices, API design, databases,
+          distributed systems, caching, observability, and backend performance optimization.
+        </p>
         <div className="road">
           <span>Recognize pattern</span>
           <span>State invariant</span>
