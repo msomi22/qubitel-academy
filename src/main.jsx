@@ -21,7 +21,6 @@ import './styles/complex-system-design.css';
 import './styles/rich-problem.css';
 import './styles/ide-code-block.css';
 import './styles/mobile-first-rich-problem-ui.css';
-import './styles/container-water-cleanup.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
