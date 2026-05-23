@@ -1,0 +1,38 @@
+/*
+  Small contrast-only patch for dark-mode config visuals.
+
+  Keep this CSS-only: no walkthrough/data logic changes.
+  The existing dark theme file maps all active state rows through the same
+  bright semantic backgrounds. That works for small chips, but large state
+  cards can become too loud in dark mode. These overrides keep large cards
+  dark, while preserving the semantic border color.
+*/
+
+html[data-theme='dark'] .config-visual-state-row.active.config-visual-role-answer,
+html[data-theme='dark'] .config-visual-state-row.active.config-visual-role-success,
+body[data-theme='dark'] .config-visual-state-row.active.config-visual-role-answer,
+body[data-theme='dark'] .config-visual-state-row.active.config-visual-role-success,
+.dark .config-visual-state-row.active.config-visual-role-answer,
+.dark .config-visual-state-row.active.config-visual-role-success,
+[data-theme='dark'] .config-visual-state-row.active.config-visual-role-answer,
+[data-theme='dark'] .config-visual-state-row.active.config-visual-role-success,
+[data-color-mode='dark'] .config-visual-state-row.active.config-visual-role-answer,
+[data-color-mode='dark'] .config-visual-state-row.active.config-visual-role-success,
+[data-appearance='dark'] .config-visual-state-row.active.config-visual-role-answer,
+[data-appearance='dark'] .config-visual-state-row.active.config-visual-role-success {
+  background: rgba(15, 23, 42, 0.82) !important;
+  border-color: rgba(45, 212, 191, 0.48) !important;
+  color: var(--visual-text) !important;
+  box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.08) !important;
+}
+
+html[data-theme='dark'] .config-visual-state-row.active.config-visual-role-best,
+body[data-theme='dark'] .config-visual-state-row.active.config-visual-role-best,
+.dark .config-visual-state-row.active.config-visual-role-best,
+[data-theme='dark'] .config-visual-state-row.active.config-visual-role-best,
+[data-color-mode='dark'] .config-visual-state-row.active.config-visual-role-best,
+[data-appearance='dark'] .config-visual-state-row.active.config-visual-role-best {
+  background: rgba(15, 23, 42, 0.82) !important;
+  border-color: rgba(251, 191, 36, 0.5) !important;
+  color: var(--visual-text) !important;
+}
