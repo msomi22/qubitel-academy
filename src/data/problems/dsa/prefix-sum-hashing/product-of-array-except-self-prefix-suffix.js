@@ -124,9 +124,6 @@ const problem = defineLearningProblem({
     }
   },
   body: [
-    { type: 'callout', tone: 'info', title: 'What “except self” means', content: 'For nums = [1, 2, 3, 4], answer[0] excludes nums[0], which is 1, and multiplies the rest: 2 × 3 × 4 = 24.' },
-    { type: 'callout', tone: 'info', title: 'Why split the product into two sides?', content: 'For any index, the skipped value sits between two groups: values before it and values after it. Multiplying those two groups gives the same result as multiplying every other value.' },
-    { type: 'callout', tone: 'info', title: 'Example at index 2', content: 'For nums = [1, 2, 3, 4], index 2 holds 3. Product except self is 1 × 2 × 4. That is left side 1 × 2 and right side 4, so the answer is 2 × 4 = 8.' },
     {
       type: 'table',
       title: 'Before and after products for the given example',
@@ -138,8 +135,6 @@ const problem = defineLearningProblem({
         ['3', '4', '1 × 2 × 3 = 6', '1', '6 × 1 = 6']
       ]
     },
-    { type: 'callout', tone: 'info', title: 'Why the edge product is 1', content: 'At index 0, there is no product before the index yet. At index 3, there is no product after the index yet. We use 1 as the multiplication starting value because it does not change the other side of the answer.' },
-    { type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use prefix/suffix thinking when each answer needs values before and after one skipped index.' },
     { type: 'checklist', title: 'Mistakes to avoid', items: ['Do not include nums[i] in output[i].', 'Do not rely on division.', 'Do not use 0 as the multiplication starting value.'] }
   ],
   relatedConcepts: ['prefix products', 'suffix products', 'running accumulator'],
