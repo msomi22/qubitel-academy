@@ -1,0 +1,46 @@
+/* Container With Most Water visual cleanup
+   Keep the walkthrough focused on the actual mental picture: walls, water, width, and bottleneck reasoning. */
+
+.config-visual-container-water .container-water-strip,
+.config-visual-container-water .container-water-takeaway {
+  display: none !important;
+}
+
+.config-visual-container-water .config-visual-layout {
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+}
+
+.config-visual-container-water .config-visual-card {
+  overflow: visible;
+}
+
+.config-visual-container-water .container-water {
+  gap: 0.9rem;
+}
+
+.config-visual-container-water .container-water-stage {
+  min-height: 480px;
+}
+
+.config-visual-container-water .container-water-panels {
+  grid-template-columns: minmax(220px, 0.7fr) minmax(260px, 1fr);
+}
+
+.config-visual-container-water .container-water-panel {
+  min-height: 100%;
+}
+
+.config-visual-container-water .config-visual-explanation {
+  margin-top: 0.9rem;
+}
+
+@media (max-width: 860px) {
+  .config-visual-container-water .config-visual-layout,
+  .config-visual-container-water .container-water-panels {
+    grid-template-columns: 1fr;
+  }
+
+  .config-visual-container-water .container-water-stage {
+    min-height: 380px;
+  }
+}
