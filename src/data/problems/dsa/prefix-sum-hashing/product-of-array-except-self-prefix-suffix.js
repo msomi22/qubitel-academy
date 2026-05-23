@@ -116,6 +116,24 @@ const problem = defineLearningProblem({
   body: [
     { type: 'callout', tone: 'info', title: 'What “except self” means', content: 'For nums = [1, 2, 3, 4], answer[0] excludes 1 and multiplies the rest: 2 × 3 × 4 = 24.' },
     { type: 'callout', tone: 'info', title: 'Why the code has two loops', content: 'The first loop collects the product before each index. The second loop collects the product after each index. Multiplying those two parts gives the answer without including the current value.' },
+    {
+      type: 'table',
+      title: 'Static code bridge: what each loop creates',
+      columns: ['Code pass', 'Direction', 'Meaning', 'Snapshot for nums = [1, 2, 3, 4]', 'Why current value is excluded'],
+      rows: [
+        ['First loop', 'Left → right', 'Write the product before each index into answer[i].', 'answer becomes [1, 1, 2, 6]', 'answer[i] is written before leftProduct multiplies nums[i].'],
+        ['Second loop', 'Right → left', 'Multiply each answer[i] by the product after that index.', 'answer becomes [24, 12, 8, 6]', 'answer[i] is multiplied before rightProduct multiplies nums[i].']
+      ]
+    },
+    {
+      type: 'flow',
+      title: 'Two-loop mental model',
+      steps: [
+        { title: 'Loop 1 answers: what is before me?', detail: 'At each index, write the product of values already passed. For [1, 2, 3, 4], that gives [1, 1, 2, 6].' },
+        { title: 'Loop 2 answers: what is after me?', detail: 'Walk from the right with one running product. Multiply it into each answer slot before updating it with the current value.' },
+        { title: 'Final answer: before me × after me', detail: 'Each slot now has both sides, but not its own value, so the result is [24, 12, 8, 6].' }
+      ]
+    },
     { type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use prefix/suffix thinking when each answer depends on all items except the current one.' },
     { type: 'checklist', title: 'Mistakes to avoid', items: ['Do not include nums[i]', 'Do not rely on division', 'Handle zeros through multiplication naturally'] }
   ],
