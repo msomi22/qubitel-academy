@@ -131,7 +131,7 @@ const problem = defineLearningProblem({
     {
       type: 'table',
       title: 'Before and after products for the given example',
-      columns: ['Index', 'Skip value', 'Product before index', 'Product after index', 'Answer'],
+      columns: ['Index', 'Skip value', 'Product before index (leftProduct)', 'Product after index (rightProduct)', 'Answer'],
       rows: [
         ['0', '1', '1', '2 × 3 × 4 = 24', '1 × 24 = 24'],
         ['1', '2', '1', '3 × 4 = 12', '1 × 12 = 12'],
