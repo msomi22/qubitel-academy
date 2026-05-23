@@ -11,7 +11,11 @@ if (!legacyProblem) {
 
 const problem = defineMcqProblem({
   ...legacyProblem,
-  visualExplanation: 'Two-path architecture\nCatalog browsing path: regional cache/read replica -> fast reads, accepts short staleness\nFinancial transaction path: strongly consistent system of record -> correctness first, higher coordination cost',
+  mentalPicture: 'Think of the system as having two lanes. The browsing lane can be fast and slightly stale, like a catalog copy in each region. The money lane must go through the trusted source of record so balances and payments stay correct.',
+  visualExplanation: 'Two-path architecture\nCatalog browsing path: regional cache/read replica -> fast reads, accepts short staleness\nFinancial transaction path: strongly consistent system of record -> correctness first, higher coordination cost\nDesign rule: choose consistency per workflow, not once for the whole company.',
+  productionReality: 'In production, multi-region design is usually mixed. Product pages, search results, and recommendations often tolerate brief staleness, while payments, inventory reservations, account balances, and order state transitions need stronger correctness guarantees.',
+  commonMistake: 'A common mistake is using one consistency model for everything. Strong consistency everywhere can make harmless reads slow; eventual consistency everywhere can make critical transactions incorrect.',
+  finalTakeaway: 'Pick consistency based on business risk: stale catalog data is usually acceptable, but stale financial or ownership data is not.',
   distractorExplanations: [
     'Using the same consistency model everywhere is too blunt: it can make low-risk reads slow or high-risk transactions unsafe.',
     'Correct. Catalog reads can often tolerate short staleness, while financial transactions need stronger correctness guarantees.',
