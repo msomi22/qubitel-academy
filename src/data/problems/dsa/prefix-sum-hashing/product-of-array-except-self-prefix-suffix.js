@@ -12,21 +12,21 @@ const problem = defineLearningProblem({
   question: 'Given nums = [1, 2, 3, 4], return [24, 12, 8, 6].',
   examples: ['nums = [1, 2, 3, 4] -> [24, 12, 8, 6]', 'At index 0, answer[0] excludes 1, so answer[0] = 2 × 3 × 4 = 24'],
   constraints: ['Do not use division.', 'Each output index must exclude nums[i].', 'Use prefix and suffix products to avoid repeated multiplication.'],
-  starterThought: 'At each index, identify the current number as the one excluded from that answer slot. Then multiply the other numbers.',
+  starterThought: 'At every loop step, “me” means nums[i], the value at the current index. First ask what is before this index, then later ask what is after this index.',
   intuition: '“Product except self” means each position gets the product of all the other positions. For [1, 2, 3, 4], answer[0] excludes 1 and becomes 2 × 3 × 4 = 24. answer[1] excludes 2 and becomes 1 × 3 × 4 = 12.',
-  mentalPicture: 'Imagine each answer slot pointing to one input number and saying, “leave this one out, multiply the rest.”',
+  mentalPicture: 'Imagine each answer slot pointing to one input number and saying, “leave this one out, multiply the rest.” In code, “me” is simply nums[i].',
   patternSignal: 'Use prefix/suffix thinking when each answer depends on information from both sides of the current index.',
   invariant: 'Before multiplying by the right product at index i, output[i] already contains the product of all values strictly to the left of i.',
   bruteForceThought: 'Brute force recomputes a product for every index by excluding the current value and multiplying all the others again.',
-  optimizationJourney: 'Once “except self” is clear, the optimization is to avoid rebuilding the same products many times. The code uses two simple passes: the first pass stores what is before each index, and the second pass multiplies in what is after each index.',
-  stepByStepBreakdown: ['For each index, identify nums[i] as the excluded value.', 'The answer at that index must multiply every other number.', 'First loop, left to right: write the product before the current index into answer[i].', 'Second loop, right to left: multiply answer[i] by the product after the current index.', 'Update the running product only after using the current value, so the current value is not included in its own answer.'],
+  optimizationJourney: 'Once “except self” is clear, the optimization is to avoid rebuilding the same products many times. The code uses two simple passes. The first pass asks, for this current index i, what product is already before nums[i]? The second pass asks, for this current index i, what product is already after nums[i]?',
+  stepByStepBreakdown: ['At any step, “me” means nums[i], the value at the current index.', 'First loop, left to right: before using nums[i], write leftProduct into answer[i].', 'Then update leftProduct by multiplying nums[i], so this value becomes available for the next index.', 'Second loop, right to left: before using nums[i], multiply answer[i] by rightProduct.', 'Then update rightProduct by multiplying nums[i], so this value becomes available for the previous index.'],
   finalPattern: 'Precompute information before and after each position.',
   commonMistake: 'Accidentally including the current element in either the prefix or suffix product.',
   commonMistakes: ['Including the current value in the product for its own index.', 'Updating the running suffix before multiplying output[i].', 'Using division even though the constraint disallows it.', 'Counting the output array as extra space when the problem allows returning it.'],
   edgeCases: ['One zero in the array', 'Multiple zeros', 'Negative numbers', 'Array length two', 'Values of one'],
   complexityAnalysis: 'Time is O(n) because the code makes two linear passes: one pass builds products from the left, and one pass combines products from the right. Extra space is O(1) beyond the output array.',
   explanation: 'Product except self means every output position excludes the number at the same index. For nums = [1, 2, 3, 4], answer[0] excludes 1 and multiplies 2 × 3 × 4 = 24. answer[1] excludes 2 and multiplies 1 × 3 × 4 = 12. answer[2] excludes 3 and multiplies 1 × 2 × 4 = 8. answer[3] excludes 4 and multiplies 1 × 2 × 3 = 6. In code, the first loop writes the left-side product into each answer slot. The second loop walks from the right and multiplies in the right-side product. Together, those two pieces form “everything except self.”',
-  approach: 'Use the output array as a notepad. In the first loop, answer[i] stores the product of values before i. For [1, 2, 3, 4], this creates [1, 1, 2, 6]. In the second loop, keep one rightProduct value. Before updating rightProduct with nums[i], multiply answer[i] by rightProduct. This adds the product of values after i without including nums[i].',
+  approach: 'Use the output array as a notepad. In the first loop, “me” is nums[i]. At i = 0, me is nums[0] = 1, and there is nothing before index 0, so answer[0] gets 1. That 1 means empty product, not nums[0]. Then leftProduct becomes 1. At i = 1, me is nums[1] = 2, and the product before it is 1, so answer[1] gets 1. At i = 2, the product before it is 1 × 2 = 2. At i = 3, the product before it is 1 × 2 × 3 = 6. The first loop gives [1, 1, 2, 6]. The second loop walks from the right and multiplies each slot by what comes after it.',
   solutionCode: `class Solution {
     public int[] productExceptSelf(int[] nums) {
         int n = nums.length;
@@ -47,8 +47,8 @@ const problem = defineLearningProblem({
         return answer;
     }
 }`,
-  finalTakeaway: 'For “everything except me” problems, first exclude the current value, then multiply what remains around it. The two loops simply collect the two sides: before me, then after me.',
-  visualExplanation: 'The visual explains the given example directly. Each frame builds one answer slot for nums = [1, 2, 3, 4]. The code uses two loops to build the same idea efficiently: one left pass for products before each index, then one right pass for products after each index.',
+  finalTakeaway: 'At each index, “me” is nums[i]. The first loop records what is before me. The second loop multiplies in what is after me. Because each loop uses the running product before updating it with nums[i], me is excluded.',
+  visualExplanation: 'The visual explains the given example directly. Each frame builds one answer slot for nums = [1, 2, 3, 4]. The code uses two loops to build the same idea efficiently: one left pass for products before the current index, then one right pass for products after the current index.',
   visualWalkthrough: {
     title: 'Product except self walkthrough',
     summary: 'Each answer is the product of everything except the number at that same index.',
@@ -114,24 +114,38 @@ const problem = defineLearningProblem({
     }
   },
   body: [
+    { type: 'callout', tone: 'info', title: 'What “me” means in the loops', content: 'When the loop is at index i, “me” means nums[i]. For nums = [1, 2, 3, 4], at i = 0, me is nums[0] = 1. The first loop asks: what product is before index 0? Nothing, so we write 1. This 1 is the empty product, not nums[0].' },
     { type: 'callout', tone: 'info', title: 'What “except self” means', content: 'For nums = [1, 2, 3, 4], answer[0] excludes 1 and multiplies the rest: 2 × 3 × 4 = 24.' },
-    { type: 'callout', tone: 'info', title: 'Why the code has two loops', content: 'The first loop collects the product before each index. The second loop collects the product after each index. Multiplying those two parts gives the answer without including the current value.' },
+    { type: 'callout', tone: 'info', title: 'Why the code has two loops', content: 'The first loop answers “what is before nums[i]?” for every index. The second loop answers “what is after nums[i]?” for every index. before × after gives product except self.' },
     {
       type: 'table',
-      title: 'Static code bridge: what each loop creates',
-      columns: ['Code pass', 'Direction', 'Meaning', 'Snapshot for nums = [1, 2, 3, 4]', 'Why current value is excluded'],
+      title: 'First loop, left to right: what is before me?',
+      columns: ['i', 'me = nums[i]', 'Before me', 'answer[i] gets', 'Then leftProduct becomes'],
       rows: [
-        ['First loop', 'Left → right', 'Write the product before each index into answer[i].', 'answer becomes [1, 1, 2, 6]', 'answer[i] is written before leftProduct multiplies nums[i].'],
-        ['Second loop', 'Right → left', 'Multiply each answer[i] by the product after that index.', 'answer becomes [24, 12, 8, 6]', 'answer[i] is multiplied before rightProduct multiplies nums[i].']
+        ['0', '1', 'nothing before index 0', '1', '1'],
+        ['1', '2', '1', '1', '1 × 2 = 2'],
+        ['2', '3', '1 × 2 = 2', '2', '2 × 3 = 6'],
+        ['3', '4', '1 × 2 × 3 = 6', '6', '6 × 4 = 24']
+      ]
+    },
+    {
+      type: 'table',
+      title: 'Second loop, right to left: what is after me?',
+      columns: ['i', 'me = nums[i]', 'After me', 'answer[i] before', 'answer[i] after'],
+      rows: [
+        ['3', '4', 'nothing after index 3', '6', '6 × 1 = 6'],
+        ['2', '3', '4', '2', '2 × 4 = 8'],
+        ['1', '2', '3 × 4 = 12', '1', '1 × 12 = 12'],
+        ['0', '1', '2 × 3 × 4 = 24', '1', '1 × 24 = 24']
       ]
     },
     {
       type: 'flow',
       title: 'Two-loop mental model',
       steps: [
-        { title: 'Loop 1 answers: what is before me?', detail: 'At each index, write the product of values already passed. For [1, 2, 3, 4], that gives [1, 1, 2, 6].' },
-        { title: 'Loop 2 answers: what is after me?', detail: 'Walk from the right with one running product. Multiply it into each answer slot before updating it with the current value.' },
-        { title: 'Final answer: before me × after me', detail: 'Each slot now has both sides, but not its own value, so the result is [24, 12, 8, 6].' }
+        { title: 'Loop 1: before current index', detail: 'Write the product that already exists before nums[i]. At i = 0, nothing exists before it, so write 1.' },
+        { title: 'Loop 2: after current index', detail: 'Walk from the right and multiply in the product that already exists after nums[i]. At i = 3, nothing exists after it, so multiply by 1.' },
+        { title: 'Final answer: before × after', detail: 'Each slot now has the product before its index times the product after its index. That excludes nums[i].' }
       ]
     },
     { type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use prefix/suffix thinking when each answer depends on all items except the current one.' },
