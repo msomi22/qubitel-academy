@@ -88,9 +88,9 @@ The current production-visible question bank is small and mostly strong. The bes
 
 The main quality risk is inconsistency. Some production-visible questions are excellent deep dives, while some MCQs are production-safe but still depend heavily on concise inherited legacy prompts. They have good distractor explanations and visual summaries, but several would be stronger with a fuller `finalTakeaway`, clearer mental-picture wording, or a more explicit production-reality section.
 
-No P0 issues were found in the reviewed production-visible set. The most important P1 issue is that the legacy URL shortener scoring-drill question is production-visible beside a stronger URL shortener teaching walkthrough. Its role is explained in metadata, but the learner experience could still feel repetitive unless the UI or copy makes the distinction obvious.
+No P0 issues were found in the reviewed production-visible set. The previous P1 concern around URL shortener duplication has been clarified in code comments and metadata: `scalability-url-shortener-001` is the legacy design-review drill, while `scalability-url-shortener-v2` is the current canonical learner-facing walkthrough.
 
-## Current production question inventory
+## Production question summary by category
 
 | Category | Production-visible count | Excellent | Good | Needs revision | Not production-ready | Notes |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
@@ -100,8 +100,8 @@ No P0 issues were found in the reviewed production-visible set. The most importa
 | System / caching | 1 | 0 | 1 | 0 | 0 | Good MCQ, but could benefit from explicit stale-cache takeaway. |
 | System / databases | 1 | 0 | 1 | 0 | 0 | Good trade-off framing; could add clearer final memory sentence. |
 | System / messaging queues | 1 | 0 | 1 | 0 | 0 | Good production framing; could add clearer failure-mode takeaway. |
-| System / scalability | 3 | 1 | 1 | 1 | 0 | URL shortener v2 is strong; legacy review drill needs clearer separation from v2. |
-| **Total** | **14** | **6** | **7** | **1** | **0** | No clearly broken production-visible question found. |
+| System / scalability | 3 | 2 | 1 | 0 | 0 | URL shortener v2 is the canonical walkthrough; URL shortener 001 is a clearly marked legacy review drill. |
+| **Total** | **14** | **7** | **7** | **0** | **0** | No clearly broken production-visible question found. |
 
 > Note: `dynamic-programming-020` is counted under DSA even though most learner content is inherited from `src/data/banks/dsa/minimum-sideway-jumps.js`.
 
@@ -111,8 +111,8 @@ No P0 issues were found in the reviewed production-visible set. The most importa
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `sliding-window-001` | DSA | sliding-window | coding | Excellent | Strong mental picture, rolling-sum invariant, brute-force contrast, mistakes, and follow-ups. Could add a richer rendered step-frame later, but content is already production-ready. | Keep as-is | P3 |
 | `dynamic-programming-020` | DSA | dynamic-programming | coding | Excellent | Excellent state-compression explanation, visual walkthrough, invariant, common mistakes, and production connection. | Keep as-is | P3 |
-| `scalability-url-shortener-v2` | System design | scalability | complex system design | Excellent | Very strong full walkthrough with requirements, APIs, data model, flows, trade-offs, abuse controls, observability, and scoring rubric. Long content may need UI scanning support, but the learning quality is high. | Keep as-is | P3 |
-| `scalability-url-shortener-001` | System design | scalability | complex system design / review drill | Needs revision | Production-visible beside the stronger URL shortener v2. It is intentionally framed as a scoring drill, but the learner distinction may still be unclear and repetitive without stronger separation. | Split into follow-up issue | P1 |
+| `scalability-url-shortener-v2` | System design | scalability | complex system design | Excellent | Current canonical learner-facing walkthrough. Very strong full walkthrough with requirements, APIs, data model, flows, trade-offs, abuse controls, observability, and scoring rubric. | Keep as-is | P3 |
+| `scalability-url-shortener-001` | System design | scalability | complex system design / review drill | Excellent | Legacy URL shortener problem is intentionally retained as a design-review/scoring drill and is now explicitly commented in the file with `contentRole` and `relatedTeachingProblemId` metadata. | Keep as-is as legacy review drill | P3 |
 | `scalability-realtime-updates-001` | System design | scalability | MCQ | Good | Clear pub/sub and WebSocket routing idea. Needs a more memorable final takeaway and perhaps a small note about connection ownership and fan-out failure modes. | Improve final takeaway | P2 |
 | `caching-product-details-001` | System design | caching | MCQ | Good | Good cache-aside explanation and distractor coverage. Could make stale-cache risk and invalidation decision more explicit. | Improve final takeaway | P2 |
 | `api-design-rate-limiting-001` | System design | api-design | MCQ | Good | Correct and practical fixed-window explanation. Could mention sliding window/token bucket as follow-up contrast so learners do not overgeneralize fixed windows. | Add common mistake | P2 |
@@ -132,10 +132,15 @@ No P0 production risk was found in the reviewed production-visible set.
 
 ### P1 issues
 
-1. **Clarify the role of `scalability-url-shortener-001`.**
-   - The richer `scalability-url-shortener-v2` is the better learner-facing walkthrough.
-   - The older `scalability-url-shortener-001` is positioned as a design-review drill, but it is still production-visible.
-   - Follow-up work should make the distinction unmistakable, possibly by improving title/body copy, linking both questions intentionally, or considering whether the review-drill variant should remain production-visible.
+No P1 issue remains after clarifying the URL shortener pair.
+
+Resolved clarification:
+
+1. **Clarified the role of `scalability-url-shortener-001`.**
+   - `scalability-url-shortener-v2` is the current canonical learner-facing walkthrough.
+   - `scalability-url-shortener-001` is the older legacy wrapper retained as a design-review/scoring drill.
+   - Both files now include comments that explain the relationship and reduce future confusion.
+   - The legacy wrapper keeps metadata that marks its role with `contentRole: 'design-review-drill'` and `relatedTeachingProblemId: 'scalability-url-shortener-v2'`.
 
 ## Common quality gaps
 
@@ -173,9 +178,14 @@ Affected examples:
 - `api-design-rate-limiting-001`: add consequences of anonymous requests and distributed counters.
 - `caching-product-details-001`: add stale data and invalidation trade-off.
 
-### 4. Duplicate-topic risk exists in URL shortener content
+### 4. Duplicate-topic risk exists in URL shortener content, but the current pair is intentionally separated
 
-There are two production-visible URL shortener questions. This can be valid if one is a teaching walkthrough and one is a scoring drill, but the separation should be extremely clear to avoid learners feeling that the bank repeats itself.
+There are two production-visible URL shortener questions. This is currently intentional:
+
+- `scalability-url-shortener-v2` is the canonical teaching walkthrough.
+- `scalability-url-shortener-001` is the legacy review/scoring drill.
+
+For future duplicate-looking problems, confirm which one is legacy and which one is in use before deleting, hiding, or rewriting either file. Add comments and role metadata where useful so future contributors do not confuse a review drill with a teaching walkthrough.
 
 ### 5. Metadata is present for production-visible questions, but content-role metadata is rare
 
@@ -194,22 +204,22 @@ The required production metadata is present in the reviewed production-visible s
 
 ## Recommended follow-up issues
 
-1. **Improve production DSA questions that need revision**
-   - Current DSA set is strong, so this can focus on maintaining standard and adding richer step-frame support where useful.
+1. **Maintain DSA quality standard for future production questions**
+   - Current DSA set is strong, so future DSA additions should preserve the same level of intuition, trace support, and common-mistake coverage.
 
 2. **Add visual walkthroughs to high-value DSA questions**
    - Prioritize questions involving pointer movement, DP tables, graph traversal, stack state, and queue state.
 
-3. **Improve MCQ distractor explanations**
+3. **Standardize MCQ distractor explanations**
    - Current migrated MCQs already have useful distractor explanations. Follow-up should standardize format and ensure each distractor maps to a real misconception.
 
 4. **Improve system design production question clarity**
-   - Start with `scalability-url-shortener-001` and clarify its role as a scoring drill versus the v2 teaching walkthrough.
+   - With the URL shortener pair clarified, start with system MCQs that need stronger final takeaways, production reality, or mental pictures.
 
 5. **Improve backend engineering production question clarity**
    - As backend topics grow, require a production-reality note, common mistake, and final takeaway before prod approval.
 
-6. **Fix production metadata gaps**
+6. **Add automated production metadata guardrails**
    - No required metadata gaps were found in the reviewed set, but add automated or documented checks to prevent future gaps.
 
 7. **Add missing mental pictures and final takeaways to production questions**
@@ -222,11 +232,10 @@ The required production metadata is present in the reviewed production-visible s
 
 1. Fix P0 production risks and metadata issues.
 2. Improve production-visible questions rated Not production-ready.
-3. Clarify or revise `scalability-url-shortener-001` because it is the only P1 item.
-4. Improve high-traffic or high-value questions rated Needs revision.
-5. Add missing mental pictures and final takeaways to MCQs.
-6. Add visual explanations where they improve understanding.
-7. Add new question batches only after weak existing content is mapped.
+3. Improve high-traffic or high-value questions rated Needs revision.
+4. Add missing mental pictures and final takeaways to MCQs.
+5. Add visual explanations where they improve understanding.
+6. Add new question batches only after weak existing content is mapped.
 
 ## Reviewer checklist used
 
@@ -259,7 +268,7 @@ This checklist is adapted from `docs/content-quality-rubric.md`:
 
 ## Validation
 
-Documentation-only change. Suggested validation commands for the PR:
+Documentation-only and comment-only change. Suggested validation commands for the PR:
 
 ```bash
 npm run lint
