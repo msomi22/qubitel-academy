@@ -106,7 +106,7 @@ const problem = defineLearningProblem({
             { index: 2, role: 'success', caption: 'use 3' },
             { index: 3, role: 'current', caption: 'exclude 4' }
           ],
-          state: { label: 'output[3]', role: 'answer', values: { excluded: '4 at index 3', multiply: '1 × 2 × 3', output: '[24, 12, 8, 6]' }, helper: 'Now every answer slot has been filled.' },
+          state: { label: 'output[3]', values: { excluded: '4 at index 3', multiply: '1 × 2 × 3', output: '[24, 12, 8, 6]' }, helper: 'Now every answer slot has been filled.' },
           finalResult: { title: 'Final answer', body: 'Return [24, 12, 8, 6].' }
         }
       ]
