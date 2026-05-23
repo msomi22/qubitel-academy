@@ -47,13 +47,14 @@ const problem = defineLearningProblem({
     }
 }`,
   finalTakeaway: 'For “everything except me” problems, split the world into “left of me” and “right of me.”',
-  visualExplanation: 'The visual shows output first storing left products, then being completed by the right pass.',
+  visualExplanation: 'The visual focuses on the changing output state instead of repeating a static list of steps.',
   visualWalkthrough: {
     title: 'Prefix and suffix walkthrough',
     summary: 'Each answer is left product times right product, excluding the current value.',
     diagram: {
-      type: 'timeline',
-      title: 'Output state evolution',
+      type: 'cards',
+      title: 'Product except self walkthrough',
+      description: 'Use the changing state panel to watch the output array get built one idea at a time.',
       stateTitle: 'Building the output array',
       stateDescription: 'The current number is excluded by writing or multiplying before the running product is updated.',
       frames: [
