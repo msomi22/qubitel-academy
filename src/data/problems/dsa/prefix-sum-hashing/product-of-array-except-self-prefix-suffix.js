@@ -18,14 +18,15 @@ const problem = defineLearningProblem({
   patternSignal: 'Use prefix/suffix thinking when each answer depends on information from both sides of the current index.',
   invariant: 'Before multiplying by the right product at index i, output[i] already contains the product of all values strictly to the left of i.',
   bruteForceThought: 'Brute force recomputes a product for every index by excluding the current value and multiplying all the others again.',
-  optimizationJourney: 'Once “except self” is clear, the optimization is to avoid rebuilding the same products many times. Store the product before each index, then combine it with the product after each index.',
-  stepByStepBreakdown: ['For each index, identify nums[i] as the excluded value.', 'The answer at that index must multiply every other number.', 'Create an output array.', 'Store the product of everything before index i.', 'Multiply by the product of everything after index i.'],
+  optimizationJourney: 'Once “except self” is clear, the optimization is to avoid rebuilding the same products many times. The code uses two simple passes: the first pass stores what is before each index, and the second pass multiplies in what is after each index.',
+  stepByStepBreakdown: ['For each index, identify nums[i] as the excluded value.', 'The answer at that index must multiply every other number.', 'First loop, left to right: write the product before the current index into answer[i].', 'Second loop, right to left: multiply answer[i] by the product after the current index.', 'Update the running product only after using the current value, so the current value is not included in its own answer.'],
   finalPattern: 'Precompute information before and after each position.',
   commonMistake: 'Accidentally including the current element in either the prefix or suffix product.',
   commonMistakes: ['Including the current value in the product for its own index.', 'Updating the running suffix before multiplying output[i].', 'Using division even though the constraint disallows it.', 'Counting the output array as extra space when the problem allows returning it.'],
   edgeCases: ['One zero in the array', 'Multiple zeros', 'Negative numbers', 'Array length two', 'Values of one'],
-  complexityAnalysis: 'Time is O(n) because the array is scanned twice. Extra space is O(1) beyond the output array.',
-  explanation: 'Product except self means every output position excludes the number at the same index. For nums = [1, 2, 3, 4], answer[0] excludes 1 and multiplies 2 × 3 × 4 = 24. answer[1] excludes 2 and multiplies 1 × 3 × 4 = 12. answer[2] excludes 3 and multiplies 1 × 2 × 4 = 8. answer[3] excludes 4 and multiplies 1 × 2 × 3 = 6.',
+  complexityAnalysis: 'Time is O(n) because the code makes two linear passes: one pass builds products from the left, and one pass combines products from the right. Extra space is O(1) beyond the output array.',
+  explanation: 'Product except self means every output position excludes the number at the same index. For nums = [1, 2, 3, 4], answer[0] excludes 1 and multiplies 2 × 3 × 4 = 24. answer[1] excludes 2 and multiplies 1 × 3 × 4 = 12. answer[2] excludes 3 and multiplies 1 × 2 × 4 = 8. answer[3] excludes 4 and multiplies 1 × 2 × 3 = 6. In code, the first loop writes the left-side product into each answer slot. The second loop walks from the right and multiplies in the right-side product. Together, those two pieces form “everything except self.”',
+  approach: 'Use the output array as a notepad. In the first loop, answer[i] stores the product of values before i. For [1, 2, 3, 4], this creates [1, 1, 2, 6]. In the second loop, keep one rightProduct value. Before updating rightProduct with nums[i], multiply answer[i] by rightProduct. This adds the product of values after i without including nums[i].',
   solutionCode: `class Solution {
     public int[] productExceptSelf(int[] nums) {
         int n = nums.length;
@@ -46,8 +47,8 @@ const problem = defineLearningProblem({
         return answer;
     }
 }`,
-  finalTakeaway: 'For “everything except me” problems, first exclude the current value, then multiply what remains around it.',
-  visualExplanation: 'The visual explains the given example directly. Each frame builds one answer slot for nums = [1, 2, 3, 4].',
+  finalTakeaway: 'For “everything except me” problems, first exclude the current value, then multiply what remains around it. The two loops simply collect the two sides: before me, then after me.',
+  visualExplanation: 'The visual explains the given example directly. Each frame builds one answer slot for nums = [1, 2, 3, 4]. The code uses two loops to build the same idea efficiently: one left pass for products before each index, then one right pass for products after each index.',
   visualWalkthrough: {
     title: 'Product except self walkthrough',
     summary: 'Each answer is the product of everything except the number at that same index.',
@@ -114,6 +115,7 @@ const problem = defineLearningProblem({
   },
   body: [
     { type: 'callout', tone: 'info', title: 'What “except self” means', content: 'For nums = [1, 2, 3, 4], answer[0] excludes 1 and multiplies the rest: 2 × 3 × 4 = 24.' },
+    { type: 'callout', tone: 'info', title: 'Why the code has two loops', content: 'The first loop collects the product before each index. The second loop collects the product after each index. Multiplying those two parts gives the answer without including the current value.' },
     { type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use prefix/suffix thinking when each answer depends on all items except the current one.' },
     { type: 'checklist', title: 'Mistakes to avoid', items: ['Do not include nums[i]', 'Do not rely on division', 'Handle zeros through multiplication naturally'] }
   ],
