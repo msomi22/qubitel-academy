@@ -4,6 +4,7 @@ import VisualRail from './visuals/VisualRail.jsx';
 import ProblemBlockRenderer from './rich-problem/ProblemBlockRenderer.jsx';
 import { loadVisualWalkthrough } from '../services/visualWalkthroughService.js';
 import { storageService } from '../services/storageService.js';
+import { getFocusedProblemTabs, getReinforcementCardsForTab, hasProblemTabContent } from '../problems/problemTabSections.js';
 
 function optionLetter(index) {
   return String.fromCharCode(65 + index);
@@ -168,14 +169,18 @@ function SupportPanel({ question }) {
   );
 }
 
-function ReinforcementCards({ question }) {
-  const cards = [
-    ['Key takeaway', question.keyTakeaway || question.takeaway || question.engineeringInsight],
-    ['Common mistake', question.commonMistake],
-    ['Production reality', question.productionReality]
-  ].filter(([, value]) => has(value));
+function ReinforcementCards({ question, activeTab }) {
+  const cards = getReinforcementCardsForTab(question, activeTab);
+
   if (!cards.length) return null;
-  return <aside className="learning-reinforcement-grid">{cards.map(([title, value]) => <TextBlock key={title} title={title}>{value}</TextBlock>)}</aside>;
+
+  return (
+    <aside className="learning-reinforcement-grid">
+      {cards.map(([title, value]) => Array.isArray(value)
+        ? <ListBlock key={title} title={title} items={value} />
+        : <TextBlock key={title} title={title}>{value}</TextBlock>)}
+    </aside>
+  );
 }
 
 export default function FocusedProblemWorkspace({ question, completed, onToggle, onMarkComplete, hideTopline = false }) {
@@ -190,14 +195,13 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
   const hasOverviewRichBody = richBody.some((block) => !isVisualRichBlock(block));
   const hasVisualRichBody = richBody.some(isVisualRichBlock);
 
-  const tabs = useMemo(() => [
-    ['overview', 'Overview', true],
-    ['visual', 'Visual Walkthrough', hasVisualRichBody || true],
-    ['intuition', 'Intuition', has(question.intuition) || has(question.starterThought) || has(question.visualExplanation)],
-    ['approach', 'Approach', list(question.stepByStepBreakdown).length || has(question.bruteForceThought) || has(question.optimizationJourney)],
-    [hasMcq ? 'answer' : 'solution', hasMcq ? 'Answer' : 'Solution', hasMcq || has(codeContent) || has(explanation)],
-    ['complexity', 'Complexity', has(question.complexityAnalysis) || has(question.productionReality)]
-  ].filter(([, , available]) => available), [codeContent, explanation, hasMcq, hasVisualRichBody, question]);
+  const tabs = useMemo(() => getFocusedProblemTabs({
+    question,
+    codeContent,
+    explanation,
+    hasMcq,
+    hasVisualRichBody
+  }), [codeContent, explanation, hasMcq, hasVisualRichBody, question]);
 
   useEffect(() => {
     if (!tabs.some(([id]) => id === activeTab)) setActiveTab(tabs[0]?.[0] || 'overview');
@@ -235,7 +239,7 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
           {activeTab === 'solution' ? <div className="focused-panel-stack"><TextBlock title="Solution explanation">{explanation}</TextBlock><CodeBlock code={codeContent || 'No code sample is configured yet.'} language={question.language || 'java'} title="Implementation notes" className="workspace-block focused-code-block" /></div> : null}
           {activeTab === 'answer' ? <div className="focused-panel-stack"><McqBlock question={question} selected={selected} onSelect={handleMcqSelect} /><TextBlock title="Explanation">{explanation || question.intuition}</TextBlock><ListBlock title="Why other options are wrong" items={question.optionExplanations || question.wrongOptionExplanations} /></div> : null}
           {activeTab === 'complexity' ? <div className="focused-two-col"><TextBlock title="Complexity / trade-off analysis">{question.complexityAnalysis}</TextBlock><TextBlock title="Production reality">{question.productionReality}</TextBlock></div> : null}
-          <ReinforcementCards question={question} />
+          <ReinforcementCards question={question} activeTab={activeTab} />
         </div>
         {!focusMode ? <SupportPanel question={question} /> : null}
       </div>
