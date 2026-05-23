@@ -50,13 +50,15 @@ function VisualStyles() {
       .config-visual-state-list.is-scrollable { max-height: 24rem; overflow-y: auto; padding-right: 0.3rem; }
       .config-visual-state-row { border: 1px solid rgba(86, 67, 42, 0.12); border-radius: 15px; background: rgba(255,255,255,0.48); padding: 0.55rem; }
       .config-visual-state-row.active { background: rgba(234, 190, 117, 0.2); border-color: rgba(154, 104, 34, 0.28); }
+      .config-visual-state-row.active.config-visual-role-warning, .config-visual-state-row.active.config-visual-role-error, .config-visual-state-row.active.config-visual-role-remove { background: rgba(254, 226, 226, 0.82); border-color: rgba(220, 38, 38, 0.32); box-shadow: 0 10px 24px rgba(220, 38, 38, 0.08); }
+      .config-visual-state-row.active.config-visual-role-success, .config-visual-state-row.active.config-visual-role-answer { background: rgba(220, 252, 231, 0.74); border-color: rgba(21, 128, 61, 0.28); }
       .config-visual-state-row strong { display: block; margin-bottom: 0.35rem; color: var(--text-strong, #2f261b); }
       .config-visual-state-row p { margin: 0.3rem 0 0; color: var(--text-muted, #756a5a); font-size: 0.78rem; }
       .config-visual-list { display: grid; gap: 0.55rem; }
       .config-visual-node { border: 1px solid rgba(86, 67, 42, 0.13); border-radius: 16px; background: rgba(255, 255, 255, 0.5); padding: 0.65rem; color: var(--text-strong, #2f261b); }
       .config-visual-role-active, .config-visual-role-current { background: rgba(82, 116, 76, 0.16); border-color: rgba(82, 116, 76, 0.35); }
       .config-visual-role-window { background: rgba(37, 99, 235, 0.12); border-color: rgba(37, 99, 235, 0.42); color: #1d4ed8; box-shadow: inset 0 -3px 0 rgba(37, 99, 235, 0.18); }
-      .config-visual-role-remove, .config-visual-role-error, .config-visual-role-infinite { background: rgba(220, 38, 38, 0.1); border-color: rgba(220, 38, 38, 0.35); color: #b91c1c; }
+      .config-visual-role-warning, .config-visual-role-remove, .config-visual-role-error, .config-visual-role-infinite { background: rgba(220, 38, 38, 0.1); border-color: rgba(220, 38, 38, 0.35); color: #b91c1c; }
       .config-visual-role-add, .config-visual-role-goal, .config-visual-role-answer, .config-visual-role-success { background: rgba(22, 163, 74, 0.12); border-color: rgba(22, 163, 74, 0.35); color: #15803d; }
       .config-visual-role-best { background: rgba(245, 158, 11, 0.18); border-color: rgba(217, 119, 6, 0.5); color: #92400e; }
       .config-visual-array { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
@@ -65,7 +67,7 @@ function VisualStyles() {
       .config-visual-array-item { min-width: 44px; min-height: 44px; display: grid; place-items: center; border-radius: 14px; border: 1px solid rgba(86, 67, 42, 0.14); background: rgba(255,255,255,0.76); color: #231f18; font-weight: 950; box-shadow: 0 8px 18px rgba(74, 53, 27, 0.06); }
       .config-visual-array-item.config-visual-role-window { background: linear-gradient(180deg, rgba(219, 234, 254, 0.98), rgba(191, 219, 254, 0.78)); border-color: rgba(37, 99, 235, 0.45); color: #111827; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.12), inset 0 -4px 0 rgba(37, 99, 235, 0.18); }
       .config-visual-array-item.config-visual-role-current { background: linear-gradient(180deg, rgba(187, 247, 208, 0.98), rgba(134, 239, 172, 0.78)); border-color: rgba(22, 163, 74, 0.55); color: #052e16; box-shadow: 0 10px 22px rgba(22, 163, 74, 0.16), 0 0 0 3px rgba(22, 163, 74, 0.08); }
-      .config-visual-array-item.config-visual-role-remove, .config-visual-array-item.config-visual-role-error { background: linear-gradient(180deg, rgba(254, 202, 202, 0.98), rgba(252, 165, 165, 0.76)); border-color: rgba(220, 38, 38, 0.55); color: #450a0a; box-shadow: 0 10px 22px rgba(220, 38, 38, 0.14), inset 0 -4px 0 rgba(220, 38, 38, 0.16); }
+      .config-visual-array-item.config-visual-role-warning, .config-visual-array-item.config-visual-role-remove, .config-visual-array-item.config-visual-role-error { background: linear-gradient(180deg, rgba(254, 202, 202, 0.98), rgba(252, 165, 165, 0.76)); border-color: rgba(220, 38, 38, 0.55); color: #450a0a; box-shadow: 0 10px 22px rgba(220, 38, 38, 0.14), inset 0 -4px 0 rgba(220, 38, 38, 0.16); }
       .config-visual-array-item.config-visual-role-answer, .config-visual-array-item.config-visual-role-success, .config-visual-array-item.config-visual-role-goal { background: linear-gradient(180deg, rgba(220, 252, 231, 0.98), rgba(134, 239, 172, 0.8)); border-color: rgba(21, 128, 61, 0.58); color: #052e16; box-shadow: 0 10px 22px rgba(21, 128, 61, 0.16), inset 0 -4px 0 rgba(21, 128, 61, 0.16); }
       .config-visual-array-item.config-visual-role-best { background: linear-gradient(180deg, rgba(254, 243, 199, 0.98), rgba(252, 211, 77, 0.74)); border-color: rgba(217, 119, 6, 0.58); color: #451a03; box-shadow: 0 10px 22px rgba(217, 119, 6, 0.16), inset 0 -4px 0 rgba(217, 119, 6, 0.18); }
       .config-visual-array-caption { min-height: 1rem; color: var(--text-muted, #756a5a); font-size: 0.7rem; font-weight: 800; }
@@ -151,8 +153,9 @@ function StatePanel({ diagram, frames, activeIndex }) {
         {rows.map((frame, index) => {
           const state = frame.state || frame.metrics || {};
           const entries = normalizeEntries(state);
+          const roleClass = getSemanticRoleClass(state.role || (String(state.label || '').toLowerCase().includes('duplicate') ? 'warning' : ''));
           return (
-            <div className={`config-visual-state-row ${index === rows.length - 1 ? 'active' : ''}`} key={`${frame.title}-${index}`}>
+            <div className={`config-visual-state-row ${index === rows.length - 1 ? 'active' : ''} ${roleClass}`} key={`${frame.title}-${index}`}>
               <strong>{state.label || frame.title || `S${index}`}</strong>
               <span className="config-visual-state-values">
                 {entries.map(([key, value, isArrayValue]) => (
