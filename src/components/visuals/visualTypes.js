@@ -10,7 +10,8 @@ export const VISUAL_TYPES = Object.freeze({
   TREE: 'tree',
   HEAP: 'heap',
   STATE: 'state',
-  CONTAINER_WATER: 'container-water'
+  CONTAINER_WATER: 'container-water',
+  PRODUCT_EXCEPT_SELF: 'product-except-self'
 });
 
 export const GRID_ALIASES = new Set([
@@ -28,7 +29,8 @@ export const GENERIC_VISUAL_TYPES = new Set([
   VISUAL_TYPES.TREE,
   VISUAL_TYPES.HEAP,
   VISUAL_TYPES.STATE,
-  VISUAL_TYPES.CONTAINER_WATER
+  VISUAL_TYPES.CONTAINER_WATER,
+  VISUAL_TYPES.PRODUCT_EXCEPT_SELF
 ]);
 
 export function normalizeVisualType(type) {
