@@ -12,21 +12,21 @@ const problem = defineLearningProblem({
   question: 'Given nums = [1, 2, 3, 4], return [24, 12, 8, 6].',
   examples: ['nums = [1, 2, 3, 4] -> [24, 12, 8, 6]', 'At index 0, answer[0] excludes 1, so answer[0] = 2 × 3 × 4 = 24'],
   constraints: ['Do not use division.', 'Each output index must exclude nums[i].', 'Use prefix and suffix products to avoid repeated multiplication.'],
-  starterThought: 'Start with the meaning of one answer slot: the value at the same index is skipped, and every other value is multiplied.',
-  intuition: 'For nums = [1, 2, 3, 4], each output slot skips the input value at the same index. So output[0] skips 1 and uses 2 × 3 × 4 = 24. output[1] skips 2 and uses 1 × 3 × 4 = 12. output[2] skips 3 and uses 1 × 2 × 4 = 8. output[3] skips 4 and uses 1 × 2 × 3 = 6.',
-  mentalPicture: 'Imagine each output slot pointing at one input value and saying: “skip this one, multiply the rest.”',
+  starterThought: 'Start with one output slot: skip the value at that index and multiply everything else.',
+  intuition: 'The walkthrough shows the meaning directly: for each index, skip that value and multiply all other values. The code represents “all other values” as two smaller groups: values before the index and values after the index. left side × right side gives everything except the current value.',
+  mentalPicture: 'Imagine each output slot splitting the array into three parts: values on the left, the skipped value, and values on the right. The answer uses left × right and ignores the skipped value.',
   patternSignal: 'This fits prefix/suffix thinking because each answer needs values from both sides of one skipped index.',
   invariant: 'Each answer slot must be built from values before its index and values after its index, but not the value at that same index.',
   bruteForceThought: 'A direct solution would rebuild the product for every index by scanning the whole array and skipping only that index.',
-  optimizationJourney: 'The repeated work is the clue. Products before an index are reused many times, and products after an index are reused many times. Store the before part first, then combine it with the after part.',
-  stepByStepBreakdown: ['Understand one slot first: output[0] skips nums[0] and multiplies nums[1], nums[2], and nums[3].', 'Build the products that appear before each index.', 'Build the products that appear after each index.', 'For each index, combine before × after.', 'Because the same-index value is not in before or after, it is excluded naturally.'],
+  optimizationJourney: 'The repeated work is the clue. Products before an index are reused many times, and products after an index are reused many times. The first loop writes what is on the left of each index. The second loop multiplies what is on the right of each index. Left × right equals everything except the current value.',
+  stepByStepBreakdown: ['For one slot, “except self” means skip nums[i] and multiply every other value.', 'Split “every other value” into two groups: values before i and values after i.', 'First loop writes the product of values before each index.', 'Second loop multiplies in the product of values after each index.', 'Left product × right product gives the final answer for that index.'],
   finalPattern: 'Precompute information before and after each position.',
   commonMistake: 'Including the current value in its own answer.',
   commonMistakes: ['Including nums[i] in output[i].', 'Using division even though the constraint disallows it.', 'Forgetting that edge positions still need a neutral multiplication value.', 'Counting the returned output array as extra space when the problem allows it.'],
   edgeCases: ['One zero in the array', 'Multiple zeros', 'Negative numbers', 'Array length two', 'Values of one'],
   complexityAnalysis: 'Time is O(n) because each index is visited from the left side and from the right side. Extra space is O(1) beyond the output array because the returned answer array is required.',
-  explanation: 'Read the code from top to bottom. answer is the array we will return. leftProduct means “product of numbers before the current index.” The first loop writes that value into answer[i], then updates leftProduct with nums[i] for the next index. At i = 0, there is nothing before index 0, so answer[0] receives 1. rightProduct means “product of numbers after the current index.” The second loop multiplies answer[i] by rightProduct, then updates rightProduct with nums[i] for the next index to the left. The update lines change leftProduct or rightProduct only; they are not writing into answer[i].',
-  approach: 'Break every answer into two pieces: product before the index and product after the index. For [1, 2, 3, 4], the before-products are [1, 1, 2, 6]. The after-products are [24, 12, 4, 1]. Multiply matching positions: [1×24, 1×12, 2×4, 6×1] = [24, 12, 8, 6].',
+  explanation: 'The visual says: skip one value and multiply everything else. The code turns “everything else” into left side × right side. answer is the array we will return. leftProduct means “product of numbers before the current index.” The first loop writes that left-side product into answer[i], then updates leftProduct with nums[i] for the next index. rightProduct means “product of numbers after the current index.” The second loop multiplies answer[i] by that right-side product, then updates rightProduct with nums[i] for the next index to the left. The update lines change leftProduct or rightProduct only; they are not writing into answer[i].',
+  approach: 'Break every answer into two pieces: product before the index and product after the index. For [1, 2, 3, 4], look at index 2 where nums[2] is 3. The walkthrough answer is 1 × 2 × 4. The code sees that as left side before index 2 = 1 × 2, and right side after index 2 = 4. So answer[2] = 2 × 4 = 8. The first loop is not trying to finish the answer; it only prepares the left side for every index: [1, 1, 2, 6]. The second loop brings the missing right side and completes the answer.',
   solutionCode: `class Solution {
     public int[] productExceptSelf(int[] nums) {
         int n = nums.length;
@@ -57,7 +57,7 @@ const problem = defineLearningProblem({
         return answer;
     }
 }`,
-  finalTakeaway: 'Each output index gets product before that index × product after that index. Since nums[i] is neither before nor after index i, it is excluded.',
+  finalTakeaway: 'The first loop writes what is on the left of each index. The second loop multiplies what is on the right of each index. Left × right = everything except the current value.',
   visualExplanation: 'The visual only builds the given example: one frame, one output slot. The highlighted value is skipped, the other values are multiplied, and the answer is written for that slot.',
   visualWalkthrough: {
     title: 'Product except self walkthrough',
@@ -124,7 +124,9 @@ const problem = defineLearningProblem({
     }
   },
   body: [
-    { type: 'callout', tone: 'info', title: 'What “except self” means', content: 'For nums = [1, 2, 3, 4], answer[0] excludes nums[0], which is 1, and multiplies the rest: 2 × 3 × 4 = 24.' },
+    { type: 'callout', tone: 'info', title: 'Bridge from visual to code', content: 'The visual says: skip one value and multiply everything else. The code splits “everything else” into two pieces: everything before the index and everything after the index.' },
+    { type: 'callout', tone: 'info', title: 'Key idea', content: 'The first loop writes what is on the left of each index. The second loop multiplies what is on the right of each index. Left × right = everything except the current value.' },
+    { type: 'callout', tone: 'info', title: 'Example at index 2', content: 'For nums = [1, 2, 3, 4], index 2 holds 3. Product except self is 1 × 2 × 4. The code sees that as left side 1 × 2 and right side 4, so answer[2] = 2 × 4 = 8.' },
     {
       type: 'table',
       title: 'Before and after products for the given example',
