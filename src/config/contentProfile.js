@@ -21,6 +21,11 @@ const APPROVED_PROD_QUESTION_IDS = new Set([]);
 const APPROVED_PROD_TOPIC_IDS = new Set([
   'sliding-window',
   'dynamic-programming',
+  'graphs',
+  'two-pointers',
+  'binary-search',
+  'prefix-sum-hashing',
+  'monotonic-stack-queue',
   'api-design',
   'caching',
   'messaging-queues',
