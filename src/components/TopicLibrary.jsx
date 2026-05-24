@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { topicLibraryConfig } from '../config/topicLibraryConfig.js';
 import { topicProgress } from '../services/questionBankService.js';
@@ -63,6 +63,7 @@ export default function TopicLibrary({
 }) {
   const [sortBy, setSortBy] = useState('recommended');
   const [currentPage, setCurrentPage] = useState(1);
+  const libraryRef = useRef(null);
 
   const filteredTopics = useMemo(() => {
     return [...topics].sort((a, b) => {
@@ -104,8 +105,9 @@ export default function TopicLibrary({
     )
   );
 
+  const safePage = Math.min(currentPage, totalPages);
+
   const visibleTopics = useMemo(() => {
-    const safePage = Math.min(currentPage, totalPages);
     const start =
       (safePage - 1) * topicLibraryConfig.topicsPerPage;
 
@@ -113,23 +115,31 @@ export default function TopicLibrary({
       start,
       start + topicLibraryConfig.topicsPerPage
     );
-  }, [filteredTopics, currentPage, totalPages]);
+  }, [filteredTopics, safePage]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [difficulty, completionFilter, sortBy, selectedId]);
 
-  function goToPage(page) {
-    setCurrentPage(Math.min(Math.max(page, 1), totalPages));
+  useEffect(() => {
+    if (safePage === currentPage) return;
+    setCurrentPage(safePage);
+  }, [currentPage, safePage]);
 
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  function goToPage(page) {
+    const nextPage = Math.min(Math.max(page, 1), totalPages);
+    setCurrentPage(nextPage);
+
+    requestAnimationFrame(() => {
+      libraryRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
     });
   }
 
   return (
-    <section className="topic-library glass-lite">
+    <section className="topic-library glass-lite" ref={libraryRef}>
       <div className="library-head">
         <div>
           <p className="eyebrow">Topic library</p>
@@ -256,43 +266,48 @@ export default function TopicLibrary({
       ) : null}
 
       {totalPages > 1 ? (
-        <div className="pagination compact-pagination">
-          <button
-            type="button"
-            onClick={() => goToPage(1)}
-            disabled={currentPage === 1}
-          >
-            First
-          </button>
+        <nav
+          className="pagination compact-pagination"
+          aria-label="Topic library pages"
+        >
+          <div className="pagination-status">
+            Page {safePage} of {totalPages}
+          </div>
 
-          <button
-            type="button"
-            onClick={() => goToPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
+          <div className="pagination-controls">
+            <button
+              type="button"
+              onClick={() => goToPage(1)}
+              disabled={safePage === 1}
+            >
+              First
+            </button>
 
-          <span className="pagination-status">
-            Page {Math.min(currentPage, totalPages)} of {totalPages}
-          </span>
+            <button
+              type="button"
+              onClick={() => goToPage(safePage - 1)}
+              disabled={safePage === 1}
+            >
+              Previous
+            </button>
 
-          <button
-            type="button"
-            onClick={() => goToPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+            <button
+              type="button"
+              onClick={() => goToPage(safePage + 1)}
+              disabled={safePage === totalPages}
+            >
+              Next
+            </button>
 
-          <button
-            type="button"
-            onClick={() => goToPage(totalPages)}
-            disabled={currentPage === totalPages}
-          >
-            Last
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => goToPage(totalPages)}
+              disabled={safePage === totalPages}
+            >
+              Last
+            </button>
+          </div>
+        </nav>
       ) : null}
     </section>
   );

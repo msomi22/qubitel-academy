@@ -120,9 +120,10 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
     overflow-x: hidden;
   }
 
@@ -135,8 +136,10 @@
   .pagination-controls {
     width: 100%;
     min-width: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
     gap: 8px;
   }
 
@@ -144,8 +147,21 @@
   .pagination-controls button,
   .pagination-controls .page-btn,
   .compact-pagination > button {
-    width: 100%;
-    min-width: 0;
+    width: auto;
+    min-width: 40px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .pagination-controls .btn {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .pagination-controls .page-btn {
+    min-width: 40px;
+    padding-right: 10px;
+    padding-left: 10px;
   }
 
   .compact-pagination .pagination-status {
