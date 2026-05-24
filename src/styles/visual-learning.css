@@ -464,6 +464,61 @@
   min-width: 0;
 }
 
+.focused-example-item {
+  display: grid;
+  gap: 8px;
+}
+
+.focused-example-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+}
+
+.example-highlighted-sequence {
+  display: inline-flex;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95em;
+  letter-spacing: 0.02em;
+}
+
+.example-highlighted-sequence span {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 7px;
+  background: rgba(255,255,255,0.03);
+  border-right: 1px solid var(--line);
+}
+
+.example-highlighted-sequence span:last-child {
+  border-right: 0;
+}
+
+.example-highlight-match {
+  background: rgba(34, 197, 94, 0.18) !important;
+  color: #16a34a;
+  font-weight: 900;
+  box-shadow: inset 0 -2px 0 rgba(34, 197, 94, 0.45);
+}
+
+.focused-example-output {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--accent);
+  font-weight: 900;
+}
+
+.focused-example-item p {
+  margin: 0;
+  color: var(--muted);
+}
+
 .focused-problem-workspace .visual-walkthrough-panel.reference-visual-panel {
   gap: 12px;
   padding: 16px;
@@ -650,6 +705,15 @@
   background: #fee2e2;
   color: #991b1b;
   border-color: #fca5a5;
+}
+
+:root[data-theme="light"] .example-highlighted-sequence span {
+  background: #fffaf0;
+}
+
+:root[data-theme="light"] .example-highlight-match {
+  background: #dcfce7 !important;
+  color: #166534;
 }
 
 /* Config visual state panel: keep the current mental state visible first. */
