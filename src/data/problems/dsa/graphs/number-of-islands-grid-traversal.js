@@ -8,7 +8,7 @@ const problem = defineLearningProblem({
   estimatedTime: '16 min',
   language: 'java',
   tags: ['graph', 'grid', 'dfs', 'bfs', 'interview-pattern', 'mental-model', 'visual-walkthrough', 'coding'],
-  scenario: 'Given a grid of land and water, count how many connected groups of land exist.',
+  scenario: 'Given a grid of land and water, decide how many connected groups of land exist.',
   question: 'Given a grid with land cells connected up, down, left, and right, return the number of islands.',
   examples: ['Input grid rows: 1100, 1001, 0011 -> Output: 2'],
   constraints: ['1 means land and 0 means water.', 'Only four-directional connection counts.', 'Each island should be counted once.'],
@@ -80,10 +80,10 @@ const problem = defineLearningProblem({
         { row: 2, col: 3, role: 'open', label: '1' }
       ],
       frames: [
-        { title: 'First unvisited land starts island 1', cells: [{ row: 0, col: 0, role: 'active', label: '1' }], state: { label: 'count=1', values: { row: 0, col: 0, islands: 1 }, helper: 'Start DFS from the first land cell.' }, description: 'The scan finds land that has not been visited. This is a new island.' },
-        { title: 'DFS marks island 1', cells: [{ row: 0, col: 0, role: 'visited', label: 'v' }, { row: 0, col: 1, role: 'visited', label: 'v' }, { row: 1, col: 0, role: 'visited', label: 'v' }], state: { label: 'island 1 visited', values: { islands: 1 }, helper: 'Connected land is absorbed into the same island.' }, description: 'Traversal marks all connected land so those cells will not start new islands.' },
-        { title: 'Second unvisited component starts island 2', cells: [{ row: 1, col: 3, role: 'active', label: '1' }, { row: 2, col: 2, role: 'open', label: '1' }, { row: 2, col: 3, role: 'open', label: '1' }], state: { label: 'count=2', values: { row: 1, col: 3, islands: 2 }, helper: 'This land was not connected to island 1.' }, description: 'A later unvisited land cell starts the second island.' },
-        { title: 'All components counted', cells: [{ row: 1, col: 3, role: 'visited', label: 'v' }, { row: 2, col: 2, role: 'visited', label: 'v' }, { row: 2, col: 3, role: 'visited', label: 'v' }], state: { label: 'answer', values: { islands: 2 }, helper: 'No unvisited land remains.' }, description: 'The scan finishes after both components are marked.', finalResult: { title: 'Final answer', body: 'Return 2.' } }
+        { title: 'First unvisited land starts island 1', cells: [{ row: 0, col: 0, role: 'active', label: '1' }], state: { label: 'count=1', values: ['row=0', 'col=0', 'islands=1'], helper: 'Start DFS from the first land cell.' }, description: 'The scan finds land that has not been visited. This is a new island.' },
+        { title: 'DFS marks island 1', cells: [{ row: 0, col: 0, role: 'visited', label: 'v' }, { row: 0, col: 1, role: 'visited', label: 'v' }, { row: 1, col: 0, role: 'visited', label: 'v' }], state: { label: 'island 1 visited', values: ['islands=1'], helper: 'Connected land is absorbed into the same island.' }, description: 'Traversal marks all connected land so those cells will not start new islands.' },
+        { title: 'Second unvisited component starts island 2', cells: [{ row: 1, col: 3, role: 'active', label: '1' }, { row: 2, col: 2, role: 'open', label: '1' }, { row: 2, col: 3, role: 'open', label: '1' }], state: { label: 'count=2', values: ['row=1', 'col=3', 'islands=2'], helper: 'This land was not connected to island 1.' }, description: 'A later unvisited land cell starts the second island.' },
+        { title: 'All components counted', cells: [{ row: 1, col: 3, role: 'visited', label: 'v' }, { row: 2, col: 2, role: 'visited', label: 'v' }, { row: 2, col: 3, role: 'visited', label: 'v' }], state: { label: 'answer', values: ['islands=2'], helper: 'No unvisited land remains.' }, description: 'The scan finishes after both components are marked.', finalResult: { title: 'Final answer', body: 'Return 2.' } }
       ]
     }
   },
