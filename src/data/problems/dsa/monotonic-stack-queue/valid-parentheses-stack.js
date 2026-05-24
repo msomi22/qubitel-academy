@@ -57,6 +57,7 @@ class Solution {
   finalTakeaway: 'Use a stack when the last thing opened must be the first thing closed.',
   visualWalkthrough: {
     title: 'Stack matching animation',
+    summary: 'Watch each opening bracket get pushed and each closing bracket compare only against the latest unmatched opening on top of the stack.',
     diagram: {
       type: 'stack',
       title: 'Scan s = "({[]})"',
