@@ -188,14 +188,6 @@ const problem = defineProblem({
       values: ['e', 'i', 'd', 'b', 'a', 'o', 'o', 'o'],
       stateTitle: 'Frequency state',
       stateDescription: 'The target is {a:1,b:1}. A window matches only when its counts are exactly the same.',
-      legend: [
-        { role: 'window', label: 'active window' },
-        { role: 'current', label: 'incoming/current character' },
-        { role: 'remove', label: 'outgoing character' },
-        { role: 'warning', label: 'full window but no match' },
-        { role: 'success', label: 'matching frequency' },
-        { role: 'answer', label: 'answer found' }
-      ],
       frames: [
         {
           title: 'First full window does not match',
