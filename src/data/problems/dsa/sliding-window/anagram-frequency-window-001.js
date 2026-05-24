@@ -83,7 +83,6 @@ const problem = defineProblem({
     }
   ],
   constraints: [
-    'The authored solution for this problem must use Java only.',
     'An anagram must contain the same characters with the same counts as p, but the order may be different.',
     'The candidate must be a contiguous substring of s, not a subsequence.',
     'Every candidate window has fixed length p.length().',
@@ -109,7 +108,7 @@ const problem = defineProblem({
     'If the frequencies match, add left into the answer list.',
     'Continue sliding so overlapping answers, such as s = "abab" and p = "ab", are not missed.'
   ],
-  finalPattern: 'Fixed-size sliding window with Java frequency-array state.',
+  finalPattern: 'Fixed-size sliding window with frequency-array state.',
   workedExample: {
     input: 's = "cbaebabacd", p = "abc"',
     targetFrequency: '{ a: 1, b: 1, c: 1 }',
@@ -130,7 +129,6 @@ const problem = defineProblem({
   ],
   commonMistake: 'The most common mistake is sorting every substring or comparing only sets of characters. Anagrams need exact frequency counts, and the Java solution can update int[] counts in O(1) per entering or leaving character.',
   commonMistakes: [
-    'Writing the authored solution in a language other than Java for this problem.',
     'Sorting every length-p substring instead of maintaining frequency state.',
     'Letting the window grow beyond p.length() before checking for a match.',
     'Forgetting to decrement the outgoing character when left advances.',
@@ -154,7 +152,7 @@ const problem = defineProblem({
     approach: 'Maintain target and window int[26] frequency arrays for lowercase English letters, slide a fixed-size window, and record the left index whenever the arrays match.',
     code: javaSolution
   },
-  finalTakeaway: 'The window movement is still fixed-size: one character leaves and one enters. The new Stage B idea is that the rolling state is a Java int[] frequency table, not a sum.',
+  finalTakeaway: 'The window movement is still fixed-size: one character leaves and one enters. The Stage B idea is that the rolling state is a frequency table, not a sum.',
   visualWalkthrough: {
     title: 'Fixed-size frequency window',
     summary: 'Watch the window keep length 3 while counts change. A match happens when the active window has the same frequency table as p = "abc".',
@@ -259,12 +257,10 @@ const problem = defineProblem({
     }
   },
   body: [
-    { type: 'callout', tone: 'info', title: 'Java-only solution', content: 'Use Java for this authored solution. The reference implementation uses List<Integer>, int[26] target/window frequency arrays, and a helper that compares the two arrays.' },
-    { type: 'callout', tone: 'info', title: 'What is an anagram?', content: 'Two strings are anagrams when they contain the same characters with the same counts, but the order can be different. For example, "cba" is an anagram of "abc" because both contain one a, one b, and one c.' },
-    { type: 'callout', tone: 'info', title: 'Core idea', content: 'This is the same fixed-size slide from rolling-sum problems, but the state is a frequency table. One character leaves, one character enters, and the counts decide whether the window is an anagram.' },
+    { type: 'callout', tone: 'info', title: 'Anagram frequency window', content: 'Two strings are anagrams when they contain the same characters with the same counts, but the order can be different. For example, "cba" is an anagram of "abc" because both contain one a, one b, and one c. The fixed-size window uses this idea by keeping character counts for the current substring, then recording the left index whenever those counts match p.' },
     { type: 'callout', tone: 'warning', title: 'Contiguous only', content: 'Do not skip characters. Every candidate is a contiguous length-p.length() window inside s.' }
   ],
-  relatedConcepts: ['fixed-size window', 'frequency array', 'anagram matching', 'outgoing character', 'incoming character', 'java'],
+  relatedConcepts: ['fixed-size window', 'frequency array', 'anagram matching', 'outgoing character', 'incoming character'],
   followUpQuestions: [
     'How would you change the Java implementation for a larger character set where 26-count arrays are not enough?',
     'How could a matched-count or frequency-delta approach avoid comparing all 26 counts each time?',
