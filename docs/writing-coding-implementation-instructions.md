@@ -29,6 +29,26 @@ Do **not** push an instruction file to the repository unless the user explicitly
 
 Inline code examples are allowed inside the one Markdown block, but avoid nested fenced code blocks where possible. Use indented code blocks or plain text labels inside the main block so the copy-ready block remains easy to paste.
 
+## Chat naming convention
+
+When creating a new chat for coding or implementation instructions, name the chat clearly using the issue number plus a short description.
+
+Use this format:
+
+    #<issue-number> — <short issue description>
+
+Examples:
+
+    #135 — Minimum Size Subarray Sum
+    #133 — DSA Explanation Review
+    #131 — Explanation-First Authoring Standard
+
+If the issue title is long, shorten it while keeping the intent clear. Prefer the issue number first so the chat is easy to find later.
+
+When the generated instruction includes a task summary, mention the suggested chat name near the top:
+
+    Suggested chat name: #135 — Minimum Size Subarray Sum
+
 ## Required structure
 
 Every implementation instruction should include these sections.
@@ -43,9 +63,11 @@ Include:
 - parent epic if applicable
 - branch name
 - expected user-facing outcome
+- suggested chat name using `#<issue-number> — <short description>`
 
 Example:
 
+    Suggested chat name: #135 — Minimum Size Subarray Sum
     Implement #135 on branch feature/add-min-size-subarray-sum-sliding-window.
     Add one new explanation-first Sliding Window DSA problem for Minimum Size Subarray Sum.
 
@@ -154,6 +176,7 @@ Examples:
 Before posting implementation instructions, confirm:
 
 - [ ] The final answer is one complete Markdown code block for one-click copying.
+- [ ] The suggested chat name is included near the top and follows `#<issue-number> — <short description>`.
 - [ ] The target branch is named.
 - [ ] The task issue is linked.
 - [ ] The parent epic is linked when relevant.
@@ -173,6 +196,8 @@ When producing the final answer in chat, put the entire instruction below inside
     # Coding Implementation Instruction: Issue #<number> — <Short Title>
 
     ## 1. Task Summary
+
+    Suggested chat name: #<number> — <Short Title>
 
     Implement #<number> on branch `<branch-name>`.
 
@@ -293,6 +318,8 @@ When producing the final answer in chat, put the entire instruction below inside
 - Giving a high-level plan but no exact file paths.
 - Splitting the final instruction across several code blocks instead of one copy-ready block.
 - Pushing a coding-instruction file when the user asked for instructions in chat.
+- Forgetting to include the suggested chat name near the top.
+- Naming chats generically instead of using `#<issue-number> — <short description>`.
 - Asking the implementer to create a branch that already exists.
 - Forgetting to link the parent epic or quality standard.
 - Mixing app registration instructions with discovery-based problem loading.
