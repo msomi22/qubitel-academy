@@ -137,15 +137,15 @@ const problem = defineProblem({
     'Overlapping windows must be checked, such as s = "abab", p = "ab" producing [0, 1, 2].',
     'A mismatch can have the right length but the wrong counts, such as "bae" versus target "abc".'
   ],
-  commonMistake: 'The most common mistake is sorting every substring or comparing only sets of characters. Anagrams need exact frequency counts, and the Java solution can update int[] counts in O(1) per entering or leaving character.',
+  commonMistake: 'The most common mistake is treating anagrams as a set problem. Exact counts matter: "ab" and "aab" are not the same because the second string has one extra a.',
   commonMistakes: [
     'Sorting every length-p substring instead of maintaining frequency state.',
+    'Comparing only distinct characters and missing repeated-character requirements such as p = "aab".',
     'Letting the window grow beyond p.length() before checking for a match.',
     'Forgetting to decrement the outgoing character when left advances.',
     'Treating subsequences as valid anagrams even though the problem requires contiguous substrings.',
     'Recording an answer before the first full p.length() window exists.',
-    'Forgetting overlapping answers, especially examples like s = "abab", p = "ab".',
-    'Comparing only distinct characters and missing repeated-character requirements such as p = "aab".'
+    'Forgetting overlapping answers, especially examples like s = "abab", p = "ab".'
   ],
   hints: [
     'Every valid anagram window has length p.length().',
