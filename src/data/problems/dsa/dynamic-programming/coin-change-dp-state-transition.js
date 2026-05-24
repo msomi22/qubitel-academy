@@ -47,53 +47,64 @@ class Solution {
     }
 }`,
   finalTakeaway: 'Dynamic programming works when a big answer can be built from saved smaller answers.',
-  visualExplanation: 'For coins = [1, 2, 5] and amount = 11, each frame highlights the dp cell that becomes useful for reaching the final answer.',
+  visualExplanation: 'For coins = [1, 2, 5] and amount = 11, the visual shows the actual dp table from amount 0 through amount 11.',
   visualWalkthrough: {
     title: 'Coin Change DP walkthrough',
-    summary: 'For coins = [1, 2, 5] and amount = 11, build the answer using saved smaller answers.',
+    summary: 'For coins = [1, 2, 5] and amount = 11, solve every amount from 0 through 11 and reuse saved smaller answers.',
     diagram: {
       type: 'array',
       title: 'DP table updates',
-      description: 'Example: coins = [1, 2, 5], amount = 11. Each dp cell stores the fewest coins needed for that amount.',
-      values: ['dp[0]', 'dp[1]', 'dp[2]', 'dp[5]', 'dp[6]', 'dp[11]'],
+      description: 'Top numbers are the amounts being solved: 0 through 11. Each box shows dp[amount], the fewest coins needed for that amount using coins [1, 2, 5].',
+      values: ['0', '1', '1', '2', '2', '1', '2', '2', '3', '3', '2', '3'],
       stateTitle: 'Current update',
-      stateDescription: 'The latest state explains the cell currently being improved.',
+      stateDescription: 'The latest state explains the highlighted amount.',
       stateOrder: 'latest-first',
       frames: [
         {
-          title: 'Define the trusted base',
-          items: [{ index: 0, role: 'answer', label: '0', caption: 'known' }],
-          state: { label: 'dp[0]', values: ['0 coins'], helper: 'Making amount 0 needs no coins. This gives the table a trusted starting point.' },
-          description: 'Start with dp[0] = 0 because amount 0 costs 0 coins.'
+          title: 'Start with amount 0',
+          items: [{ index: 0, role: 'answer', label: '0', caption: 'dp[0]' }],
+          state: { label: 'dp[0] = 0', values: ['amount 0', '0 coins'], helper: 'Making amount 0 needs no coins. This is the base state every later amount can build from.' },
+          description: 'The full table has one cell for every amount from 0 to 11. Start with dp[0] = 0.'
         },
         {
-          title: 'One coin can solve 1, 2, and 5',
+          title: 'Fill the one-coin amounts',
           items: [
-            { index: 0, role: 'success', label: '0', caption: 'base' },
-            { index: 1, role: 'current', label: '1', caption: 'coin 1' },
-            { index: 2, role: 'current', label: '1', caption: 'coin 2' },
-            { index: 3, role: 'current', label: '1', caption: 'coin 5' }
+            { index: 1, role: 'current', label: '1', caption: 'dp[1]' },
+            { index: 2, role: 'current', label: '1', caption: 'dp[2]' },
+            { index: 5, role: 'current', label: '1', caption: 'dp[5]' }
           ],
-          state: { label: 'dp[1], dp[2], dp[5]', values: ['1 coin each'], helper: 'Amounts 1, 2, and 5 can each be made directly using one available coin.' },
-          description: 'The coin values themselves are the first useful positive amounts: 1, 2, and 5 each need one coin.'
+          state: { label: 'dp[1], dp[2], dp[5] = 1', values: ['coin 1', 'coin 2', 'coin 5'], helper: 'Amounts 1, 2, and 5 each match an available coin, so each needs exactly one coin.' },
+          description: 'The denominations are [1, 2, 5]. Those amounts are easy: each can be made directly with one coin.'
         },
         {
-          title: 'Build amount 6 from a saved answer',
+          title: 'Intermediate amounts are still part of the table',
           items: [
-            { index: 1, role: 'success', label: '1', caption: 'reuse' },
-            { index: 3, role: 'success', label: '1', caption: 'coin 5' },
-            { index: 4, role: 'current', label: '2', caption: 'update' }
+            { index: 3, role: 'current', label: '2', caption: 'dp[3]' },
+            { index: 4, role: 'current', label: '2', caption: 'dp[4]' },
+            { index: 7, role: 'current', label: '2', caption: 'dp[7]' },
+            { index: 8, role: 'current', label: '3', caption: 'dp[8]' },
+            { index: 9, role: 'current', label: '3', caption: 'dp[9]' },
+            { index: 10, role: 'current', label: '2', caption: 'dp[10]' }
           ],
-          state: { label: 'dp[6]', values: ['dp[1] + coin 5', '1 + 1 = 2'], helper: 'Amount 6 can be made by reusing dp[1], then adding coin 5. That gives 1 + 5 = 6 using 2 coins.' },
-          description: 'Amount 6 matters because it becomes the saved smaller answer we can reuse to reach 11.'
+          state: { label: 'No skipped amounts', values: ['dp[3]=2', 'dp[4]=2', 'dp[7]=2', 'dp[8]=3', 'dp[9]=3', 'dp[10]=2'], helper: 'DP solves every amount from 0 to 11. The visual highlights several middle cells here so it is clear they are not omitted.' },
+          description: 'The table also contains amounts like 3, 4, 7, 8, 9, and 10. We still compute them because any of them might help build a later amount.'
         },
         {
-          title: 'Reach the target amount 11',
+          title: 'Amount 6 becomes useful for the target',
           items: [
-            { index: 4, role: 'success', label: '2', caption: 'reuse dp[6]' },
-            { index: 5, role: 'answer', label: '3', caption: 'answer' }
+            { index: 1, role: 'success', label: '1', caption: 'dp[1]' },
+            { index: 6, role: 'current', label: '2', caption: 'dp[6]' }
           ],
-          state: { label: 'dp[11]', values: ['dp[6] + coin 5', '2 + 1 = 3', '5 + 1 + 5'], helper: 'Use coin 5 as the last coin. Before that, amount 6 was already solved in 2 coins, so amount 11 takes 3 coins.' },
+          state: { label: 'dp[6] = 2', values: ['dp[1] + coin 5', '1 + 1 = 2'], helper: 'Amount 6 can be made by reusing the saved answer for amount 1, then adding coin 5: 1 + 5 = 6.' },
+          description: 'Amount 6 matters because it is the smaller solved amount we can reuse to reach 11.'
+        },
+        {
+          title: 'Reach amount 11',
+          items: [
+            { index: 6, role: 'success', label: '2', caption: 'reuse dp[6]' },
+            { index: 11, role: 'answer', label: '3', caption: 'dp[11]' }
+          ],
+          state: { label: 'dp[11] = 3', values: ['dp[6] + coin 5', '2 + 1 = 3', '5 + 1 + 5'], helper: 'Use coin 5 as the last coin. Before that, amount 6 was already solved in 2 coins, so amount 11 takes 3 coins.' },
           description: 'Since dp[6] = 2, adding one more 5-coin gives dp[11] = 3. This matches 5 + 5 + 1.',
           finalResult: { title: 'Final answer', body: 'Return 3 because 11 can be made with three coins: 5 + 5 + 1. The problem asks for the fewest coins, not just any combination.' }
         }
