@@ -15,6 +15,7 @@ import validParentheses from '../data/problems/dsa/monotonic-stack-queue/valid-p
 import productExceptSelf from '../data/problems/dsa/prefix-sum-hashing/product-of-array-except-self-prefix-suffix.js';
 import twoSum from '../data/problems/dsa/prefix-sum-hashing/two-sum-hash-map-complement.js';
 import slidingWindow from '../data/problems/dsa/sliding-window/longest-substring-without-repeating-characters.js';
+import minimumSizeSubarraySum from '../data/problems/dsa/sliding-window/minimum-size-subarray-sum.js';
 import containerWater from '../data/problems/dsa/two-pointers/container-with-most-water-two-pointers.js';
 
 const dsaMasteryProblems = [
@@ -25,6 +26,7 @@ const dsaMasteryProblems = [
   productExceptSelf,
   twoSum,
   slidingWindow,
+  minimumSizeSubarraySum,
   containerWater
 ];
 
@@ -85,7 +87,7 @@ function assertTeachingText(problem, field, minimumWords) {
 }
 
 test('DSA mastery content batch is production-approved discovered content', () => {
-  assert.equal(dsaMasteryProblems.length, 8);
+  assert.equal(dsaMasteryProblems.length, 9);
 
   for (const problem of dsaMasteryProblems) {
     assert.equal(problem.category, 'dsa');
