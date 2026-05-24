@@ -10,7 +10,9 @@ When asked to create coding or implementation instructions, deliver the final in
 
 The one-block format is important because it gives the user a single copy button at the top right of the generated instruction.
 
-Start the response with the desired chat title as the first visible line, then provide the copy-ready block.
+The **first generated line in the assistant response** must be the suggested chat name.
+
+The **first section inside the Markdown instruction block** must also be chat naming.
 
 Use this response shape:
 
@@ -21,8 +23,13 @@ Use this response shape:
     ```md
     # Coding Implementation Instruction: Issue #123 — Short Title
 
-    ## 1. Task Summary
+    ## 1. Chat Naming
+
     Suggested chat name: #123 — Short Title
+
+    Use this name for the chat/thread so the work is easy to find later.
+
+    ## 2. Task Summary
     ...
     ```
 
@@ -48,16 +55,31 @@ Examples:
 
 Important: the assistant cannot directly rename the ChatGPT conversation. The app may still generate its own title. To give the title generator the strongest signal, the desired chat name must appear twice:
 
-1. As the first visible line before the copy-ready Markdown block.
-2. Inside the Markdown block near the top of the Task Summary section.
+1. As the first visible/generated line before the copy-ready Markdown block.
+2. As the first instruction/section inside the Markdown block.
 
 If the issue title is long, shorten it while keeping the intent clear. Prefer the issue number first so the chat is easy to find later.
 
 ## Required structure
 
-Every implementation instruction should include these sections.
+Every implementation instruction should include these sections in this order.
 
-### 1. Task summary
+### 1. Chat naming
+
+This must be the first instruction inside the Markdown block.
+
+Include:
+
+- suggested chat name using `#<issue-number> — <short description>`
+- a brief instruction to use that name for the chat/thread
+
+Example:
+
+    Suggested chat name: #135 — Minimum Size Subarray Sum
+
+    Use this name for the chat/thread so the implementation work is easy to find later.
+
+### 2. Task summary
 
 Explain the goal in one or two short paragraphs.
 
@@ -67,15 +89,13 @@ Include:
 - parent epic if applicable
 - branch name
 - expected user-facing outcome
-- suggested chat name using `#<issue-number> — <short description>`
 
 Example:
 
-    Suggested chat name: #135 — Minimum Size Subarray Sum
     Implement #135 on branch feature/add-min-size-subarray-sum-sliding-window.
     Add one new explanation-first Sliding Window DSA problem for Minimum Size Subarray Sum.
 
-### 2. Required references
+### 3. Required references
 
 List the documents and issues the implementer must read before coding.
 
@@ -87,7 +107,7 @@ For Senior Dev Accelerator problem-authoring tasks, include:
 - the parent epic when relevant
 - at least one existing problem file to use as a style reference
 
-### 3. Branch instructions
+### 4. Branch instructions
 
 State whether the branch already exists.
 
@@ -99,7 +119,7 @@ If the branch exists, say:
 
 Do not tell the implementer to create a new branch when one already exists.
 
-### 4. Files to create or edit
+### 5. Files to create or edit
 
 Be explicit.
 
@@ -111,7 +131,7 @@ Use three groups:
 
 This avoids accidental legacy-bank changes, renderer hacks, or unrelated refactors.
 
-### 5. Implementation requirements
+### 6. Implementation requirements
 
 Describe the required behavior and content.
 
@@ -127,7 +147,7 @@ For problem-authoring tasks, include:
 - visual walkthrough requirements
 - metadata visibility
 
-### 6. Content quality requirements
+### 7. Content quality requirements
 
 Reference #131 and convert it into task-specific checks.
 
@@ -141,7 +161,7 @@ Include checks for:
 - section-specific responsibilities
 - visuals that teach state changes
 
-### 7. Testing and validation
+### 8. Testing and validation
 
 List exact commands.
 
@@ -152,7 +172,7 @@ At minimum:
 
 For visual or UI work, include manual verification steps and console-error checks.
 
-### 8. Pull request requirements
+### 9. Pull request requirements
 
 Tell the implementer what the PR must include.
 
@@ -164,7 +184,7 @@ Usually:
 - screenshots or notes for UI work
 - `Closes #<issue-number>` when the PR fully completes the issue
 
-### 9. Non-goals
+### 10. Non-goals
 
 Call out what should not be done.
 
@@ -179,8 +199,9 @@ Examples:
 
 Before posting implementation instructions, confirm:
 
-- [ ] The first visible line is `Suggested chat name: #<issue-number> — <short description>`.
-- [ ] The same suggested chat name appears inside the Markdown block near the top.
+- [ ] The first generated line is `Suggested chat name: #<issue-number> — <short description>`.
+- [ ] The first section inside the Markdown block is `## 1. Chat Naming`.
+- [ ] The same suggested chat name appears inside that first Markdown section.
 - [ ] The final answer is one complete Markdown code block for one-click copying.
 - [ ] The target branch is named.
 - [ ] The task issue is linked.
@@ -205,9 +226,15 @@ When producing the final answer in chat, first write the suggested chat name as 
     ```md
     # Coding Implementation Instruction: Issue #<number> — <Short Title>
 
-    ## 1. Task Summary
+    ## 1. Chat Naming
 
     Suggested chat name: #<number> — <Short Title>
+
+    Use this name for the chat/thread so the implementation work is easy to find later.
+
+    ---
+
+    ## 2. Task Summary
 
     Implement #<number> on branch `<branch-name>`.
 
@@ -219,7 +246,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 2. Required References
+    ## 3. Required References
 
     Read these before coding:
 
@@ -233,7 +260,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 3. Branch Instructions
+    ## 4. Branch Instructions
 
     The branch already exists. Do not create a new branch.
 
@@ -245,7 +272,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 4. Files to Create or Edit
+    ## 5. Files to Create or Edit
 
     ### Create
 
@@ -261,7 +288,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 5. Implementation Requirements
+    ## 6. Implementation Requirements
 
     - <requirement 1>
     - <requirement 2>
@@ -269,7 +296,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 6. Content Quality Requirements
+    ## 7. Content Quality Requirements
 
     - <quality requirement 1>
     - <quality requirement 2>
@@ -277,7 +304,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 7. Testing and Validation
+    ## 8. Testing and Validation
 
     Run:
 
@@ -292,7 +319,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 8. Pull Request Requirements
+    ## 9. Pull Request Requirements
 
     Open a PR into `main` from `<branch-name>`.
 
@@ -305,7 +332,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 9. Non-goals
+    ## 10. Non-goals
 
     Do not:
 
@@ -315,7 +342,7 @@ When producing the final answer in chat, first write the suggested chat name as 
 
     ---
 
-    ## 10. Done Means
+    ## 11. Done Means
 
     The task is complete only when:
 
@@ -329,8 +356,8 @@ When producing the final answer in chat, first write the suggested chat name as 
 - Giving a high-level plan but no exact file paths.
 - Splitting the final instruction across several code blocks instead of one copy-ready block.
 - Pushing a coding-instruction file when the user asked for instructions in chat.
-- Forgetting to put the suggested chat name as the first visible line.
-- Forgetting to include the same suggested chat name inside the Markdown block near the top.
+- Forgetting to make the suggested chat name the first generated line.
+- Forgetting to make chat naming the first section inside the Markdown instruction.
 - Naming chats generically instead of using `#<issue-number> — <short description>`.
 - Asking the implementer to create a branch that already exists.
 - Forgetting to link the parent epic or quality standard.
