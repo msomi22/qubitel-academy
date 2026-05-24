@@ -74,7 +74,17 @@ const problem = defineProblem({
     {
       input: 's = "cbaebabacd", p = "abc"',
       output: '[0, 6]',
-      explanation: '"cba" at index 0 is an anagram of "abc", and "bac" at index 6 is also an anagram of "abc" because both windows contain one a, one b, and one c.'
+      highlightedInput: {
+        prefix: 's = ',
+        segments: [
+          { text: 'cba', highlight: true },
+          { text: 'eba' },
+          { text: 'bac', highlight: true },
+          { text: 'd' }
+        ],
+        suffix: ', p = "abc"'
+      },
+      explanation: 'The highlighted windows "cba" and "bac" are the anagrams of "abc", so the returned start indices are 0 and 6.'
     },
     {
       input: 's = "abab", p = "ab"',
