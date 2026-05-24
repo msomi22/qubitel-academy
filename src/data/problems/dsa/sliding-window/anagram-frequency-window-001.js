@@ -2,6 +2,52 @@ import { defineProblem } from '../../../../problems/problemAuthoring.js';
 
 const question = 'Given strings s and p, return all start indices of p\'s anagrams in s. The result must contain indices in increasing order.';
 
+const javaSolution = `import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> result = new ArrayList<>();
+
+        if (p.length() == 0 || p.length() > s.length()) {
+            return result;
+        }
+
+        int[] targetFreq = new int[26];
+        int[] windowFreq = new int[26];
+
+        for (int i = 0; i < p.length(); i++) {
+            targetFreq[p.charAt(i) - 'a']++;
+        }
+
+        int left = 0;
+
+        for (int right = 0; right < s.length(); right++) {
+            windowFreq[s.charAt(right) - 'a']++;
+
+            if (right - left + 1 > p.length()) {
+                windowFreq[s.charAt(left) - 'a']--;
+                left++;
+            }
+
+            if (right - left + 1 == p.length() && sameFrequency(targetFreq, windowFreq)) {
+                result.add(left);
+            }
+        }
+
+        return result;
+    }
+
+    private boolean sameFrequency(int[] a, int[] b) {
+        for (int i = 0; i < 26; i++) {
+            if (a[i] != b[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}`;
+
 const problem = defineProblem({
   id: 'anagram-frequency-window-001',
   type: 'coding',
@@ -10,13 +56,14 @@ const problem = defineProblem({
   title: 'Find All Anagrams in a String — fixed-size frequency window',
   difficulty: 'Medium',
   estimatedTime: '20 min',
-  language: 'javascript',
+  language: 'java',
   tags: [
     'strings',
     'sliding-window',
     'fixed-window',
     'frequency-map',
     'anagram',
+    'java',
     'coding',
     'visual-walkthrough'
   ],
@@ -36,31 +83,32 @@ const problem = defineProblem({
     }
   ],
   constraints: [
+    'The authored solution for this problem must use Java only.',
     'The candidate must be a contiguous substring of s, not a subsequence.',
-    'Every candidate window has fixed length p.length.',
+    'Every candidate window has fixed length p.length().',
     'Assume lowercase English letters for the count-array solution.',
     'Return [] when p is longer than s.',
     'If p is empty, return [] for this authored problem convention because there is no meaningful non-empty anagram window to report.',
     'The result indices must be returned in increasing order.'
   ],
   starterThought: 'Stage A used the same fixed-size slide with a rolling sum. Here the window still moves the same way, but the maintained state is a frequency table instead of one number.',
-  intuition: 'An anagram of p must use exactly the same characters with exactly the same counts. That means every candidate in s must have length p.length. Slide a fixed-size window across s. When a character enters from the right, increment its window count. If the window grows too large, the character at left leaves, so decrement its count and move left. Once the window has exactly p.length characters, compare the window counts with the target counts from p. A match means the current left index is an answer.',
-  mentalPicture: 'Picture a small tray that can hold exactly p.length letters. The tray slides across s one position at a time. Each slide removes the oldest letter and adds the newest letter. If the tray contains the same letter counts as p, the tray spells an anagram even if the order is different.',
+  intuition: 'An anagram of p must use exactly the same characters with exactly the same counts. That means every candidate in s must have length p.length(). Slide a fixed-size window across s. When a character enters from the right, increment its window count. If the window grows too large, the character at left leaves, so decrement its count and move left. Once the window has exactly p.length() characters, compare the window counts with the target counts from p. A match means the current left index is an answer.',
+  mentalPicture: 'Picture a small tray that can hold exactly p.length() letters. The tray slides across s one position at a time. Each slide removes the oldest letter and adds the newest letter. If the tray contains the same letter counts as p, the tray spells an anagram even if the order is different.',
   patternSignal: 'Use this pattern when the prompt asks for permutations or anagrams inside a string and every valid answer must have the same length as the pattern.',
-  invariant: 'After each iteration, the window frequency array describes exactly the characters in s[left..right]. Before checking for a match, the algorithm ensures the window length is exactly p.length.',
+  invariant: 'After each iteration, the window frequency array describes exactly the characters in s[left..right]. Before checking for a match, the algorithm ensures the window length is exactly p.length().',
   bruteForceThought: 'A brute-force solution sorts every length-p substring and compares it with sorted p. That repeats O(k log k) sorting work for each candidate window and hides the simple outgoing/incoming update.',
   optimizationJourney: 'A fixed-size frequency window reuses the previous window. One character leaves, one character enters, and only two counts change. Comparing 26 lowercase counts is constant-size work, so the scan is effectively linear.',
   stepByStepBreakdown: [
-    'If p is empty or p.length is greater than s.length, return [].',
+    'If p is empty or p.length() is greater than s.length(), return an empty List.',
     'Build targetFreq from the characters in p.',
     'Keep windowFreq for the current window in s and start left at 0.',
-    'Move right from 0 to s.length - 1 and increment the count for s[right].',
-    'If the current window length becomes greater than p.length, decrement the count for s[left] and move left forward.',
-    'When the window length equals p.length, compare targetFreq and windowFreq.',
-    'If the frequencies match, push left into the answer list.',
+    'Move right from 0 to s.length() - 1 and increment the count for s.charAt(right).',
+    'If the current window length becomes greater than p.length(), decrement the count for s.charAt(left) and move left forward.',
+    'When the window length equals p.length(), compare targetFreq and windowFreq.',
+    'If the frequencies match, add left into the answer list.',
     'Continue sliding so overlapping answers, such as s = "abab" and p = "ab", are not missed.'
   ],
-  finalPattern: 'Fixed-size sliding window with frequency state.',
+  finalPattern: 'Fixed-size sliding window with Java frequency-array state.',
   workedExample: {
     input: 's = "cbaebabacd", p = "abc"',
     targetFrequency: '{ a: 1, b: 1, c: 1 }',
@@ -72,111 +120,40 @@ const problem = defineProblem({
     answer: '[0, 6]'
   },
   edgeCases: [
-    'p longer than s returns [].',
-    's empty returns [].',
-    'p empty returns [] in this problem convention.',
+    'p longer than s returns an empty List.',
+    's empty returns an empty List.',
+    'p empty returns an empty List in this problem convention.',
     'Repeated characters in p require exact counts, such as p = "aab" needing two a characters and one b.',
     'Overlapping windows must be checked, such as s = "abab", p = "ab" producing [0, 1, 2].',
     'A mismatch can have the right length but the wrong counts, such as "bae" versus target "abc".'
   ],
-  commonMistake: 'The most common mistake is sorting every substring or comparing only sets of characters. Anagrams need exact frequency counts, and the window can update those counts in O(1) per move for entering and leaving characters.',
+  commonMistake: 'The most common mistake is sorting every substring or comparing only sets of characters. Anagrams need exact frequency counts, and the Java solution can update int[] counts in O(1) per entering or leaving character.',
   commonMistakes: [
+    'Writing the authored solution in a language other than Java for this problem.',
     'Sorting every length-p substring instead of maintaining frequency state.',
-    'Letting the window grow beyond p.length before checking for a match.',
+    'Letting the window grow beyond p.length() before checking for a match.',
     'Forgetting to decrement the outgoing character when left advances.',
     'Treating subsequences as valid anagrams even though the problem requires contiguous substrings.',
-    'Recording an answer before the first full p.length window exists.',
+    'Recording an answer before the first full p.length() window exists.',
     'Forgetting overlapping answers, especially examples like s = "abab", p = "ab".',
     'Comparing only distinct characters and missing repeated-character requirements such as p = "aab".'
   ],
   hints: [
-    'Every valid anagram window has length p.length.',
-    'Build one frequency table for p and one for the active window in s.',
+    'Every valid anagram window has length p.length().',
+    'Build one int[26] frequency table for p and one int[26] table for the active window in s.',
     'When right adds a character, increment its window count.',
-    'When the window becomes too long, decrement s[left] and then move left.',
+    'When the window becomes too long, decrement s.charAt(left) and then move left.',
     'Only record left after the window is full and its counts match the target counts.'
   ],
-  complexityAnalysis: 'Let n be s.length and let alphabet be 26 for lowercase English letters. The loop visits each character once with right, and left only moves forward as characters leave the fixed-size window. Comparing two 26-length arrays after each full window costs O(26), so the total time is O(n * 26), which is effectively O(n) for a fixed alphabet. Extra space is O(26) for the target and window frequency arrays, which is O(1) for lowercase English letters.',
+  complexityAnalysis: 'Let n be s.length() and let alphabet be 26 for lowercase English letters. The loop visits each character once with right, and left only moves forward as characters leave the fixed-size window. Comparing two 26-length int arrays after each full window costs O(26), so the total time is O(n * 26), which is effectively O(n) for a fixed alphabet. Extra space is O(26) for the target and window frequency arrays, which is O(1) for lowercase English letters.',
   explanation: 'For s = "cbaebabacd" and p = "abc", the target count is a:1, b:1, c:1. The first full window "cba" has exactly the same counts, so index 0 is recorded. The window then slides one step: c leaves and e enters, producing "bae", whose counts do not match the target. The scan continues with the same fixed-size rule. Later, the window "bac" at indices 6..8 again has a:1, b:1, c:1, so index 6 is recorded. The final answer is [0, 6].',
-  solutionCode: `function findAnagrams(s, p) {
-  if (p.length === 0 || p.length > s.length) {
-    return [];
-  }
-
-  const base = 'a'.charCodeAt(0);
-  const targetFreq = Array(26).fill(0);
-  const windowFreq = Array(26).fill(0);
-  const result = [];
-  let left = 0;
-
-  for (const ch of p) {
-    targetFreq[ch.charCodeAt(0) - base]++;
-  }
-
-  for (let right = 0; right < s.length; right++) {
-    windowFreq[s.charCodeAt(right) - base]++;
-
-    if (right - left + 1 > p.length) {
-      windowFreq[s.charCodeAt(left) - base]--;
-      left++;
-    }
-
-    if (right - left + 1 === p.length && sameFrequency(targetFreq, windowFreq)) {
-      result.push(left);
-    }
-  }
-
-  return result;
-}
-
-function sameFrequency(a, b) {
-  for (let i = 0; i < 26; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}`,
+  solutionCode: javaSolution,
   solution: {
-    language: 'javascript',
-    approach: 'Maintain target and window frequency arrays for lowercase English letters, slide a fixed-size window, and record the left index whenever the arrays match.',
-    code: `function findAnagrams(s, p) {
-  if (p.length === 0 || p.length > s.length) {
-    return [];
-  }
-
-  const base = 'a'.charCodeAt(0);
-  const targetFreq = Array(26).fill(0);
-  const windowFreq = Array(26).fill(0);
-  const result = [];
-  let left = 0;
-
-  for (const ch of p) {
-    targetFreq[ch.charCodeAt(0) - base]++;
-  }
-
-  for (let right = 0; right < s.length; right++) {
-    windowFreq[s.charCodeAt(right) - base]++;
-
-    if (right - left + 1 > p.length) {
-      windowFreq[s.charCodeAt(left) - base]--;
-      left++;
-    }
-
-    if (right - left + 1 === p.length && sameFrequency(targetFreq, windowFreq)) {
-      result.push(left);
-    }
-  }
-
-  return result;
-}
-
-function sameFrequency(a, b) {
-  for (let i = 0; i < 26; i++) {
-    if (a[i] !== b[i]) return false;
-  }
-  return true;
-}`
+    language: 'java',
+    approach: 'Maintain target and window int[26] frequency arrays for lowercase English letters, slide a fixed-size window, and record the left index whenever the arrays match.',
+    code: javaSolution
   },
-  finalTakeaway: 'The window movement is still fixed-size: one character leaves and one enters. The new Stage B idea is that the rolling state is a frequency table, not a sum.',
+  finalTakeaway: 'The window movement is still fixed-size: one character leaves and one enters. The new Stage B idea is that the rolling state is a Java int[] frequency table, not a sum.',
   visualWalkthrough: {
     title: 'Fixed-size frequency window',
     summary: 'Watch the window keep length 3 while counts change. A match happens when the active window has the same frequency table as p = "abc".',
@@ -210,7 +187,7 @@ function sameFrequency(a, b) {
             label: 'match',
             role: 'success',
             values: ['target {a:1,b:1,c:1}', 'window {a:1,b:1,c:1}', 'left 0', 'right 2', 'result [0]'],
-            helper: 'The window has exactly p.length characters, and every target count matches.'
+            helper: 'The window has exactly p.length() characters, and every target count matches.'
           }
         },
         {
@@ -282,22 +259,23 @@ function sameFrequency(a, b) {
     }
   },
   body: [
+    { type: 'callout', tone: 'info', title: 'Java-only solution', content: 'Use Java for this authored solution. The reference implementation uses List<Integer>, int[26] target/window frequency arrays, and a helper that compares the two arrays.' },
     { type: 'callout', tone: 'info', title: 'Core idea', content: 'This is the same fixed-size slide from rolling-sum problems, but the state is a frequency table. One character leaves, one character enters, and the counts decide whether the window is an anagram.' },
-    { type: 'callout', tone: 'warning', title: 'Contiguous only', content: 'Do not skip characters. Every candidate is a contiguous length-p.length window inside s.' },
+    { type: 'callout', tone: 'warning', title: 'Contiguous only', content: 'Do not skip characters. Every candidate is a contiguous length-p.length() window inside s.' },
     {
       type: 'flow',
       title: 'Window update order',
       steps: [
-        'Add s[right] to the window frequency.',
-        'If the window is too long, remove s[left] and advance left.',
-        'Only when the window length equals p.length, compare frequencies.',
-        'Record left if the frequency arrays match.'
+        'Add s.charAt(right) to the window frequency.',
+        'If the window is too long, remove s.charAt(left) and advance left.',
+        'Only when the window length equals p.length(), compare frequencies.',
+        'Add left if the frequency arrays match.'
       ]
     }
   ],
-  relatedConcepts: ['fixed-size window', 'frequency array', 'anagram matching', 'outgoing character', 'incoming character'],
+  relatedConcepts: ['fixed-size window', 'frequency array', 'anagram matching', 'outgoing character', 'incoming character', 'java'],
   followUpQuestions: [
-    'How would you change this for a larger character set where 26-count arrays are not enough?',
+    'How would you change the Java implementation for a larger character set where 26-count arrays are not enough?',
     'How could a matched-count or frequency-delta approach avoid comparing all 26 counts each time?',
     'Why does this problem allow overlapping windows while still moving left and right only forward?'
   ],
