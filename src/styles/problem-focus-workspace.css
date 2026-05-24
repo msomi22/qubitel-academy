@@ -105,6 +105,16 @@
   background: rgba(255,255,255,0.02);
 }
 
+.approach-card-grid .wide-card {
+  grid-column: 1 / -1;
+}
+
+.learning-reinforcement-stack {
+  display: grid;
+  gap: 12px;
+  margin-top: 0;
+}
+
 .learning-reinforcement-grid {
   display: grid;
   align-items: start;
@@ -278,6 +288,10 @@
   .learning-reinforcement-grid,
   .focused-two-col {
     grid-template-columns: 1fr;
+  }
+
+  .approach-card-grid .wide-card {
+    grid-column: auto;
   }
 
   .option-btn {
