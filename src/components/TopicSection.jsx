@@ -67,15 +67,46 @@ function TopicLearningGuide({ topic }) {
   if (!hasObjectives && !hasNotes && !hasRoadmap) return null;
 
   return (
-    <details className="advanced-search-panel topic-learning-guide">
-      <summary>
+    <details
+      className="advanced-search-panel topic-learning-guide"
+      style={{
+        marginTop: 12,
+        maxWidth: '100%',
+        minWidth: 0,
+        overflow: 'hidden'
+      }}
+    >
+      <summary
+        style={{
+          alignItems: 'flex-start',
+          display: 'grid',
+          gap: 4,
+          minWidth: 0
+        }}
+      >
         <span>Topic notes & roadmap</span>
-        <small>Open learner guidance for objectives, mental model, and staged coverage.</small>
+        <small>
+          Optional learner guide. Open only when you want objectives,
+          mental model, and staged coverage.
+        </small>
       </summary>
 
-      <div className="topic-learning-guide-body">
+      <div
+        className="topic-learning-guide-body"
+        style={{
+          borderTop: '1px solid var(--border)',
+          display: 'grid',
+          gap: 12,
+          maxWidth: '100%',
+          minWidth: 0,
+          overflow: 'hidden',
+          overflowWrap: 'anywhere',
+          padding: 12,
+          wordBreak: 'normal'
+        }}
+      >
         {hasObjectives ? (
-          <section className="workspace-block topic-objectives">
+          <section className="workspace-block topic-objectives" style={{ minWidth: 0 }}>
             <span className="mini-label">Learning focus</span>
             <h3>Objectives</h3>
             <TopicMetadataList items={topic.objectives} />
@@ -83,7 +114,7 @@ function TopicLearningGuide({ topic }) {
         ) : null}
 
         {hasNotes ? (
-          <section className="workspace-block topic-notes">
+          <section className="workspace-block topic-notes" style={{ minWidth: 0 }}>
             <span className="mini-label">How to think</span>
             <h3>Topic notes</h3>
 
@@ -98,7 +129,11 @@ function TopicLearningGuide({ topic }) {
         ) : null}
 
         {hasRoadmap ? (
-          <section className="topic-roadmap" aria-labelledby={`${topic.id}-roadmap-heading`}>
+          <section
+            className="topic-roadmap"
+            aria-labelledby={`${topic.id}-roadmap-heading`}
+            style={{ minWidth: 0 }}
+          >
             <div className="section-head compact-section-head">
               <div>
                 <p className="eyebrow">Mastery path</p>
@@ -115,6 +150,7 @@ function TopicLearningGuide({ topic }) {
                 <article
                   key={`${stage.stage}-${stage.title}`}
                   className="question-card topic-roadmap-card"
+                  style={{ minWidth: 0 }}
                 >
                   <p className="eyebrow">{stage.stage}</p>
                   <h3>{stage.title}</h3>
@@ -270,8 +306,6 @@ function TopicSection({
         ) : null}
       </div>
 
-      <TopicLearningGuide topic={topic} />
-
       {totalQuestions === 0 ? (
         <div className="empty-state glass-lite">
           <h3>No questions found</h3>
@@ -375,6 +409,8 @@ function TopicSection({
           </div>
         </nav>
       ) : null}
+
+      <TopicLearningGuide topic={topic} />
     </section>
   );
 }
