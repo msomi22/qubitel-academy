@@ -129,8 +129,8 @@ class Solution {
         {
           title: 'Amount 11: final target',
           items: [{ index: 11, role: 'answer', label: '3', caption: 'dp[11]' }],
-          state: { label: 'dp[11] = 3', values: ['candidate: coin 1 gives dp[10] + 1 = 3 coins', 'candidate: coin 2 gives dp[9] + 1 = 4 coins', 'candidate: coin 5 gives dp[6] + 1 = 3 coins', 'best: 3 coins, using denominations 5, 5, and 1'], helper: 'The best answer is 3 coins. One optimal combination is 5 + 5 + 1.' },
-          description: 'For amount 11, coin 1 after dp[10] and coin 5 after dp[6] both give 3 coins. Return 3.',
+          state: { label: 'dp[11] = 3', values: ['candidate: make 10 first, dp[10] = 2, then add coin 1 → 3 coins', 'candidate: make 9 first, dp[9] = 3, then add coin 2 → 4 coins', 'candidate: make 6 first, dp[6] = 2, then add coin 5 → 3 coins', 'best: 3 coins, using 5 + 5 + 1'], helper: 'The best answer is 3 coins. One optimal combination is 5 + 5 + 1.' },
+          description: 'For amount 11, we compare the smaller saved answers that can lead into 11, then keep the fewest coins.',
           finalResult: { title: 'Final answer', body: 'Return 3 because 11 can be made with three coins: 5 + 5 + 1. The problem asks for the fewest coins, not just any combination.' }
         }
       ]
