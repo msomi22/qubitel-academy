@@ -120,6 +120,26 @@ function ExampleBlock({ items }) {
   );
 }
 
+function VisualInputStrip({ inputs }) {
+  const rows = list(inputs);
+  if (!rows.length) return null;
+
+  return (
+    <div className="visual-input-strip" aria-label="Walkthrough input values">
+      {rows.map((item, index) => {
+        const label = typeof item === 'object' ? item.label : `input ${index + 1}`;
+        const value = typeof item === 'object' ? item.value : item;
+        return (
+          <div className="visual-input-chip" key={`${label}-${text(value)}-${index}`}>
+            <small>{label}</small>
+            <code>{text(value)}</code>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function EmptyState({ title, children }) {
   return (
     <section className="workspace-empty-state">
@@ -193,6 +213,7 @@ function VisualBlock({ question, showFallback = false }) {
         <strong>{visual?.title || 'Mental model walkthrough'}</strong>
       </div>
       {visual?.summary ? <p className="visual-summary">{visual.summary}</p> : null}
+      <VisualInputStrip inputs={visual?.inputs} />
       {hasVisualExplanation ? <p className="visual-summary">{fallbackVisualExplanation}</p> : null}
       {visual?.image ? <img className="visual-image-panel" src={visual.image} alt={visual.imageAlt || visual.title || 'Problem visual walkthrough'} loading="lazy" /> : null}
       <VisualRail diagram={visual?.diagram} />
