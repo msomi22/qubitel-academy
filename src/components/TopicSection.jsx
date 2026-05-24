@@ -28,6 +28,104 @@ function buildPageNumbers(currentPage, totalPages, windowSize) {
   return pages;
 }
 
+function hasListItems(items) {
+  return Array.isArray(items) && items.length > 0;
+}
+
+function TopicMetadataList({ className, items }) {
+  if (!hasListItems(items)) return null;
+
+  return (
+    <ul className={className}>
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+
+function RoadmapItemList({ label, items }) {
+  if (!hasListItems(items)) return null;
+
+  return (
+    <div className="topic-roadmap-list">
+      <p className="topic-roadmap-label">{label}</p>
+      <TopicMetadataList items={items} />
+    </div>
+  );
+}
+
+function TopicLearningGuide({ topic }) {
+  const hasObjectives = hasListItems(topic.objectives);
+  const hasNotes = topic.notes && (
+    topic.notes.summary ||
+    topic.notes.strategy ||
+    hasListItems(topic.notes.mentalModel)
+  );
+  const hasRoadmap = hasListItems(topic.roadmap);
+
+  if (!hasObjectives && !hasNotes && !hasRoadmap) return null;
+
+  return (
+    <div className="topic-learning-guide" aria-label={`${topic.name} learning guide`}>
+      {hasObjectives ? (
+        <section className="topic-objectives glass-lite">
+          <p className="eyebrow">Learning focus</p>
+          <h3>Objectives</h3>
+          <TopicMetadataList items={topic.objectives} />
+        </section>
+      ) : null}
+
+      {hasNotes ? (
+        <section className="topic-notes glass-lite">
+          <p className="eyebrow">How to think</p>
+          <h3>Topic notes</h3>
+
+          {topic.notes.summary ? <p>{topic.notes.summary}</p> : null}
+          {topic.notes.strategy ? <p>{topic.notes.strategy}</p> : null}
+
+          <TopicMetadataList
+            className="topic-notes-list"
+            items={topic.notes.mentalModel}
+          />
+        </section>
+      ) : null}
+
+      {hasRoadmap ? (
+        <section className="topic-roadmap" aria-labelledby={`${topic.id}-roadmap-heading`}>
+          <div className="section-head compact-section-head">
+            <div>
+              <p className="eyebrow">Mastery path</p>
+              <h3 id={`${topic.id}-roadmap-heading`}>Roadmap</h3>
+              <p>
+                Follow the stages in order to connect the current practice set
+                with near-term and future Sliding Window coverage.
+              </p>
+            </div>
+          </div>
+
+          <div className="topic-roadmap-grid">
+            {topic.roadmap.map((stage) => (
+              <article
+                key={`${stage.stage}-${stage.title}`}
+                className="topic-roadmap-card glass-lite"
+              >
+                <p className="eyebrow">{stage.stage}</p>
+                <h4>{stage.title}</h4>
+                <p>{stage.purpose}</p>
+
+                <RoadmapItemList label="Current examples" items={stage.currentExamples} />
+                <RoadmapItemList label="Near-term additions" items={stage.nearTermAdditions} />
+                <RoadmapItemList label="Future ideas" items={stage.futureIdeas} />
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
 function TopicSection({
   topic,
   questions,
@@ -164,6 +262,8 @@ function TopicSection({
           </div>
         ) : null}
       </div>
+
+      <TopicLearningGuide topic={topic} />
 
       {totalQuestions === 0 ? (
         <div className="empty-state glass-lite">
