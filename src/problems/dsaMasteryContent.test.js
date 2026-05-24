@@ -69,9 +69,17 @@ function normalizeStateValues(values) {
   return values ? [String(values)] : [];
 }
 
+function getTeachingText(problem, field) {
+  if (field === 'explanation') {
+    return problem.explanation || problem.plainLanguageExplanation || '';
+  }
+
+  return problem[field] || '';
+}
+
 function assertTeachingText(problem, field, minimumWords) {
   assert.ok(
-    wordCount(problem[field]) >= minimumWords,
+    wordCount(getTeachingText(problem, field)) >= minimumWords,
     `${problem.id} should provide a substantial ${field} explanation`
   );
 }
