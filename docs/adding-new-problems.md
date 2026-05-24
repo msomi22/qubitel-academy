@@ -9,8 +9,10 @@ The preferred workflow for new content is:
 
 1. Create a file under `src/data/problems/<category>/<topicId>/<problem-id>.js`.
 2. Export a problem object as `export default problem` or `export const problem = { ... }`.
-3. Run `npm run test:unit`.
-4. Open the app and verify the problem appears under the expected topic.
+3. Add a config-driven `visualWalkthrough` whenever the question can reasonably benefit from showing state, movement, decisions, or transitions.
+4. Run `npm run test:unit`.
+5. Run `npm run build`.
+6. Open the app and verify the problem appears under the expected topic.
 
 ## Folder structure
 
@@ -48,6 +50,45 @@ export default problem;
 
 `prompt` and `question` are compatibility aliases. You may provide either one. Normalization keeps both available so existing UI code continues to work.
 
+## Visual walkthrough expectation
+
+New questions should include a config-driven `visualWalkthrough` wherever possible.
+
+This is especially expected when the learner benefits from seeing:
+
+- how a window, pointer, index, cursor, or frontier moves;
+- how state changes after each step;
+- when an invariant becomes valid or invalid;
+- how an answer is recorded or updated;
+- how a DP table, graph traversal, stack, queue, heap, or frequency map evolves.
+
+For DSA coding questions, the default expectation is: include a visual walkthrough unless there is a clear reason it would not help. If no visual is included, explain why in the PR notes.
+
+Visuals must follow `docs/visual-schema.md`:
+
+- use `visualWalkthrough` config in the problem file;
+- use supported diagram types such as `array`, `grid`, `graph`, `table`, `timeline`, `cards`, `tree`, `heap`, or `state`;
+- use ordered `frames` to show progression;
+- use semantic `role` values instead of CSS classes;
+- do not add raw HTML or raw CSS;
+- do not create one-off React renderers for a single problem.
+
+For Sliding Window problems, prefer:
+
+```js
+visualWalkthrough: {
+  diagram: {
+    type: 'array',
+    variant: 'sliding-window',
+    title: 'Sliding window walkthrough',
+    description: 'Show what enters, what leaves, and how state changes.',
+    values: [],
+    legend: [],
+    frames: []
+  }
+}
+```
+
 ## Optional fields
 
 Common optional fields include:
@@ -60,6 +101,7 @@ Common optional fields include:
 - `metadata`
 - `constraints`
 - `hints`
+- `visualWalkthrough`
 
 Complex system design problems can also use existing rich fields:
 
@@ -105,7 +147,8 @@ When migrating a topic:
 5. Add `category: '<category>'` if the legacy object did not already have it.
 6. Preserve `topicId`; if missing, infer it from the legacy bank file name and add it explicitly.
 7. Keep complex system design problems conservative: preserve scoring dictionaries, model answers, weak-answer examples, final patterns, and evaluation fields.
-8. Leave the old bank file as a compatibility shell or fallback until tests prove it is safe to remove its questions.
+8. Preserve existing `visualWalkthrough` fields when present. When the migrated problem clearly benefits from a visual but does not have one, add a config-driven walkthrough instead of leaving a visual gap.
+9. Leave the old bank file as a compatibility shell or fallback until tests prove it is safe to remove its questions.
 
 A migrated problem should look like this:
 
@@ -134,39 +177,7 @@ After migrating a topic, verify:
 - Difficulty filters still work.
 - Topic and progress counts remain correct.
 - Complex system design rendering and scoring still work when the topic includes those problems.
-
-## Validation
-
-Validation checks that:
-
-- `id` exists.
-- `id` is unique across discovered problems.
-- `type` exists.
-- `type` exists in `problemTypeRegistry`.
-- `category` exists.
-- `topicId` exists.
-- `title` exists.
-- `difficulty` exists.
-- `prompt` or `question` exists.
-- `topicId` exists in `topicManifest`.
-- `category` matches the topic category where possible.
-
-Validation returns structured errors instead of crashing production. In development and tests, validation issues are surfaced with a console warning.
-
-Example result:
-
-```js
-{
-  valid: false,
-  errors: [
-    {
-      problemId: 'example-id',
-      field: 'topicId',
-      message: 'Unknown topicId: missing-topic.'
-    }
-  ]
-}
-```
+- Existing or newly added visual walkthroughs render correctly and remain mobile-readable.
 
 ## Examples
 
@@ -184,7 +195,23 @@ const problem = {
   question: 'What state is usually maintained in a fixed-size sliding window?',
   options: ['All previous windows', 'Only the current window summary', 'A sorted graph', 'A recursive stack'],
   answer: 'Only the current window summary',
-  explanation: 'A sliding window reuses state from the previous window instead of recomputing every candidate.'
+  explanation: 'A sliding window reuses state from the previous window instead of recomputing every candidate.',
+  visualWalkthrough: {
+    diagram: {
+      type: 'array',
+      variant: 'sliding-window',
+      title: 'Fixed window state',
+      values: [2, 1, 5, 1],
+      frames: [
+        {
+          title: 'Current window',
+          activeRange: [0, 2],
+          state: { label: 'Window', values: { sum: 8 } },
+          description: 'Only the current fixed-size window summary is needed.'
+        }
+      ]
+    }
+  }
 };
 
 export default problem;
@@ -251,7 +278,24 @@ const problem = {
   tags: ['dsa', 'sliding-window', 'coding'],
   question: 'Explain the invariant, algorithm, edge cases, and complexity for the longest unique substring problem.',
   constraints: ['Input can be empty.', 'Characters may repeat many times.'],
-  hints: ['Track the last seen position or a set for the active window.']
+  hints: ['Track the last seen position or a set for the active window.'],
+  visualWalkthrough: {
+    diagram: {
+      type: 'array',
+      variant: 'sliding-window',
+      title: 'Unique-character window',
+      description: 'The left pointer moves when a repeated character breaks the invariant.',
+      values: ['a', 'b', 'c', 'a'],
+      frames: [
+        {
+          title: 'Repeat found',
+          activeRange: [0, 3],
+          state: { label: 'Invariant', values: { repeated: 'a', action: 'move left' } },
+          description: 'The second a breaks the unique-character invariant, so the window must be repaired.'
+        }
+      ]
+    }
+  }
 };
 
 export default problem;
@@ -278,6 +322,7 @@ Run:
 
 ```bash
 npm run test:unit
+npm run build
 ```
 
 Prefer focused tests for normalization, validation, discovery, and service behavior instead of large snapshots.
