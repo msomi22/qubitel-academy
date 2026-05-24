@@ -8,8 +8,8 @@ const problem = defineLearningProblem({
   estimatedTime: '16 min',
   language: 'java',
   tags: ['graph', 'grid', 'dfs', 'bfs', 'interview-pattern', 'mental-model', 'visual-walkthrough', 'coding'],
-  scenario: 'Given a grid of land and water, decide how many connected groups of land exist.',
-  question: 'Given a grid with land cells connected up, down, left, and right, return the number of islands.',
+  scenario: 'Given a grid of land and water, decide how many connected groups of land exist. A group may contain many land cells, but it should still count as one island if those cells touch up, down, left, or right.',
+  question: 'Given grid rows 1100, 1001, 0011, return 2 because the top-left land group is one island and the right-side connected land group is another island.',
   examples: ['Input grid rows: 1100, 1001, 0011 -> Output: 2'],
   constraints: ['1 means land and 0 means water.', 'Only four-directional connection counts.', 'Each island should be counted once.'],
   starterThought: 'An island is not one land cell. It is a connected component of land cells.',
@@ -19,13 +19,13 @@ const problem = defineLearningProblem({
   invariant: 'Every visited land cell already belongs to an island that has been counted.',
   bruteForceThought: 'Counting every land cell counts land size, not connected groups.',
   optimizationJourney: 'Count only the first unvisited land cell of a component. Traversal absorbs the rest of that island.',
-  stepByStepBreakdown: ['Scan every cell.', 'When unvisited land is found, increment island count.', 'Run DFS from that cell.', 'Mark all connected land as visited.', 'Continue scanning for the next unvisited land cell.'],
+  stepByStepBreakdown: ['Scan every cell from top-left to bottom-right.', 'When unvisited land is found, increment island count because this is the first cell of a new component.', 'Run DFS from that cell.', 'Mark all connected land as visited so it cannot start another island.', 'Continue scanning for the next unvisited land cell.'],
   finalPattern: 'Connected component traversal on a grid.',
   commonMistake: 'Counting each land cell instead of each connected group, or accidentally allowing diagonal connections.',
   commonMistakes: ['Missing bounds checks.', 'Forgetting to mark visited before recursion continues.', 'Using diagonal directions when only four directions are allowed.'],
   edgeCases: ['All water', 'All land', 'Single cell grid', 'Separate islands touching only diagonally'],
-  complexityAnalysis: 'Time is O(rows * cols) because each cell is visited at most once. Space is O(rows * cols) in the worst case for recursion depth or visited tracking.',
-  explanation: 'Scan the grid. The first unvisited land cell starts island one and DFS marks its connected land. Later another unvisited land group starts island two. Visited land is skipped so each island is counted once.',
+  complexityAnalysis: 'Time is O(rows * cols) because the scan touches every cell and DFS marks each land cell at most once. Space is O(rows * cols) in the worst case when one large island fills the grid and the recursion stack grows with it.',
+  explanation: 'The scan treats each unvisited land cell as the possible start of a new connected component. When it reaches the top-left 1, the island count becomes 1 and DFS marks the connected cells at (0,0), (0,1), and (1,0). Those marked cells are skipped later. When the scan reaches the separate land at (1,3), the count becomes 2 and DFS marks the connected right-side group. The final answer is 2 because there are exactly two four-directionally connected land groups.',
   solutionCode: `class Solution {
     public int numIslands(char[][] grid) {
         if (grid == null || grid.length == 0) {
@@ -58,7 +58,7 @@ const problem = defineLearningProblem({
         dfs(grid, row, col - 1);
     }
 }`,
-  finalTakeaway: 'A grid problem often becomes a graph problem when neighboring cells are connected.',
+  finalTakeaway: 'A grid problem often becomes a graph problem when neighboring cells are connected; count the first unvisited cell of each component, then mark the rest.',
   visualExplanation: 'The visual shows scanning, counting only the first unvisited land cell of an island, and marking the entire component visited.',
   visualWalkthrough: {
     title: 'Grid connected-component walkthrough',
@@ -80,14 +80,38 @@ const problem = defineLearningProblem({
         { row: 2, col: 3, role: 'open', label: '1' }
       ],
       frames: [
-        { title: 'First unvisited land starts island 1', cells: [{ row: 0, col: 0, role: 'active', label: '1' }], state: { label: 'count=1', values: ['row=0', 'col=0', 'islands=1'], helper: 'Start DFS from the first land cell.' }, description: 'The scan finds land that has not been visited. This is a new island.' },
-        { title: 'DFS marks island 1', cells: [{ row: 0, col: 0, role: 'visited', label: 'v' }, { row: 0, col: 1, role: 'visited', label: 'v' }, { row: 1, col: 0, role: 'visited', label: 'v' }], state: { label: 'island 1 visited', values: ['islands=1'], helper: 'Connected land is absorbed into the same island.' }, description: 'Traversal marks all connected land so those cells will not start new islands.' },
-        { title: 'Second unvisited component starts island 2', cells: [{ row: 1, col: 3, role: 'active', label: '1' }, { row: 2, col: 2, role: 'open', label: '1' }, { row: 2, col: 3, role: 'open', label: '1' }], state: { label: 'count=2', values: ['row=1', 'col=3', 'islands=2'], helper: 'This land was not connected to island 1.' }, description: 'A later unvisited land cell starts the second island.' },
-        { title: 'All components counted', cells: [{ row: 1, col: 3, role: 'visited', label: 'v' }, { row: 2, col: 2, role: 'visited', label: 'v' }, { row: 2, col: 3, role: 'visited', label: 'v' }], state: { label: 'answer', values: ['islands=2'], helper: 'No unvisited land remains.' }, description: 'The scan finishes after both components are marked.', finalResult: { title: 'Final answer', body: 'Return 2.' } }
+        {
+          title: 'First unvisited land starts island 1',
+          cells: [{ row: 0, col: 0, role: 'active', label: '1' }],
+          state: { label: 'count=1', values: { scanCell: '(0,0)', islandCount: 1, action: 'start DFS' }, helper: 'This is the first unvisited land cell in its connected group, so it creates exactly one new island.' },
+          description: 'The scan finds land that has not been visited. Because no earlier traversal reached it, this cell starts a new island.'
+        },
+        {
+          title: 'DFS marks all land connected to island 1',
+          cells: [{ row: 0, col: 0, role: 'visited', label: 'v' }, { row: 0, col: 1, role: 'visited', label: 'v' }, { row: 1, col: 0, role: 'visited', label: 'v' }],
+          state: { label: 'island 1 visited', values: { markedCells: '(0,0), (0,1), (1,0)', islandCount: 1, action: 'skip these later' }, helper: 'These cells are connected through up/down/left/right moves, so they belong to the same island and must not be counted again.' },
+          description: 'Traversal marks all connected land so those cells will not start new islands later in the scan.'
+        },
+        {
+          title: 'Second unvisited component starts island 2',
+          cells: [{ row: 1, col: 3, role: 'active', label: '1' }, { row: 2, col: 2, role: 'open', label: '1' }, { row: 2, col: 3, role: 'open', label: '1' }],
+          state: { label: 'count=2', values: { scanCell: '(1,3)', islandCount: 2, reason: 'not connected to island 1' }, helper: 'The scan has reached land that was not marked by the first DFS, so this must be a different island.' },
+          description: 'A later unvisited land cell starts the second island because water separates it from the first group.'
+        },
+        {
+          title: 'All components counted',
+          cells: [{ row: 1, col: 3, role: 'visited', label: 'v' }, { row: 2, col: 2, role: 'visited', label: 'v' }, { row: 2, col: 3, role: 'visited', label: 'v' }],
+          state: { label: 'answer', values: { islandCount: 2, remainingUnvisitedLand: 0, result: 2 }, helper: 'No unvisited land remains, so every island has been counted exactly once.' },
+          description: 'The scan finishes after both connected components are marked. Visited land is skipped, which prevents double-counting.',
+          finalResult: { title: 'Final answer', body: 'Return 2.' }
+        }
       ]
     }
   },
-  body: [{ type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use graph traversal when neighboring cells form connected groups.' }],
+  body: [
+    { type: 'callout', tone: 'info', title: 'Why the sample answer is 2', content: 'The cells (0,0), (0,1), and (1,0) form one connected land group. The cells (1,3), (2,3), and (2,2) form a second connected land group. They are separated by water, so the result is 2 islands.' },
+    { type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use graph traversal when neighboring cells form connected groups.' }
+  ],
   relatedConcepts: ['connected components', 'DFS', 'BFS', 'visited set'],
   metadata: { reviewStatus: 'approved', visibility: ['dev', 'prod'] }
 });
