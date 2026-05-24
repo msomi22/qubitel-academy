@@ -166,6 +166,12 @@ const problem = defineProblem({
   visualWalkthrough: {
     title: 'Fixed-size frequency window',
     summary: 'Watch the window keep length 3 while counts change. A match happens when the active window has the same frequency table as p = "abc".',
+    inputs: [
+      { label: 's', value: '"cbaebabacd"' },
+      { label: 'p', value: '"abc"' },
+      { label: 'window length', value: '3' },
+      { label: 'expected result', value: '[0, 6]' }
+    ],
     diagram: {
       type: 'array',
       variant: 'sliding-window',
