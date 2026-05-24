@@ -54,15 +54,41 @@ class Solution {
     diagram: {
       type: 'timeline',
       title: 'DP state evolution',
+      description: 'Each step records a real improvement in the dp table, not just a fixed label.',
       frames: [
-        { title: 'Base', state: { label: 'dp0', values: { amount0: 0 } }, description: 'Zero amount needs zero coins.' },
-        { title: 'Amount 1', state: { label: 'dp1', values: { amount1: 1 } }, description: 'Use one coin of value 1.' },
-        { title: 'Amount 2', state: { label: 'dp2', values: { amount2: 1 } }, description: 'Use one coin of value 2.' },
-        { title: 'Target', state: { label: 'amount11', values: { answer: 3 } }, description: 'The best result for 11 is three coins.', finalResult: { title: 'Final answer', body: 'Return 3.' } }
+        {
+          title: 'Set dp[0] = 0',
+          state: { label: 'dp[0] is known', values: ['dp[0]=0'], helper: 'Amount 0 needs zero coins. This gives future amounts a reachable starting point.' },
+          description: 'Before building any positive amount, the table needs one trusted base answer: making 0 costs 0 coins.'
+        },
+        {
+          title: 'Improve dp[1] using coin 1',
+          state: { label: 'dp[1] becomes 1', values: ['dp[1]=1', 'from dp[0]+1'], helper: 'Amount 1 can be made as 0 + coin 1, so it needs one coin.' },
+          description: 'To make amount 1, use coin 1 after the already solved amount 0.'
+        },
+        {
+          title: 'Improve dp[2] using coin 2',
+          state: { label: 'dp[2] becomes 1', values: ['dp[2]=1', 'from dp[0]+1'], helper: 'Coin 2 reaches amount 2 directly, so one coin is better than two 1-coins.' },
+          description: 'The table keeps the fewest coins. For amount 2, one coin of value 2 is optimal.'
+        },
+        {
+          title: 'Reach dp[11] with 5 + 5 + 1',
+          state: { label: 'dp[11] becomes 3', values: ['dp[11]=3', '5+5+1', '3 coins'], helper: 'The target amount 11 can be made with two 5-coins and one 1-coin.' },
+          description: 'The best saved answer for amount 11 uses three coins: 5 + 5 + 1.',
+          finalResult: { title: 'Final answer', body: 'Return 3 because 11 can be made with three coins, and no two-coin combination from [1, 2, 5] can make 11.' }
+        }
       ]
     }
   },
-  body: [{ type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use DP when smaller saved answers build larger answers.' }],
+  body: [
+    {
+      type: 'callout',
+      tone: 'info',
+      title: 'Why the answer is 3',
+      content: 'We need to make 11 using the fewest coins. One optimal choice is 5 + 5 + 1 = 11, which uses 3 coins. The goal is not just to make the amount; it is to make it with the minimum number of coins.'
+    },
+    { type: 'callout', tone: 'info', title: 'Pattern signal', content: 'Use DP when smaller saved answers build larger answers.' }
+  ],
   relatedConcepts: ['bottom-up DP', 'state definition', 'transition'],
   metadata: { reviewStatus: 'approved', visibility: ['dev', 'prod'] }
 });
