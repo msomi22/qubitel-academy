@@ -69,67 +69,67 @@ class Solution {
         {
           title: 'Amount 1: only coin 1 fits',
           items: [{ index: 1, role: 'current', label: '1', caption: 'dp[1]' }],
-          state: { label: 'dp[1] = 1', values: ['coin 1: dp[0]+1 = 1', 'coin 2 cannot help, because 2 > 1', 'coin 5 cannot help, because 5 > 1', 'best: 1 coin'], helper: 'For the mini target amount 1, only coin 1 can fit. So the fewest coins needed is 1.' },
+          state: { label: 'dp[1] = 1', values: ['candidate: coin 1 gives dp[0] + 1 = 1 coin', 'skipped: coin 2 cannot help, because 2 > 1', 'skipped: coin 5 cannot help, because 5 > 1', 'best: 1 coin of denomination 1'], helper: 'For the mini target amount 1, only coin 1 can fit. So the fewest coins needed is 1.' },
           description: 'dp[1] asks: what is the fewest coins needed to make amount 1?'
         },
         {
           title: 'Amount 2: one 2-coin beats two 1-coins',
           items: [{ index: 2, role: 'current', label: '1', caption: 'dp[2]' }],
-          state: { label: 'dp[2] = 1', values: ['using 1s: 1+1 = 2 coins', 'using 2: 1 coin', 'coin 5 cannot help, because 5 > 2', 'best: coin 2'], helper: 'Amount 2 could be made with two 1-coins, but one 2-coin is fewer. So dp[2] = 1.' },
+          state: { label: 'dp[2] = 1', values: ['candidate: using 1-coins gives 1 + 1 = 2 coins', 'candidate: coin 2 gives 1 coin', 'skipped: coin 5 cannot help, because 5 > 2', 'best: 1 coin of denomination 2'], helper: 'Amount 2 could be made with two 1-coins, but one 2-coin is fewer. So dp[2] = 1.' },
           description: 'For each amount, we compare valid ways and keep the fewest coins.'
         },
         {
           title: 'Amount 3: best is two coins',
           items: [{ index: 3, role: 'current', label: '2', caption: 'dp[3]' }],
-          state: { label: 'dp[3] = 2', values: ['using 1s: 1+1+1 = 3 coins', 'using 2+1: 2 coins', 'coin 5 cannot help, because 5 > 3', 'best: 2+1'], helper: 'Amount 3 is not a coin denomination, so DP builds it from smaller solved amounts.' },
+          state: { label: 'dp[3] = 2', values: ['candidate: using 1-coins gives 1 + 1 + 1 = 3 coins', 'candidate: using 2 + 1 gives 2 coins', 'skipped: coin 5 cannot help, because 5 > 3', 'best: 2 coins, using denominations 2 and 1'], helper: 'Amount 3 is not a coin denomination, so DP builds it from smaller solved amounts.' },
           description: 'dp[3] asks for the fewest coins needed to make exactly amount 3.'
         },
         {
           title: 'Amount 4: two 2-coins beat four 1-coins',
           items: [{ index: 4, role: 'current', label: '2', caption: 'dp[4]' }],
-          state: { label: 'dp[4] = 2', values: ['using 1s: 1+1+1+1 = 4 coins', 'using 2s: 2+2 = 2 coins', 'coin 5 cannot help, because 5 > 4', 'best: 2+2'], helper: 'This is the key idea: many combinations can make the same amount, but dp keeps only the fewest coins.' },
+          state: { label: 'dp[4] = 2', values: ['candidate: using 1-coins gives 4 coins', 'candidate: using 2 + 2 gives 2 coins', 'skipped: coin 5 cannot help, because 5 > 4', 'best: 2 coins of denomination 2'], helper: 'Many combinations can make the same amount, but dp keeps only the fewest coins.' },
           description: 'Amount 4 makes the comparison clear: four 1-coins work, but two 2-coins are better.'
         },
         {
           title: 'Amount 5: one 5-coin is best',
           items: [{ index: 5, role: 'current', label: '1', caption: 'dp[5]' }],
-          state: { label: 'dp[5] = 1', values: ['using 1s: 5 coins', 'using 2s and 1s: 3 coins', 'using 5: 1 coin', 'best: coin 5'], helper: 'Coin 5 reaches amount 5 directly, so one coin is the best possible answer.' },
+          state: { label: 'dp[5] = 1', values: ['candidate: using 1-coins gives 5 coins', 'candidate: using 2s and 1s gives 3 coins', 'candidate: coin 5 gives 1 coin', 'best: 1 coin of denomination 5'], helper: 'Coin 5 reaches amount 5 directly, so one coin is the best possible answer.' },
           description: 'A larger denomination can suddenly make a bigger amount cheaper.'
         },
         {
           title: 'Amount 6: add 1 to 5',
           items: [{ index: 6, role: 'current', label: '2', caption: 'dp[6]' }],
-          state: { label: 'dp[6] = 2', values: ['coin 1: dp[5]+1 = 2', 'coin 2: dp[4]+1 = 3', 'coin 5: dp[1]+1 = 2', 'best: 5+1'], helper: 'Amount 6 is a mini target too. The best way is 5 + 1, using 2 coins.' },
+          state: { label: 'dp[6] = 2', values: ['candidate: coin 1 gives dp[5] + 1 = 2 coins', 'candidate: coin 2 gives dp[4] + 1 = 3 coins', 'candidate: coin 5 gives dp[1] + 1 = 2 coins', 'best: 2 coins, using denominations 5 and 1'], helper: 'Amount 6 is a mini target too. The best way is 5 + 1, using 2 coins.' },
           description: 'Amount 6 later helps solve amount 11.'
         },
         {
           title: 'Amount 7: add 2 to 5',
           items: [{ index: 7, role: 'current', label: '2', caption: 'dp[7]' }],
-          state: { label: 'dp[7] = 2', values: ['coin 1: dp[6]+1 = 3', 'coin 2: dp[5]+1 = 2', 'coin 5: dp[2]+1 = 2', 'best: 5+2'], helper: 'Amount 7 can be made as 5 + 2, using 2 coins.' },
+          state: { label: 'dp[7] = 2', values: ['candidate: coin 1 gives dp[6] + 1 = 3 coins', 'candidate: coin 2 gives dp[5] + 1 = 2 coins', 'candidate: coin 5 gives dp[2] + 1 = 2 coins', 'best: 2 coins, using denominations 5 and 2'], helper: 'Amount 7 can be made as 5 + 2, using 2 coins.' },
           description: 'DP continues solving every amount, even if it is not the final target.'
         },
         {
           title: 'Amount 8: best is three coins',
           items: [{ index: 8, role: 'current', label: '3', caption: 'dp[8]' }],
-          state: { label: 'dp[8] = 3', values: ['coin 1: dp[7]+1 = 3', 'coin 2: dp[6]+1 = 3', 'coin 5: dp[3]+1 = 3', 'best: 5+2+1'], helper: 'Every valid last-coin choice gives 3 coins, so dp[8] = 3.' },
+          state: { label: 'dp[8] = 3', values: ['candidate: coin 1 gives dp[7] + 1 = 3 coins', 'candidate: coin 2 gives dp[6] + 1 = 3 coins', 'candidate: coin 5 gives dp[3] + 1 = 3 coins', 'best: 3 coins, for example 5 + 2 + 1'], helper: 'Every valid last-coin choice gives 3 coins, so dp[8] = 3.' },
           description: 'Saved middle amounts, like dp[3] and dp[6], become useful later.'
         },
         {
           title: 'Amount 9: best is three coins',
           items: [{ index: 9, role: 'current', label: '3', caption: 'dp[9]' }],
-          state: { label: 'dp[9] = 3', values: ['coin 1: dp[8]+1 = 4', 'coin 2: dp[7]+1 = 3', 'coin 5: dp[4]+1 = 3', 'best: 5+2+2'], helper: 'Amount 9 is best made in 3 coins, such as 5 + 2 + 2.' },
+          state: { label: 'dp[9] = 3', values: ['candidate: coin 1 gives dp[8] + 1 = 4 coins', 'candidate: coin 2 gives dp[7] + 1 = 3 coins', 'candidate: coin 5 gives dp[4] + 1 = 3 coins', 'best: 3 coins, for example 5 + 2 + 2'], helper: 'Amount 9 is best made in 3 coins, such as 5 + 2 + 2.' },
           description: 'This is why DP does not skip middle amounts like 4 and 7.'
         },
         {
           title: 'Amount 10: two 5-coins',
           items: [{ index: 10, role: 'current', label: '2', caption: 'dp[10]' }],
-          state: { label: 'dp[10] = 2', values: ['coin 1: dp[9]+1 = 4', 'coin 2: dp[8]+1 = 4', 'coin 5: dp[5]+1 = 2', 'best: 5+5'], helper: 'Amount 10 is best made with two 5-coins.' },
+          state: { label: 'dp[10] = 2', values: ['candidate: coin 1 gives dp[9] + 1 = 4 coins', 'candidate: coin 2 gives dp[8] + 1 = 4 coins', 'candidate: coin 5 gives dp[5] + 1 = 2 coins', 'best: 2 coins of denomination 5'], helper: 'Amount 10 is best made with two 5-coins.' },
           description: 'The table keeps the minimum known coin count for amount 10.'
         },
         {
           title: 'Amount 11: final target',
           items: [{ index: 11, role: 'answer', label: '3', caption: 'dp[11]' }],
-          state: { label: 'dp[11] = 3', values: ['coin 1: dp[10]+1 = 3', 'coin 2: dp[9]+1 = 4', 'coin 5: dp[6]+1 = 3', 'best: 5+5+1'], helper: 'The best answer is 3 coins. One optimal combination is 5 + 5 + 1.' },
+          state: { label: 'dp[11] = 3', values: ['candidate: coin 1 gives dp[10] + 1 = 3 coins', 'candidate: coin 2 gives dp[9] + 1 = 4 coins', 'candidate: coin 5 gives dp[6] + 1 = 3 coins', 'best: 3 coins, using denominations 5, 5, and 1'], helper: 'The best answer is 3 coins. One optimal combination is 5 + 5 + 1.' },
           description: 'For amount 11, coin 1 after dp[10] and coin 5 after dp[6] both give 3 coins. Return 3.',
           finalResult: { title: 'Final answer', body: 'Return 3 because 11 can be made with three coins: 5 + 5 + 1. The problem asks for the fewest coins, not just any combination.' }
         }
