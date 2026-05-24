@@ -261,17 +261,7 @@ const problem = defineProblem({
   body: [
     { type: 'callout', tone: 'info', title: 'Java-only solution', content: 'Use Java for this authored solution. The reference implementation uses List<Integer>, int[26] target/window frequency arrays, and a helper that compares the two arrays.' },
     { type: 'callout', tone: 'info', title: 'Core idea', content: 'This is the same fixed-size slide from rolling-sum problems, but the state is a frequency table. One character leaves, one character enters, and the counts decide whether the window is an anagram.' },
-    { type: 'callout', tone: 'warning', title: 'Contiguous only', content: 'Do not skip characters. Every candidate is a contiguous length-p.length() window inside s.' },
-    {
-      type: 'flow',
-      title: 'Window update order',
-      steps: [
-        'Add s.charAt(right) to the window frequency.',
-        'If the window is too long, remove s.charAt(left) and advance left.',
-        'Only when the window length equals p.length(), compare frequencies.',
-        'Add left if the frequency arrays match.'
-      ]
-    }
+    { type: 'callout', tone: 'warning', title: 'Contiguous only', content: 'Do not skip characters. Every candidate is a contiguous length-p.length() window inside s.' }
   ],
   relatedConcepts: ['fixed-size window', 'frequency array', 'anagram matching', 'outgoing character', 'incoming character', 'java'],
   followUpQuestions: [
