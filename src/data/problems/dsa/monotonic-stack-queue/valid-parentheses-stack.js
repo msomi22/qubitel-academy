@@ -57,7 +57,6 @@ class Solution {
   finalTakeaway: 'Use a stack when the last thing opened must be the first thing closed.',
   visualWalkthrough: {
     title: 'Stack matching animation',
-    summary: 'Given example: s = "({[]})" → true',
     diagram: {
       type: 'stack',
       title: 'Scan s = "({[]})"',
