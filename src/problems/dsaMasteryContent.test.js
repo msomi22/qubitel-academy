@@ -48,6 +48,26 @@ function hasStructuredVisualWalkthrough(problem) {
   );
 }
 
+function wordCount(value) {
+  return String(value || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+}
+
+function richTextFromBlocks(blocks = []) {
+  return blocks
+    .map((block) => [block.title, block.content, block.body, ...(block.items || [])].filter(Boolean).join(' '))
+    .join(' ');
+}
+
+function assertTeachingText(problem, field, minimumWords) {
+  assert.ok(
+    wordCount(problem[field]) >= minimumWords,
+    `${problem.id} should provide a substantial ${field} explanation`
+  );
+}
+
 test('DSA mastery content batch is production-approved discovered content', () => {
   assert.equal(dsaMasteryProblems.length, 8);
 
@@ -80,6 +100,66 @@ test('DSA mastery content batch has unique ids and valid rich body blocks', () =
   const validation = validateProblemCollection(dsaMasteryProblems);
   assert.deepEqual(validation.errors, []);
   assert.equal(validation.valid, true);
+});
+
+test('DSA mastery problems follow explanation-first teaching structure', () => {
+  for (const problem of dsaMasteryProblems) {
+    assertTeachingText(problem, 'scenario', 8);
+    assertTeachingText(problem, 'starterThought', 12);
+    assertTeachingText(problem, 'mentalPicture', 12);
+    assertTeachingText(problem, 'intuition', 12);
+    assertTeachingText(problem, 'invariant', 8);
+    assertTeachingText(problem, 'explanation', 18);
+    assertTeachingText(problem, 'complexityAnalysis', 8);
+    assertTeachingText(problem, 'finalTakeaway', 8);
+
+    assert.ok(
+      problem.examples?.length >= 1,
+      `${problem.id} should include at least one concrete example before abstraction`
+    );
+    assert.ok(
+      problem.edgeCases?.length >= 2,
+      `${problem.id} should call out edge cases so learners do not infer hidden assumptions`
+    );
+  }
+});
+
+test('DSA mastery visual walkthrough frames explain state changes', () => {
+  for (const problem of dsaMasteryProblems) {
+    const frames = problem.visualWalkthrough?.diagram?.frames || [];
+
+    for (const [index, frame] of frames.entries()) {
+      const frameLabel = `${problem.id} frame ${index + 1}`;
+
+      assert.ok(frame.title, `${frameLabel} should have a title`);
+      assert.ok(wordCount(frame.description) >= 6, `${frameLabel} should explain what the learner is seeing`);
+      assert.ok(frame.state?.label, `${frameLabel} should label the current state`);
+      assert.ok(wordCount(frame.state?.helper) >= 8, `${frameLabel} should explain what changed and why`);
+
+      const values = Array.isArray(frame.state?.values) ? frame.state.values : [];
+      assert.ok(values.length >= 1, `${frameLabel} should expose the active state values or decisions`);
+      assert.ok(
+        values.some((value) => wordCount(value) >= 3),
+        `${frameLabel} should use at least one descriptive state value, not only terse labels`
+      );
+    }
+  }
+});
+
+test('DSA mastery overview rich bodies teach the sample answer without replacing later sections', () => {
+  for (const problem of dsaMasteryProblems) {
+    const overviewText = richTextFromBlocks(problem.body);
+
+    assert.ok(
+      wordCount(overviewText) >= 20,
+      `${problem.id} should use overview rich content to orient the learner`
+    );
+    assert.match(
+      overviewText,
+      /answer|return|because|why|means|result/i,
+      `${problem.id} overview should explain why the sample answer or result is correct`
+    );
+  }
 });
 
 test('DSA mastery topics remain visible in production topic fallback paths', () => {
