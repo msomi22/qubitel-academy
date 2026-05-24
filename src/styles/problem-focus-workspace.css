@@ -113,13 +113,15 @@
 }
 
 .visual-input-chip {
-  display: grid;
-  gap: 4px;
-  min-width: 120px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: max-content;
   padding: 10px 12px;
   border: 1px solid rgba(56,189,248,0.24);
   border-radius: 14px;
   background: rgba(56,189,248,0.08);
+  white-space: nowrap;
 }
 
 .visual-input-chip small {
@@ -128,6 +130,10 @@
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.visual-input-chip small::after {
+  content: ' =';
 }
 
 .visual-input-chip code {
@@ -322,6 +328,7 @@
 
   .visual-input-chip {
     flex: 1 1 100%;
+    min-width: 0;
   }
 
   .option-btn {
