@@ -141,10 +141,12 @@ List the documents and issues the implementer must read before coding.
 For Senior Dev Accelerator problem-authoring tasks, include:
 
 - `docs/adding-new-problems.md`
+- `docs/visual-schema.md`
 - #131 — explanation-first problem authoring standard
 - the target issue
 - the parent epic when relevant
 - at least one existing problem file to use as a style reference
+- at least one existing problem with a `visualWalkthrough` when the task involves DSA, state transitions, pointers/windows, or visual learning
 
 ### 4. Branch instructions
 
@@ -186,6 +188,14 @@ For problem-authoring tasks, include:
 - visual walkthrough requirements
 - metadata visibility
 
+For any new question/problem, include a visual walkthrough requirement whenever possible. Make it explicit instead of only linking `docs/visual-schema.md`.
+
+Use this wording unless the task has a clear reason not to include one:
+
+    Add a config-driven `visualWalkthrough` where the problem shows state, movement, decisions, or transitions. Use existing supported visual schema types and semantic roles only. Do not add raw HTML/CSS or one-off React renderers. If no visual is included, explain why it would not add meaningful clarity.
+
+For Sliding Window, Two Pointers, DP, graph traversal, heap/stack/queue, prefix-sum, and other stateful DSA coding problems, treat the visual walkthrough as expected by default.
+
 ### 7. Content quality requirements
 
 Reference #131 and convert it into task-specific checks.
@@ -199,6 +209,7 @@ Include checks for:
 - no repeated teaching without purpose
 - section-specific responsibilities
 - visuals that teach state changes
+- visual frames that show the important invariant, state transition, and answer update where applicable
 
 ### 8. Testing and validation
 
@@ -211,6 +222,14 @@ At minimum:
 
 For visual or UI work, include manual verification steps and console-error checks.
 
+When a `visualWalkthrough` is added, manual verification must include:
+
+- the visual renders on the problem page;
+- frames progress in the expected order;
+- semantic roles display clearly in light and dark themes where applicable;
+- the walkthrough remains mobile-readable;
+- the browser console has no visual/rendering errors.
+
 ### 9. Pull request requirements
 
 Tell the implementer what the PR must include.
@@ -221,6 +240,7 @@ Usually:
 - summary of files changed
 - validation commands and results
 - screenshots or notes for UI work
+- visual walkthrough notes when a problem includes one, or a clear reason if it was intentionally omitted
 - `Closes #<issue-number>` when the PR fully completes the issue
 
 ### 10. Non-goals
@@ -230,7 +250,8 @@ Call out what should not be done.
 Examples:
 
 - do not add a legacy bank entry as the primary source
-- do not create one-off visual components unless the issue explicitly requires it
+- do not create one-off visual components unless the issue explicitly requires a reusable renderer change
+- do not add raw HTML/CSS to problem config
 - do not change unrelated topics
 - do not weaken tests to make content pass
 
@@ -250,10 +271,14 @@ Before posting implementation instructions, confirm:
 - [ ] The task issue is linked.
 - [ ] The parent epic is linked when relevant.
 - [ ] Required docs are linked.
+- [ ] `docs/visual-schema.md` is linked for new question/problem work where visual learning may apply.
 - [ ] Exact file paths are provided.
 - [ ] Existing reference files are provided.
+- [ ] A visual walkthrough is explicitly required where the question has state, movement, decisions, transitions, or learner-visible steps.
+- [ ] If a visual walkthrough is not required, the instruction explains why it would not add meaningful clarity.
 - [ ] Validation commands are provided.
 - [ ] Manual verification steps are provided when UI behavior changes.
+- [ ] Manual visual verification steps are provided when a `visualWalkthrough` is added.
 - [ ] The instruction says what not to change.
 - [ ] The PR requirements are clear.
 - [ ] The instruction was not pushed to the repo unless explicitly requested.
@@ -299,9 +324,10 @@ When producing the final answer in chat, first write the required ChatGPT chat n
     - #<parent epic>
     - #<quality standard>
     - `docs/adding-new-problems.md`
+    - `docs/visual-schema.md`
     - `docs/writing-coding-implementation-instructions.md`
     - `<reference-file-1>`
-    - `<reference-file-2>`
+    - `<reference-file-with-visual-walkthrough>`
 
     ---
 
@@ -337,7 +363,7 @@ When producing the final answer in chat, first write the required ChatGPT chat n
 
     - <requirement 1>
     - <requirement 2>
-    - <requirement 3>
+    - Add a config-driven `visualWalkthrough` where the problem shows state, movement, decisions, or transitions. Use supported visual schema types and semantic roles only. Do not add raw HTML/CSS or one-off React renderers.
 
     ---
 
@@ -345,7 +371,7 @@ When producing the final answer in chat, first write the required ChatGPT chat n
 
     - <quality requirement 1>
     - <quality requirement 2>
-    - <quality requirement 3>
+    - The visual walkthrough must teach the important state change, invariant, or answer update, not just decorate the page.
 
     ---
 
@@ -359,8 +385,8 @@ When producing the final answer in chat, first write the required ChatGPT chat n
     Manual verification:
 
     1. <manual check 1>
-    2. <manual check 2>
-    3. <manual check 3>
+    2. Confirm the visual walkthrough renders correctly, frames are ordered, and the page remains mobile-readable.
+    3. Check the browser console for visual/rendering errors.
 
     ---
 
@@ -373,6 +399,7 @@ When producing the final answer in chat, first write the required ChatGPT chat n
     - summary
     - validation results
     - screenshots or manual verification notes when UI is affected
+    - visual walkthrough notes, or a reason if it was intentionally omitted
     - `Closes #<issue-number>` when complete
 
     ---
@@ -382,8 +409,8 @@ When producing the final answer in chat, first write the required ChatGPT chat n
     Do not:
 
     - <non-goal 1>
-    - <non-goal 2>
-    - <non-goal 3>
+    - add raw HTML/CSS to problem config
+    - create one-off visual renderers for a single problem
 
     ---
 
@@ -392,8 +419,9 @@ When producing the final answer in chat, first write the required ChatGPT chat n
     The task is complete only when:
 
     - <done criterion 1>
-    - <done criterion 2>
-    - <done criterion 3>
+    - `npm run test:unit` passes
+    - `npm run build` passes
+    - visual walkthrough behavior is manually verified where included
     ```
 
 ## Common mistakes to avoid
@@ -412,5 +440,8 @@ When producing the final answer in chat, first write the required ChatGPT chat n
 - Mixing app registration instructions with discovery-based problem loading.
 - Forgetting validation commands.
 - Forgetting manual UI checks for visual content.
+- Forgetting to explicitly require a visual walkthrough where a problem has state, movement, decisions, transitions, or learner-visible steps.
+- Treating `docs/visual-schema.md` as enough without saying whether the specific task must include a visual walkthrough.
+- Adding raw HTML/CSS or one-off React components instead of config-driven visual schema.
 - Allowing renderer-specific data shapes that are known to break components.
 - Saying to close the issue before all acceptance criteria are satisfied.
