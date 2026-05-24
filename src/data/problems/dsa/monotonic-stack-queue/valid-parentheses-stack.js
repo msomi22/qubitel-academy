@@ -55,14 +55,13 @@ class Solution {
     }
 }`,
   finalTakeaway: 'Use a stack when the last thing opened must be the first thing closed.',
-  visualExplanation: 'For s = "({[]})", scan one character at a time. Opening brackets are pushed onto the stack. A closing bracket must match the current top of the stack. If it matches, pop that top opening. If it does not match, return false immediately.',
   visualWalkthrough: {
     title: 'Stack matching animation',
-    summary: 'Use Next to scan one character at a time. The highlighted box is the current character. The stack on the right shows unmatched openings, with the top item being the only one a closing bracket may match.',
+    summary: 'Given example: s = "({[]})" → true',
     diagram: {
       type: 'stack',
       title: 'Scan s = "({[]})"',
-      description: 'Left: input characters. Right: stack of unmatched opening brackets. One click performs one visible action.',
+      description: 'Given example: s = "({[]})"',
       values: ['(', '{', '[', ']', '}', ')'],
       frames: [
         {
