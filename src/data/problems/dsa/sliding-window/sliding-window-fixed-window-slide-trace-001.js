@@ -1,5 +1,7 @@
 import { defineMcqProblem } from '../../../../problems/problemAuthoring.js';
 
+const question = 'nums = [2, 1, 5, 1, 3], k = 3. The current window is indices 0..2, or [2, 1, 5]. It slides one step to indices 1..3, or [1, 5, 1]. Which value leaves, which value enters, and how should the rolling sum change?';
+
 const problem = defineMcqProblem({
   id: 'sliding-window-fixed-window-slide-trace-001',
   topicId: 'sliding-window',
@@ -15,7 +17,7 @@ const problem = defineMcqProblem({
     'trace',
     'mcq'
   ],
-  prompt: 'nums = [2, 1, 5, 1, 3], k = 3. The current window is indices 0..2, or [2, 1, 5]. It slides one step to indices 1..3, or [1, 5, 1]. Which value leaves, which value enters, and how should the rolling sum change?',
+  prompt: question,
   options: [
     '2 leaves, 1 enters, so newSum = oldSum - 2 + 1.',
     '1 leaves, 2 enters, so newSum = oldSum - 1 + 2.',
@@ -103,6 +105,9 @@ const problem = defineMcqProblem({
     'Recomputing the full sum every time instead of using the rolling update.'
   ],
   relatedConcepts: ['outgoing value', 'incoming value', 'rolling sum', 'fixed-size invariant'],
+  body: [
+    { type: 'callout', tone: 'info', title: 'Question', content: question }
+  ],
   metadata: {
     reviewStatus: 'approved',
     visibility: ['dev', 'prod']
