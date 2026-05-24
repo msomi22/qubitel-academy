@@ -47,33 +47,40 @@ class Solution {
     }
 }`,
   finalTakeaway: 'Dynamic programming works when a big answer can be built from saved smaller answers.',
-  visualExplanation: 'Each frame shows one dp amount learning from smaller reachable amounts.',
+  visualExplanation: 'Each frame highlights the dp cell that improves and the smaller saved answer it reuses.',
   visualWalkthrough: {
     title: 'Coin Change DP walkthrough',
     summary: 'Build the answer amount by amount using saved smaller answers.',
     diagram: {
-      type: 'timeline',
-      title: 'DP state evolution',
-      description: 'Each step records a real improvement in the dp table, not just a fixed label.',
+      type: 'array',
+      title: 'DP table updates',
+      description: 'The highlighted cell is the amount currently being improved.',
+      values: ['dp[0]', 'dp[1]', 'dp[2]', '...', 'dp[11]'],
+      stateTitle: 'Current update',
+      stateDescription: 'Only real table changes are shown here.',
       frames: [
         {
           title: 'Set dp[0] = 0',
-          state: { label: 'dp[0] is known', values: ['dp[0]=0'], helper: 'Amount 0 needs zero coins. This gives future amounts a reachable starting point.' },
-          description: 'Before building any positive amount, the table needs one trusted base answer: making 0 costs 0 coins.'
+          items: [{ index: 0, role: 'answer', label: '0', caption: 'known' }],
+          state: { label: 'dp[0]', values: ['0 coins'], helper: 'Making amount 0 needs no coins, so this becomes the trusted starting point.' },
+          description: 'Before solving positive amounts, the table needs one known answer: amount 0 costs 0 coins.'
         },
         {
           title: 'Improve dp[1] using coin 1',
-          state: { label: 'dp[1] becomes 1', values: ['dp[1]=1', 'from dp[0]+1'], helper: 'Amount 1 can be made as 0 + coin 1, so it needs one coin.' },
-          description: 'To make amount 1, use coin 1 after the already solved amount 0.'
+          items: [{ index: 0, role: 'success', label: '0', caption: 'reuse' }, { index: 1, role: 'current', label: '1', caption: 'update' }],
+          state: { label: 'dp[1]', values: ['dp[1]=1', 'dp[0]+1'], helper: 'Use the saved answer for amount 0, then add one coin of value 1.' },
+          description: 'Amount 1 can be made from amount 0 plus coin 1, so dp[1] becomes 1.'
         },
         {
           title: 'Improve dp[2] using coin 2',
-          state: { label: 'dp[2] becomes 1', values: ['dp[2]=1', 'from dp[0]+1'], helper: 'Coin 2 reaches amount 2 directly, so one coin is better than two 1-coins.' },
+          items: [{ index: 0, role: 'success', label: '0', caption: 'reuse' }, { index: 2, role: 'current', label: '1', caption: 'update' }],
+          state: { label: 'dp[2]', values: ['dp[2]=1', 'dp[0]+1'], helper: 'Coin 2 reaches amount 2 directly, so one coin is better than two 1-coins.' },
           description: 'The table keeps the fewest coins. For amount 2, one coin of value 2 is optimal.'
         },
         {
           title: 'Reach dp[11] with 5 + 5 + 1',
-          state: { label: 'dp[11] becomes 3', values: ['dp[11]=3', '5+5+1', '3 coins'], helper: 'The target amount 11 can be made with two 5-coins and one 1-coin.' },
+          items: [{ index: 0, role: 'success', label: '0', caption: 'base' }, { index: 4, role: 'answer', label: '3', caption: 'answer' }],
+          state: { label: 'dp[11]', values: ['dp[11]=3', '5+5+1', '3 coins'], helper: 'The target amount 11 can be made with two 5-coins and one 1-coin.' },
           description: 'The best saved answer for amount 11 uses three coins: 5 + 5 + 1.',
           finalResult: { title: 'Final answer', body: 'Return 3 because 11 can be made with three coins, and no two-coin combination from [1, 2, 5] can make 11.' }
         }
