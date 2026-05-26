@@ -198,37 +198,54 @@ const problem = defineProblem({
     diagram: {
       type: 'array',
       variant: 'sliding-window',
-      title: 'Token window walkthrough',
+      title: 'Example walkthrough: s = "barfoofoofoobar", words = ["foo", "bar", "foo"]',
       description:
-        'The string is split into word-sized chunks. The walkthrough shows token entry, overflow repair, reset, and answer recording.',
-      values: ['bar', 'foo', 'foo', 'foo', 'bar', 'baz', 'foo', 'bar', 'foo'],
-      stateTitle: 'Window state',
-      stateDescription: 'required = { foo: 2, bar: 1 }',
-      legend: [
-        { role: 'window', label: 'active token window' },
-        { role: 'current', label: 'incoming token' },
-        { role: 'warning', label: 'frequency overflow' },
-        { role: 'remove', label: 'token removed from left' },
-        { role: 'error', label: 'invalid token resets window' },
-        { role: 'answer', label: 'valid start recorded' }
-      ],
+        'Word length is 3, so read the string as complete tokens: 0:bar, 3:foo, 6:foo, 9:foo, 12:bar. The target count is { foo: 2, bar: 1 }, so a valid window must contain exactly three tokens with those counts.',
+      values: ['0:bar', '3:foo', '6:foo', '9:foo', '12:bar'],
+      stateTitle: 'Current example state',
+      stateDescription:
+        'Track the required counts, the current window counts, the left start index, and the answer list.',
       frames: [
         {
-          title: 'Build a legal token window',
+          title: 'Start at index 0 with token "bar"',
+          activeRange: [0, 0],
+          items: [{ index: 0, role: 'current' }],
+          state: {
+            label: 'Read token at index 0',
+            values: {
+              required: '{ foo: 2, bar: 1 }',
+              window: 'bar',
+              currentCounts: '{ bar: 1 }',
+              left: 0,
+              answers: []
+            },
+            helper: 'bar is part of the required word list, so keep it in the window.'
+          },
+          description:
+            'We are not reading characters one by one. We read the whole token "bar" because every word has length 3.'
+        },
+        {
+          title: 'Add token "foo" at index 3',
           activeRange: [0, 1],
           items: [
             { index: 0, role: 'window' },
             { index: 1, role: 'current' }
           ],
           state: {
-            label: 'growing',
-            values: { current: '{ bar: 1, foo: 1 }', left: 0, matchedWords: 2, answers: [] },
-            helper: 'Both tokens are required and no count has overflowed.'
+            label: 'Window is growing',
+            values: {
+              window: 'bar | foo',
+              currentCounts: '{ bar: 1, foo: 1 }',
+              needed: '{ bar: 1, foo: 2 }',
+              answers: []
+            },
+            helper: 'The window is still missing one more foo.'
           },
-          description: 'The window grows by whole word tokens.'
+          description:
+            'The counts are legal, but the window does not yet contain all three required words.'
         },
         {
-          title: 'Record an exact match',
+          title: 'Add token "foo" at index 6: record answer 0',
           activeRange: [0, 2],
           items: [
             { index: 0, role: 'answer' },
@@ -236,29 +253,42 @@ const problem = defineProblem({
             { index: 2, role: 'current' }
           ],
           state: {
-            label: 'record 0',
-            values: { current: '{ bar: 1, foo: 2 }', left: 0, matchedWords: 3, answers: [0] },
-            helper: 'The current bag exactly matches the required bag.'
+            label: 'Exact match',
+            values: {
+              substring: 'barfoofoo',
+              currentCounts: '{ bar: 1, foo: 2 }',
+              required: '{ bar: 1, foo: 2 }',
+              action: 'record 0',
+              answers: [0]
+            },
+            helper: 'The window has exactly the required words, so start index 0 is valid.'
           },
-          description: 'barfoofoo is valid, so index 0 is recorded.'
+          description:
+            'This is the first full valid block: "bar" + "foo" + "foo".'
         },
         {
-          title: 'Repair overflow from the left',
+          title: 'Move forward, then token "foo" at index 9 causes overflow',
           activeRange: [1, 3],
           items: [
-            { index: 1, role: 'remove' },
+            { index: 1, role: 'window' },
             { index: 2, role: 'window' },
             { index: 3, role: 'warning' }
           ],
           state: {
-            label: 'foo overflow',
-            values: { overflow: 'foo count is too high', action: 'remove left tokens until legal', answers: [0] },
-            helper: 'Do not reset the whole window when a required token overflows.'
+            label: 'Too many foo tokens',
+            values: {
+              window: 'foo | foo | foo',
+              currentCounts: '{ foo: 3 }',
+              allowed: '{ foo: 2 }',
+              action: 'remove tokens from the left'
+            },
+            helper: 'Do not throw away the whole scan. Shrink from the left until foo is no longer over-counted.'
           },
-          description: 'The window shrinks by whole tokens until foo is allowed again.'
+          description:
+            'The new token is valid, but there are now too many copies of it.'
         },
         {
-          title: 'Record the next match',
+          title: 'After shrinking, add "bar" at index 12: record answer 6',
           activeRange: [2, 4],
           items: [
             { index: 2, role: 'answer' },
@@ -266,22 +296,37 @@ const problem = defineProblem({
             { index: 4, role: 'current' }
           ],
           state: {
-            label: 'record 6',
-            values: { current: '{ foo: 2, bar: 1 }', left: 6, matchedWords: 3, answers: [0, 6] },
-            helper: 'The repaired window can still produce a valid answer.'
+            label: 'Second exact match',
+            values: {
+              substring: 'foofoobar',
+              currentCounts: '{ foo: 2, bar: 1 }',
+              required: '{ foo: 2, bar: 1 }',
+              action: 'record 6',
+              answers: [0, 6]
+            },
+            helper: 'The repaired window still leads to a valid block.'
           },
-          description: 'foofoobar is valid, so index 6 is recorded.'
+          description:
+            'Starting at index 6 gives "foo" + "foo" + "bar", so 6 is valid.'
         },
         {
-          title: 'Invalid token resets the scan',
-          activeRange: [5, 5],
-          items: [{ index: 5, role: 'error' }],
+          title: 'Return the collected starts in increasing order',
+          activeRange: [0, 4],
+          items: [
+            { index: 0, role: 'answer' },
+            { index: 2, role: 'answer' }
+          ],
           state: {
-            label: 'reset',
-            values: { token: 'baz', action: 'clear current map', nextLeft: 18, answers: [0, 6] },
-            helper: 'No valid answer can cross a token that is not in requiredCounts.'
+            label: 'Final answer',
+            values: {
+              foundStarts: [0, 6],
+              output: [0, 6],
+              reminder: 'sort before returning when multiple offsets are scanned'
+            },
+            helper: 'This example stays ordered, but other examples such as s = "aaaa", words = ["aa"] need final ordering normalization.'
           },
-          description: 'The next scan starts cleanly after the invalid token.'
+          description:
+            'The visual example ends with the expected result: [0, 6].'
         }
       ]
     }
