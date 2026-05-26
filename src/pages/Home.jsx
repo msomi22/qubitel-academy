@@ -9,9 +9,17 @@ import {
 } from '../services/questionBankService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import ProgressChart from '../components/ProgressChart.jsx';
-import BuyCoffeeButton from '../components/BuyCoffeeButton.jsx';
 
 const emptySummary = { total: 0, done: 0, percent: 0 };
+
+// The 4-step "Start Here" learning path surfaced on the dashboard.
+// Topics are ordered by recommended learning sequence.
+const START_HERE_STEPS = [
+  { label: 'Sliding Window', to: '/category/dsa', title: 'Learn fixed and variable windows' },
+  { label: 'Two Pointers', to: '/category/dsa', title: 'Master the PAIR pattern' },
+  { label: 'Binary Search', to: '/category/dsa', title: 'Understand the SEAR template' },
+  { label: 'Dynamic Programming', to: '/category/dsa', title: 'Tackle the STATE pattern' }
+];
 
 function buildLearningStage(percent) {
   if (percent >= 80) {
@@ -49,6 +57,31 @@ function DashboardCard({ eyebrow, title, children, action }) {
       <div>{children}</div>
       {action ? <div className="dashboard-card-action">{action}</div> : null}
     </article>
+  );
+}
+
+function StartHereTrack({ nextTopic }) {
+  return (
+    <div style={{ marginTop: 20 }}>
+      <p className="eyebrow" style={{ marginBottom: 10 }}>Recommended starting path</p>
+      <div className="start-here-track">
+        {START_HERE_STEPS.map((step, i) => (
+          <div key={step.label} className="start-here-step">
+            <Link
+              to={step.to}
+              className="start-here-step-card"
+              title={step.title}
+            >
+              <span className="step-num">{i + 1}</span>
+              {step.label}
+            </Link>
+            {i < START_HERE_STEPS.length - 1 && (
+              <div className="start-here-connector" aria-hidden="true" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -109,25 +142,37 @@ export default function Home() {
   const strongestCategory = useMemo(() => [...countedCategories]
     .sort((a, b) => (b.progressPercent || 0) - (a.progressPercent || 0))[0], [countedCategories]);
 
+  const isNewUser = summary.done === 0;
+
   return (
     <div className="learning-dashboard-page">
       <section className="hero-card glass learning-hero">
         <div>
           <p className="eyebrow">Senior developer learning platform</p>
-          <h1>Master DSA, algorithms, system design, and backend engineering.</h1>
-          <p>
-            Senior Dev Accelerator helps developers prepare for coding interviews,
-            strengthen computer science fundamentals, practice scalable architecture,
-            and build the practical software engineering skills expected from senior engineers.
+          <h1>
+            {isNewUser
+              ? 'Go from mid-level to senior — one pattern at a time.'
+              : 'Master DSA, algorithms, system design, and backend engineering.'}
+          </h1>
+
+          {/* Value prop — tells new users why this beats raw LeetCode */}
+          <p className="hero-value-prop">
+            {isNewUser
+              ? 'Pattern-based DSA and system design, structured like a curriculum — not a random problem dump. Start with Sliding Window and build up from there.'
+              : 'Senior Dev Accelerator helps developers prepare for coding interviews, strengthen computer science fundamentals, and build practical senior-level engineering skills.'}
           </p>
+
           <div className="hero-actions">
             <Link className="btn" to={nextTopic ? `/category/${nextTopic.category}` : '/random'}>
-              Continue recommended path
+              {isNewUser ? 'Start learning' : 'Continue recommended path'}
             </Link>
-            <Link className="btn ghost" to="/random">Start random practice</Link>
-            <BuyCoffeeButton className="btn coffee-btn" />
+            <Link className="btn ghost" to="/random">Random practice</Link>
           </div>
+
+          {/* Start Here track — shown to new users or those with low progress */}
+          {summary.percent < 20 && <StartHereTrack nextTopic={nextTopic} />}
         </div>
+
         <div className="learning-hero-panel glass-lite">
           <span>Current stage</span>
           <strong>{learningStage.label}</strong>
@@ -146,7 +191,11 @@ export default function Home() {
         <DashboardCard
           eyebrow="Next best action"
           title={nextTopic ? nextTopic.name : 'All topics complete'}
-          action={<Link className="btn" to={nextTopic ? `/category/${nextTopic.category}` : '/progress'}>{nextTopic ? 'Open path' : 'Review progress'}</Link>}
+          action={
+            <Link className="btn" to={nextTopic ? `/category/${nextTopic.category}` : '/progress'}>
+              {nextTopic ? 'Open path' : 'Review progress'}
+            </Link>
+          }
         >
           <p>
             {nextTopic
@@ -176,8 +225,25 @@ export default function Home() {
           <ul className="dashboard-checklist">
             <li><strong>{summary.done}</strong> questions completed.</li>
             <li><strong>{remainingQuestions}</strong> questions remaining.</li>
-            <li><strong>{strongestCategory?.name || 'No category yet'}</strong> is currently your strongest path.</li>
+            <li>
+              <strong>{strongestCategory?.name || 'No category yet'}</strong>{' '}
+              is currently your strongest path.
+            </li>
           </ul>
+          {/* Buy coffee lives here — after the user has seen value */}
+          {summary.done >= 5 && (
+            <p style={{ marginTop: 16, fontSize: '0.85rem', color: 'var(--muted)' }}>
+              Finding this useful?{' '}
+              <a
+                href="https://www.paypal.com/donate"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'var(--accent)' }}
+              >
+                Buy the maintainer a coffee ☕
+              </a>
+            </p>
+          )}
         </DashboardCard>
       </section>
 
