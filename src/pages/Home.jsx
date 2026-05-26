@@ -9,6 +9,7 @@ import {
 } from '../services/questionBankService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import ProgressChart from '../components/ProgressChart.jsx';
+import BuyCoffeeButton from '../components/BuyCoffeeButton.jsx';
 
 const emptySummary = { total: 0, done: 0, percent: 0 };
 
@@ -167,6 +168,7 @@ export default function Home() {
               {isNewUser ? 'Start learning' : 'Continue recommended path'}
             </Link>
             <Link className="btn ghost" to="/random">Random practice</Link>
+            <BuyCoffeeButton className="btn coffee-btn" />
           </div>
 
           {/* Start Here track — shown to new users or those with low progress */}
@@ -230,20 +232,6 @@ export default function Home() {
               is currently your strongest path.
             </li>
           </ul>
-          {/* Buy coffee lives here — after the user has seen value */}
-          {summary.done >= 5 && (
-            <p style={{ marginTop: 16, fontSize: '0.85rem', color: 'var(--muted)' }}>
-              Finding this useful?{' '}
-              <a
-                href="https://www.paypal.com/donate"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: 'var(--accent)' }}
-              >
-                Buy the maintainer a coffee ☕
-              </a>
-            </p>
-          )}
         </DashboardCard>
       </section>
 
