@@ -2,47 +2,41 @@
    Responsive category topic library cards
    ------------------------------------------------------------------------
    Keeps the category topic selector compact so quiz content is visible sooner.
-   Larger screens use a dense filter/card layout; small screens use horizontal
+   Larger screens use a denser elegant grid; small screens use horizontal
    scrolling instead of a tall stacked list.
    ======================================================================== */
 
 .category-page .topic-library {
   display: grid;
-  gap: 12px;
-  padding: clamp(14px, 1.5vw, 20px);
+  gap: 14px;
+  padding: clamp(16px, 2vw, 26px);
 }
 
 .category-page .library-head {
-  gap: 0;
-  margin: 0;
+  gap: 6px;
 }
 
-.category-page .library-head .eyebrow,
-.category-page .library-head h2,
+.category-page .library-head h2 {
+  margin-bottom: 0;
+}
+
 .category-page .library-head p:not(.eyebrow) {
-  display: none;
+  margin: 0;
 }
 
 .category-page .topic-library-controls {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin: 0 0 10px;
 }
 
 .category-page .topic-library-controls label {
-  gap: 5px;
-}
-
-.category-page .topic-library-controls span {
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  gap: 6px;
 }
 
 .category-page .topic-library-controls select {
-  min-height: 38px;
-  padding-block: 7px;
-  font-size: 0.9rem;
+  min-height: 42px;
+  padding-block: 8px;
 }
 
 .category-page .topic-picker.scalable-topic-picker {
@@ -106,7 +100,7 @@
 
 @media (min-width: 1280px) {
   .category-page .topic-library {
-    gap: 14px;
+    gap: 16px;
   }
 
   .category-page .topic-picker.scalable-topic-picker {
@@ -130,27 +124,36 @@
 
 @media (max-width: 760px) {
   .category-page .topic-library {
-    gap: 10px;
-    padding: 10px 12px 12px;
+    gap: 12px;
+    padding: 12px;
     overflow-x: hidden;
   }
 
   .category-page .library-head {
-    display: none;
+    gap: 4px;
+  }
+
+  .category-page .library-head h2 {
+    margin-bottom: 2px;
+    font-size: 1.25rem;
+  }
+
+  .category-page .library-head p:not(.eyebrow) {
+    font-size: 0.84rem;
+    line-height: 1.42;
   }
 
   .category-page .topic-library-controls {
     grid-template-columns: minmax(0, 1fr);
-    gap: 7px;
-    margin-bottom: 8px;
+    gap: 8px;
   }
 
   .category-page .topic-library-controls label {
-    gap: 4px;
+    gap: 5px;
   }
 
   .category-page .topic-library-controls span {
-    font-size: 0.68rem;
+    font-size: 0.72rem;
   }
 
   .category-page .topic-library-controls select {
