@@ -1,0 +1,101 @@
+/* Mobile Home overflow fix
+   Keeps the new mobile-first Home UI inside the viewport while preserving
+   horizontal scrolling only inside the recommended starting path carousel. */
+
+@media (max-width: 760px) {
+  body,
+  #root,
+  .app-shell,
+  .layout,
+  .page-wrap,
+  .main-content,
+  .learning-dashboard-page {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .learning-dashboard-page,
+  .learning-dashboard-page * {
+    box-sizing: border-box;
+  }
+
+  .learning-hero,
+  .learning-dashboard-grid,
+  .learning-stats-grid,
+  .learning-map {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .learning-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 18px;
+    padding-inline: 18px;
+    overflow: hidden;
+  }
+
+  .learning-hero > *,
+  .learning-hero-panel,
+  .hero-actions,
+  .hero-value-prop,
+  .start-here-track {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .learning-hero h1 {
+    max-width: 100%;
+    font-size: clamp(2rem, 10vw, 3.1rem);
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .learning-hero .eyebrow,
+  .hero-value-prop,
+  .learning-hero p,
+  .learning-map p {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    flex: 1 1 140px;
+    justify-content: center;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .start-here-track {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 12px;
+    margin-inline: 0;
+    scroll-snap-type: x proximity;
+  }
+
+  .start-here-step {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .start-here-step-card {
+    min-width: 136px;
+    max-width: 160px;
+    white-space: normal;
+  }
+
+  .learning-hero-panel {
+    overflow: hidden;
+  }
+}
