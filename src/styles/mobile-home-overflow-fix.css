@@ -2,15 +2,20 @@
    Keeps the new mobile-first Home UI inside the viewport while preserving
    horizontal scrolling only inside the recommended starting path carousel. */
 
+.tablet-sidebar-toggle,
+.tablet-sidebar-backdrop {
+  display: none;
+}
+
 /* Issue #151: tablet navigation contract.
-   The medium layout should be a true compact rail, not a wide empty sidebar
-   and not the horizontal sticky sidebar row from senior-ui.css. Keep the full
-   desktop sidebar only for comfortably large screens. */
+   Medium screens use a floating sidebar drawer so content keeps the full
+   available width. The drawer is hidden by default and opened by a small
+   floating toggle button. */
 @media (min-width: 761px) and (max-width: 1280px) {
   :root,
   :root[data-theme="light"],
   :root[data-theme="dark"] {
-    --sidebar-width: 64px !important;
+    --sidebar-width: 0px !important;
     --page-padding: 20px;
   }
 
@@ -29,74 +34,126 @@
 
   .layout {
     display: grid !important;
-    grid-template-columns: 64px minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) !important;
     padding-top: 0 !important;
   }
 
   .nav,
   .navbar,
   .topbar {
-    inset: 0 0 auto 64px !important;
+    inset: 0 0 auto 0 !important;
     height: var(--nav-height);
-    padding: 0 18px;
+    padding: 0 18px 0 74px;
     gap: 14px;
   }
 
   .topbar-title {
     min-width: 0;
-    max-width: 240px;
+    max-width: 280px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 20px;
   }
 
+  .tablet-sidebar-toggle {
+    position: fixed;
+    top: 10px;
+    left: 14px;
+    z-index: 6200;
+    width: 44px;
+    height: 40px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0;
+    border: 1px solid rgba(200, 169, 110, 0.42);
+    border-radius: 999px;
+    background: var(--bg-card);
+    color: var(--accent-dark);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+
+  .tablet-sidebar-toggle:hover,
+  .tablet-sidebar-toggle[aria-expanded="true"] {
+    border-color: var(--accent);
+    background: var(--accent-light);
+  }
+
+  .tablet-sidebar-toggle span {
+    width: 17px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+  }
+
+  .tablet-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 5900;
+    display: none;
+    border: 0;
+    padding: 0;
+    background: rgba(26, 24, 20, 0.28);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .tablet-sidebar-backdrop.is-open {
+    display: block;
+  }
+
   .sidebar,
   .app-sidebar {
     position: fixed !important;
-    inset: 0 auto 0 0 !important;
-    z-index: 1010;
-    width: 64px !important;
-    min-width: 64px !important;
-    max-width: 64px !important;
-    flex: 0 0 64px !important;
-    height: 100vh !important;
+    top: 64px !important;
+    left: 14px !important;
+    bottom: 16px !important;
+    z-index: 6100;
+    width: min(280px, calc(100vw - 28px)) !important;
+    min-width: 0 !important;
+    max-width: 280px !important;
+    height: auto !important;
     min-height: 0;
-    max-height: none;
+    max-height: calc(100vh - 80px);
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch;
-    gap: 12px;
-    padding: 14px 7px;
+    gap: 14px;
+    padding: 18px 14px;
     overflow-x: hidden;
     overflow-y: auto;
-    border-right: 1px solid var(--sidebar-border);
-    border-bottom: 0;
+    border: 1px solid var(--sidebar-border);
+    border-radius: 22px;
     background: var(--bg-sidebar);
-    scrollbar-width: none;
+    box-shadow: 0 24px 70px rgba(26, 24, 20, 0.22);
+    transform: translateX(calc(-100% - 32px));
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+    scrollbar-width: thin;
   }
 
-  .sidebar::-webkit-scrollbar,
-  .app-sidebar::-webkit-scrollbar {
-    display: none;
+  .app-sidebar.is-floating-open {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .sidebar-logo {
-    min-height: 42px;
+    min-height: 48px;
     justify-content: center;
-    padding: 0 0 12px;
+    padding: 0 0 14px;
     border-bottom: 1px solid var(--sidebar-border);
   }
 
   .sidebar-logo .brand-logo {
-    max-width: 38px;
-    max-height: 32px;
+    max-width: 132px;
+    max-height: 38px;
     object-fit: contain;
-  }
-
-  .sidebar-logo .logo-text,
-  .sidebar-logo span:not(.logo-mark) {
-    display: none !important;
   }
 
   .nav-section {
@@ -105,10 +162,18 @@
     padding: 0 !important;
   }
 
-  .nav-label,
-  .sidebar-spacer,
+  .nav-label {
+    display: block !important;
+    padding: 0 8px;
+  }
+
+  .sidebar-spacer {
+    flex: 1;
+  }
+
   .coffee-link {
-    display: none !important;
+    display: flex !important;
+    margin: 0;
   }
 
   .app-sidebar .nav-section .nav-item,
@@ -117,38 +182,39 @@
     width: 100%;
     min-width: 0 !important;
     max-width: 100%;
-    min-height: 46px;
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    place-items: center;
-    gap: 0 !important;
-    padding: 9px 0 !important;
+    min-height: 44px;
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-start;
+    grid-template-columns: none !important;
+    gap: 10px !important;
+    padding: 10px 12px !important;
     border-radius: 12px;
     white-space: normal;
   }
 
   .app-sidebar .nav-icon {
-    width: 22px;
-    height: 22px;
-    justify-self: center;
+    width: 21px;
+    height: 21px;
+    flex: 0 0 21px;
   }
 
   .app-sidebar .nav-text,
   .sidebar a span:not(.nav-icon):not(.logo-mark) {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    margin: -1px !important;
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
-    clip: rect(0 0 0 0) !important;
-    white-space: nowrap !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: normal !important;
     border: 0 !important;
   }
 
   .page-wrap,
   .main-content {
-    grid-column: 2 !important;
+    grid-column: 1 !important;
     width: 100%;
     height: 100vh;
     min-width: 0;
@@ -165,7 +231,7 @@
   }
 
   .status-bar {
-    left: 64px !important;
+    left: 0 !important;
     padding: 0 var(--page-padding);
   }
 
@@ -184,6 +250,11 @@
   .learning-dashboard-page {
     max-width: 100%;
     overflow-x: hidden;
+  }
+
+  .tablet-sidebar-toggle,
+  .tablet-sidebar-backdrop {
+    display: none !important;
   }
 
   .sidebar,
