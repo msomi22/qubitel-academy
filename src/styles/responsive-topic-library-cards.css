@@ -118,18 +118,27 @@
 }
 
 .category-page .compact-pagination {
+  min-height: 0;
   margin-top: 0;
-  padding: 12px 14px;
+  padding: 8px 12px;
+  align-items: center;
 }
 
 .category-page .pagination-status {
-  font-size: 0.92rem;
+  font-size: 0.86rem;
+  line-height: 1.2;
+}
+
+.category-page .pagination-controls {
+  gap: 6px;
 }
 
 .category-page .pagination-controls button {
-  min-height: 36px;
-  padding: 7px 12px;
-  font-size: 0.86rem;
+  min-height: 30px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  line-height: 1.15;
 }
 
 @media (min-width: 1280px) {
@@ -257,22 +266,22 @@
   }
 
   .category-page .compact-pagination {
-    gap: 10px;
-    padding: 10px;
+    gap: 8px;
+    padding: 8px 10px;
   }
 
   .category-page .pagination-status {
-    font-size: 0.86rem;
+    font-size: 0.82rem;
     font-weight: 700;
   }
 
   .category-page .pagination-controls {
-    gap: 7px;
+    gap: 6px;
   }
 
   .category-page .pagination-controls button {
-    min-height: 34px;
-    padding: 6px 10px;
-    font-size: 0.82rem;
+    min-height: 32px;
+    padding: 5px 9px;
+    font-size: 0.78rem;
   }
 }
