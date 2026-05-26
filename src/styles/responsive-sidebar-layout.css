@@ -1,0 +1,138 @@
+/* Issue #151 — Responsive Sidebar Layout
+   Final shell-level overrides loaded last.
+
+   Tablet and small desktop must not reserve sidebar space. The sidebar is a
+   floating drawer controlled by Sidebar.jsx, and page content owns the full
+   viewport width. */
+
+@media (min-width: 761px) and (max-width: 1280px) {
+  :root,
+  :root[data-theme="light"],
+  :root[data-theme="dark"],
+  .app-shell,
+  .app-shell.light,
+  .app-shell.dark {
+    --sidebar-width: 0px !important;
+    --page-padding: 20px;
+  }
+
+  html,
+  body,
+  #root,
+  .app-shell,
+  .app-shell.light,
+  .app-shell.dark {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .app-shell .layout,
+  .app-shell.light .layout,
+  .app-shell.dark .layout {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    padding-top: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .app-shell .page-wrap,
+  .app-shell .main-content,
+  .app-shell.light .page-wrap,
+  .app-shell.light .main-content,
+  .app-shell.dark .page-wrap,
+  .app-shell.dark .main-content {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    padding: calc(var(--nav-height) + var(--page-padding)) var(--page-padding) calc(var(--page-padding) + var(--footer-height)) !important;
+    scroll-padding-top: calc(var(--nav-height) + var(--page-padding)) !important;
+  }
+
+  .app-shell .page,
+  .app-shell.light .page,
+  .app-shell.dark .page,
+  .app-shell .learning-dashboard-page,
+  .app-shell.light .learning-dashboard-page,
+  .app-shell.dark .learning-dashboard-page {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  .app-shell .nav,
+  .app-shell .navbar,
+  .app-shell .topbar,
+  .app-shell.light .nav,
+  .app-shell.light .navbar,
+  .app-shell.light .topbar,
+  .app-shell.dark .nav,
+  .app-shell.dark .navbar,
+  .app-shell.dark .topbar {
+    inset: 0 0 auto 0 !important;
+    padding-left: 74px !important;
+  }
+
+  .tablet-sidebar-toggle {
+    display: inline-flex !important;
+  }
+
+  .app-shell .sidebar,
+  .app-shell .app-sidebar,
+  .app-shell.light .sidebar,
+  .app-shell.light .app-sidebar,
+  .app-shell.dark .sidebar,
+  .app-shell.dark .app-sidebar {
+    position: fixed !important;
+    inset: 64px auto 16px 14px !important;
+    z-index: 6100 !important;
+    width: min(280px, calc(100vw - 28px)) !important;
+    min-width: 0 !important;
+    max-width: 280px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: calc(100vh - 80px) !important;
+    margin: 0 !important;
+    padding: 18px 14px !important;
+    border-radius: 22px !important;
+    box-shadow: 0 24px 70px rgba(26, 24, 20, 0.22) !important;
+    transform: translateX(calc(-100% - 32px)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .app-shell .app-sidebar.is-floating-open,
+  .app-shell.light .app-sidebar.is-floating-open,
+  .app-shell.dark .app-sidebar.is-floating-open {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .app-shell .status-bar,
+  .app-shell.light .status-bar,
+  .app-shell.dark .status-bar {
+    left: 0 !important;
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .tablet-sidebar-toggle,
+  .tablet-sidebar-backdrop {
+    display: none !important;
+  }
+}
