@@ -99,3 +99,44 @@
     overflow: hidden;
   }
 }
+
+/* Desktop dashboard balance fix
+   The Current Stage panel should behave like compact supporting metadata,
+   not a large empty card competing with the main hero content. */
+@media (min-width: 1024px) {
+  .learning-hero {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 320px) !important;
+  }
+
+  .learning-hero-panel {
+    align-self: start;
+    width: 100%;
+    max-width: 320px;
+    min-height: 0 !important;
+    padding: 22px 24px !important;
+  }
+
+  .learning-hero-panel strong {
+    display: block;
+    font-size: clamp(1.35rem, 1.7vw, 1.9rem);
+    line-height: 1.1;
+    margin-block: 8px 10px;
+  }
+
+  .learning-hero-panel p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+}
+
+@media (min-width: 1440px) {
+  .learning-hero {
+    grid-template-columns: minmax(0, 1fr) 300px !important;
+  }
+
+  .learning-hero-panel {
+    max-width: 300px;
+  }
+}
