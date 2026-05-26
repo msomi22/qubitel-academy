@@ -1,4 +1,5 @@
-import { Link, NavLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import BuyCoffeeButton from './BuyCoffeeButton.jsx';
 
 const ICON_PATHS = {
@@ -61,11 +62,11 @@ function NavIcon({ name }) {
   );
 }
 
-function NavItem({ to, icon, end, children }) {
+function NavItem({ to, icon, end, children, onNavigate }) {
   const navClass = ({ isActive }) => `nav-item ${isActive ? 'active' : ''}`.trim();
 
   return (
-    <NavLink to={to} end={end} className={navClass}>
+    <NavLink to={to} end={end} className={navClass} onClick={onNavigate}>
       <NavIcon name={icon} />
       <span className="nav-text">{children}</span>
     </NavLink>
@@ -73,39 +74,79 @@ function NavItem({ to, icon, end, children }) {
 }
 
 export default function Sidebar() {
+  const [isTabletSidebarOpen, setIsTabletSidebarOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setIsTabletSidebarOpen(false);
+  }, [pathname]);
+
+  const closeTabletSidebar = () => setIsTabletSidebarOpen(false);
+
   return (
-    <aside className="sidebar app-sidebar">
-      <Link to="/" className="sidebar-logo" aria-label="Senior Dev Accelerator dashboard">
-        <img
-          className="brand-logo brand-logo-light"
-          src="/brand-logo-light.svg"
-          alt="Senior Dev Accelerator"
-        />
-        <img
-          className="brand-logo brand-logo-dark"
-          src="/brand-logo-dark.svg"
-          alt=""
-          aria-hidden="true"
-        />
-      </Link>
+    <>
+      <button
+        className="tablet-sidebar-toggle"
+        type="button"
+        aria-label={isTabletSidebarOpen ? 'Hide sidebar navigation' : 'Show sidebar navigation'}
+        aria-expanded={isTabletSidebarOpen}
+        aria-controls="app-sidebar"
+        onClick={() => setIsTabletSidebarOpen((current) => !current)}
+      >
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+      </button>
 
-      <div className="nav-section">
-        <p className="nav-label">Workspace</p>
-        {NAV_ITEMS.map((item) => (
-          <NavItem
-            key={item.to}
-            to={item.to}
-            icon={item.icon}
-            end={item.end}
-          >
-            {item.label}
-          </NavItem>
-        ))}
-      </div>
+      <button
+        className={`tablet-sidebar-backdrop ${isTabletSidebarOpen ? 'is-open' : ''}`}
+        type="button"
+        aria-label="Hide sidebar navigation"
+        onClick={closeTabletSidebar}
+      />
 
-      <div className="sidebar-spacer" />
+      <aside
+        id="app-sidebar"
+        className={`sidebar app-sidebar ${isTabletSidebarOpen ? 'is-floating-open' : ''}`}
+      >
+        <Link
+          to="/"
+          className="sidebar-logo"
+          aria-label="Senior Dev Accelerator dashboard"
+          onClick={closeTabletSidebar}
+        >
+          <img
+            className="brand-logo brand-logo-light"
+            src="/brand-logo-light.svg"
+            alt="Senior Dev Accelerator"
+          />
+          <img
+            className="brand-logo brand-logo-dark"
+            src="/brand-logo-dark.svg"
+            alt=""
+            aria-hidden="true"
+          />
+        </Link>
 
-      <BuyCoffeeButton className="nav-item coffee-link" />
-    </aside>
+        <div className="nav-section">
+          <p className="nav-label">Workspace</p>
+          {NAV_ITEMS.map((item) => (
+            <NavItem
+              key={item.to}
+              to={item.to}
+              icon={item.icon}
+              end={item.end}
+              onNavigate={closeTabletSidebar}
+            >
+              {item.label}
+            </NavItem>
+          ))}
+        </div>
+
+        <div className="sidebar-spacer" />
+
+        <BuyCoffeeButton className="nav-item coffee-link" />
+      </aside>
+    </>
   );
 }
