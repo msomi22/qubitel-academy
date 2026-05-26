@@ -91,14 +91,14 @@ No P0, P1, or P2 audit issues remain open in the reviewed production-visible set
 
 | Category | Production-visible count | Excellent | Good | Needs revision | Not production-ready | Notes |
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
-| DSA | 2 | 2 | 0 | 0 | 0 | Both have strong intuition and visual support; Dynamic Programming is especially complete. |
+| DSA | 3 | 3 | 0 | 0 | 0 | Sliding Window now includes both a fixed-window foundation problem and one approved Hard token-window problem; Dynamic Programming remains especially complete. |
 | Java | 4 | 4 | 0 | 0 | 0 | Java production questions now include strong beginner-friendly explanations and explicit final takeaways where needed. |
 | System / API design | 2 | 2 | 0 | 0 | 0 | Rate limiting and payment idempotency now include stronger mental pictures, production notes, common mistakes, and final takeaways. |
 | System / caching | 1 | 1 | 0 | 0 | 0 | Cache-aside now explicitly covers stale data, TTL/invalidation, and freshness trade-offs. |
 | System / databases | 1 | 1 | 0 | 0 | 0 | Multi-region consistency now has a clearer two-lane mental model and business-risk takeaway. |
 | System / messaging queues | 1 | 1 | 0 | 0 | 0 | Queue-based notifications now cover idempotent workers, retries, backoff, and dead-letter queues. |
 | System / scalability | 2 | 2 | 0 | 0 | 0 | URL shortener v2 is the only production-visible URL shortener walkthrough; realtime updates now covers connection ownership and fan-out. |
-| **Total** | **13** | **13** | **0** | **0** | **0** | No pending production-quality issue remains from this audit. |
+| **Total** | **14** | **14** | **0** | **0** | **0** | No pending production-quality issue remains from this audit. |
 
 > Note: `dynamic-programming-020` is counted under DSA even though most learner content is inherited from `src/data/banks/dsa/minimum-sideway-jumps.js`.
 
@@ -107,6 +107,7 @@ No P0, P1, or P2 audit issues remain open in the reviewed production-visible set
 | Question ID | Category | Topic | Type | Current rating | Remediation status | Priority |
 | --- | --- | --- | --- | --- | --- | --- |
 | `sliding-window-001` | DSA | sliding-window | coding | Excellent | Already production-ready. | P3 |
+| `substring-concatenation-words-001` | DSA | sliding-window | coding | Excellent | Added as an approved Hard token-window problem with frequency-map reasoning and a config-driven visual walkthrough. | P3 |
 | `dynamic-programming-020` | DSA | dynamic-programming | coding | Excellent | Already production-ready. | P3 |
 | `scalability-url-shortener-v2` | System design | scalability | complex system design | Excellent | Current canonical learner-facing walkthrough and only URL shortener visible in production/search. | P3 |
 | `scalability-realtime-updates-001` | System design | scalability | MCQ | Excellent | Added mental picture, stronger event-routing visual, production reality, common mistake, and final takeaway. | P3 |
@@ -238,7 +239,7 @@ Future improvements can be treated as new enhancement work, not pending audit re
 
 ## Suggested future quality order
 
-1. Keep the current 13 production-visible questions as the baseline standard.
+1. Keep the current 14 production-visible questions as the baseline standard.
 2. Add automated checks before scaling the question bank further.
 3. Add new production batches only when they meet the same content standard.
 4. When duplicate-looking problems are discovered, confirm which one is legacy and which one is current before hiding, deleting, or rewriting either file.
@@ -267,8 +268,8 @@ This checklist is adapted from `docs/content-quality-rubric.md`:
 ## Notes and assumptions
 
 - This audit now records the completed remediation, not only the original findings.
-- This PR does not add new question batches.
-- This PR does not change routing, styling, rendering components unrelated to focused problem field visibility, or production visibility beyond removing the legacy URL shortener wrapper from prod/search.
+- This PR adds one approved Hard DSA Sliding Window problem and updates the audit inventory to keep production counts accurate.
+- This PR does not change routing, styling, rendering components unrelated to focused problem field visibility, or production visibility beyond the new approved problem.
 - The audit found no clearly broken production-visible question.
 - The main improvement opportunity was consistency, and the reviewed production-visible MCQs were upgraded to match the strongest Java, DSA, and URL shortener v2 examples.
 
