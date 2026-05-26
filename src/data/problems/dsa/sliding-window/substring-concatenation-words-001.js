@@ -18,89 +18,77 @@ const problem = defineProblem({
     'token-window'
   ],
   scenario:
-    'You are given a string and a list of words where every word has the same length. Find every starting index where the string contains one contiguous block made from all the words exactly once, in any order, with no extra characters in the middle.',
+    'Imagine the string as a row of equal-sized word bricks. For s = "barfoofoofoobar" and words = ["foo", "bar", "foo"], each brick has length 3 and the target brick bag is { foo: 2, bar: 1 }. A valid answer is a starting index where the next three bricks use exactly that bag, in any order, with no missing word, no extra word, and no broken brick. In this example, index 0 gives "barfoofoo" and index 6 gives "foofoobar", so the answer is [0, 6].',
   prompt:
-    'Given a string s and an array words of equal-length strings, return all starting indices where a substring of s is a concatenation of every word in words exactly once. The words may appear in any order, but each word must be used exactly as many times as it appears in words.',
+    'Find every starting index where a word-sized block of s is made from all words exactly once. Example: if s = "barfoothefoobarman" and words = ["foo", "bar"], the valid starts are [0, 9] because "barfoo" starts at 0 and "foobar" starts at 9. The hard part is that words may appear in any order, duplicates matter, and the search must move by word-sized tokens rather than ordinary characters.',
   question:
-    'Given a string s and an array words of equal-length strings, return all starting indices where a substring of s is a concatenation of every word in words exactly once. The words may appear in any order, but each word must be used exactly as many times as it appears in words.',
+    'Find every starting index where a word-sized block of s is made from all words exactly once. Example: if s = "barfoothefoobarman" and words = ["foo", "bar"], the valid starts are [0, 9] because "barfoo" starts at 0 and "foobar" starts at 9. The hard part is that words may appear in any order, duplicates matter, and the search must move by word-sized tokens rather than ordinary characters.',
   constraints: [
-    'All words have the same length.',
-    'A valid substring has total length words.length * words[0].length.',
-    'The same word may appear more than once in words, so counts matter.',
-    'Return starting indices in increasing order.'
+    'All words have the same length, so the string can be scanned as fixed-size tokens instead of one character at a time.',
+    'A valid substring length is words.length * words[0].length. For words = ["foo", "bar"], the valid block length is 6.',
+    'Duplicate words are meaningful. For ["foo", "foo", "bar"], a valid block must contain foo twice and bar once.',
+    'Invalid tokens reset the current window because no valid answer can cross a word that is not required.',
+    'Overflow tokens shrink the window from the left. If foo appears three times but only two are allowed, remove whole tokens until the count is legal again.',
+    'Return starting indices in increasing order, even though offset-based scans may discover them grouped by token alignment.'
+  ],
+  examples: [
+    {
+      input: 's = "barfoothefoobarman", words = ["foo", "bar"]',
+      output: '[0, 9]',
+      explanation: '"barfoo" starts at 0 and "foobar" starts at 9.'
+    },
+    {
+      input: 's = "barfoofoofoobar", words = ["foo", "bar", "foo"]',
+      output: '[0, 6]',
+      explanation: 'The target counts are { foo: 2, bar: 1 }. Both "barfoofoo" and "foofoobar" match exactly.'
+    },
+    {
+      input: 's = "aaaa", words = ["aa"]',
+      output: '[0, 1, 2]',
+      explanation: 'Different token offsets can produce valid starts, so final output order must be normalized.'
+    }
   ],
   starterThought:
-    'Do not picture a normal character-by-character window first. Picture the string split into equal-size word tokens. The useful window grows, shrinks, and resets by whole tokens because partial words can never help form a valid answer.',
+    'Before writing code, stop thinking character-by-character. The important unit is one whole word. The invariant is: within one offset scan, the active window contains only complete word tokens, currentCounts never exceeds requiredCounts after repair, and matchedWords equals the number of tokens currently inside the window.',
   plainLanguageExplanation:
-    'A valid answer is not just a substring with the right characters. It is a block of exact word-sized tokens. If words = ["foo", "bar"], then "barfoo" works and "foobar" works, but "fooba" or "barfoox" do not because the token boundaries or the total length are wrong.',
+    'A valid answer is a block of exact word-sized pieces. If words = ["foo", "bar"], then "barfoo" and "foobar" work. "fooba" does not because it cuts a word. "barfoox" does not because it has an extra character. With duplicates, counts matter: ["foo", "foo", "bar"] requires two foo tokens, not just one.',
   mentalPicture:
-    'Imagine sliding a tray across the string, but the tray moves over bricks instead of letters. Each brick has length wordLength. The tray is valid only when the bricks inside it match the required word counts exactly.',
+    'Picture a tray sliding over bricks. Each brick is one word-length slice of the string. The tray is valid only when the bricks inside it match the required word-count bag exactly. A bad brick clears the tray. Too many copies of a good brick forces the tray to slide forward until the extra copy is removed.',
   intuition:
-    'The equal word length is the key that turns a hard substring search into several token scans. For each possible offset from 0 to wordLength - 1, read the string in word-sized chunks. Keep a required frequency map for the target words and a current frequency map for the active window. If a token is valid, add it. If that token appears too many times, move the left side forward by whole tokens until the count is legal again. If the token is not required at all, reset the current window because no valid answer can cross that invalid token. Because offset scans collect matches by alignment, sort the final indices before returning them.',
+    'Equal word length is the trick. It lets us run several aligned scans: offset 0, offset 1, up to wordLength - 1. Inside each scan, read one full token at a time. Valid tokens enter the window, overflow tokens make the left side shrink, and invalid tokens reset the window. Because each offset scan appends its own matches, sort the final indices before returning them.',
   workedExample: {
     input: 's = "barfoofoofoobar", words = ["foo", "bar", "foo"]',
     answer: [0, 6],
     explanation:
-      'The target counts are { foo: 2, bar: 1 } and each token has length 3. Starting at index 0, "barfoofoo" uses bar once and foo twice, so 0 is valid. Later, "foofoobar" starting at index 6 also has the exact required counts, so 6 is valid.',
+      'The target counts are { foo: 2, bar: 1 } and each token has length 3. Starting at index 0, "barfoofoo" uses bar once and foo twice. Starting at index 6, "foofoobar" also uses foo twice and bar once.',
     trace: [
-      {
-        offset: 0,
-        token: 'bar',
-        window: '[bar]',
-        currentCounts: { bar: 1 },
-        note: 'bar is required, so the window starts cleanly.'
-      },
-      {
-        offset: 3,
-        token: 'foo',
-        window: '[bar, foo]',
-        currentCounts: { bar: 1, foo: 1 },
-        note: 'foo is required and the count is still within the target.'
-      },
-      {
-        offset: 6,
-        token: 'foo',
-        window: '[bar, foo, foo]',
-        currentCounts: { bar: 1, foo: 2 },
-        note: 'The window now contains all three required tokens, so index 0 is recorded.'
-      },
-      {
-        offset: 9,
-        token: 'foo',
-        window: '[foo, foo, foo]',
-        currentCounts: { foo: 3 },
-        note: 'foo overflows, so the left side shrinks until foo is allowed again.'
-      },
-      {
-        offset: 12,
-        token: 'bar',
-        window: '[foo, foo, bar]',
-        currentCounts: { foo: 2, bar: 1 },
-        note: 'The counts match again, so index 6 is recorded.'
-      }
+      { token: 'bar', window: '[bar]', currentCounts: { bar: 1 }, note: 'Required token enters.' },
+      { token: 'foo', window: '[bar, foo]', currentCounts: { bar: 1, foo: 1 }, note: 'Still legal, but not complete yet.' },
+      { token: 'foo', window: '[bar, foo, foo]', currentCounts: { bar: 1, foo: 2 }, note: 'Counts match exactly, record 0.' },
+      { token: 'foo', window: '[foo, foo, foo]', currentCounts: { foo: 3 }, note: 'foo overflows, so shrink from the left.' },
+      { token: 'bar', window: '[foo, foo, bar]', currentCounts: { foo: 2, bar: 1 }, note: 'Counts match again, record 6.' }
     ]
   },
   bruteForceThought:
-    'The tempting baseline checks every possible starting index, slices a substring of total length, breaks it into word-sized pieces, and compares its frequency map against the target map. That is clear, but it repeatedly rebuilds nearly the same token counts for overlapping candidates.',
+    'The simple baseline checks every starting index, slices a block of total length, splits it into word-sized pieces, and compares its frequency map to the required map. It is easy to reason about, but it rebuilds almost the same counts many times.',
   optimizationJourney:
-    'The optimized version keeps the useful part of the brute-force check: word frequency counts. The improvement is that each offset scan reuses the current window counts. A token enters once from the right. If the token causes overflow, tokens leave from the left until the invariant is restored. If an invalid token appears, the scan resets because every candidate crossing that token is impossible. The final collected indices are sorted because offset-based scans can discover a later offset after an earlier offset has already appended larger indices.',
+    'Keep the frequency-map idea, but stop rebuilding from scratch. For each token alignment, reuse the current window. A token enters from the right once. If it causes overflow, tokens leave from the left until the invariant is restored. If the token is not required, clear the window because no valid answer can cross it. Sort at the end because offset scans can collect indices out of numeric order.',
   stepByStepBreakdown: [
-    'Return [] immediately when s is empty, words is empty, wordLength is 0, or the total concatenation length is greater than s.length.',
-    'Build requiredCounts from words. This preserves duplicates, such as ["foo", "foo", "bar"].',
-    'Let wordLength = words[0].length and totalWords = words.length.',
+    'Handle empty input and cases where the total concatenation length cannot fit inside s.',
+    'Build requiredCounts from words so duplicate words are preserved.',
+    'Compute wordLength and totalWords.',
     'For each offset from 0 to wordLength - 1, scan right in jumps of wordLength.',
-    'Read token = s.slice(right, right + wordLength).',
-    'If token is not in requiredCounts, clear currentCounts, reset matchedWords to 0, and move left to right + wordLength.',
-    'If token is required, add it to currentCounts and increment matchedWords.',
-    'While currentCounts[token] is greater than requiredCounts[token], remove the leftmost token from currentCounts, move left by wordLength, and decrement matchedWords.',
-    'When matchedWords equals totalWords, record left as a valid answer.',
-    'After recording, remove the leftmost token and move left forward so the scan can find overlapping valid answers.',
-    'Sort the collected indices before returning them so offset-grouped discovery still satisfies increasing-order output.'
+    'If the current token is not required, clear currentCounts, reset matchedWords, and move left after that token.',
+    'If the token is required, add it to currentCounts and increment matchedWords.',
+    'While that token count is too high, remove leftmost tokens and move left by wordLength.',
+    'When matchedWords equals totalWords, record left as a valid start.',
+    'After recording, remove the leftmost token so overlapping answers can still be found.',
+    'Sort the collected indices before returning them.'
   ],
   patternSignal:
-    'Use this pattern when the input is a string, the target pieces all have the same length, and validity depends on matching a multiset of tokens rather than a single count or simple character set.',
+    'Use this pattern when a string problem has equal-length target pieces and validity depends on matching a multiset of tokens.',
   invariant:
-    'Within one offset scan, every token boundary is aligned to that offset. After overflow handling, currentCounts never contains more copies of any word than requiredCounts, and matchedWords equals the number of required-sized tokens currently inside the window.',
+    'Within one offset scan, token boundaries stay aligned, currentCounts never exceeds requiredCounts after overflow repair, and matchedWords equals the number of tokens inside the active window.',
   solutionCode: {
     language: 'javascript',
     code: `export function findSubstring(s, words) {
@@ -159,47 +147,43 @@ const problem = defineProblem({
 }`
   },
   solution:
-    'Scan the string by token offsets. For each offset, maintain a left boundary, a right boundary, and a frequency map for the current token window. Valid tokens extend the window. Overflow shrinks from the left. Invalid tokens reset the window. Whenever the window contains exactly words.length tokens without overflow, the left boundary is a valid starting index. Sort the collected indices at the end because offset scans may append indices in alignment order rather than numeric order.',
+    'Scan by token offsets. For each offset, maintain left, right, currentCounts, and matchedWords. Valid tokens extend the window. Overflow shrinks from the left. Invalid tokens reset the window. Exact-count windows record left. Final sorting normalizes the order across different offset scans.',
   explanation:
-    'The solution works because equal word length gives us stable token boundaries. Starting at each offset covers every possible alignment a valid answer could use. Within one alignment, the window only moves by whole words. The required map defines what the window is allowed to contain; the current map describes what it currently contains. Overflow means the window has too many copies of one word, so removing whole tokens from the left is the smallest repair that keeps the scan useful. An invalid token cannot be part of any answer, so the current scan restarts immediately after it. The final sort is a small normalization step that honors the output contract even when offset scans discover indices out of numeric order.',
+    'This works because equal word length gives stable token boundaries. Every valid answer must belong to exactly one offset alignment. Within that alignment, the window moves only by whole words. The required map defines the allowed word bag; the current map describes the active tray of tokens. Overflow is repaired by removing whole tokens from the left. Invalid tokens clear the tray. Sorting at the end honors the increasing-order output contract.',
   complexityAnalysis:
-    'Time is O(n + r log r), where n is the string length and r is the number of returned indices. The scan itself is O(n): there are wordLength offsets, and each offset visits about n / wordLength tokens. Each token enters the current window once and leaves at most once, so the total scanning work is linear in the string length, plus constant-time map operations on average. Sorting the r collected answers adds O(r log r) to guarantee increasing-order output. Space is O(m + r), where m is the number of distinct words in the required word list and r is the output size.',
+    'Time is O(n + r log r), where n is the string length and r is the number of returned indices. The token scan is O(n) because each token enters and leaves at most once across its offset scan. Sorting the r answers adds O(r log r). Space is O(m + r), where m is the number of distinct required words and r is the output size.',
   commonMistake:
-    'A common mistake is to slide by one character inside the optimized scan. That mixes token boundaries and makes the current frequency map describe pieces that can never be valid words.',
+    'The most common mistake is treating this like a normal character window. The optimized window must move by whole word tokens, not by single characters inside an offset scan.',
   commonMistakes: [
-    'Ignoring duplicate words and using a Set instead of a frequency map.',
-    'Scanning only from offset 0 and missing answers that start at offset 1, 2, and so on.',
-    'Resetting on overflow instead of shrinking from the left, which can skip overlapping answers.',
-    'Recording an answer when the window has the right length but the counts do not match.',
-    'Forgetting to remove the leftmost token after recording an answer, which can hide overlapping matches.',
-    'Returning offset-grouped matches directly without sorting them into increasing order.',
-    'Using character counts instead of word counts.'
+    'Using a Set and losing duplicate-word counts.',
+    'Scanning only offset 0 and missing answers from other alignments.',
+    'Resetting on overflow instead of shrinking from the left.',
+    'Recording a window with the right length but wrong frequencies.',
+    'Forgetting to remove the leftmost token after recording, which can hide overlapping matches.',
+    'Returning offset-grouped matches directly without sorting them into increasing order.'
   ],
   edgeCases: [
-    's is shorter than words.length * wordLength, so no valid block can fit.',
-    'words is empty, so there is no meaningful concatenation to search for.',
+    's is shorter than the total concatenation length.',
+    'words is empty.',
     'words contains duplicates, such as ["foo", "foo", "bar"].',
-    'An invalid token appears inside an otherwise promising window and forces a reset.',
-    'A repeated valid token causes overflow and requires shrinking, not a full reset.',
-    'Valid answers overlap, so the scan must continue after recording an index.',
-    'Different offsets can produce indices out of order, such as s = "aaaa" and words = ["aa"].',
-    'wordLength is greater than s.length.'
+    'An invalid token appears inside a promising region.',
+    'A valid token appears too many times and causes overflow.',
+    'Valid answers overlap.',
+    'Different offsets produce out-of-order discoveries, such as s = "aaaa" and words = ["aa"].'
   ],
   hints: [
-    'First compute the length of one word and the total length of all words together.',
-    'Treat each candidate window as a sequence of word-sized tokens, not individual characters.',
-    'Use one map for required counts and one map for the current window counts.',
-    'When a token is valid but appears too many times, move left forward by whole tokens until the overflow disappears.',
-    'Run the scan once for each possible token alignment: 0 through wordLength - 1.',
-    'Normalize the final answer order because each offset scan appends its own matches before the next offset runs.'
+    'Compute one word length first.',
+    'Convert the word list into a frequency map, not a Set.',
+    'Scan once for each possible token alignment.',
+    'When a required token overflows, move left forward by whole tokens.',
+    'Sort the final result because offset scans collect matches by alignment.'
   ],
   followUpQuestions: [
-    'Why does scanning by offset cover all possible valid starting indices?',
-    'What breaks if the words are not all the same length?',
+    'Why does scanning by offset cover every possible start?',
+    'What breaks if words are not all the same length?',
     'Why is overflow repaired by shrinking instead of clearing the whole window?',
-    'Why can offset-based scanning discover indices out of increasing order?',
-    'How would the approach change if the output only needed the count of valid starts?',
-    'What test case would prove that duplicate words are handled correctly?'
+    'Why can offset scans discover indices out of increasing order?',
+    'Which test proves duplicate words are handled correctly?'
   ],
   relatedConcepts: [
     'fixed-size sliding window',
@@ -209,18 +193,17 @@ const problem = defineProblem({
     'hash map invariants'
   ],
   finalTakeaway:
-    'The senior-level insight is that this is not a normal character window. It is a token window. Once you move in word-sized jumps, protect the frequency-map invariant, and normalize the final answer order, the hard-looking substring search becomes a controlled sliding-window scan.',
+    'This is a token-window problem, not a character-window problem. Move in word-sized jumps, protect the frequency-map invariant, repair overflow from the left, reset on invalid tokens, and normalize the final answer order.',
   visualWalkthrough: {
     diagram: {
       type: 'array',
       variant: 'sliding-window',
       title: 'Token window walkthrough',
       description:
-        'The string is split into word-sized chunks for offset 0. Watch how counts grow, overflow is repaired, invalid tokens reset the scan, and valid starts are recorded.',
+        'The string is split into word-sized chunks. The walkthrough shows token entry, overflow repair, reset, and answer recording.',
       values: ['bar', 'foo', 'foo', 'foo', 'bar', 'baz', 'foo', 'bar', 'foo'],
       stateTitle: 'Window state',
-      stateDescription:
-        'required = { foo: 2, bar: 1 }. current changes as whole tokens enter and leave.',
+      stateDescription: 'required = { foo: 2, bar: 1 }',
       legend: [
         { role: 'window', label: 'active token window' },
         { role: 'current', label: 'incoming token' },
@@ -231,45 +214,21 @@ const problem = defineProblem({
       ],
       frames: [
         {
-          title: 'Start with the first required token',
-          activeRange: [0, 0],
-          items: [{ index: 0, role: 'current' }],
-          state: {
-            label: 'right = 0',
-            values: {
-              required: '{ foo: 2, bar: 1 }',
-              current: '{ bar: 1 }',
-              left: 0,
-              matchedWords: 1,
-              answers: []
-            },
-            helper: 'bar is required, so it enters the current token window.'
-          },
-          description:
-            'The scan reads one full token at a time. The current map starts with bar: 1.'
-        },
-        {
-          title: 'A second required token enters',
+          title: 'Build a legal token window',
           activeRange: [0, 1],
           items: [
             { index: 0, role: 'window' },
             { index: 1, role: 'current' }
           ],
           state: {
-            label: 'right = 3',
-            values: {
-              current: '{ bar: 1, foo: 1 }',
-              left: 0,
-              matchedWords: 2,
-              answers: []
-            },
-            helper: 'foo is also required, and its count is still legal.'
+            label: 'growing',
+            values: { current: '{ bar: 1, foo: 1 }', left: 0, matchedWords: 2, answers: [] },
+            helper: 'Both tokens are required and no count has overflowed.'
           },
-          description:
-            'The active window now has two useful tokens, but it does not yet contain all three required words.'
+          description: 'The window grows by whole word tokens.'
         },
         {
-          title: 'Counts match exactly',
+          title: 'Record an exact match',
           activeRange: [0, 2],
           items: [
             { index: 0, role: 'answer' },
@@ -277,62 +236,29 @@ const problem = defineProblem({
             { index: 2, role: 'current' }
           ],
           state: {
-            label: 'record left = 0',
-            values: {
-              current: '{ bar: 1, foo: 2 }',
-              left: 0,
-              matchedWords: 3,
-              answers: [0]
-            },
-            helper: 'The window contains exactly three tokens and the counts match required.'
+            label: 'record 0',
+            values: { current: '{ bar: 1, foo: 2 }', left: 0, matchedWords: 3, answers: [0] },
+            helper: 'The current bag exactly matches the required bag.'
           },
-          description:
-            'barfoofoo is a valid concatenation, so the scan records starting index 0.'
+          description: 'barfoofoo is valid, so index 0 is recorded.'
         },
         {
-          title: 'Repeated foo creates overflow',
+          title: 'Repair overflow from the left',
           activeRange: [1, 3],
           items: [
-            { index: 1, role: 'window' },
+            { index: 1, role: 'remove' },
             { index: 2, role: 'window' },
             { index: 3, role: 'warning' }
           ],
           state: {
-            label: 'right = 9',
-            values: {
-              current: '{ foo: 3 }',
-              overflow: 'foo appears 3 times, but only 2 are allowed',
-              left: 3,
-              answers: [0]
-            },
-            helper: 'Overflow does not mean give up. Shrink from the left until foo is legal again.'
+            label: 'foo overflow',
+            values: { overflow: 'foo count is too high', action: 'remove left tokens until legal', answers: [0] },
+            helper: 'Do not reset the whole window when a required token overflows.'
           },
-          description:
-            'The extra foo makes the window invalid, so the left boundary moves by whole tokens.'
+          description: 'The window shrinks by whole tokens until foo is allowed again.'
         },
         {
-          title: 'Shrink left to repair overflow',
-          activeRange: [2, 3],
-          items: [
-            { index: 1, role: 'remove' },
-            { index: 2, role: 'window' },
-            { index: 3, role: 'window' }
-          ],
-          state: {
-            label: 'left = 6',
-            values: {
-              current: '{ foo: 2 }',
-              left: 6,
-              matchedWords: 2,
-              answers: [0]
-            },
-            helper: 'Removing the leftmost foo restores the allowed foo count.'
-          },
-          description:
-            'The window is useful again because no word count exceeds the required frequency.'
-        },
-        {
-          title: 'Another exact match is found',
+          title: 'Record the next match',
           activeRange: [2, 4],
           items: [
             { index: 2, role: 'answer' },
@@ -340,56 +266,22 @@ const problem = defineProblem({
             { index: 4, role: 'current' }
           ],
           state: {
-            label: 'record left = 6',
-            values: {
-              current: '{ foo: 2, bar: 1 }',
-              left: 6,
-              matchedWords: 3,
-              answers: [0, 6]
-            },
-            helper: 'The window foofoobar has the exact required multiset.'
+            label: 'record 6',
+            values: { current: '{ foo: 2, bar: 1 }', left: 6, matchedWords: 3, answers: [0, 6] },
+            helper: 'The repaired window can still produce a valid answer.'
           },
-          description:
-            'The scan records another valid starting index at 6.'
+          description: 'foofoobar is valid, so index 6 is recorded.'
         },
         {
-          title: 'Invalid token resets the window',
+          title: 'Invalid token resets the scan',
           activeRange: [5, 5],
           items: [{ index: 5, role: 'error' }],
           state: {
-            label: 'right = 15',
-            values: {
-              token: 'baz',
-              action: 'clear current map and move left after baz',
-              left: 18,
-              matchedWords: 0,
-              answers: [0, 6]
-            },
-            helper: 'A valid answer cannot cross a token that is not in requiredCounts.'
+            label: 'reset',
+            values: { token: 'baz', action: 'clear current map', nextLeft: 18, answers: [0, 6] },
+            helper: 'No valid answer can cross a token that is not in requiredCounts.'
           },
-          description:
-            'baz is not required, so every candidate crossing it is impossible and the current window resets.'
-        },
-        {
-          title: 'The scan continues after reset',
-          activeRange: [6, 8],
-          items: [
-            { index: 6, role: 'window' },
-            { index: 7, role: 'window' },
-            { index: 8, role: 'current' }
-          ],
-          state: {
-            label: 'after reset',
-            values: {
-              current: '{ foo: 2, bar: 1 }',
-              left: 18,
-              matchedWords: 3,
-              answers: [0, 6, 18]
-            },
-            helper: 'Resetting does not stop the scan; it starts a clean window after the invalid token.'
-          },
-          description:
-            'The same invariant finds later valid blocks without revisiting earlier characters.'
+          description: 'The next scan starts cleanly after the invalid token.'
         }
       ]
     }
