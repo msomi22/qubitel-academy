@@ -89,9 +89,8 @@ const problem = defineProblem({
     'Use this pattern when a string problem has equal-length target pieces and validity depends on matching a multiset of tokens.',
   invariant:
     'Within one offset scan, token boundaries stay aligned, currentCounts never exceeds requiredCounts after overflow repair, and matchedWords equals the number of tokens inside the active window.',
-  solutionCode: {
-    language: 'javascript',
-    code: `export function findSubstring(s, words) {
+  language: 'javascript',
+  solutionCode: `export function findSubstring(s, words) {
   if (!s || !Array.isArray(words) || words.length === 0) return [];
 
   const wordLength = words[0].length;
@@ -144,8 +143,7 @@ const problem = defineProblem({
   }
 
   return result.sort((a, b) => a - b);
-}`
-  },
+}`,
   solution:
     'Scan by token offsets. For each offset, maintain left, right, currentCounts, and matchedWords. Valid tokens extend the window. Overflow shrinks from the left. Invalid tokens reset the window. Exact-count windows record left. Final sorting normalizes the order across different offset scans.',
   explanation:
