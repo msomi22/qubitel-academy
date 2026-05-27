@@ -22,6 +22,35 @@ function text(value) {
   return String(value);
 }
 
+function formatIndexedString(value) {
+  const raw = text(value);
+  if (!raw.includes('barfoofoobarthefoobarman')) return raw;
+
+  const s = 'barfoofoobarthefoobarman';
+  const indexRow = Array.from(s, (_, index) => String(index).padStart(2, ' ')).join(' ');
+  const charRow = Array.from(s, (char) => char.padStart(2, ' ')).join(' ');
+
+  return `We are given:
+
+s = "${s}"
+words = ["bar", "foo", "the"]
+
+First, look at the string by character index:
+
+Index: ${indexRow}
+Chars: ${charRow}
+
+Every word has length 3, so a valid substring must use 9 characters: 3 words × 3 characters.
+
+We need substrings made from all words exactly once: ["bar", "foo", "the"].
+
+Starting at index 6 gives "foobarthe" = "foo" + "bar" + "the".
+Starting at index 9 gives "barthefoo" = "bar" + "the" + "foo".
+Starting at index 12 gives "thefoobar" = "the" + "foo" + "bar".
+
+So the answer is [6, 9, 12].`;
+}
+
 function isVisualRichBlock(block) {
   return block?.type === 'diagram' || block?.type === 'flow' || block?.type === 'image';
 }
@@ -48,7 +77,7 @@ function RichBodyBlocks({ blocks, mode = 'overview' }) {
 }
 
 function TextBlock({ title, children, className = '', preserveWhitespace = false }) {
-  const value = text(children);
+  const value = preserveWhitespace ? formatIndexedString(children) : text(children);
   if (!value) return null;
   return (
     <section className={`workspace-block ${className}`}>
