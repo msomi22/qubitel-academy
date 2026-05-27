@@ -20,8 +20,6 @@ const problem = defineMcqProblem({
   ],
   prompt: question,
   question,
-  scenario: 'Timed cognitive aptitude practice for numerical reasoning.',
-  finalPattern: 'Cognitive aptitude — Numerical Reasoning',
   options: [
     '20%',
     '25%',
