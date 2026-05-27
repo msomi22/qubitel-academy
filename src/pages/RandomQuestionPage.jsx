@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../components/Button.jsx';
 import QuestionCard from '../components/QuestionCard.jsx';
 import LoadingCard from '../components/LoadingCard.jsx';
@@ -7,12 +7,16 @@ import { storageService } from '../services/storageService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import { confettiBurst } from '../utils/confetti.js';
 
+const EMPTY_RANDOM_MESSAGE = 'No questions are available for the selected filters. Try All categories or choose another topic.';
+
 export default function RandomQuestionPage() {
   const pref = usePreferences();
   const [filters, setFilters] = useState({ category: 'all', topicId: '' });
   const [q, setQ] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [completed, setCompleted] = useState(pref.completed);
+  const requestIdRef = useRef(0);
 
   const topics = useMemo(
     () => allTopics.filter((topic) => filters.category === 'all' || topic.category === filters.category),
@@ -20,14 +24,30 @@ export default function RandomQuestionPage() {
   );
 
   async function pickQuestion(nextFilters = filters, increment = false) {
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
+
     setLoading(true);
-    if (increment) {
-      const nextCount = storageService.incrementRandom();
-      if (nextCount % 10 === 0) confettiBurst();
+    setError('');
+
+    try {
+      const question = await getRandomQuestion(nextFilters);
+      if (requestId !== requestIdRef.current) return;
+
+      setQ(question);
+
+      if (increment) {
+        const nextCount = storageService.incrementRandom();
+        if (nextCount % 10 === 0) confettiBurst();
+      }
+    } catch {
+      if (requestId !== requestIdRef.current) return;
+
+      setQ(null);
+      setError(EMPTY_RANDOM_MESSAGE);
+    } finally {
+      if (requestId === requestIdRef.current) setLoading(false);
     }
-    const question = await getRandomQuestion(nextFilters);
-    setQ(question);
-    setLoading(false);
   }
 
   useEffect(() => { pickQuestion(filters, false); }, []);
@@ -99,15 +119,19 @@ export default function RandomQuestionPage() {
         </Button>
       </div>
   
-      {loading || !q ? (
+      {loading ? (
         <LoadingCard label="Choosing a question…" />
-      ) : (
+      ) : error ? (
+        <div className="glass empty-state" role="status">
+          <p>{error}</p>
+        </div>
+      ) : q ? (
         <QuestionCard
           question={q}
           completed={!!completed[q.id]}
           onToggle={handleCompletionClick}
         />
-      )}
+      ) : null}
     </main>
   );
 }
