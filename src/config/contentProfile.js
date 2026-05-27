@@ -31,7 +31,8 @@ const APPROVED_PROD_TOPIC_IDS = new Set([
   'messaging-queues',
   'scalability',
   'databases',
-  'java-core'
+  'java-core',
+  'numerical-reasoning'
 ]);
 
 function resolveProfile(options = {}) {
