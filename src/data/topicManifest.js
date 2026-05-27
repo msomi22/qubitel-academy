@@ -321,6 +321,15 @@ export const topicManifest = [
     "questionBank": {
       "mode": "discovered"
     }
+  },
+  {
+    "id": "management-track",
+    "name": "Management Track",
+    "category": "engineering-leadership",
+    "description": "Practice senior engineering leadership judgment around delegation, ownership, mentoring, communication, delivery, and team growth.",
+    "questionBank": {
+      "mode": "discovered"
+    }
   }
 ];
 
@@ -375,6 +384,16 @@ export const categoryManifest = [
     tags: ["machine-learning", "ai", "production-ml"],
     route: "/category/ml-ai",
     featured: true
+  },
+  {
+    id: "engineering-leadership",
+    name: "Engineering Leadership",
+    shortName: "Leadership",
+    description: "Senior developer leadership practice for delegation, ownership, mentoring, communication, delivery judgment, and team effectiveness.",
+    domain: "Engineering Leadership",
+    tags: ["leadership", "management", "mentorship"],
+    route: "/category/engineering-leadership",
+    featured: true
   }
 ];
 
@@ -389,3 +408,4 @@ export const systemTopicManifest = getTopicsByCategory("system");
 export const javaTopicManifest = getTopicsByCategory("java");
 export const aptitudeTopicManifest = getTopicsByCategory("aptitude");
 export const mlAiTopicManifest = getTopicsByCategory("ml-ai");
+export const engineeringLeadershipTopicManifest = getTopicsByCategory("engineering-leadership");
