@@ -352,7 +352,7 @@ export async function getCategoryWithCounts(categoryOrId, completed = {}, option
   const topics = await getTopicsWithCounts(category.id, options);
   if (!topics.length) return null;
 
-  const quizCount = topics.reduce((sum, topic) => sum + topic.count, 0);
+  const quizCount = topics.reduce((sum, topic) => topic.count + sum, 0);
   const done = topics.reduce((sum, topic) => topicProgress(topic, completed).done + sum, 0);
 
   return {
@@ -374,16 +374,24 @@ export async function loadTopicBanks(topicIds, options = {}) {
   return Promise.all(topicIds.map((topicId) => loadTopicBank(topicId, options)));
 }
 
-export async function getRandomQuestion(filters = {}) {
-  const topics = await getVisibleTopics();
+export function normalizeRandomQuestionFilters(filters = {}) {
+  return {
+    category: filters.category && filters.category !== 'all' ? filters.category : null,
+    topicId: filters.topicId || null
+  };
+}
+
+export async function getRandomQuestion(filters = {}, options = {}) {
+  const normalizedFilters = normalizeRandomQuestionFilters(filters);
+  const topics = await getVisibleTopicsForActiveProfile(options);
   const candidates = topics.filter((topic) => {
-    if (filters.category && topic.category !== filters.category) return false;
-    if (filters.topicId && topic.id !== filters.topicId) return false;
+    if (normalizedFilters.category && topic.category !== normalizedFilters.category) return false;
+    if (normalizedFilters.topicId && topic.id !== normalizedFilters.topicId) return false;
     return true;
   });
 
   for (const pickedTopic of candidates.sort(() => Math.random() - 0.5)) {
-    const bank = await loadTopicBank(pickedTopic.id);
+    const bank = await loadTopicBank(pickedTopic.id, options);
     if (!bank.questions.length) continue;
 
     const question = bank.questions[Math.floor(Math.random() * bank.questions.length)];
