@@ -6,6 +6,7 @@ const defaults = {
   randomCount: 0,
   selectedTopics: {},
   selectedAnswers: {},
+  timedQuestionAttempts: {},
   complexDesignSubmissions: {}
 };
 
@@ -34,21 +35,25 @@ export const storageService = {
 
     const completed = { ...state.completed };
     const selectedAnswers = { ...state.selectedAnswers };
+    const timedQuestionAttempts = { ...state.timedQuestionAttempts };
     const complexDesignSubmissions = { ...state.complexDesignSubmissions };
 
     delete completed[questionId];
     delete selectedAnswers[questionId];
+    delete timedQuestionAttempts[questionId];
     delete complexDesignSubmissions[questionId];
 
     this.write({
       completed,
       selectedAnswers,
+      timedQuestionAttempts,
       complexDesignSubmissions
     });
 
     return {
       completed,
       selectedAnswers,
+      timedQuestionAttempts,
       complexDesignSubmissions
     };
   },
@@ -65,6 +70,23 @@ export const storageService = {
   getSelectedAnswer(questionId) {
     const answer = this.read().selectedAnswers?.[questionId];
     return Number.isInteger(answer) ? answer : null;
+  },
+  setTimedQuestionAttempt(questionId, attempt) {
+    const state = this.read();
+    const timedQuestionAttempts = {
+      ...state.timedQuestionAttempts,
+      [questionId]: {
+        ...(state.timedQuestionAttempts?.[questionId] || {}),
+        ...attempt,
+        updatedAt: new Date().toISOString()
+      }
+    };
+
+    this.write({ timedQuestionAttempts });
+    return timedQuestionAttempts[questionId];
+  },
+  getTimedQuestionAttempt(questionId) {
+    return this.read().timedQuestionAttempts?.[questionId] || null;
   },
   setComplexDesignSubmission(questionId, submission) {
     const state = this.read();

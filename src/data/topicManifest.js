@@ -303,6 +303,15 @@ export const topicManifest = [
     "questionBank": {
       "mode": "discovered"
     }
+  },
+  {
+    "id": "numerical-reasoning",
+    "name": "Numerical Reasoning",
+    "category": "aptitude",
+    "description": "Practice timed arithmetic, percentages, ratios, sequences, and data interpretation questions for aptitude assessments.",
+    "questionBank": {
+      "mode": "discovered"
+    }
   }
 ];
 
@@ -337,6 +346,16 @@ export const categoryManifest = [
     tags: ["java", "backend", "engineering"],
     route: "/category/java",
     featured: true
+  },
+  {
+    id: "aptitude",
+    name: "Aptitude Test",
+    shortName: "Aptitude",
+    description: "Timed numerical, verbal, logical, and cognitive reasoning practice for assessment preparation.",
+    domain: "Assessment Prep",
+    tags: ["aptitude", "reasoning", "timed-practice"],
+    route: "/category/aptitude",
+    featured: true
   }
 ];
 
@@ -349,3 +368,4 @@ export const getCategoryById = (categoryId) =>
 export const dsaTopicManifest = getTopicsByCategory("dsa");
 export const systemTopicManifest = getTopicsByCategory("system");
 export const javaTopicManifest = getTopicsByCategory("java");
+export const aptitudeTopicManifest = getTopicsByCategory("aptitude");

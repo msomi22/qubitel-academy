@@ -22,6 +22,11 @@ function text(value) {
   return String(value);
 }
 
+function getTimedLimitSeconds(question) {
+  const seconds = Number(question.estimatedTimeSeconds ?? question.metadata?.estimatedTimeSeconds);
+  return Number.isFinite(seconds) && seconds > 0 ? seconds : 0;
+}
+
 function formatIndexedString(value) {
   const raw = text(value);
   if (!raw.includes('barfoofoobarthefoobarman')) return raw;
@@ -145,9 +150,7 @@ function ExampleBlock({ items }) {
       <ul>
         {rows.map((row, index) => {
           const hasHighlightedInput = row?.highlightedInput?.segments?.length;
-          if (!hasHighlightedInput) {
-            return <li key={`${text(row)}-${index}`}>{text(row)}</li>;
-          }
+          if (!hasHighlightedInput) return <li key={`${text(row)}-${index}`}>{text(row)}</li>;
 
           return (
             <li className="focused-example-item" key={`${row.input || index}-${index}`}>
@@ -195,9 +198,11 @@ function EmptyState({ title, children }) {
   );
 }
 
-function McqBlock({ question, selected, onSelect }) {
+function McqBlock({ question, selected, onSelect, disabled = false, timedAttempt = null }) {
   if (question.type !== 'mcq' || !question.options?.length) return null;
   const answered = selected !== null;
+  const timedOut = timedAttempt?.status === 'timeout';
+  const shouldReveal = answered || timedOut;
   const isCorrect = selected === question.correctAnswer;
   const correctLabel = question.options?.[question.correctAnswer]
     ? `${optionLetter(question.correctAnswer)}. ${question.options[question.correctAnswer]}`
@@ -210,18 +215,35 @@ function McqBlock({ question, selected, onSelect }) {
         {question.options.map((option, index) => {
           const chosen = selected === index;
           const correct = question.correctAnswer === index;
-          const className = ['option-btn', chosen ? 'selected' : '', answered && correct ? 'correct' : '', answered && chosen && !correct ? 'wrong' : ''].filter(Boolean).join(' ');
+          const className = [
+            'option-btn',
+            chosen ? 'selected' : '',
+            shouldReveal && correct ? 'correct' : '',
+            shouldReveal && chosen && !correct ? 'wrong' : ''
+          ].filter(Boolean).join(' ');
+
           return (
-            <button key={`${option}-${index}`} type="button" className={className} aria-pressed={chosen} onClick={() => onSelect(index)}>
+            <button
+              key={`${option}-${index}`}
+              type="button"
+              className={className}
+              aria-pressed={chosen}
+              disabled={disabled}
+              onClick={() => onSelect(index)}
+            >
               <strong>{optionLetter(index)}</strong>
               <span>{option}</span>
-              {answered && correct ? <em>Correct</em> : null}
-              {answered && chosen && !correct ? <em>Selected</em> : null}
+              {shouldReveal && correct ? <em>Correct</em> : null}
+              {shouldReveal && chosen && !correct ? <em>Selected</em> : null}
             </button>
           );
         })}
       </div>
-      {answered ? (
+      {timedOut ? (
+        <div className="answer-banner wrong" role="status">
+          Time is up. The quiz is closed and this attempt is marked failed. Best answer: <strong>{correctLabel}</strong>
+        </div>
+      ) : answered ? (
         <div className={`answer-banner ${isCorrect ? 'correct' : 'wrong'}`} role="status">
           {isCorrect ? 'Correct.' : 'Not quite.'} Best answer: <strong>{correctLabel}</strong>
         </div>
@@ -254,10 +276,7 @@ function VisualBlock({ question, showFallback = false }) {
 
   return (
     <section className="learning-panel visual-walkthrough-panel reference-visual-panel">
-      <div className="visual-walkthrough-header">
-        <span className="mini-label">Visual clarity</span>
-        <strong>{visual?.title || 'Mental model walkthrough'}</strong>
-      </div>
+      <div className="visual-walkthrough-header"><span className="mini-label">Visual clarity</span><strong>{visual?.title || 'Mental model walkthrough'}</strong></div>
       {visual?.summary ? <p className="visual-summary">{visual.summary}</p> : null}
       <VisualInputStrip inputs={visual?.inputs} />
       {hasVisualExplanation ? <p className="visual-summary">{fallbackVisualExplanation}</p> : null}
@@ -302,14 +321,31 @@ function ApproachReinforcementCards({ question }) {
   );
 }
 
+function TimedQuizStatus({ seconds, locked }) {
+  const safeSeconds = Math.max(0, seconds);
+  const label = locked && safeSeconds === 0 ? 'Quiz closed' : 'Time left';
+
+  return (
+    <span className={`time-pill quiz-timer-pill ${locked ? 'locked' : ''}`} aria-live="polite" title="Quiz countdown">
+      <strong>⏱ {label}:</strong> {safeSeconds}s
+    </span>
+  );
+}
+
 export default function FocusedProblemWorkspace({ question, completed, onToggle, onMarkComplete, hideTopline = false }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [selected, setSelected] = useState(() => storageService.getSelectedAnswer(question.id));
+  const [timedAttempt, setTimedAttempt] = useState(() => storageService.getTimedQuestionAttempt(question.id));
+  const [remainingSeconds, setRemainingSeconds] = useState(() => getTimedLimitSeconds(question));
   const [focusMode, setFocusMode] = useState(false);
   const lastCompletedQuestionId = useRef('');
   const codeContent = question.solutionCode || question.code || question.pseudocode || question.approachPseudocode;
   const explanation = question.explanation || question.solutionExplanation || question.answerExplanation || question.finalReasoning;
   const hasMcq = question.type === 'mcq' && question.options?.length;
+  const timeLimitSeconds = getTimedLimitSeconds(question);
+  const isTimedMcq = hasMcq && timeLimitSeconds > 0;
+  const timedAttemptComplete = Boolean(timedAttempt?.status);
+  const quizLocked = isTimedMcq && (timedAttemptComplete || completed || remainingSeconds <= 0);
   const richBody = list(question.body);
   const hasOverviewRichBody = richBody.some((block) => !isVisualRichBlock(block));
   const hasVisualRichBody = richBody.some(isVisualRichBlock);
@@ -328,13 +364,61 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
   }, [activeTab, tabs]);
 
   useEffect(() => {
-    setSelected(storageService.getSelectedAnswer(question.id));
+    const storedSelected = storageService.getSelectedAnswer(question.id);
+    const storedAttempt = storageService.getTimedQuestionAttempt(question.id);
+    setSelected(storedSelected);
+    setTimedAttempt(storedAttempt);
+    setRemainingSeconds(storedAttempt?.status || storedSelected !== null ? 0 : getTimedLimitSeconds(question));
     lastCompletedQuestionId.current = completed ? question.id : '';
   }, [completed, question.id]);
 
+  useEffect(() => {
+    if (!isTimedMcq || selected !== null || timedAttemptComplete || completed || remainingSeconds <= 0) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setRemainingSeconds((current) => Math.max(0, current - 1));
+    }, 1000);
+
+    return () => window.clearTimeout(timer);
+  }, [completed, isTimedMcq, remainingSeconds, selected, timedAttemptComplete]);
+
+  useEffect(() => {
+    if (!isTimedMcq || selected !== null || timedAttemptComplete || completed || remainingSeconds !== 0) return;
+
+    const attempt = storageService.setTimedQuestionAttempt(question.id, {
+      status: 'timeout',
+      selectedAnswer: null,
+      correctAnswer: question.correctAnswer,
+      completedAt: new Date().toISOString()
+    });
+
+    setTimedAttempt(attempt);
+    setActiveTab('answer');
+
+    if (lastCompletedQuestionId.current !== question.id) {
+      lastCompletedQuestionId.current = question.id;
+      onMarkComplete?.(question.id);
+    }
+  }, [completed, isTimedMcq, onMarkComplete, question.correctAnswer, question.id, remainingSeconds, selected, timedAttemptComplete]);
+
   function handleMcqSelect(answerIndex) {
+    if (quizLocked) return;
+
     setSelected(answerIndex);
     storageService.setSelectedAnswer(question.id, answerIndex);
+
+    if (isTimedMcq) {
+      const attempt = storageService.setTimedQuestionAttempt(question.id, {
+        status: answerIndex === question.correctAnswer ? 'correct' : 'incorrect',
+        selectedAnswer: answerIndex,
+        correctAnswer: question.correctAnswer,
+        completedAt: new Date().toISOString()
+      });
+
+      setTimedAttempt(attempt);
+      setRemainingSeconds(0);
+      setActiveTab('answer');
+    }
 
     if (!completed && lastCompletedQuestionId.current !== question.id) {
       lastCompletedQuestionId.current = question.id;
@@ -344,20 +428,31 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
 
   return (
     <article className={`focused-problem-workspace glass-lite ${completed ? 'done' : ''} ${focusMode ? 'focus-mode' : ''}`}>
-      {!hideTopline ? <div className="focused-problem-topline"><div className="meta-strip"><span className="pill">{question.difficulty}</span><span className="time-pill">Time: {question.estimatedTime || '10 min'}</span></div><button className="mark" onClick={() => onToggle?.(question.id)}>{completed ? 'Reset progress' : 'Mark complete'}</button></div> : null}
+      {!hideTopline ? (
+        <div className="focused-problem-topline">
+          <div className="meta-strip">
+            <span className="pill">{question.difficulty}</span>
+            {!isTimedMcq ? <span className="time-pill">Time: {question.estimatedTime || '10 min'}</span> : null}
+          </div>
+          <button className="mark" onClick={() => onToggle?.(question.id)}>{completed ? 'Reset progress' : 'Mark complete'}</button>
+        </div>
+      ) : null}
       <div className="focused-tabs-wrap">
         <div className="focused-tabs" role="tablist" aria-label="Problem learning sections">{tabs.map(([id, label]) => <button key={id} type="button" className={`focused-tab-btn ${activeTab === id ? 'active' : ''}`} role="tab" aria-selected={activeTab === id} onClick={() => setActiveTab(id)}>{label}</button>)}</div>
-        <button type="button" className={`focus-mode-toggle ${focusMode ? 'active' : ''}`} aria-pressed={focusMode} onClick={() => setFocusMode((current) => !current)}>{focusMode ? 'Exit focus' : 'Focus mode'}</button>
+        <div className="focused-tabs-actions">
+          {isTimedMcq ? <TimedQuizStatus seconds={remainingSeconds} locked={quizLocked} /> : null}
+          <button type="button" className={`focus-mode-toggle ${focusMode ? 'active' : ''}`} aria-pressed={focusMode} onClick={() => setFocusMode((current) => !current)}>{focusMode ? 'Exit focus' : 'Focus mode'}</button>
+        </div>
       </div>
 
       <div className="focused-workspace-layout">
         <div className="focused-tab-content">
-          {activeTab === 'overview' ? <div className="focused-panel-stack"><TextBlock title="Scenario" className="scenario-box" preserveWhitespace>{question.scenario}</TextBlock>{!hasOverviewRichBody ? <TextBlock title={hasMcq ? 'Question' : 'Problem'} className="problem-prompt">{question.question}</TextBlock> : null}<RichBodyBlocks blocks={question.body} mode="overview" />{hasMcq ? <McqBlock question={question} selected={selected} onSelect={handleMcqSelect} /> : null}<ExampleBlock items={question.examples} /><ListBlock title="Constraints" items={question.constraints} /></div> : null}
+          {activeTab === 'overview' ? <div className="focused-panel-stack"><TextBlock title="Scenario" className="scenario-box" preserveWhitespace>{question.scenario}</TextBlock>{!hasOverviewRichBody ? <TextBlock title={hasMcq ? 'Question' : 'Problem'} className="problem-prompt">{question.question}</TextBlock> : null}<RichBodyBlocks blocks={question.body} mode="overview" />{hasMcq ? <McqBlock question={question} selected={selected} onSelect={handleMcqSelect} disabled={quizLocked} timedAttempt={timedAttempt} /> : null}<ExampleBlock items={question.examples} /><ListBlock title="Constraints" items={question.constraints} /></div> : null}
           {activeTab === 'visual' ? <div className="focused-panel-stack">{hasVisualRichBody ? <RichBodyBlocks blocks={question.body} mode="visual" /> : <VisualBlock question={question} showFallback />}{hasVisualRichBody ? <VisualBlock question={question} /> : null}</div> : null}
           {activeTab === 'intuition' ? <div className="focused-two-col"><TextBlock title="1. Think first" className="think-box">{question.starterThought}</TextBlock><TextBlock title="2. Mental picture">{question.mentalPicture}</TextBlock><TextBlock title="3. Why this pattern fits">{question.intuition}</TextBlock><TextBlock title="4. Recognition signal">{question.patternSignal}</TextBlock><TextBlock title="5. Invariant to maintain">{question.invariant}</TextBlock></div> : null}
           {activeTab === 'approach' ? <div className="focused-panel-stack"><ListBlock title="Step-by-step breakdown" items={question.stepByStepBreakdown} ordered /><div className="approach-card-stack"><TextBlock title="Brute-force thought">{question.bruteForceThought}</TextBlock><TextBlock title="Optimization journey">{question.optimizationJourney}</TextBlock><ListBlock title="Edge cases" items={question.edgeCases} /></div><ApproachReinforcementCards question={question} /></div> : null}
           {activeTab === 'solution' ? <div className="focused-panel-stack"><TextBlock title="Solution explanation">{explanation}</TextBlock><CodeBlock code={codeContent || 'No code sample is configured yet.'} language={question.language || 'java'} title="Implementation notes" className="workspace-block focused-code-block" /><RichBodyBlocks blocks={question.solutionBody || question.solutionBlocks} mode="overview" /></div> : null}
-          {activeTab === 'answer' ? <div className="focused-panel-stack"><McqBlock question={question} selected={selected} onSelect={handleMcqSelect} /><TextBlock title="Explanation">{explanation || question.intuition}</TextBlock><TextBlock title="Final takeaway">{question.finalTakeaway || question.keyTakeaway || question.takeaway}</TextBlock><ListBlock title="Why other options are wrong" items={question.optionExplanations || question.wrongOptionExplanations || question.distractorExplanations} /></div> : null}
+          {activeTab === 'answer' ? <div className="focused-panel-stack"><McqBlock question={question} selected={selected} onSelect={handleMcqSelect} disabled={quizLocked} timedAttempt={timedAttempt} /><TextBlock title="Explanation">{explanation || question.intuition}</TextBlock><TextBlock title="Final takeaway">{question.finalTakeaway || question.keyTakeaway || question.takeaway}</TextBlock><ListBlock title="Why other options are wrong" items={question.optionExplanations || question.wrongOptionExplanations || question.distractorExplanations} /></div> : null}
           {activeTab === 'complexity' ? <div className="focused-two-col"><TextBlock title="Complexity / trade-off analysis">{question.complexityAnalysis}</TextBlock><TextBlock title="Production reality">{question.productionReality}</TextBlock><TextBlock title="Common mistake">{question.commonMistake}</TextBlock></div> : null}
         </div>
         {!focusMode ? <SupportPanel question={question} /> : null}
