@@ -5,9 +5,9 @@ import {
   getAllTopicsWithCounts,
   getCategoriesWithCounts,
   getCategorySummaries,
-  progressSummary,
   topicProgress
 } from '../services/questionBankService.js';
+import { getDashboardQuestionSummary } from '../services/visibleQuestionInventoryService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import ProgressChart from '../components/ProgressChart.jsx';
 import BuyCoffeeButton from '../components/BuyCoffeeButton.jsx';
@@ -100,7 +100,7 @@ export default function Home() {
     setLoadingStats(true);
 
     Promise.all([
-      progressSummary(completed),
+      getDashboardQuestionSummary(completed),
       getCategoriesWithCounts(completed),
       getAllTopicsWithCounts(),
       getCategorySummaries()
