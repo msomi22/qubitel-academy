@@ -24,19 +24,10 @@ words = ["bar", "foo", "the"]
 
 First, look at the string by character index:
 
-Index:  00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-Chars:   b  a  r  f  o  o  f  o  o  b  a  r  t  h  e  f  o  o  b  a  r  m  a  n
+Index:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+Chars:  b  a  r  f  o  o  f  o  o  b  a  r  t  h  e  f  o  o  b  a  r  m  a  n
 
-Every word has length 3, so we check word-sized blocks of 3 characters.
-
-Start 0   -> "bar"
-Start 3   -> "foo"
-Start 6   -> "foo"
-Start 9   -> "bar"
-Start 12  -> "the"
-Start 15  -> "foo"
-Start 18  -> "bar"
-Start 21  -> "man"
+Every word has length 3, so a valid substring must use 9 characters: 3 words × 3 characters.
 
 We need substrings made from all words exactly once: ["bar", "foo", "the"].
 
@@ -232,108 +223,109 @@ class Solution {
     diagram: {
       type: 'array',
       variant: 'sliding-window',
-      title: 'Candidate windows for s = "barfoofoobarthefoobarman"',
+      title: 'Code view: required words vs current window',
       description:
-        'words = ["bar", "foo", "the"], so each candidate must contain exactly 3 tokens. Since each word has length 3, offset 0 reads tokens at character starts 0, 3, 6, 9, 12, 15, 18, and 21.',
+        'words = ["bar", "foo", "the"] is the required input list. In the code, this becomes required = { bar: 1, foo: 1, the: 1 }. Each card below is the current 3-token window being checked from s, not another words array.',
       values: [
-        'start 0: bar | foo | foo',
-        'start 3: foo | foo | bar',
-        'start 6: foo | bar | the',
-        'start 9: bar | the | foo',
-        'start 12: the | foo | bar',
-        'start 15: foo | bar | man'
+        'left 0: bar | foo | foo',
+        'left 3: foo | foo | bar',
+        'left 6: foo | bar | the',
+        'left 9: bar | the | foo',
+        'left 12: the | foo | bar',
+        'left 15: foo | bar | man'
       ],
-      stateTitle: 'Candidate check',
+      stateTitle: 'What to watch in the code',
       stateDescription:
-        'Each card is one possible 3-token window. We compare its word counts with required = { bar: 1, foo: 1, the: 1 }.',
+        'required is built once from words. current is the frequency map for the active window in s. left is the candidate start index. right reads the next word-sized token. A start is recorded only when current matches required.',
       frames: [
         {
-          title: 'Start 0 is not valid',
+          title: 'Start 0 is checked, then rejected',
           activeRange: [0, 0],
           items: [{ index: 0, role: 'warning' }],
           state: {
-            label: 'start = 0',
+            label: 'left = 0',
             values: {
-              candidate: 'bar | foo | foo',
-              currentCounts: '{ bar: 1, foo: 2 }',
               required: '{ bar: 1, foo: 1, the: 1 }',
-              reason: 'the is missing and foo appears twice',
-              answers: []
+              windowFromS: 'bar | foo | foo',
+              current: '{ bar: 1, foo: 2 }',
+              codeCheck: 'current does not match required',
+              result: []
             },
-            helper: 'Same length is not enough. The word counts must match exactly.'
+            helper: 'This is why you see words = [bar, foo, the] and window = bar | foo | foo together: one is the target; the other is the current candidate from s.'
           },
           description:
-            'The substring "barfoofoo" has the right total length, but it is not a valid concatenation of all required words.'
+            'The substring "barfoofoo" has length 9, but it is rejected because the current map has too many foo tokens and no the token.'
         },
         {
-          title: 'Start 6 is valid',
+          title: 'Start 6 matches required',
           activeRange: [2, 2],
           items: [{ index: 2, role: 'answer' }],
           state: {
-            label: 'start = 6',
+            label: 'left = 6',
             values: {
-              candidate: 'foo | bar | the',
-              currentCounts: '{ foo: 1, bar: 1, the: 1 }',
               required: '{ bar: 1, foo: 1, the: 1 }',
-              action: 'record 6',
-              answers: [6]
+              windowFromS: 'foo | bar | the',
+              current: '{ foo: 1, bar: 1, the: 1 }',
+              codeCheck: 'matchedWords == totalWords',
+              action: 'result.add(6)'
             },
-            helper: 'The words appear in a valid order even though it is not the same order as the input array.'
+            helper: 'In the Java solution, this is the moment the if (matchedWords == totalWords) block records left.'
           },
           description:
-            'The substring "foobarthe" is a valid concatenation of foo, bar, and the.'
+            'The substring "foobarthe" uses every required word exactly once, so the code records 6.'
         },
         {
-          title: 'Start 9 is also valid',
+          title: 'Start 9 also matches required',
           activeRange: [3, 3],
           items: [{ index: 3, role: 'answer' }],
           state: {
-            label: 'start = 9',
+            label: 'left = 9',
             values: {
-              candidate: 'bar | the | foo',
-              currentCounts: '{ bar: 1, the: 1, foo: 1 }',
+              windowFromS: 'bar | the | foo',
+              current: '{ bar: 1, the: 1, foo: 1 }',
               required: '{ bar: 1, foo: 1, the: 1 }',
-              action: 'record 9',
-              answers: [6, 9]
+              action: 'result.add(9)',
+              result: [6, 9]
             },
-            helper: 'Order can change; counts must stay the same.'
+            helper: 'The order inside the window can change. The code compares counts, not sequence order.'
           },
           description:
-            'The substring "barthefoo" uses the same three words exactly once.'
+            'The substring "barthefoo" is another valid permutation of the required word bag.'
         },
         {
-          title: 'Start 12 is also valid',
+          title: 'Start 12 also matches required',
           activeRange: [4, 4],
           items: [{ index: 4, role: 'answer' }],
           state: {
-            label: 'start = 12',
+            label: 'left = 12',
             values: {
-              candidate: 'the | foo | bar',
-              currentCounts: '{ the: 1, foo: 1, bar: 1 }',
+              windowFromS: 'the | foo | bar',
+              current: '{ the: 1, foo: 1, bar: 1 }',
               required: '{ bar: 1, foo: 1, the: 1 }',
-              action: 'record 12',
-              answers: [6, 9, 12]
+              action: 'result.add(12)',
+              result: [6, 9, 12]
             },
-            helper: 'This is the third valid permutation of the same word bag.'
+            helper: 'Again, the order is different, but the frequency map is the same.'
           },
           description:
-            'The substring "thefoobar" is valid, so 12 is recorded.'
+            'The substring "thefoobar" is valid, so the code records 12.'
         },
         {
-          title: 'Start 15 is not valid, then return the answer',
+          title: 'Start 15 is rejected, then return the result',
           activeRange: [5, 5],
           items: [{ index: 5, role: 'warning' }],
           state: {
-            label: 'final output',
+            label: 'left = 15',
             values: {
-              candidate: 'foo | bar | man',
-              reason: 'man is not required and the is missing',
+              windowFromS: 'foo | bar | man',
+              codeCheck: '!required.containsKey("man")',
+              action: 'clear current and move left after man',
               output: [6, 9, 12]
             },
-            helper: 'The answer contains character start indices, not token-card numbers.'
+            helper: 'This corresponds to the invalid-token branch in the Java code.'
           },
           description:
-            'After checking the aligned candidates, the valid starting indices are [6, 9, 12].'
+            'The token "man" is not in required, so no valid answer can include this window. The final answer is [6, 9, 12].'
         }
       ]
     }
