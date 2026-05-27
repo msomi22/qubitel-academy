@@ -3,7 +3,7 @@ import { defineMcqProblem } from '../../../../problems/problemAuthoring.js';
 const question = 'A value increases from 80 to 100. What is the percentage increase?';
 
 const problem = defineMcqProblem({
-  id: 'aptitude-numerical-percentage-increase-basic-001',
+  id: 'numerical-reasoning-percentage-increase-basic-001',
   category: 'aptitude',
   topicId: 'numerical-reasoning',
   title: 'Percentage increase from 80 to 100',
