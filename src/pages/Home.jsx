@@ -8,6 +8,7 @@ import {
   topicProgress
 } from '../services/questionBankService.js';
 import { getDashboardQuestionSummary } from '../services/visibleQuestionInventoryService.js';
+import { buildCategorySearchParams, categoryPath } from '../services/categoryNavigationService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import ProgressChart from '../components/ProgressChart.jsx';
 import BuyCoffeeButton from '../components/BuyCoffeeButton.jsx';
@@ -17,11 +18,43 @@ const emptySummary = { total: 0, done: 0, percent: 0 };
 // The 4-step "Start Here" learning path surfaced on the dashboard.
 // Topics are ordered by recommended learning sequence.
 const START_HERE_STEPS = [
-  { label: 'Sliding Window', to: '/category/dsa', title: 'Learn fixed and variable windows' },
-  { label: 'Two Pointers', to: '/category/dsa', title: 'Master the PAIR pattern' },
-  { label: 'Binary Search', to: '/category/dsa', title: 'Understand the SEAR template' },
-  { label: 'Dynamic Programming', to: '/category/dsa', title: 'Tackle the STATE pattern' }
+  {
+    topicId: 'sliding-window',
+    category: 'dsa',
+    label: 'Sliding Window',
+    title: 'Learn fixed and variable windows'
+  },
+  {
+    topicId: 'two-pointers',
+    category: 'dsa',
+    label: 'Two Pointers',
+    title: 'Master the PAIR pattern'
+  },
+  {
+    topicId: 'binary-search',
+    category: 'dsa',
+    label: 'Binary Search',
+    title: 'Understand the SEAR template'
+  },
+  {
+    topicId: 'dynamic-programming',
+    category: 'dsa',
+    label: 'Dynamic Programming',
+    title: 'Tackle the STATE pattern'
+  }
 ];
+
+function getTopicLearningPath(topic) {
+  if (!topic?.category || !topic?.id) return '/random';
+
+  const query = buildCategorySearchParams({
+    topicId: topic.id,
+    page: 1
+  }).toString();
+  const basePath = categoryPath(topic.category);
+
+  return query ? `${basePath}?${query}` : basePath;
+}
 
 function buildLearningStage(percent) {
   if (percent >= 80) {
@@ -62,26 +95,34 @@ function DashboardCard({ eyebrow, title, children, action }) {
   );
 }
 
-function StartHereTrack({ nextTopic, className = '' }) {
+function StartHereTrack({ topicCountsById, className = '' }) {
   return (
     <div className={className}>
       <p className="eyebrow" style={{ marginBottom: 10 }}>Recommended starting path</p>
       <div className="start-here-track">
-        {START_HERE_STEPS.map((step, i) => (
-          <div key={step.label} className="start-here-step">
-            <Link
-              to={step.to}
-              className="start-here-step-card"
-              title={step.title}
-            >
-              <span className="step-num">{i + 1}</span>
-              {step.label}
-            </Link>
-            {i < START_HERE_STEPS.length - 1 && (
-              <div className="start-here-connector" aria-hidden="true" />
-            )}
-          </div>
-        ))}
+        {START_HERE_STEPS.map((step, i) => {
+          const count = topicCountsById[step.topicId] ?? 0;
+          const to = getTopicLearningPath({ id: step.topicId, category: step.category });
+
+          return (
+            <div key={step.topicId} className="start-here-step">
+              <Link
+                to={to}
+                className="start-here-step-card"
+                title={`${step.title}. ${count} ${count === 1 ? 'quiz' : 'quizzes'} available.`}
+              >
+                <span className="step-num">{i + 1}</span>
+                <span className="start-here-step-label">{step.label}</span>
+                <span className="start-here-step-count">
+                  {count} {count === 1 ? 'quiz' : 'quizzes'}
+                </span>
+              </Link>
+              {i < START_HERE_STEPS.length - 1 && (
+                <div className="start-here-connector" aria-hidden="true" />
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -122,6 +163,9 @@ export default function Home() {
   const topicCount = categories.reduce((sum, category) => sum + (category.topicCount || 0), 0);
   const remainingQuestions = Math.max(summary.total - summary.done, 0);
   const learningStage = buildLearningStage(summary.percent);
+  const topicCountsById = useMemo(() => Object.fromEntries(
+    topics.map((topic) => [topic.id, topic.count || 0])
+  ), [topics]);
 
   const topicProgressRows = useMemo(() => topics
     .map((topic) => ({ ...topic, progress: topicProgress(topic, completed) }))
@@ -145,6 +189,7 @@ export default function Home() {
     .sort((a, b) => (b.progressPercent || 0) - (a.progressPercent || 0))[0], [countedCategories]);
 
   const isNewUser = summary.done === 0;
+  const nextTopicPath = getTopicLearningPath(nextTopic);
 
   return (
     <div className="learning-dashboard-page">
@@ -168,7 +213,7 @@ export default function Home() {
           </p>
 
           <div className="hero-actions dashboard-hero__actions">
-            <Link className="btn" to={nextTopic ? `/category/${nextTopic.category}` : '/random'}>
+            <Link className="btn" to={nextTopic ? nextTopicPath : '/random'}>
               {isNewUser ? 'Start learning' : 'Continue recommended path'}
             </Link>
             <Link className="btn ghost" to="/random">Random practice</Link>
@@ -177,7 +222,7 @@ export default function Home() {
 
           {/* Start Here track — shown to new users or those with low progress */}
           {summary.percent < 20 && (
-            <StartHereTrack nextTopic={nextTopic} className="dashboard-hero__path" />
+            <StartHereTrack topicCountsById={topicCountsById} className="dashboard-hero__path" />
           )}
         </div>
 
@@ -200,8 +245,8 @@ export default function Home() {
           eyebrow="Next best action"
           title={nextTopic ? nextTopic.name : 'All topics complete'}
           action={
-            <Link className="btn" to={nextTopic ? `/category/${nextTopic.category}` : '/progress'}>
-              {nextTopic ? 'Open path' : 'Review progress'}
+            <Link className="btn" to={nextTopic ? nextTopicPath : '/progress'}>
+              {nextTopic ? 'Open topic' : 'Review progress'}
             </Link>
           }
         >
@@ -221,7 +266,7 @@ export default function Home() {
         <DashboardCard eyebrow="Focus areas" title="Weak topics to revisit">
           <div className="weak-area-list">
             {weakAreas.length ? weakAreas.map((topic) => (
-              <Link key={topic.id} to={`/category/${topic.category}`} className="weak-area-row">
+              <Link key={topic.id} to={getTopicLearningPath(topic)} className="weak-area-row">
                 <span>{topic.name}</span>
                 <strong>{topic.progress.percent}%</strong>
               </Link>
