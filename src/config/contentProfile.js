@@ -9,15 +9,8 @@ function readContentProfile() {
 
 const CONTENT_PROFILE = readContentProfile();
 
-// Intentionally empty after production-visible System Design and DSA content moved
-// to discovered problem files under src/data/problems/**. Keep this hook only so
-// older callers can safely ask whether a legacy question has explicit production
-// approval without reintroducing per-question allow-list approvals.
 const APPROVED_PROD_QUESTION_IDS = new Set([]);
 
-// Topic fallback keeps production topic/category pages stable for callers that do
-// not yet pass discovered questions into the visibility filter. This is a topic
-// visibility compatibility hook only; it must not approve individual questions.
 const APPROVED_PROD_TOPIC_IDS = new Set([
   'sliding-window',
   'dynamic-programming',
@@ -32,7 +25,8 @@ const APPROVED_PROD_TOPIC_IDS = new Set([
   'scalability',
   'databases',
   'java-core',
-  'numerical-reasoning'
+  'numerical-reasoning',
+  'ml-foundations'
 ]);
 
 function resolveProfile(options = {}) {
@@ -43,7 +37,7 @@ function isProductionProfile(options = {}) {
   return resolveProfile(options) === 'prod';
 }
 
-function hasExplicitHiddenVisibility(question) {
+function hasEmptyVisibilityList(question) {
   const visibility = question?.metadata?.visibility;
   return Array.isArray(visibility) && visibility.length === 0;
 }
@@ -67,7 +61,7 @@ export function isLegacyQuestionApprovedForProduction(question) {
 }
 
 export function isQuestionApprovedForProfile(question, options = {}) {
-  if (!isProductionProfile(options)) return !hasExplicitHiddenVisibility(question);
+  if (!isProductionProfile(options)) return !hasEmptyVisibilityList(question);
 
   if (isProblemApprovedForProduction(question)) return true;
 

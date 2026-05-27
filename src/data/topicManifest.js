@@ -312,6 +312,15 @@ export const topicManifest = [
     "questionBank": {
       "mode": "discovered"
     }
+  },
+  {
+    "id": "ml-foundations",
+    "name": "ML Foundations",
+    "category": "ml-ai",
+    "description": "Build practical intuition for machine learning systems, model lifecycle, data quality, evaluation, and production behavior.",
+    "questionBank": {
+      "mode": "discovered"
+    }
   }
 ];
 
@@ -356,6 +365,16 @@ export const categoryManifest = [
     tags: ["aptitude", "reasoning", "timed-practice"],
     route: "/category/aptitude",
     featured: true
+  },
+  {
+    id: "ml-ai",
+    name: "ML / AI",
+    shortName: "ML / AI",
+    description: "Machine learning and AI engineering practice focused on model behavior, evaluation, data, and production trade-offs.",
+    domain: "AI Engineering",
+    tags: ["machine-learning", "ai", "production-ml"],
+    route: "/category/ml-ai",
+    featured: true
   }
 ];
 
@@ -369,3 +388,4 @@ export const dsaTopicManifest = getTopicsByCategory("dsa");
 export const systemTopicManifest = getTopicsByCategory("system");
 export const javaTopicManifest = getTopicsByCategory("java");
 export const aptitudeTopicManifest = getTopicsByCategory("aptitude");
+export const mlAiTopicManifest = getTopicsByCategory("ml-ai");

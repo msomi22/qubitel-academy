@@ -255,6 +255,7 @@ export const dsaTopics = filterTopicsForActiveProfile(getTopicsByCategory('dsa')
 export const systemDesignTopics = filterTopicsForActiveProfile(getTopicsByCategory('system'));
 export const javaTopics = filterTopicsForActiveProfile(getTopicsByCategory('java'));
 export const aptitudeTopics = filterTopicsForActiveProfile(getTopicsByCategory('aptitude'));
+export const mlAiTopics = filterTopicsForActiveProfile(getTopicsByCategory('ml-ai'));
 
 export function getCategory(categoryId) {
   return categories.find((category) => category.id === categoryId);
