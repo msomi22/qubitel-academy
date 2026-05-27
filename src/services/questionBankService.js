@@ -30,6 +30,17 @@ function hasExplicitQuestionsOption(options = {}) {
   return Object.prototype.hasOwnProperty.call(options, 'questions');
 }
 
+function hasCustomBankSourceOptions(options = {}) {
+  return Boolean(
+    options.modules
+    || options.topics
+    || options.profile
+    || options.getDiscoveredQuestions
+    || options.getAllDiscoveredQuestions
+    || hasExplicitQuestionsOption(options)
+  );
+}
+
 export function getOptionalBankPath(topic, modules = bankModules) {
   if (!topic?.category || !topic?.id) return null;
 
@@ -194,7 +205,6 @@ export async function loadTopicBankFromSources(topicId, options = {}) {
 }
 
 const bankCache = new Map();
-const countCache = new Map();
 let discoveredQuestionsCache;
 let visibleTopicsCache;
 let visibleCategoriesCache;
@@ -259,22 +269,35 @@ export async function getVisibleCategoriesForActiveProfile(options = {}) {
   return getVisibleCategories();
 }
 
-export async function getVisibleTopicsForCategory(categoryId, options = {}) {
+export async function getVisibleTopicsForActiveProfile(options = {}) {
   if (options.topics || options.profile || hasExplicitQuestionsOption(options)) {
     const questions = await getQuestionsForProfileOptions(options);
 
     return filterTopicsForActiveProfile(
-      getTopicsByCategoryFrom(categoryId, options.topics || topicManifest),
+      options.topics || topicManifest,
       questions,
       options
     );
+  }
+
+  return getVisibleTopics();
+}
+
+export async function getVisibleTopicsForCategory(categoryId, options = {}) {
+  if (options.topics || options.profile || hasExplicitQuestionsOption(options)) {
+    const topics = await getVisibleTopicsForActiveProfile(options);
+    return topics.filter((topic) => topic.category === categoryId);
   }
 
   const topics = await getVisibleTopics();
   return topics.filter((topic) => topic.category === categoryId);
 }
 
-export async function loadTopicBank(topicId) {
+export async function loadTopicBank(topicId, options = {}) {
+  if (hasCustomBankSourceOptions(options)) {
+    return loadTopicBankFromSources(topicId, options);
+  }
+
   if (!bankCache.has(topicId)) {
     bankCache.set(topicId, loadTopicBankFromSources(topicId));
   }
@@ -282,33 +305,31 @@ export async function loadTopicBank(topicId) {
   return bankCache.get(topicId);
 }
 
-export async function getTopicCount(topicId) {
-  if (!countCache.has(topicId)) {
-    countCache.set(topicId, loadTopicBank(topicId).then((bank) => bank.questions.length));
-  }
-  return countCache.get(topicId);
+export async function getTopicCount(topicId, options = {}) {
+  const bank = await loadTopicBank(topicId, options);
+  return bank.questions.length;
 }
 
-export async function getTopicWithCount(topic) {
-  const count = await getTopicCount(topic.id);
+export async function getTopicWithCount(topic, options = {}) {
+  const count = await getTopicCount(topic.id, options);
   return { ...topic, count };
 }
 
-export async function getTopicsWithCounts(categoryId) {
-  const topics = await getVisibleTopicsForCategory(categoryId);
-  return Promise.all(topics.map(getTopicWithCount));
+export async function getTopicsWithCounts(categoryId, options = {}) {
+  const topics = await getVisibleTopicsForCategory(categoryId, options);
+  return Promise.all(topics.map((topic) => getTopicWithCount(topic, options)));
 }
 
-export async function getAllTopicsWithCounts() {
-  const topics = await getVisibleTopics();
-  return Promise.all(topics.map(getTopicWithCount));
+export async function getAllTopicsWithCounts(options = {}) {
+  const topics = await getVisibleTopicsForActiveProfile(options);
+  return Promise.all(topics.map((topic) => getTopicWithCount(topic, options)));
 }
 
-export async function getCategorySummaries() {
-  const visibleCategories = await getVisibleCategoriesForActiveProfile();
+export async function getCategorySummaries(options = {}) {
+  const visibleCategories = await getVisibleCategoriesForActiveProfile(options);
 
   return Promise.all(visibleCategories.map(async (category) => {
-    const topics = await getVisibleTopicsForCategory(category.id);
+    const topics = await getVisibleTopicsForCategory(category.id, options);
     return {
       ...category,
       topicCount: topics.length
@@ -316,11 +337,11 @@ export async function getCategorySummaries() {
   }));
 }
 
-export async function getCategoryWithCounts(categoryId, completed = {}) {
+export async function getCategoryWithCounts(categoryId, completed = {}, options = {}) {
   const category = getCategory(categoryId);
   if (!category) return null;
 
-  const topics = await getTopicsWithCounts(categoryId);
+  const topics = await getTopicsWithCounts(categoryId, options);
   if (!topics.length) return null;
 
   const quizCount = topics.reduce((sum, topic) => sum + topic.count, 0);
@@ -335,14 +356,14 @@ export async function getCategoryWithCounts(categoryId, completed = {}) {
   };
 }
 
-export async function getCategoriesWithCounts(completed = {}) {
-  const summaries = await getCategorySummaries();
-  const enriched = await Promise.all(summaries.map((category) => getCategoryWithCounts(category.id, completed)));
+export async function getCategoriesWithCounts(completed = {}, options = {}) {
+  const summaries = await getCategorySummaries(options);
+  const enriched = await Promise.all(summaries.map((category) => getCategoryWithCounts(category.id, completed, options)));
   return enriched.filter(Boolean);
 }
 
-export async function loadTopicBanks(topicIds) {
-  return Promise.all(topicIds.map(loadTopicBank));
+export async function loadTopicBanks(topicIds, options = {}) {
+  return Promise.all(topicIds.map((topicId) => loadTopicBank(topicId, options)));
 }
 
 export async function getRandomQuestion(filters = {}) {
@@ -386,10 +407,19 @@ export async function findQuestionById(questionId) {
   return null;
 }
 
-export async function progressSummary(completed = {}) {
-  const topicsWithCounts = await getAllTopicsWithCounts();
+export async function progressSummary(completed = {}, options = {}) {
+  const topicsWithCounts = await getAllTopicsWithCounts(options);
   const total = topicsWithCounts.reduce((sum, topic) => sum + topic.count, 0);
-  const done = Object.keys(completed).filter((id) => completed[id]).length;
+  const visibleQuestionIds = new Set();
+
+  for (const topic of topicsWithCounts) {
+    const bank = await loadTopicBank(topic.id, options);
+    for (const question of bank.questions || []) {
+      visibleQuestionIds.add(question.id);
+    }
+  }
+
+  const done = Object.keys(completed).filter((id) => completed[id] && visibleQuestionIds.has(id)).length;
 
   return { total, done, percent: total ? Math.round((done / total) * 100) : 0 };
 }
