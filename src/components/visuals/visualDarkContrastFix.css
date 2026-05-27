@@ -14,10 +14,68 @@ body[data-theme='dark'] .config-visual .config-visual-state-row.active,
 [data-theme='dark'] .config-visual .config-visual-state-row.active,
 [data-color-mode='dark'] .config-visual .config-visual-state-row.active,
 [data-appearance='dark'] .config-visual .config-visual-state-row.active {
-  background: rgba(15, 23, 42, 0.82) !important;
-  border-color: rgba(45, 212, 191, 0.5) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+  border-color: rgba(125, 211, 252, 0.44) !important;
   color: var(--visual-text, #f8fafc) !important;
-  box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.08) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(125, 211, 252, 0.1),
+    0 14px 30px rgba(0, 0, 0, 0.24) !important;
+}
+
+:root[data-theme="dark"] .config-visual .config-visual-state-row.active.config-visual-role-warning,
+:root[data-theme="dark"] .config-visual .config-visual-state-row.active.config-visual-role-error,
+:root[data-theme="dark"] .config-visual .config-visual-state-row.active.config-visual-role-remove,
+html[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-warning,
+html[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-error,
+html[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-remove,
+body[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-warning,
+body[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-error,
+body[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-remove,
+.dark .config-visual .config-visual-state-row.active.config-visual-role-warning,
+.dark .config-visual .config-visual-state-row.active.config-visual-role-error,
+.dark .config-visual .config-visual-state-row.active.config-visual-role-remove,
+[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-warning,
+[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-error,
+[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-remove,
+[data-color-mode='dark'] .config-visual .config-visual-state-row.active.config-visual-role-warning,
+[data-color-mode='dark'] .config-visual .config-visual-state-row.active.config-visual-role-error,
+[data-color-mode='dark'] .config-visual .config-visual-state-row.active.config-visual-role-remove,
+[data-appearance='dark'] .config-visual .config-visual-state-row.active.config-visual-role-warning,
+[data-appearance='dark'] .config-visual .config-visual-state-row.active.config-visual-role-error,
+[data-appearance='dark'] .config-visual .config-visual-state-row.active.config-visual-role-remove {
+  background: rgba(69, 10, 10, 0.72) !important;
+  border-color: rgba(248, 113, 113, 0.72) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(248, 113, 113, 0.16),
+    0 16px 34px rgba(127, 29, 29, 0.26) !important;
+}
+
+:root[data-theme="dark"] .config-visual .config-visual-state-row.active.config-visual-role-answer,
+:root[data-theme="dark"] .config-visual .config-visual-state-row.active.config-visual-role-success,
+:root[data-theme="dark"] .config-visual .config-visual-state-row.active.config-visual-role-goal,
+html[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-answer,
+html[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-success,
+html[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-goal,
+body[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-answer,
+body[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-success,
+body[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-goal,
+.dark .config-visual .config-visual-state-row.active.config-visual-role-answer,
+.dark .config-visual .config-visual-state-row.active.config-visual-role-success,
+.dark .config-visual .config-visual-state-row.active.config-visual-role-goal,
+[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-answer,
+[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-success,
+[data-theme='dark'] .config-visual .config-visual-state-row.active.config-visual-role-goal,
+[data-color-mode='dark'] .config-visual .config-visual-state-row.active.config-visual-role-answer,
+[data-color-mode='dark'] .config-visual .config-visual-state-row.active.config-visual-role-success,
+[data-color-mode='dark'] .config-visual .config-visual-state-row.active.config-visual-role-goal,
+[data-appearance='dark'] .config-visual .config-visual-state-row.active.config-visual-role-answer,
+[data-appearance='dark'] .config-visual .config-visual-state-row.active.config-visual-role-success,
+[data-appearance='dark'] .config-visual .config-visual-state-row.active.config-visual-role-goal {
+  background: rgba(6, 78, 59, 0.72) !important;
+  border-color: rgba(52, 211, 153, 0.72) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(52, 211, 153, 0.16),
+    0 16px 34px rgba(6, 95, 70, 0.26) !important;
 }
 
 :root[data-theme="dark"] .config-visual .config-visual-state-row.active strong,
@@ -42,4 +100,73 @@ body[data-theme='dark'] .config-visual .config-visual-state-row.active .config-v
 [data-appearance='dark'] .config-visual .config-visual-state-row.active p,
 [data-appearance='dark'] .config-visual .config-visual-state-row.active .config-visual-state-value {
   color: var(--visual-text, #f8fafc) !important;
+}
+
+:root[data-theme="dark"] .config-visual .config-visual-state-row.active .config-visual-state-value,
+html[data-theme='dark'] .config-visual .config-visual-state-row.active .config-visual-state-value,
+body[data-theme='dark'] .config-visual .config-visual-state-row.active .config-visual-state-value,
+.dark .config-visual .config-visual-state-row.active .config-visual-state-value,
+[data-theme='dark'] .config-visual .config-visual-state-row.active .config-visual-state-value,
+[data-color-mode='dark'] .config-visual .config-visual-state-row.active .config-visual-state-value,
+[data-appearance='dark'] .config-visual .config-visual-state-row.active .config-visual-state-value {
+  background: rgba(15, 23, 42, 0.78) !important;
+  border-color: rgba(226, 232, 240, 0.16) !important;
+}
+
+:root[data-theme="dark"] .config-visual .config-visual-array-item.config-visual-role-warning,
+:root[data-theme="dark"] .config-visual .config-visual-array-item.config-visual-role-error,
+:root[data-theme="dark"] .config-visual .config-visual-array-item.config-visual-role-remove,
+html[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-warning,
+html[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-error,
+html[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-remove,
+body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-warning,
+body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-error,
+body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-remove,
+.dark .config-visual .config-visual-array-item.config-visual-role-warning,
+.dark .config-visual .config-visual-array-item.config-visual-role-error,
+.dark .config-visual .config-visual-array-item.config-visual-role-remove,
+[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-warning,
+[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-error,
+[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-remove,
+[data-color-mode='dark'] .config-visual .config-visual-array-item.config-visual-role-warning,
+[data-color-mode='dark'] .config-visual .config-visual-array-item.config-visual-role-error,
+[data-color-mode='dark'] .config-visual .config-visual-array-item.config-visual-role-remove,
+[data-appearance='dark'] .config-visual .config-visual-array-item.config-visual-role-warning,
+[data-appearance='dark'] .config-visual .config-visual-array-item.config-visual-role-error,
+[data-appearance='dark'] .config-visual .config-visual-array-item.config-visual-role-remove {
+  background: linear-gradient(180deg, rgba(127, 29, 29, 0.96), rgba(69, 10, 10, 0.92)) !important;
+  border-color: rgba(248, 113, 113, 0.82) !important;
+  color: #fff7f7 !important;
+  box-shadow:
+    0 12px 26px rgba(127, 29, 29, 0.34),
+    inset 0 -4px 0 rgba(248, 113, 113, 0.2) !important;
+}
+
+:root[data-theme="dark"] .config-visual .config-visual-array-item.config-visual-role-answer,
+:root[data-theme="dark"] .config-visual .config-visual-array-item.config-visual-role-success,
+:root[data-theme="dark"] .config-visual .config-visual-array-item.config-visual-role-goal,
+html[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-answer,
+html[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-success,
+html[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-goal,
+body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-answer,
+body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-success,
+body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-goal,
+.dark .config-visual .config-visual-array-item.config-visual-role-answer,
+.dark .config-visual .config-visual-array-item.config-visual-role-success,
+.dark .config-visual .config-visual-array-item.config-visual-role-goal,
+[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-answer,
+[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-success,
+[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-role-goal,
+[data-color-mode='dark'] .config-visual .config-visual-array-item.config-visual-role-answer,
+[data-color-mode='dark'] .config-visual .config-visual-array-item.config-visual-role-success,
+[data-color-mode='dark'] .config-visual .config-visual-array-item.config-visual-role-goal,
+[data-appearance='dark'] .config-visual .config-visual-array-item.config-visual-role-answer,
+[data-appearance='dark'] .config-visual .config-visual-array-item.config-visual-role-success,
+[data-appearance='dark'] .config-visual .config-visual-array-item.config-visual-role-goal {
+  background: linear-gradient(180deg, rgba(6, 95, 70, 0.96), rgba(6, 78, 59, 0.92)) !important;
+  border-color: rgba(52, 211, 153, 0.82) !important;
+  color: #ecfdf5 !important;
+  box-shadow:
+    0 12px 26px rgba(6, 95, 70, 0.34),
+    inset 0 -4px 0 rgba(52, 211, 153, 0.2) !important;
 }
