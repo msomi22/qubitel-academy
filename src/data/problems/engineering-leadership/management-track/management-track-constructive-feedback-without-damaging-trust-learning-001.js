@@ -97,9 +97,26 @@ const problem = defineLearningProblem({
       content: 'Watch for feedback that sounds satisfying to say but does not help the person improve. Examples: “You are careless.” “You always argue.” “You need to be better.” “This is obvious.” “Everyone is tired of this.” These statements may express frustration, but they do not give a clear engineering standard, observable behavior, or next step.'
     },
     {
-      type: 'section',
+      type: 'table',
       title: 'Better feedback language examples',
-      content: 'Bad: “You need to communicate better.”\n\nBetter: “In the last two PRs, the retry logic changed without tests, and it caused production instability during rollback. I want us to slow down on risky paths and add regression coverage before merge. How can we make that easier going forward?”\n\nThis is better because it replaces vague criticism with specific behavior, observable evidence, production impact, and a practical next step.\n\nBad: “You’re careless and difficult to work with.”\n\nBetter: “A few recent changes introduced avoidable regressions because important edge cases were not validated before merge. I’d like us to improve the review and testing approach on risky paths so the team can trust deployments more consistently.”\n\nThis is better because it avoids attacking identity and focuses on testing behavior, regression risk, and team trust.\n\nBad: “Every review with you turns into an argument.”\n\nBetter: “I’ve noticed that review discussions sometimes become defensive before we fully explore the technical concern. I’d like us to focus first on understanding the risk and trade-offs before deciding whether feedback should be accepted or rejected.”\n\nThis is better because it names defensiveness as a discussion pattern while keeping the goal collaborative: understand the technical risk before deciding what to do.'
+      columns: ['Weak feedback', 'Better feedback', 'Teaching focus'],
+      rows: [
+        [
+          '“You need to communicate better.”',
+          '“In the last two PRs, the retry logic changed without tests, and it caused production instability during rollback. I want us to slow down on risky paths and add regression coverage before merge. How can we make that easier going forward?”',
+          'Replaces vague criticism with specific behavior, observable evidence, production impact, and a practical next step.'
+        ],
+        [
+          '“You’re careless and difficult to work with.”',
+          '“A few recent changes introduced avoidable regressions because important edge cases were not validated before merge. I’d like us to improve the review and testing approach on risky paths so the team can trust deployments more consistently.”',
+          'Avoids attacking identity and focuses on testing behavior, regression risk, professionalism, and team trust.'
+        ],
+        [
+          '“Every review with you turns into an argument.”',
+          '“I’ve noticed that review discussions sometimes become defensive before we fully explore the technical concern. I’d like us to focus first on understanding the risk and trade-offs before deciding whether feedback should be accepted or rejected.”',
+          'Names defensiveness as a discussion pattern while keeping the goal collaborative: understand the technical risk before deciding what to do.'
+        ]
+      ]
     },
     {
       type: 'section',
