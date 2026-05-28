@@ -76,12 +76,12 @@ const problem = defineLearningProblem({
       type: 'callout',
       tone: 'warning',
       title: 'Review smell',
-      content: 'Sarcastic or personal comments are never senior behavior. A strong reviewer can be firm about risk while still being specific, respectful, and focused on the code path, user impact, and production consequences. Bad examples: “Did you even test this? This is obviously broken.” “Why are you improving this? Maybe you should write to Oracle’s engineers and ask if they have a better alternative than replaceAll.”'
+      content: 'Sarcastic or personal comments are never senior behavior. A strong reviewer can be firm about risk while still being specific, respectful, and focused on the code path, user impact, and production consequences.\n\nBad examples:\n\n1. “Did you even test this? This is obviously broken.”\n\n2. “Why are you improving this? Maybe you should write to Oracle’s engineers and ask if they have a better alternative than replaceAll.”'
     },
     {
       type: 'section',
       title: 'Better review language',
-      content: 'Instead of “This is wrong” or “Why would you do it this way?”, say: “I think this should block merge because this path can double-charge a customer when the retry fires after a timeout. Can we add an idempotency guard and a regression test before approving?” The second version names the risk, explains the impact, and gives a concrete path to approval. Better alternatives for the bad examples: “This path looks untested for retry-after-timeout behavior. Because it can duplicate the payment request, I think we should add a regression test and an idempotency guard before merge.” “I’m not yet convinced the new implementation gives enough benefit over the existing replaceAll approach. Could you explain the performance, readability, or correctness advantage so we can evaluate whether the added complexity is justified?”'
+      content: 'Instead of sarcastic or personal comments, rewrite the same concern into feedback that explains the risk, impact, and path to approval.\n\nFor: “Did you even test this? This is obviously broken.”\n\nBetter alternative: “This path looks untested for retry-after-timeout behavior. Because it can duplicate the payment request, I think we should add a regression test and an idempotency guard before merge.”\n\nFor: “Why are you improving this? Maybe you should write to Oracle’s engineers and ask if they have a better alternative than replaceAll.”\n\nBetter alternative: “I’m not yet convinced the new implementation gives enough benefit over the existing replaceAll approach. Could you explain the performance, readability, or correctness advantage so we can evaluate whether the added complexity is justified?”\n\nThe better comments are still firm, but they avoid sarcasm. They focus on the code, explain why the concern matters, and give the author a clear way to respond or improve the PR.'
     },
     {
       type: 'section',
