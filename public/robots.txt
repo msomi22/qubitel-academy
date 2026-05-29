@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://senior-dev-accelerator.pages.dev/sitemap.xml
+Sitemap: https://academy.qubitel.net/sitemap.xml

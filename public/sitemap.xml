@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://senior-dev-accelerator.pages.dev/</loc>
+    <loc>https://academy.qubitel.net/</loc>
+  </url>
+  <url>
+    <loc>https://academy.qubitel.net/categories</loc>
+  </url>
+  <url>
+    <loc>https://academy.qubitel.net/dsa</loc>
+  </url>
+  <url>
+    <loc>https://academy.qubitel.net/system-design</loc>
+  </url>
+  <url>
+    <loc>https://academy.qubitel.net/recent</loc>
   </url>
 </urlset>
