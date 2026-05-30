@@ -204,6 +204,17 @@ For CKAD and Kubernetes lessons, every command block must follow the command aut
 - prefer independent inspection commands for beginner lessons, even when experienced users would combine them;
 - code blocks may scroll horizontally on small screens, but normal explanatory text must wrap on desktop.
 
+For learner-facing quiz/problem content, do not use raw Markdown syntax as a styling mechanism inside data strings:
+
+- do not write raw bold markers such as double asterisks around terms in section content;
+- do not write raw inline-code backticks around terms in normal explanation text;
+- do not write raw Markdown bullets inside a string that the renderer treats as plain text;
+- do not place fenced code blocks inside normal `section` content;
+- use structured blocks such as `checklist`, `comparison`, `callout`, `table`, and `code` instead of embedded Markdown formatting;
+- use labels, titles, and item fields for emphasis instead of raw Markdown punctuation;
+- executable commands must be `code` blocks, not fenced Markdown inside a section;
+- if a technical term needs visual emphasis, prefer renderer-supported structured fields or plain text that the renderer can style without showing syntax characters.
+
 For any new question/problem, include a visual walkthrough requirement whenever possible. Make it explicit instead of only linking `docs/visual-schema.md`.
 
 Use this wording unless the task has a clear reason not to include one:
@@ -227,6 +238,7 @@ Include checks for:
 - section-specific responsibilities
 - visuals that teach state changes
 - visual frames that show the important invariant, state transition, and answer update where applicable
+- no raw Markdown styling characters in learner-facing rendered text
 
 For quiz/problem content, prefer this learner-facing order where supported:
 
@@ -302,6 +314,7 @@ Before posting implementation instructions, confirm:
 - [ ] `docs/visual-schema.md` is linked for new question/problem work where visual learning may apply.
 - [ ] Every new quiz/problem includes a learner-facing Objective section near the top of the content.
 - [ ] CKAD/Kubernetes command content follows the command authoring standard: one command block, one command, one immediate explanation.
+- [ ] Learner-facing rendered content avoids raw Markdown styling characters such as double asterisks, inline-code backticks, Markdown bullets inside plain strings, and fenced code blocks inside section content.
 - [ ] Exact file paths are provided.
 - [ ] Existing reference files are provided.
 - [ ] A visual walkthrough is explicitly required where the question has state, movement, decisions, transitions, or learner-visible steps.
