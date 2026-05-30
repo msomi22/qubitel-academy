@@ -305,6 +305,15 @@ export const topicManifest = [
     }
   },
   {
+    "id": "ckad-preparation",
+    "name": "CKAD Preparation",
+    "category": "kubernetes-ckad",
+    "description": "Prepare a repeatable Kubernetes cloud lab before starting the KubeTasker CKAD stages.",
+    "questionBank": {
+      "mode": "discovered"
+    }
+  },
+  {
     "id": "numerical-reasoning",
     "name": "Numerical Reasoning",
     "category": "aptitude",
@@ -366,6 +375,16 @@ export const categoryManifest = [
     featured: true
   },
   {
+    id: "kubernetes-ckad",
+    name: "Kubernetes CKAD",
+    shortName: "CKAD",
+    description: "Hands-on Kubernetes and CKAD preparation through the incremental KubeTasker project.",
+    domain: "Cloud Native Engineering",
+    tags: ["kubernetes", "ckad", "cloud-native"],
+    route: "/category/kubernetes-ckad",
+    featured: true
+  },
+  {
     id: "aptitude",
     name: "Aptitude Test",
     shortName: "Aptitude",
@@ -406,6 +425,7 @@ export const getCategoryById = (categoryId) =>
 export const dsaTopicManifest = getTopicsByCategory("dsa");
 export const systemTopicManifest = getTopicsByCategory("system");
 export const javaTopicManifest = getTopicsByCategory("java");
+export const kubernetesCkadTopicManifest = getTopicsByCategory("kubernetes-ckad");
 export const aptitudeTopicManifest = getTopicsByCategory("aptitude");
 export const mlAiTopicManifest = getTopicsByCategory("ml-ai");
 export const engineeringLeadershipTopicManifest = getTopicsByCategory("engineering-leadership");
