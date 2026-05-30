@@ -254,6 +254,7 @@ export const allTopics = filterTopicsForActiveProfile(topicManifest);
 export const dsaTopics = filterTopicsForActiveProfile(getTopicsByCategory('dsa'));
 export const systemDesignTopics = filterTopicsForActiveProfile(getTopicsByCategory('system'));
 export const javaTopics = filterTopicsForActiveProfile(getTopicsByCategory('java'));
+export const kubernetesCkadTopics = filterTopicsForActiveProfile(getTopicsByCategory('kubernetes-ckad'));
 export const aptitudeTopics = filterTopicsForActiveProfile(getTopicsByCategory('aptitude'));
 export const mlAiTopics = filterTopicsForActiveProfile(getTopicsByCategory('ml-ai'));
 export const engineeringLeadershipTopics = filterTopicsForActiveProfile(getTopicsByCategory('engineering-leadership'));

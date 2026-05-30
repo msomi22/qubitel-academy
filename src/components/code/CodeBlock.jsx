@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { tokenizeCode } from '../../utils/codeTokenizer.js';
 
 function text(value) {
@@ -14,6 +16,24 @@ function tokenClassName(type) {
   return `code-token-${type || 'plain'}`;
 }
 
+async function copyTextToClipboard(value) {
+  if (navigator?.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = value;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.top = '-9999px';
+  textarea.style.left = '-9999px';
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand('copy');
+  document.body.removeChild(textarea);
+}
+
 export default function CodeBlock({
   code,
   language = 'text',
@@ -22,11 +42,24 @@ export default function CodeBlock({
   filename,
   className = ''
 }) {
+  const [copyState, setCopyState] = useState('idle');
   const safeCode = text(code);
   const label = title || filename || 'Code';
   const normalizedLanguage = normalizeLanguage(language);
   const lines = tokenizeCode(safeCode || 'No code sample is configured yet.');
   const rootClassName = ['ide-code-block', className].filter(Boolean).join(' ');
+  const copyLabel = copyState === 'copied' ? 'Copied' : copyState === 'failed' ? 'Copy failed' : 'Copy';
+
+  async function handleCopy() {
+    try {
+      await copyTextToClipboard(safeCode);
+      setCopyState('copied');
+      window.setTimeout(() => setCopyState('idle'), 1800);
+    } catch (error) {
+      setCopyState('failed');
+      window.setTimeout(() => setCopyState('idle'), 2200);
+    }
+  }
 
   return (
     <figure className={rootClassName} aria-label={`${label} code block`}>
@@ -35,6 +68,14 @@ export default function CodeBlock({
         <span className="ide-code-meta">
           {filename ? <span className="ide-code-filename">{filename}</span> : null}
           <span className="ide-code-language">{normalizedLanguage}</span>
+          <button
+            aria-label={`Copy ${label}`}
+            className={`ide-code-copy-button ${copyState === 'copied' ? 'is-copied' : ''} ${copyState === 'failed' ? 'is-failed' : ''}`}
+            onClick={handleCopy}
+            type="button"
+          >
+            {copyLabel}
+          </button>
         </span>
       </figcaption>
 

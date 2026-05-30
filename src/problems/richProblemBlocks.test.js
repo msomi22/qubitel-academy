@@ -48,6 +48,7 @@ test('validateProblem accepts required rich body block types', () => {
       { type: 'checklist', items: ['Requirements', { label: 'Discuss abuse controls', checked: true }] },
       { type: 'comparison', items: [{ label: 'SQL', content: 'Strong consistency' }, { label: 'KV', content: 'Fast lookups' }] },
       { type: 'architectureDecision', title: 'Use async analytics', decision: 'Emit events off the redirect path.' },
+      { type: 'tabs', tabs: [{ label: 'AWS', body: [{ type: 'section', title: 'Setup', content: 'Create a lab.' }] }] },
       { type: 'divider' }
     ]
   }), { topics });
@@ -62,6 +63,7 @@ test('malformed rich body blocks produce useful validation errors', () => {
       { type: 'table', columns: [], rows: [] },
       { type: 'callout', tone: 'loud', content: 'Bad tone.' },
       { type: 'image', src: 'https://example.com/remote.png' },
+      { type: 'tabs', tabs: [{ body: [] }] },
       { type: 'unknownBlock', content: 'Not supported.' }
     ],
     rendering: { variant: 'custom-css-class' }
@@ -71,6 +73,8 @@ test('malformed rich body blocks produce useful validation errors', () => {
   assert.ok(result.errors.some((item) => item.field === 'body[0].columns'));
   assert.ok(result.errors.some((item) => item.field === 'body[1].tone'));
   assert.ok(result.errors.some((item) => item.field === 'body[2].src'));
+  assert.ok(result.errors.some((item) => item.field === 'body[3].tabs[0].label'));
+  assert.ok(result.errors.some((item) => item.field === 'body[3].tabs[0].body'));
   assert.ok(result.errors.some((item) => item.message.includes('Unsupported rich body block type')));
   assert.ok(result.errors.some((item) => item.field === 'rendering.variant'));
 });

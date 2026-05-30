@@ -1,7 +1,7 @@
 import { topicManifest } from '../data/topicManifest.js';
 import { isSupportedProblemType, problemTypeRegistry } from './problemTypeRegistry.js';
 
-const SUPPORTED_RICH_BODY_BLOCK_TYPES = new Set(['section', 'callout', 'table', 'image', 'diagram', 'flow', 'code', 'checklist', 'comparison', 'architectureDecision', 'divider']);
+const SUPPORTED_RICH_BODY_BLOCK_TYPES = new Set(['section', 'callout', 'table', 'image', 'diagram', 'flow', 'code', 'checklist', 'comparison', 'architectureDecision', 'tabs', 'divider']);
 const CALLOUT_TONES = new Set(['info', 'warning', 'success', 'danger']);
 const RENDERING_VARIANTS = new Set(['default', 'architecture-case-study', 'interview-drill', 'deep-dive']);
 const RENDERING_DENSITIES = new Set(['compact', 'comfortable', 'detailed']);
@@ -103,6 +103,17 @@ function validateBody(problem, body, errors, field = 'body') {
     if (block.type === 'checklist' && (!Array.isArray(block.items) || block.items.length === 0)) errors.push(error(problem?.id, `${blockField}.items`, 'Checklist block items must be a non-empty array.'));
     if (block.type === 'comparison' && (!Array.isArray(block.items) || block.items.length < 2)) errors.push(error(problem?.id, `${blockField}.items`, 'Comparison block items must include at least two entries.'));
     if (block.type === 'architectureDecision' && !block.title && !block.decision) errors.push(error(problem?.id, blockField, 'Architecture decision block requires title or decision.'));
+    if (block.type === 'tabs') {
+      if (!Array.isArray(block.tabs) || block.tabs.length === 0) {
+        errors.push(error(problem?.id, `${blockField}.tabs`, 'Tabs block requires a non-empty tabs array.'));
+      } else {
+        block.tabs.forEach((tab, tabIndex) => {
+          if (!tab?.label) errors.push(error(problem?.id, `${blockField}.tabs[${tabIndex}].label`, 'Each tab requires a label.'));
+          if (!Array.isArray(tab?.body) || tab.body.length === 0) errors.push(error(problem?.id, `${blockField}.tabs[${tabIndex}].body`, 'Each tab requires a non-empty body array.'));
+          else validateBody(problem, tab.body, errors, `${blockField}.tabs[${tabIndex}].body`);
+        });
+      }
+    }
   });
 }
 

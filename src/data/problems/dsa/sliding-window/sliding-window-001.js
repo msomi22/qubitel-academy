@@ -6,6 +6,7 @@ const legacyProblem = topic.questions.find((question) => question.id === 'slidin
 const problem = defineProblem({
   ...legacyProblem,
   category: 'dsa',
+  language: 'java',
   scenario: 'You are solving Maximum Sum Subarray of Size K. Given an array of numbers and a fixed window size k, find the largest sum of any contiguous subarray of length k. The learning goal is to see exactly how a fixed-size window reuses work instead of recomputing each subarray from scratch.',
   starterThought: 'Before writing code, make the window visible. For a fixed-size window, the invariant is: after each move, the active window contains exactly k contiguous elements, windowSum equals the sum of those k elements, and bestSum is the largest valid window sum seen so far.',
   intuition: 'A fixed-size sliding window is like moving a picture frame across the array. Most of the frame stays the same between moves. Instead of adding all k values again, subtract the value that leaves the frame and add the value that enters.',
@@ -30,6 +31,27 @@ const problem = defineProblem({
   optimizationJourney: 'The repeated work is obvious after the first two windows: [2, 1, 5] and [1, 5, 1] share two values. Sliding window keeps the shared work and changes only the outgoing and incoming values.',
   complexityAnalysis: 'The optimized version runs in O(n) time because each array element enters the window once and leaves the window at most once. It uses O(1) extra space because it stores only windowSum, bestSum, and a few indexes.',
   explanation: 'For Maximum Sum Subarray of Size K, keep a rolling sum for exactly k contiguous elements. First compute the sum of the initial k elements. Then move the window one position at a time by subtracting the outgoing left value and adding the incoming right value. After every move, compare the rolling sum with the best sum seen so far. This preserves the invariant that windowSum always describes the current valid fixed-size window.',
+  solutionCode: `class Solution {
+    public int findMaxSumSubarray(int[] arr, int k) {
+        if (arr == null || k <= 0 || k > arr.length) {
+            throw new IllegalArgumentException("k must be between 1 and arr.length");
+        }
+
+        int windowSum = 0;
+        for (int i = 0; i < k; i++) {
+            windowSum += arr[i];
+        }
+
+        int bestSum = windowSum;
+        for (int right = k; right < arr.length; right++) {
+            int left = right - k;
+            windowSum = windowSum - arr[left] + arr[right];
+            bestSum = Math.max(bestSum, windowSum);
+        }
+
+        return bestSum;
+    }
+}`,
   commonMistake: 'The most common bug is updating bestSum while the window has fewer or more than k elements, or forgetting to subtract the outgoing value before adding the incoming one.',
   commonMistakes: [
     'Recomputing every window from scratch instead of reusing the rolling sum.',
