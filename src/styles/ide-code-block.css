@@ -140,7 +140,7 @@
 
 .ide-code-scroll {
   max-width: 100%;
-  max-height: calc((1.62em * 10) + 32px);
+  max-height: calc((1.62em * 20) + 32px);
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -220,7 +220,7 @@
   }
 
   .ide-code-scroll {
-    max-height: calc((1.58em * 10) + 28px);
+    max-height: calc((1.58em * 20) + 28px);
   }
 
   .ide-code-pre {
