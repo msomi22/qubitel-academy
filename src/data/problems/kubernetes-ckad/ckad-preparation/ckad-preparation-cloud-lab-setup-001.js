@@ -1,5 +1,6 @@
 import { defineLearningProblem } from '../../../../problems/problemAuthoring.js';
 
+const ACADEMY_DOWNLOADS_URL = 'https://academy.qubitel.net/downloads/ckad';
 const prompt = 'Before starting the KubeTasker CKAD stages, how should a learner create, verify, use, and destroy a safe cloud Kubernetes practice lab?';
 
 const problem = defineLearningProblem({
@@ -25,9 +26,9 @@ const problem = defineLearningProblem({
     },
     {
       type: 'callout',
-      tone: 'warning',
-      title: 'Use Cilium only',
-      content: 'The self-managed AWS kubeadm lab uses Cilium only. Do not use Flannel in this track. This keeps the CKAD lab networking direction consistent and modern.'
+      tone: 'info',
+      title: 'AWS lab networking',
+      content: 'The AWS EC2 kubeadm lab installs Cilium automatically as the Kubernetes networking layer. Learners only need to verify that Cilium is healthy before continuing to Stage 1.'
     },
     {
       type: 'callout',
@@ -97,16 +98,11 @@ const problem = defineLearningProblem({
         ['AWS CloudFormation template', '[/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml](/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml)', 'Creates the AWS EC2 kubeadm + Cilium lab infrastructure.'],
         ['AWS create script', '[/downloads/ckad/aws-create-kubetasker-lab.sh](/downloads/ckad/aws-create-kubetasker-lab.sh)', 'Creates the AWS CloudFormation stack.'],
         ['AWS status script', '[/downloads/ckad/aws-status-kubetasker-lab.sh](/downloads/ckad/aws-status-kubetasker-lab.sh)', 'Shows stack status, outputs, recent events, and lab instances.'],
-        ['AWS list script', '[/downloads/ckad/aws-list-kubetasker-lab.sh](/downloads/ckad/aws-list-kubetasker-lab.sh)', 'Lists EC2 instances tagged for the lab.'],
-        ['AWS stop script', '[/downloads/ckad/aws-stop-kubetasker-lab.sh](/downloads/ckad/aws-stop-kubetasker-lab.sh)', 'Stops AWS lab instances to pause compute cost.'],
-        ['AWS start script', '[/downloads/ckad/aws-start-kubetasker-lab.sh](/downloads/ckad/aws-start-kubetasker-lab.sh)', 'Starts stopped AWS lab instances.'],
         ['AWS delete script', '[/downloads/ckad/aws-delete-kubetasker-lab.sh](/downloads/ckad/aws-delete-kubetasker-lab.sh)', 'Deletes the AWS CloudFormation stack.'],
         ['DigitalOcean create script', '[/downloads/ckad/do-create-kubetasker-lab.sh](/downloads/ckad/do-create-kubetasker-lab.sh)', 'Creates a small DigitalOcean Kubernetes cluster.'],
         ['DigitalOcean delete script', '[/downloads/ckad/do-delete-kubetasker-lab.sh](/downloads/ckad/do-delete-kubetasker-lab.sh)', 'Deletes the DigitalOcean Kubernetes cluster.'],
         ['Civo create script', '[/downloads/ckad/civo-create-kubetasker-lab.sh](/downloads/ckad/civo-create-kubetasker-lab.sh)', 'Creates a small Civo Kubernetes cluster.'],
         ['Civo delete script', '[/downloads/ckad/civo-delete-kubetasker-lab.sh](/downloads/ckad/civo-delete-kubetasker-lab.sh)', 'Deletes the Civo Kubernetes cluster.'],
-        ['Optional EKS create script', '[/downloads/ckad/eks-create-kubetasker-lab.sh](/downloads/ckad/eks-create-kubetasker-lab.sh)', 'Creates the optional EKS lab.'],
-        ['Optional EKS delete script', '[/downloads/ckad/eks-delete-kubetasker-lab.sh](/downloads/ckad/eks-delete-kubetasker-lab.sh)', 'Deletes the optional EKS lab.'],
         ['Stage 1 command reference', '[/downloads/ckad/k8s-stage-01-commands.sh](/downloads/ckad/k8s-stage-01-commands.sh)', 'Copy/paste commands for the first KubeTasker API deployment.']
       ]
     },
@@ -114,7 +110,31 @@ const problem = defineLearningProblem({
       type: 'code',
       title: 'AWS CloudShell: download and create the Cilium lab',
       language: 'bash',
-      code: 'export AWS_REGION=us-west-2\nexport KEY_NAME=YOUR_EXISTING_EC2_KEY_PAIR\nexport ACCESS_CIDR=YOUR_PUBLIC_IP/32\nexport STACK_NAME=kubetasker-ckad\n\nmkdir -p ~/kubetasker-ckad-lab\ncd ~/kubetasker-ckad-lab\n\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-create-kubetasker-lab.sh\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-status-kubetasker-lab.sh\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-delete-kubetasker-lab.sh\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/k8s-stage-01-commands.sh\nchmod +x *.sh\n\n./aws-create-kubetasker-lab.sh \\\n  --stack-name "$STACK_NAME" \\\n  --region "$AWS_REGION" \\\n  --key-name "$KEY_NAME" \\\n  --ssh-location "$ACCESS_CIDR" \\\n  --worker-count 0\n\n./aws-status-kubetasker-lab.sh \\\n  --stack-name "$STACK_NAME" \\\n  --region "$AWS_REGION"'
+      code: `export AWS_REGION=us-west-2
+export KEY_NAME=YOUR_EXISTING_EC2_KEY_PAIR
+export ACCESS_CIDR=YOUR_PUBLIC_IP/32
+export STACK_NAME=kubetasker-ckad
+
+mkdir -p ~/kubetasker-ckad-lab
+cd ~/kubetasker-ckad-lab
+
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/kubetasker-ckad-aws-cloudformation.yaml
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/aws-create-kubetasker-lab.sh
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/aws-status-kubetasker-lab.sh
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/aws-delete-kubetasker-lab.sh
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/k8s-stage-01-commands.sh
+chmod +x *.sh
+
+./aws-create-kubetasker-lab.sh \
+  --stack-name "$STACK_NAME" \
+  --region "$AWS_REGION" \
+  --key-name "$KEY_NAME" \
+  --ssh-location "$ACCESS_CIDR" \
+  --worker-count 0
+
+./aws-status-kubetasker-lab.sh \
+  --stack-name "$STACK_NAME" \
+  --region "$AWS_REGION"`
     },
     {
       type: 'code',
@@ -126,13 +146,33 @@ const problem = defineLearningProblem({
       type: 'code',
       title: 'DigitalOcean: create and verify a managed cluster',
       language: 'bash',
-      code: 'export DO_CLUSTER_NAME=kubetasker-ckad\nexport DO_REGION=nyc1\nexport DO_NODE_SIZE=s-2vcpu-4gb\nexport DO_NODE_COUNT=1\n\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/do-create-kubetasker-lab.sh\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/do-delete-kubetasker-lab.sh\nchmod +x do-*-kubetasker-lab.sh\n\n./do-create-kubetasker-lab.sh\nk get nodes -o wide'
+      code: `export DO_CLUSTER_NAME=kubetasker-ckad
+export DO_REGION=nyc1
+export DO_NODE_SIZE=s-2vcpu-4gb
+export DO_NODE_COUNT=1
+
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/do-create-kubetasker-lab.sh
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/do-delete-kubetasker-lab.sh
+chmod +x do-*-kubetasker-lab.sh
+
+./do-create-kubetasker-lab.sh
+k get nodes -o wide`
     },
     {
       type: 'code',
       title: 'Civo: create and verify a managed cluster',
       language: 'bash',
-      code: 'export CIVO_CLUSTER_NAME=kubetasker-ckad\nexport CIVO_REGION=LON1\nexport CIVO_NODE_SIZE=g4s.kube.medium\nexport CIVO_NODE_COUNT=1\n\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/civo-create-kubetasker-lab.sh\ncurl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/civo-delete-kubetasker-lab.sh\nchmod +x civo-*-kubetasker-lab.sh\n\n./civo-create-kubetasker-lab.sh\nk get nodes -o wide'
+      code: `export CIVO_CLUSTER_NAME=kubetasker-ckad
+export CIVO_REGION=LON1
+export CIVO_NODE_SIZE=g4s.kube.medium
+export CIVO_NODE_COUNT=1
+
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/civo-create-kubetasker-lab.sh
+curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/civo-delete-kubetasker-lab.sh
+chmod +x civo-*-kubetasker-lab.sh
+
+./civo-create-kubetasker-lab.sh
+k get nodes -o wide`
     },
     {
       type: 'section',
@@ -143,7 +183,9 @@ const problem = defineLearningProblem({
       type: 'code',
       title: 'Stage 1: download and inspect the command reference',
       language: 'bash',
-      code: 'curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/k8s-stage-01-commands.sh\nchmod +x k8s-stage-01-commands.sh\nless k8s-stage-01-commands.sh'
+      code: `curl -fsSLO ${ACADEMY_DOWNLOADS_URL}/k8s-stage-01-commands.sh
+chmod +x k8s-stage-01-commands.sh
+less k8s-stage-01-commands.sh`
     },
     {
       type: 'code',
