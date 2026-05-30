@@ -66,7 +66,14 @@ metadata:
   name: kube-tasker-api
   namespace: kubetasker
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-tasker-api
   template:
+    metadata:
+      labels:
+        app: kube-tasker-api
     spec:
       containers:
         - name: api
@@ -279,7 +286,7 @@ const problem = defineLearningProblem({
     ...yamlExample('Secret value as an environment variable', 'This snippet injects one Secret key into the container environment. Debug the reference and object metadata without printing the sensitive value.', 'secret-env-snippet.yaml', secretEnvYaml),
     ...yamlExample('ConfigMap mounted as files', 'This snippet mounts ConfigMap data as files under a directory. This is useful when the app reads configuration from a file path instead of environment variables.', 'configmap-file-mount-snippet.yaml', configFileMountYaml),
     ...yamlExample('Command and args startup snippet', 'This snippet shows the shape of command and args. Only override startup behavior when the lab or application requires it, because a wrong override can stop the container from starting.', 'command-args-snippet.yaml', commandArgsYaml),
-    ...yamlExample('Small Deployment wiring example', 'This compact example shows how the Pod template can reference the image, ConfigMap, Secret, and mounted config directory together. It is intentionally small so the configuration relationships stay visible.', 'deployment-runtime-config-snippet.yaml', deploymentSnippetYaml),
+    ...yamlExample('Small Deployment wiring example', 'This compact example is a valid apps/v1 Deployment shape. It includes selector.matchLabels and matching template.metadata.labels, then shows how the Pod template references the image, ConfigMap, Secret, and mounted config directory together.', 'deployment-runtime-config-snippet.yaml', deploymentSnippetYaml),
     {
       type: 'callout',
       tone: 'warning',
