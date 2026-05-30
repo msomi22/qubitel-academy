@@ -1,3 +1,5 @@
+import InlineTechnicalText from './InlineTechnicalText.jsx';
+
 const ALLOWED_TONES = new Set(['info', 'warning', 'success', 'danger']);
 
 export default function ProblemCalloutBlock({ block }) {
@@ -7,7 +9,7 @@ export default function ProblemCalloutBlock({ block }) {
     <aside className={`workspace-block problem-rich-block problem-callout problem-callout-${tone}`}>
       <span className="mini-label">{tone}</span>
       {block.title ? <h4>{block.title}</h4> : null}
-      {block.content ? <p>{block.content}</p> : null}
+      {block.content ? <p><InlineTechnicalText text={block.content} /></p> : null}
     </aside>
   );
 }
