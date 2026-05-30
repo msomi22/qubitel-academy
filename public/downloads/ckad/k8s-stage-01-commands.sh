@@ -37,11 +37,13 @@ k -n kubetasker logs deploy/kube-tasker-api
 k -n kubetasker get events --sort-by=.lastTimestamp
 
 # Client pod examples
+# The Service listens on port 80 and forwards to the Pod targetPort 8080.
+# In-cluster clients should call the Service port, not the targetPort.
 k -n kubetasker run kube-tasker-client --image=busybox:1.36 --restart=Never --command -- sleep 3600
 k -n kubetasker wait --for=condition=Ready pod/kube-tasker-client --timeout=90s
-k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api:8080/
-k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api:8080/health
-k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api:8080/tasks/stats
+k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/
+k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health
+k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/tasks/stats
 
 # Useful object generation practice for later stages
 k create configmap example-config --from-literal=APP_MODE=training --dry-run=client -o yaml
