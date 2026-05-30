@@ -231,142 +231,14 @@ const problem = defineLearningProblem({
   prompt,
   question: prompt,
   body: [
-    { type: 'section', title: 'Objective', content: 'I can create a Kubernetes practice environment, connect to it with `k`, verify that the control-plane node is ready, choose the right provider path, and clean up the lab safely when I am done.' },
+    { type: 'section', title: 'Objective', content: 'I can create a Kubernetes practice environment, connect to it with `kubectl`, verify that the control-plane node is ready, choose the right provider path, and clean up the lab safely when I am done.' },
     { type: 'section', title: 'Why this lab exists', content: 'CKAD practice works best when the learner can repeatedly create Kubernetes objects, inspect them, break them, fix them, and clean up without guessing the infrastructure setup. Pick one provider tab below and follow only that setup path.' },
     { type: 'callout', tone: 'warning', title: 'Cost cleanup warning', content: 'Do not leave cloud Kubernetes labs running after practice. Delete the lab immediately when finished. This AWS EC2 path does not create Elastic IPs; it uses the normal auto-assigned EC2 public IPv4 from the public subnet.' },
     {
       type: 'tabs',
       title: 'Choose your cloud lab path',
       description: 'Use one tab at a time. Every runnable command below is explained first, then shown in its own copyable block.',
-      tabs: [
-        {
-          id: 'aws-ec2-kubeadm',
-          label: 'AWS EC2 + kubeadm + Cilium',
-          body: [
-            { type: 'section', title: 'When to use this path', content: 'Use this as the preferred CKAD practice path when you want VM-based Kubernetes practice with kubeadm and direct node access. The lab uses Cilium only as the Kubernetes networking layer.' },
-            { type: 'section', title: 'Create an AWS account', content: 'Create or sign in to an AWS account. Click [here](https://signin.aws.amazon.com/signup?request_type=register) to create an account. After the account is ready, open AWS CloudShell or authenticate the AWS CLI locally.' },
-            { type: 'checklist', title: 'Account and prerequisites', items: ['AWS account with billing enabled.', 'AWS CloudShell access, or AWS CLI installed locally and authenticated with aws configure.', 'Permission to create CloudFormation, EC2, VPC, subnet, route table, internet gateway, security group, and EBS resources.', 'An existing EC2 key pair in the target AWS region. In this guide, the AWS key pair name is demo-app-2026.', 'The matching private key file on your machine, for example demo-app-2026.pem.', 'Your public IP address in CIDR format, for example 203.0.113.10/32.', 'For this AWS EC2 path, run kubectl/k after SSH into the EC2 instance. kubectl is installed automatically on that instance; local kubectl is only needed if you choose to copy kubeconfig and manage the cluster from your own machine.'] },
-            { type: 'callout', tone: 'info', title: 'Estimated monthly cost', content: 'Approximate cost: USD 35-45/month for one t3.medium style single-node lab. Cost can increase with EBS storage, AWS public IPv4 charges, NAT, and data transfer. This lab does not create Elastic IPs. Delete the stack when finished.' },
-            ...command('Set AWS region', 'Sets Oregon as the AWS region where CloudFormation and EC2 resources will be created.', 'export AWS_REGION=us-west-2'),
-            ...command('Set stack name', 'Gives the CloudFormation stack a predictable name that is reused by later commands.', 'export STACK_NAME=kubetasker-ckad'),
-            ...command('Set EC2 key pair name', 'Sets the AWS EC2 key pair name. This is the key pair name in AWS and does not include the .pem extension.', 'export KEY_NAME=demo-app-2026'),
-            ...command('Set private key path', 'Points SSH to the local private key file that matches the EC2 key pair. This file path must include the .pem extension.', 'export KEY_PATH=~/Downloads/demo-app-2026.pem'),
-            ...command('Restrict private key permissions', 'Makes the private key acceptable to SSH on Linux and macOS. SSH commonly rejects keys that are too open.', 'chmod 400 "$KEY_PATH"'),
-            ...command('Set SSH access CIDR', 'Detects your current public IP and restricts SSH, Kubernetes API, and NodePort access to that IP only.', 'export ACCESS_CIDR=$(curl -fsSL https://checkip.amazonaws.com)/32'),
-            ...command('Create lab folder', 'Creates a local folder to keep the CloudFormation template for this lab.', 'mkdir -p ~/kubetasker-ckad-lab'),
-            ...command('Enter lab folder', 'Moves your shell into the lab folder so the template file is created and used from the same location.', 'cd ~/kubetasker-ckad-lab'),
-            ...command('Create CloudFormation template file', 'Writes the AWS infrastructure template into a local YAML file. This is one copy block because the heredoc is one file-creation command.', `cat > kubetasker-ckad-aws-cloudformation.yaml <<'CFN_YAML'\n${awsCloudFormationTemplate}CFN_YAML`),
-            ...command('Create CloudFormation stack', 'Starts the AWS EC2 kubeadm + Cilium lab using the template file and the variables you already set. KEY_NAME is the AWS key pair name, not the .pem file path.', `aws cloudformation create-stack \
-  --stack-name "$STACK_NAME" \
-  --region "$AWS_REGION" \
-  --template-body file://kubetasker-ckad-aws-cloudformation.yaml \
-  --parameters \
-    "ParameterKey=KeyName,ParameterValue=$KEY_NAME" \
-    "ParameterKey=SSHLocation,ParameterValue=$ACCESS_CIDR" \
-    "ParameterKey=InstanceType,ParameterValue=t3.medium" \
-    "ParameterKey=LabName,ParameterValue=$STACK_NAME"`),
-            ...command('Check stack status', 'Shows the current CloudFormation status. Re-run this command until it returns CREATE_COMPLETE before trying to SSH.', `aws cloudformation describe-stacks \
-  --stack-name "$STACK_NAME" \
-  --region "$AWS_REGION" \
-  --query "Stacks[0].StackStatus" \
-  --output text`),
-            ...command('Save public IP variable', 'Reads the EC2 public IP from the CloudFormation outputs and stores it as PUBLIC_IP for the SSH command.', `PUBLIC_IP=$(aws cloudformation describe-stacks \
-  --stack-name "$STACK_NAME" \
-  --region "$AWS_REGION" \
-  --query "Stacks[0].Outputs[?OutputKey=='ControlPlanePublicIp'].OutputValue" \
-  --output text)`),
-            ...command('Print SSH command', 'Prints the exact SSH command before connecting. KEY_PATH must point to the local .pem file, for example ~/Downloads/demo-app-2026.pem.', 'echo "ssh -i $KEY_PATH ubuntu@$PUBLIC_IP"'),
-            ...command('SSH into the lab', 'Connects to the EC2 control-plane instance using the local .pem private key file. Run the Kubernetes commands after you are inside this SSH session.', 'ssh -i "$KEY_PATH" ubuntu@"$PUBLIC_IP"'),
-            ...command('Enable kubectl shorthand', 'Defines k as a shortcut for kubectl in the current SSH session. Run this after SSH before using any k commands.', 'alias k=kubectl'),
-            ...command('Verify nodes', 'Confirms the Kubernetes node is registered and shows its readiness status.', 'k get nodes -o wide'),
-            ...command('Verify all pods', 'Lists pods across all namespaces so you can confirm the system components are coming up.', 'k get pods -A'),
-            ...command('Verify Cilium status', 'Confirms Cilium is installed and healthy before continuing with application practice.', 'cilium status --wait'),
-            ...command('Verify Cilium pods', 'Shows the Cilium pods running in kube-system.', 'k -n kube-system get pods -l k8s-app=cilium'),
-            ...kubeTaskerCommandBlocks(),
-            ...command('Clean up application resources', 'Deletes only the KubeTasker namespace and its practice resources, leaving the cluster running.', 'k delete namespace kubetasker --ignore-not-found'),
-            ...command('Delete AWS lab', 'Before running this command, exit or log out from the EC2 SSH session and return to the terminal where your AWS CLI variables are set. Then delete the full CloudFormation stack when practice is finished. This is the main cost-control command.', `aws cloudformation delete-stack \
-  --stack-name "$STACK_NAME" \
-  --region "$AWS_REGION"`),
-            ...command('Check delete status', 'Checks the deletion progress. After deletion finishes, AWS may return a stack-not-found message, which means the stack is gone.', `aws cloudformation describe-stacks \
-  --stack-name "$STACK_NAME" \
-  --region "$AWS_REGION" \
-  --query "Stacks[0].StackStatus" \
-  --output text`)
-          ]
-        },
-        {
-          id: 'digitalocean',
-          label: 'DigitalOcean',
-          body: [
-            { type: 'section', title: 'When to use this path', content: 'Use this path when you want a fast managed Kubernetes cluster and want to focus mainly on kubectl practice rather than node bootstrap details.' },
-            { type: 'section', title: 'Create a DigitalOcean account', content: 'Create or sign in to a DigitalOcean account. Click [here](https://cloud.digitalocean.com/registrations/new) to create an account. After the account is ready, create a personal access token and authenticate doctl.' },
-            { type: 'checklist', title: 'Account and prerequisites', items: ['DigitalOcean account with billing enabled.', 'Personal access token created from the DigitalOcean dashboard.', 'doctl installed and authenticated with the personal access token.', 'kubectl installed locally.', 'bash available in your terminal or cloud shell.'] },
-            { type: 'callout', tone: 'info', title: 'Estimated monthly cost', content: 'Approximate cost: USD 24/month for one s-2vcpu-4gb node. Storage and load balancers cost extra. Delete the cluster when finished.' },
-            ...command('Set DigitalOcean cluster name', 'Names the DigitalOcean Kubernetes cluster.', 'export DO_CLUSTER_NAME=kubetasker-ckad'),
-            ...command('Set DigitalOcean region', 'Chooses the DigitalOcean region where the cluster will be created.', 'export DO_REGION=nyc1'),
-            ...command('Set DigitalOcean node size', 'Chooses the node size for the managed Kubernetes worker node.', 'export DO_NODE_SIZE=s-2vcpu-4gb'),
-            ...command('Set DigitalOcean node count', 'Creates a single-node practice cluster.', 'export DO_NODE_COUNT=1'),
-            ...command('Create DigitalOcean Kubernetes lab', 'Creates the managed Kubernetes cluster using doctl and waits for creation to finish.', `doctl kubernetes cluster create "$DO_CLUSTER_NAME" \
-  --region "$DO_REGION" \
-  --size "$DO_NODE_SIZE" \
-  --count "$DO_NODE_COUNT" \
-  --wait`),
-            ...command('Enable kubectl shorthand', 'Defines k as a shortcut for kubectl in the current terminal session before using any k commands.', 'alias k=kubectl'),
-            ...command('Verify DigitalOcean nodes', 'Confirms kubectl can reach the cluster and shows node readiness.', 'k get nodes -o wide'),
-            ...kubeTaskerCommandBlocks(),
-            ...command('Clean up application resources', 'Deletes only the KubeTasker namespace and its practice resources.', 'k delete namespace kubetasker --ignore-not-found'),
-            ...command('Delete DigitalOcean lab', 'Deletes the managed Kubernetes cluster after practice.', 'doctl kubernetes cluster delete "$DO_CLUSTER_NAME" --force')
-          ]
-        },
-        {
-          id: 'civo',
-          label: 'Civo',
-          body: [
-            { type: 'section', title: 'When to use this path', content: 'Use this path when Civo is available in your region and you want a lightweight managed Kubernetes setup for quick practice.' },
-            { type: 'section', title: 'Create a Civo account', content: 'Create or sign in to a Civo account. Click [here](https://dashboard.civo.com/signup) to create an account. After the account is ready, create an API key and authenticate the civo CLI.' },
-            { type: 'checklist', title: 'Account and prerequisites', items: ['Civo account with billing enabled.', 'Civo API key created from the Civo dashboard.', 'civo CLI installed and authenticated with the API key.', 'A supported Civo region and node size selected.', 'kubectl installed locally.', 'bash available in your terminal or cloud shell.'] },
-            { type: 'callout', tone: 'info', title: 'Estimated monthly cost', content: 'Approximate cost: USD 20-30/month for one small or medium node. Exact cost depends on region and node size. Delete the cluster when finished.' },
-            ...command('Set Civo cluster name', 'Names the Civo Kubernetes cluster.', 'export CIVO_CLUSTER_NAME=kubetasker-ckad'),
-            ...command('Set Civo region', 'Chooses the Civo region where the cluster will be created.', 'export CIVO_REGION=LON1'),
-            ...command('Set Civo node size', 'Chooses the Civo worker node size.', 'export CIVO_NODE_SIZE=g4s.kube.medium'),
-            ...command('Set Civo node count', 'Creates a single-node practice cluster.', 'export CIVO_NODE_COUNT=1'),
-            ...command('Create Civo Kubernetes lab', 'Creates the managed Kubernetes cluster using the Civo CLI.', `civo kubernetes create "$CIVO_CLUSTER_NAME" \
-  --region "$CIVO_REGION" \
-  --nodes "$CIVO_NODE_COUNT" \
-  --size "$CIVO_NODE_SIZE" \
-  --wait`),
-            ...command('Save Civo kubeconfig', 'Saves the Civo cluster kubeconfig so kubectl can target the new cluster.', 'civo kubernetes config "$CIVO_CLUSTER_NAME" --region "$CIVO_REGION" --save'),
-            ...command('Enable kubectl shorthand', 'Defines k as a shortcut for kubectl in the current terminal session before using any k commands.', 'alias k=kubectl'),
-            ...command('Verify Civo nodes', 'Confirms kubectl can reach the cluster and shows node readiness.', 'k get nodes -o wide'),
-            ...kubeTaskerCommandBlocks(),
-            ...command('Clean up application resources', 'Deletes only the KubeTasker namespace and its practice resources.', 'k delete namespace kubetasker --ignore-not-found'),
-            ...command('Delete Civo lab', 'Deletes the managed Kubernetes cluster after practice.', 'civo kubernetes remove "$CIVO_CLUSTER_NAME" --region "$CIVO_REGION" --yes')
-          ]
-        },
-        {
-          id: 'aws-eks',
-          label: 'AWS EKS optional',
-          body: [
-            { type: 'section', title: 'When to use this path', content: 'Use EKS only when you specifically want AWS-managed Kubernetes experience. It is useful later, but it is not the main CKAD preparation path because it adds more AWS-specific machinery and normally costs more.' },
-            { type: 'section', title: 'Create an AWS account', content: 'Create or sign in to an AWS account. Click [here](https://signin.aws.amazon.com/signup?request_type=register) to create an account. After the account is ready, open AWS CloudShell or authenticate the AWS CLI locally.' },
-            { type: 'checklist', title: 'Account and prerequisites', items: ['AWS account with billing enabled.', 'AWS CLI installed and authenticated, or AWS CloudShell access.', 'eksctl installed.', 'kubectl installed locally.', 'Permission to create EKS clusters, IAM roles, EC2 nodes, VPC resources, and security groups.'] },
-            { type: 'callout', tone: 'warning', title: 'Estimated monthly cost', content: 'Approximate cost: USD 110-160/month or more because EKS includes a managed control plane plus worker nodes, storage, AWS public IPv4 charges, and network charges. Delete the cluster when finished.' },
-            ...command('Set EKS cluster name', 'Names the optional EKS cluster.', 'export EKS_CLUSTER_NAME=kubetasker-ckad'),
-            ...command('Set AWS region', 'Sets Oregon as the AWS region for the EKS cluster.', 'export AWS_REGION=us-west-2'),
-            ...command('Create optional EKS lab', 'Creates an AWS-managed Kubernetes cluster with one managed worker node.', `eksctl create cluster \
-  --name "$EKS_CLUSTER_NAME" \
-  --region "$AWS_REGION" \
-  --nodes 1 \
-  --node-type t3.small \
-  --managed`),
-            ...command('Enable kubectl shorthand', 'Defines k as a shortcut for kubectl in the current terminal session before using any k commands.', 'alias k=kubectl'),
-            ...command('Verify EKS nodes', 'Confirms kubectl can reach the EKS cluster and shows node readiness.', 'k get nodes -o wide'),
-            ...kubeTaskerCommandBlocks(),
-            ...command('Clean up application resources', 'Deletes only the KubeTasker namespace and its practice resources.', 'k delete namespace kubetasker --ignore-not-found'),
-            ...command('Delete EKS lab', 'Deletes the EKS cluster after practice.', 'eksctl delete cluster --name "$EKS_CLUSTER_NAME" --region "$AWS_REGION"')
-          ]
-        }
-      ]
+      tabs: []
     }
   ],
   explanation: 'A good CKAD preparation lab starts with one clear provider choice, a ready cloud account, authenticated CLI, kubectl access, copyable setup content, verification, KubeTasker API practice, and cleanup. AWS EC2 with kubeadm and Cilium is the preferred VM-based path. DigitalOcean and Civo are faster managed alternatives. EKS is optional and can cost more.',
