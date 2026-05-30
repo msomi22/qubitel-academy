@@ -1,0 +1,305 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: KubeTasker CKAD kubeadm lab with one control-plane node and optional worker nodes.
+
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Existing EC2 key pair used for SSH access.
+  SSHLocation:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: CIDR allowed to SSH and reach the Kubernetes API. Prefer your public IP with /32.
+  InstanceType:
+    Type: String
+    Default: t3.medium
+    Description: EC2 instance type for lab nodes.
+  WorkerCount:
+    Type: Number
+    Default: 1
+    AllowedValues: [0, 1, 2]
+    Description: Number of worker nodes to create.
+  LabName:
+    Type: String
+    Default: kubetasker-ckad
+    Description: Lab tag value and naming prefix.
+  AmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/canonical/ubuntu/server/22.04/stable/current/amd64/hvm/ebs-gp2/ami-id
+    Description: Ubuntu 22.04 LTS AMI from Canonical SSM public parameters.
+
+Conditions:
+  CreateWorker1: !Not [!Equals [!Ref WorkerCount, 0]]
+  CreateWorker2: !Equals [!Ref WorkerCount, 2]
+
+Resources:
+  KubeTaskerVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.42.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-vpc
+        - Key: Lab
+          Value: !Ref LabName
+
+  KubeTaskerSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref KubeTaskerVpc
+      CidrBlock: 10.42.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-public-subnet
+        - Key: Lab
+          Value: !Ref LabName
+
+  KubeTaskerInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-igw
+        - Key: Lab
+          Value: !Ref LabName
+
+  KubeTaskerGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref KubeTaskerVpc
+      InternetGatewayId: !Ref KubeTaskerInternetGateway
+
+  KubeTaskerRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref KubeTaskerVpc
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-route-table
+        - Key: Lab
+          Value: !Ref LabName
+
+  KubeTaskerDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: KubeTaskerGatewayAttachment
+    Properties:
+      RouteTableId: !Ref KubeTaskerRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref KubeTaskerInternetGateway
+
+  KubeTaskerSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref KubeTaskerSubnet
+      RouteTableId: !Ref KubeTaskerRouteTable
+
+  KubeTaskerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: KubeTasker CKAD lab access
+      VpcId: !Ref KubeTaskerVpc
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SSHLocation
+        - IpProtocol: tcp
+          FromPort: 6443
+          ToPort: 6443
+          CidrIp: !Ref SSHLocation
+        - IpProtocol: tcp
+          FromPort: 30000
+          ToPort: 32767
+          CidrIp: !Ref SSHLocation
+        - IpProtocol: -1
+          SourceSecurityGroupId: !Ref KubeTaskerSecurityGroup
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-security-group
+        - Key: Lab
+          Value: !Ref LabName
+
+  ControlPlane:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SubnetId: !Ref KubeTaskerSubnet
+      SecurityGroupIds:
+        - !Ref KubeTaskerSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-control-plane
+        - Key: Lab
+          Value: !Ref LabName
+        - Key: Role
+          Value: control-plane
+      UserData:
+        Fn::Base64: !Sub |
+          #!/usr/bin/env bash
+          set -euxo pipefail
+          apt-get update
+          apt-get install -y ca-certificates curl gnupg lsb-release apt-transport-https bash-completion
+          swapoff -a
+          sed -i '/ swap / s/^/#/' /etc/fstab
+          modprobe overlay
+          modprobe br_netfilter
+          cat >/etc/modules-load.d/k8s.conf <<'EOF'
+          overlay
+          br_netfilter
+          EOF
+          cat >/etc/sysctl.d/k8s.conf <<'EOF'
+          net.bridge.bridge-nf-call-iptables = 1
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.ipv4.ip_forward = 1
+          EOF
+          sysctl --system
+          install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+          echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' >/etc/apt/sources.list.d/kubernetes.list
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" >/etc/apt/sources.list.d/docker.list
+          apt-get update
+          apt-get install -y containerd.io kubelet kubeadm kubectl
+          apt-mark hold kubelet kubeadm kubectl
+          mkdir -p /etc/containerd
+          containerd config default >/etc/containerd/config.toml
+          sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+          systemctl restart containerd
+          systemctl enable containerd kubelet
+          kubeadm init --pod-network-cidr=10.244.0.0/16 --node-name ${LabName}-control-plane
+          mkdir -p /home/ubuntu/.kube
+          cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+          chown -R ubuntu:ubuntu /home/ubuntu/.kube
+          echo 'alias k=kubectl' >>/home/ubuntu/.bashrc
+          echo 'source <(kubectl completion bash)' >>/home/ubuntu/.bashrc
+          echo 'complete -o default -F __start_kubectl k' >>/home/ubuntu/.bashrc
+          su - ubuntu -c 'kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml'
+          kubeadm token create --print-join-command >/home/ubuntu/kubeadm-join-command.sh
+          chmod +x /home/ubuntu/kubeadm-join-command.sh
+          chown ubuntu:ubuntu /home/ubuntu/kubeadm-join-command.sh
+          su - ubuntu -c 'kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true'
+
+  Worker1:
+    Type: AWS::EC2::Instance
+    Condition: CreateWorker1
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SubnetId: !Ref KubeTaskerSubnet
+      SecurityGroupIds:
+        - !Ref KubeTaskerSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-worker-1
+        - Key: Lab
+          Value: !Ref LabName
+        - Key: Role
+          Value: worker
+      UserData:
+        Fn::Base64: !Sub |
+          #!/usr/bin/env bash
+          set -euxo pipefail
+          apt-get update
+          apt-get install -y ca-certificates curl gnupg lsb-release apt-transport-https bash-completion
+          swapoff -a
+          sed -i '/ swap / s/^/#/' /etc/fstab
+          modprobe overlay
+          modprobe br_netfilter
+          cat >/etc/modules-load.d/k8s.conf <<'EOF'
+          overlay
+          br_netfilter
+          EOF
+          cat >/etc/sysctl.d/k8s.conf <<'EOF'
+          net.bridge.bridge-nf-call-iptables = 1
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.ipv4.ip_forward = 1
+          EOF
+          sysctl --system
+          install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+          echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' >/etc/apt/sources.list.d/kubernetes.list
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" >/etc/apt/sources.list.d/docker.list
+          apt-get update
+          apt-get install -y containerd.io kubelet kubeadm kubectl
+          apt-mark hold kubelet kubeadm kubectl
+          mkdir -p /etc/containerd
+          containerd config default >/etc/containerd/config.toml
+          sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+          systemctl restart containerd
+          systemctl enable containerd kubelet
+          echo 'Worker node installed. SSH to the control-plane and run the join command manually if needed.' >/home/ubuntu/README-worker.txt
+
+  Worker2:
+    Type: AWS::EC2::Instance
+    Condition: CreateWorker2
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      SubnetId: !Ref KubeTaskerSubnet
+      SecurityGroupIds:
+        - !Ref KubeTaskerSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub ${LabName}-worker-2
+        - Key: Lab
+          Value: !Ref LabName
+        - Key: Role
+          Value: worker
+      UserData:
+        Fn::Base64: !Sub |
+          #!/usr/bin/env bash
+          set -euxo pipefail
+          apt-get update
+          apt-get install -y ca-certificates curl gnupg lsb-release apt-transport-https bash-completion
+          swapoff -a
+          sed -i '/ swap / s/^/#/' /etc/fstab
+          modprobe overlay
+          modprobe br_netfilter
+          cat >/etc/modules-load.d/k8s.conf <<'EOF'
+          overlay
+          br_netfilter
+          EOF
+          cat >/etc/sysctl.d/k8s.conf <<'EOF'
+          net.bridge.bridge-nf-call-iptables = 1
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.ipv4.ip_forward = 1
+          EOF
+          sysctl --system
+          install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+          echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' >/etc/apt/sources.list.d/kubernetes.list
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" >/etc/apt/sources.list.d/docker.list
+          apt-get update
+          apt-get install -y containerd.io kubelet kubeadm kubectl
+          apt-mark hold kubelet kubeadm kubectl
+          mkdir -p /etc/containerd
+          containerd config default >/etc/containerd/config.toml
+          sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+          systemctl restart containerd
+          systemctl enable containerd kubelet
+          echo 'Worker node installed. SSH to the control-plane and run the join command manually if needed.' >/home/ubuntu/README-worker.txt
+
+Outputs:
+  ControlPlanePublicIp:
+    Description: SSH target for the control-plane instance.
+    Value: !GetAtt ControlPlane.PublicIp
+  ControlPlaneSshCommand:
+    Description: SSH command template.
+    Value: !Sub ssh ubuntu@${ControlPlane.PublicIp}
+  KubeConfigPath:
+    Description: Kubeconfig location on the control-plane instance.
+    Value: /home/ubuntu/.kube/config
+  JoinCommandPath:
+    Description: Worker join command path on the control-plane instance.
+    Value: /home/ubuntu/kubeadm-join-command.sh
