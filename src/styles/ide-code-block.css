@@ -140,9 +140,9 @@
 
 .ide-code-scroll {
   max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  overscroll-behavior-x: contain;
+  max-height: calc((1.62em * 5) + 32px);
+  overflow: auto;
+  overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--code-muted) transparent;
 }
@@ -217,6 +217,10 @@
   .ide-code-title {
     max-width: 100%;
     white-space: normal;
+  }
+
+  .ide-code-scroll {
+    max-height: calc((1.58em * 5) + 28px);
   }
 
   .ide-code-pre {
