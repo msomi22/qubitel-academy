@@ -232,9 +232,10 @@ const problem = defineLearningProblem({
   prompt,
   question: prompt,
   body: [
-    { type: 'section', title: 'Objective', content: '1. Choose the right provider path.\n2. Create a Kubernetes practice environment.\n3. Connect to the cluster with `kubectl`.\n4. Verify that the control-plane node is ready.\n5. Clean up the lab safely when done.' },
+    { type: 'section', title: 'Objective', content: '1. Choose the right cloud provider.\n2. Create a Kubernetes practice environment.\n3. Connect to the cluster with **kubectl**.\n4. Verify that the control-plane node is ready.\n5. Clean up the lab safely when done.' },
     { type: 'section', title: 'Why this lab exists', content: 'CKAD practice works best when the learner can repeatedly create Kubernetes objects, inspect them, break them, fix them, and clean up without guessing the infrastructure setup. Pick one provider tab below and follow only that setup path.' },
     { type: 'callout', tone: 'warning', title: 'Cost cleanup warning', content: 'Do not leave cloud Kubernetes labs running after practice. Delete the lab immediately when finished. This AWS EC2 path does not create Elastic IPs; it uses the normal auto-assigned EC2 public IPv4 from the public subnet.' },
+    { type: 'callout', tone: 'info', title: 'Local Kubernetes option', content: 'You can also explore local Kubernetes setups such as Minikube, Kind, Docker Desktop Kubernetes, or k3d. This course provides cloud paths so learners can practise in a realistic disposable environment, but local clusters are useful for quick experiments.' },
     {
       type: 'tabs',
       title: 'Choose your cloud lab path',
