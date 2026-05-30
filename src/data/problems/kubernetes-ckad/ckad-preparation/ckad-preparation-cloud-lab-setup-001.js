@@ -283,7 +283,7 @@ const problem = defineLearningProblem({
             ...command('Verify Cilium pods', 'Shows the Cilium pods running in kube-system.', 'k -n kube-system get pods -l k8s-app=cilium'),
             ...kubeTaskerCommandBlocks(),
             ...command('Clean up application resources', 'Deletes only the KubeTasker namespace and its practice resources, leaving the cluster running.', 'k delete namespace kubetasker --ignore-not-found'),
-            ...command('Delete AWS lab', 'Deletes the full CloudFormation stack when practice is finished. This is the main cost-control command.', `aws cloudformation delete-stack \
+            ...command('Delete AWS lab', 'Before running this command, exit or log out from the EC2 SSH session and return to the terminal where your AWS CLI variables are set. Then delete the full CloudFormation stack when practice is finished. This is the main cost-control command.', `aws cloudformation delete-stack \
   --stack-name "$STACK_NAME" \
   --region "$AWS_REGION"`),
             ...command('Check delete status', 'Checks the deletion progress. After deletion finishes, AWS may return a stack-not-found message, which means the stack is gone.', `aws cloudformation describe-stacks \
