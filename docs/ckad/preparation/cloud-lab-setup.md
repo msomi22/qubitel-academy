@@ -4,7 +4,7 @@ This preparation section gives learners a practical Kubernetes lab before they b
 
 The goal is not to promise a guaranteed CKAD result. The goal is to remove infrastructure guesswork so learners can spend their practice time on Kubernetes commands, verification, debugging, and repetition.
 
-The self-managed AWS EC2 path uses **Cilium only** for cluster networking. Do not use Flannel in this track.
+The AWS EC2 kubeadm lab installs Cilium automatically as the Kubernetes networking layer.
 
 ## What the learner must already have
 
@@ -38,7 +38,7 @@ Cost estimates are rough monthly figures for a small always-on practice lab. Act
 
 ## Downloadable files
 
-All downloadable files are served from `/downloads/ckad/`.
+All downloadable files are served from `/downloads/ckad/` on `academy.qubitel.net`.
 
 | File | Purpose |
 |---|---|
@@ -69,10 +69,10 @@ export STACK_NAME=kubetasker-ckad
 mkdir -p ~/kubetasker-ckad-lab
 cd ~/kubetasker-ckad-lab
 
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-create-kubetasker-lab.sh
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-status-kubetasker-lab.sh
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-delete-kubetasker-lab.sh
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/aws-create-kubetasker-lab.sh
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/aws-status-kubetasker-lab.sh
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/aws-delete-kubetasker-lab.sh
 chmod +x aws-*-kubetasker-lab.sh
 
 ./aws-create-kubetasker-lab.sh \
