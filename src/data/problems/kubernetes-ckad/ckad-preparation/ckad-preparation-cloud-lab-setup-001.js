@@ -72,22 +72,20 @@ const problem = defineLearningProblem({
       ]
     },
     {
-      type: 'section',
-      title: 'Download the lab scripts below',
-      content: 'The scripts are served from /downloads/ckad/. Download them into your terminal or cloud shell, then follow the instructions below before creating the lab. You can also open /downloads/ckad/ in the browser to view the download index and download files one by one.'
+      type: 'table',
+      title: 'Cloud provider account setup',
+      columns: ['Provider path', 'Account needed?', 'How to prepare the account', 'CLI authentication needed'],
+      rows: [
+        ['AWS EC2 + kubeadm + Cilium', 'Yes. Create or use an AWS account with billing enabled.', 'Create an EC2 key pair in the target region. Make sure the IAM user or role can create CloudFormation, EC2, VPC, subnet, route table, internet gateway, security group, and EBS resources.', 'Run aws configure locally or use AWS CloudShell where AWS authentication is already available.'],
+        ['DigitalOcean Kubernetes', 'Yes. Create or use a DigitalOcean account with billing enabled.', 'Create a personal access token from the DigitalOcean dashboard. The token must allow cluster creation and deletion.', 'Install doctl, then authenticate it with the token before running the create script.'],
+        ['Civo Kubernetes', 'Yes. Create or use a Civo account with billing enabled.', 'Create an API key from the Civo dashboard and choose a supported region and node size.', 'Install the civo CLI, save the API key, then select the region before running the create script.'],
+        ['AWS EKS optional path', 'Yes. Use the same AWS account style as the EC2 path.', 'Make sure the IAM user or role can create EKS clusters, IAM roles, EC2 nodes, VPC resources, and security groups. This path can cost more.', 'Run aws configure and confirm eksctl is installed before running the EKS script.']
+      ]
     },
     {
-      type: 'table',
-      title: 'Most important scripts to notice',
-      columns: ['Priority', 'Script', 'Why it matters'],
-      rows: [
-        ['AWS create', 'aws-create-kubetasker-lab.sh', 'Creates the AWS EC2 kubeadm + Cilium lab. Start here for the preferred path.'],
-        ['AWS status', 'aws-status-kubetasker-lab.sh', 'Shows whether the AWS stack is ready and prints useful outputs.'],
-        ['AWS delete', 'aws-delete-kubetasker-lab.sh', 'Deletes the AWS lab when practice is finished. Important for cost control.'],
-        ['DigitalOcean create', 'do-create-kubetasker-lab.sh', 'Creates the DigitalOcean managed Kubernetes option.'],
-        ['Civo create', 'civo-create-kubetasker-lab.sh', 'Creates the Civo managed Kubernetes option.'],
-        ['Stage 1 commands', 'k8s-stage-01-commands.sh', 'Contains the first KubeTasker API deployment and verification commands.']
-      ]
+      type: 'section',
+      title: 'Download the lab scripts below',
+      content: 'The scripts are served from /downloads/ckad/. Download them into your terminal or cloud shell, then follow the instructions below before creating the lab. You can also open /downloads/ckad/ in the browser to view the download index and download files one by one. The exact script filenames are shown inside the copy/paste command blocks below.'
     },
     {
       type: 'code',
