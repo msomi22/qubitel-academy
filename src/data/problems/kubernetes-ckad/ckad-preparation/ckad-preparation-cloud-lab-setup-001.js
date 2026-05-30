@@ -74,36 +74,19 @@ const problem = defineLearningProblem({
     {
       type: 'section',
       title: 'Download the lab scripts below',
-      content: 'The scripts are served from **/downloads/ckad/**. Download them into your terminal or cloud shell, then follow the instructions below before creating the lab. You can also open **/downloads/ckad/** in the browser to view the download index and download files one by one.'
+      content: 'The scripts are served from /downloads/ckad/. Download them into your terminal or cloud shell, then follow the instructions below before creating the lab. You can also open /downloads/ckad/ in the browser to view the download index and download files one by one.'
     },
     {
       type: 'table',
       title: 'Most important scripts to notice',
       columns: ['Priority', 'Script', 'Why it matters'],
       rows: [
-        ['🟧 AWS create', '**aws-create-kubetasker-lab.sh**', 'Creates the AWS EC2 kubeadm + Cilium lab. Start here for the preferred path.'],
-        ['🟦 AWS status', '**aws-status-kubetasker-lab.sh**', 'Shows whether the AWS stack is ready and prints useful outputs.'],
-        ['🟥 AWS delete', '**aws-delete-kubetasker-lab.sh**', 'Deletes the AWS lab when practice is finished. Important for cost control.'],
-        ['🟩 DigitalOcean create', '**do-create-kubetasker-lab.sh**', 'Creates the DigitalOcean managed Kubernetes option.'],
-        ['🟪 Civo create', '**civo-create-kubetasker-lab.sh**', 'Creates the Civo managed Kubernetes option.'],
-        ['🟨 Stage 1 commands', '**k8s-stage-01-commands.sh**', 'Contains the first KubeTasker API deployment and verification commands.']
-      ]
-    },
-    {
-      type: 'table',
-      title: 'Explicit download links',
-      columns: ['File', 'Download link', 'Purpose'],
-      rows: [
-        ['CKAD downloads index', '[/downloads/ckad/](/downloads/ckad/)', 'Open the folder-style download page and download files one by one.'],
-        ['AWS CloudFormation template', '[/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml](/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml)', 'Creates the AWS EC2 kubeadm + Cilium lab infrastructure.'],
-        ['AWS create script', '[/downloads/ckad/aws-create-kubetasker-lab.sh](/downloads/ckad/aws-create-kubetasker-lab.sh)', 'Creates the AWS CloudFormation stack.'],
-        ['AWS status script', '[/downloads/ckad/aws-status-kubetasker-lab.sh](/downloads/ckad/aws-status-kubetasker-lab.sh)', 'Shows stack status, outputs, recent events, and lab instances.'],
-        ['AWS delete script', '[/downloads/ckad/aws-delete-kubetasker-lab.sh](/downloads/ckad/aws-delete-kubetasker-lab.sh)', 'Deletes the AWS CloudFormation stack.'],
-        ['DigitalOcean create script', '[/downloads/ckad/do-create-kubetasker-lab.sh](/downloads/ckad/do-create-kubetasker-lab.sh)', 'Creates a small DigitalOcean Kubernetes cluster.'],
-        ['DigitalOcean delete script', '[/downloads/ckad/do-delete-kubetasker-lab.sh](/downloads/ckad/do-delete-kubetasker-lab.sh)', 'Deletes the DigitalOcean Kubernetes cluster.'],
-        ['Civo create script', '[/downloads/ckad/civo-create-kubetasker-lab.sh](/downloads/ckad/civo-create-kubetasker-lab.sh)', 'Creates a small Civo Kubernetes cluster.'],
-        ['Civo delete script', '[/downloads/ckad/civo-delete-kubetasker-lab.sh](/downloads/ckad/civo-delete-kubetasker-lab.sh)', 'Deletes the Civo Kubernetes cluster.'],
-        ['Stage 1 command reference', '[/downloads/ckad/k8s-stage-01-commands.sh](/downloads/ckad/k8s-stage-01-commands.sh)', 'Copy/paste commands for the first KubeTasker API deployment.']
+        ['AWS create', 'aws-create-kubetasker-lab.sh', 'Creates the AWS EC2 kubeadm + Cilium lab. Start here for the preferred path.'],
+        ['AWS status', 'aws-status-kubetasker-lab.sh', 'Shows whether the AWS stack is ready and prints useful outputs.'],
+        ['AWS delete', 'aws-delete-kubetasker-lab.sh', 'Deletes the AWS lab when practice is finished. Important for cost control.'],
+        ['DigitalOcean create', 'do-create-kubetasker-lab.sh', 'Creates the DigitalOcean managed Kubernetes option.'],
+        ['Civo create', 'civo-create-kubetasker-lab.sh', 'Creates the Civo managed Kubernetes option.'],
+        ['Stage 1 commands', 'k8s-stage-01-commands.sh', 'Contains the first KubeTasker API deployment and verification commands.']
       ]
     },
     {
