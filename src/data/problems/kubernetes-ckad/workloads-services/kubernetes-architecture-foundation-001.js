@@ -343,7 +343,9 @@ const problem = defineLearningProblem({
       title: 'Big architecture diagram',
       src: '/images/problems/kubernetes-ckad/kubernetes-architecture-foundation.png',
       alt: 'Kubernetes architecture showing kubectl, control plane, worker nodes, Services, DNS, Ingress, egress, and workload objects',
-      caption: 'Use this as the big-picture map for the lesson. The static image is the main architecture diagram; the interactive walkthrough below traces one request through it.'
+      caption: 'Use this as the big-picture map for the lesson. The static image is the main architecture diagram; the interactive walkthrough below traces one request through it.',
+      zoomable: true,
+      fullscreen: true
     },
     {
       type: 'comparison',
