@@ -314,6 +314,15 @@ export const topicManifest = [
     }
   },
   {
+    "id": "workloads-services",
+    "name": "Workloads & Services",
+    "category": "kubernetes-ckad",
+    "description": "Deploy application workloads and expose them inside the cluster using Deployments, Pods, Services, Endpoints, and DNS.",
+    "questionBank": {
+      "mode": "discovered"
+    }
+  },
+  {
     "id": "numerical-reasoning",
     "name": "Numerical Reasoning",
     "category": "aptitude",
