@@ -107,7 +107,7 @@ const problem = defineLearningProblem({
   id: 'kubetasker-yaml-modify-001',
   category: 'kubernetes-ckad',
   topicId: 'workloads-services',
-  title: 'KubeTasker YAML Files: Apply, Modify, and Verify',
+  title: 'Step 2: KubeTasker YAML Files',
   difficulty: 'Easy',
   estimatedTimeSeconds: 1800,
   estimatedTime: '30 min',
@@ -115,13 +115,13 @@ const problem = defineLearningProblem({
   rendering: { variant: 'deep-dive', density: 'comfortable', accent: 'green' },
   prompt,
   question: prompt,
-  scenario: 'You already deployed KubeTasker using direct kubectl commands. Now you will manage the same application using YAML files so you can see exactly what Kubernetes objects look like and how file changes update the cluster.',
+  scenario: 'Complete Step 1 first. You already deployed KubeTasker using direct kubectl commands. Now you will manage the same application using YAML files so you can see exactly what Kubernetes objects look like and how file changes update the cluster.',
   starterThought: 'Commands are useful for speed, but YAML files teach ownership. A file shows the desired state clearly, can be reviewed, can be changed, and can be applied again.',
   intuition: 'A Kubernetes manifest is a saved desired-state instruction. When you apply it, Kubernetes compares the file with the live object and moves the cluster toward what the file says.',
   mentalPicture: 'Think of each YAML file as a written instruction card: one card creates the workspace, one card describes the API workload, one card describes the stable Service, and one card creates a temporary client for verification.',
   patternSignal: 'Use YAML manifests when the learner must understand, review, modify, repeat, or version-control Kubernetes configuration.',
   invariant: 'For this lesson, the Deployment Pod label and the Service selector must both use app=kube-tasker-api. If they differ, the Service will have no useful Endpoints.',
-  finalPattern: 'Create Kubernetes objects from files, modify the files, apply changes, and verify the live object state.',
+  finalPattern: 'Step 2 of 2: Manage the same API using YAML files, apply changes, and verify live state.',
   commonMistake: 'Changing a Service selector without checking Endpoints. The Service may still exist while routing to no Pods.',
   commonMistakes: [
     'Editing the YAML but forgetting to run k apply -f again.',
@@ -216,6 +216,7 @@ const problem = defineLearningProblem({
       type: 'checklist',
       title: 'Objective',
       items: [
+        'Continue after completing Step 1 in the Workloads and Services topic.',
         'Create Kubernetes YAML manifest files for KubeTasker.',
         'Apply each manifest file independently.',
         'Inspect the live objects created from each file.',
@@ -223,6 +224,12 @@ const problem = defineLearningProblem({
         'Break and fix a Service selector to understand Endpoints.',
         'Verify the API through Service DNS from a client pod.'
       ]
+    },
+    {
+      type: 'callout',
+      tone: 'warning',
+      title: 'Prerequisite',
+      content: 'Complete Step 1 first. This lesson assumes you already understand the basic KubeTasker workload, Service, Endpoints, and client-pod verification flow.'
     },
     {
       type: 'section',
