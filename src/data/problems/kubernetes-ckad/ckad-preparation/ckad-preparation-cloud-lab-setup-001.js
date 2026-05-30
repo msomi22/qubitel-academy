@@ -210,6 +210,7 @@ function command(title, explanation, code, language = 'bash') {
 
 function kubeTaskerCommandBlocks() {
   return [
+    { type: 'section', title: 'What is KubeTasker?', content: 'KubeTasker is the demo learning application used throughout this CKAD course. It gives us a realistic API workload for practising deployments, Services, cluster DNS, logs, configuration, probes, troubleshooting, and cleanup. It is not a built-in Kubernetes component.' },
     ...command('Create KubeTasker namespace', 'Creates the kubetasker namespace. The dry-run plus apply style makes the command safe to run again.', 'k create namespace kubetasker --dry-run=client -o yaml | k apply -f -'),
     ...command('Create KubeTasker API deployment', 'Starts the KubeTasker API workload from the published practice image.', 'k create deployment kube-tasker-api --image=msomi22/kubetasker-api:0.1.1 -n kubetasker'),
     ...command('Expose KubeTasker API service', 'Creates an in-cluster Service on port 80 that forwards traffic to the container on port 8080.', 'k expose deployment kube-tasker-api --name=kube-tasker-api --port=80 --target-port=8080 -n kubetasker'),
@@ -231,7 +232,7 @@ const problem = defineLearningProblem({
   prompt,
   question: prompt,
   body: [
-    { type: 'section', title: 'Objective', content: 'I can create a Kubernetes practice environment, connect to it with `kubectl`, verify that the control-plane node is ready, choose the right provider path, and clean up the lab safely when I am done.' },
+    { type: 'section', title: 'Objective', content: '1. Choose the right provider path.\n2. Create a Kubernetes practice environment.\n3. Connect to the cluster with `kubectl`.\n4. Verify that the control-plane node is ready.\n5. Clean up the lab safely when done.' },
     { type: 'section', title: 'Why this lab exists', content: 'CKAD practice works best when the learner can repeatedly create Kubernetes objects, inspect them, break them, fix them, and clean up without guessing the infrastructure setup. Pick one provider tab below and follow only that setup path.' },
     { type: 'callout', tone: 'warning', title: 'Cost cleanup warning', content: 'Do not leave cloud Kubernetes labs running after practice. Delete the lab immediately when finished. This AWS EC2 path does not create Elastic IPs; it uses the normal auto-assigned EC2 public IPv4 from the public subnet.' },
     {
