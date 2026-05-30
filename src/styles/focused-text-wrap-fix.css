@@ -1,0 +1,41 @@
+.focused-problem-workspace .scenario-box,
+.focused-problem-workspace .workspace-block {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.focused-problem-workspace .scenario-box .workspace-preformatted-text {
+  max-width: 100%;
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  font-family: var(--font-sans);
+}
+
+.focused-problem-workspace .scenario-box p,
+.focused-problem-workspace .workspace-block p,
+.focused-problem-workspace .workspace-block li {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+@media (min-width: 769px) {
+  .focused-problem-workspace .scenario-box {
+    overflow-x: hidden;
+  }
+
+  .focused-problem-workspace .scenario-box .workspace-preformatted-text {
+    overflow-x: hidden !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .focused-problem-workspace .scenario-box {
+    overflow-x: auto;
+  }
+
+  .focused-problem-workspace .scenario-box .workspace-preformatted-text {
+    overflow-x: auto !important;
+  }
+}
