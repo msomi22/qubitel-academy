@@ -1,3 +1,5 @@
+import GlossaryProvider from '../glossary/GlossaryProvider.jsx';
+
 const markdownLinkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
 const urlPattern = /(https?:\/\/[^\s]+)/g;
 const inlineSyntaxPattern = /(`([^`]+)`|\*\*([^*]+)\*\*)/g;
@@ -8,6 +10,11 @@ function TechnicalToken({ children, index }) {
       {children}
     </span>
   );
+}
+
+function PlainText({ text }) {
+  if (!text) return null;
+  return <GlossaryProvider text={text} />;
 }
 
 function TokenizedText({ text }) {
@@ -22,7 +29,7 @@ function TokenizedText({ text }) {
   while ((match = inlineSyntaxPattern.exec(text)) !== null) {
     const [fullMatch, , inlineToken, boldText] = match;
     if (match.index > lastIndex) {
-      nodes.push(<span key={`plain-${lastIndex}`}>{text.slice(lastIndex, match.index)}</span>);
+      nodes.push(<PlainText key={`plain-${lastIndex}`} text={text.slice(lastIndex, match.index)} />);
     }
 
     if (inlineToken) {
@@ -36,7 +43,7 @@ function TokenizedText({ text }) {
   }
 
   if (lastIndex < text.length) {
-    nodes.push(<span key={`plain-${lastIndex}`}>{text.slice(lastIndex)}</span>);
+    nodes.push(<PlainText key={`plain-${lastIndex}`} text={text.slice(lastIndex)} />);
   }
 
   return nodes;
