@@ -23,37 +23,16 @@ function jsonExample(title, explanation, filename, code) {
   ];
 }
 
-const namespaceYaml = `apiVersion: v1
-kind: Namespace
-metadata:
-  name: kubetasker
-  # KubeTasker resources in this quiz live in one namespace so Service DNS,
-  # ConfigMap references, Secret references, and Pod lookup commands all match.`;
-
 const configMapYaml = `apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kube-tasker-api-config
   namespace: kubetasker
 data:
-  # Used by KubeTasker to set runtime log verbosity.
-  # Verify from app: /config/status should show logLevel: info.
   LOG_LEVEL: info
-
-  # Used by KubeTasker to enable learning-mode behavior for this quiz.
-  # Verify from app: /config/status should show appMode: learning.
   APP_MODE: learning
-
-  # Used by KubeTasker to select task behavior for this quiz.
-  # Verify from app: /config/status should show taskMode: learning.
   TASK_MODE: learning
-
-  # Used by KubeTasker to decide whether sample/demo tasks are loaded.
-  # Verify from app: /tasks/stats should show sample task behavior.
   ENABLE_SAMPLE_TASKS: 'true'
-
-  # Used by KubeTasker as visible runtime output.
-  # Verify from app: /config/status or / should show this message.
   WELCOME_MESSAGE: Welcome to KubeTasker Runtime Configuration`;
 
 const secretYaml = `apiVersion: v1
@@ -63,9 +42,6 @@ metadata:
   namespace: kubetasker
 type: Opaque
 stringData:
-  # Used by KubeTasker for token-aware/protected demo behavior.
-  # Verify from app: /config/status should show apiTokenConfigured: true.
-  # Do not verify by printing this value from the Secret or container env.
   API_TOKEN: replace-me-in-real-labs`;
 
 const mountedConfigFileYaml = `apiVersion: v1
@@ -74,187 +50,62 @@ metadata:
   name: kube-tasker-file-config
   namespace: kubetasker
 data:
-  # Mounted into the container as /etc/kubetasker/app-config.yaml.
-  # Used by KubeTasker when it needs structured file-based runtime config.
-  # Verify from app: /config/status should show mountedConfigLoaded: true.
   app-config.yaml: |
     taskMode: learning
     welcomeMessage: Mounted config is active
     requireRuntimeConfig: false`;
 
-const deploymentYaml = `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: kube-tasker-api
-  namespace: kubetasker
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: kube-tasker-api
-  template:
-    metadata:
-      labels:
-        app: kube-tasker-api
-    spec:
-      containers:
-        - name: api
-          image: msomi22/kubetasker-api:0.2.0
-          ports:
-            - containerPort: 8080
-          env:
-            # KubeTasker reads this from the process environment.
-            # Verify from app: /config/status.logLevel.
-            - name: LOG_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: LOG_LEVEL
+const deploymentRuntimeConfigPatchYaml = `# In deployment.yaml, update the existing api container.
+# Keep the existing metadata, selector, labels, replicas, image, and ports.
+# Add this env block under the api container:
+env:
+  - name: LOG_LEVEL
+    valueFrom:
+      configMapKeyRef:
+        name: kube-tasker-api-config
+        key: LOG_LEVEL
+  - name: APP_MODE
+    valueFrom:
+      configMapKeyRef:
+        name: kube-tasker-api-config
+        key: APP_MODE
+  - name: TASK_MODE
+    valueFrom:
+      configMapKeyRef:
+        name: kube-tasker-api-config
+        key: TASK_MODE
+  - name: ENABLE_SAMPLE_TASKS
+    valueFrom:
+      configMapKeyRef:
+        name: kube-tasker-api-config
+        key: ENABLE_SAMPLE_TASKS
+  - name: WELCOME_MESSAGE
+    valueFrom:
+      configMapKeyRef:
+        name: kube-tasker-api-config
+        key: WELCOME_MESSAGE
+  - name: API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: kube-tasker-api-secret
+        key: API_TOKEN
 
-            # KubeTasker reads this to enable learning behavior.
-            # Verify from app: /config/status.appMode.
-            - name: APP_MODE
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: APP_MODE
+# Add this volumeMounts block under the same api container:
+volumeMounts:
+  - name: app-config-file
+    mountPath: /etc/kubetasker
+    readOnly: true
 
-            # KubeTasker reads this to choose task behavior.
-            # Verify from app: /config/status.taskMode.
-            - name: TASK_MODE
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: TASK_MODE
+# Add this volumes block under spec.template.spec:
+volumes:
+  - name: app-config-file
+    configMap:
+      name: kube-tasker-file-config`;
 
-            # KubeTasker reads this to decide whether sample tasks should load.
-            # Verify from app: /config/status.sampleTasksEnabled and /tasks/stats.
-            - name: ENABLE_SAMPLE_TASKS
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: ENABLE_SAMPLE_TASKS
-
-            # KubeTasker reads this as visible runtime output.
-            # Verify from app: /config/status.welcomeMessage or /.
-            - name: WELCOME_MESSAGE
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: WELCOME_MESSAGE
-
-            # KubeTasker reads this as a sensitive token.
-            # Verify from app: /config/status.apiTokenConfigured only.
-            # Never print the token value.
-            - name: API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: kube-tasker-api-secret
-                  key: API_TOKEN
-          volumeMounts:
-            # KubeTasker reads /etc/kubetasker/app-config.yaml from this mount.
-            # Verify from app: /config/status.mountedConfigLoaded.
-            - name: app-config-file
-              mountPath: /etc/kubetasker
-              readOnly: true
-      volumes:
-        - name: app-config-file
-          configMap:
-            name: kube-tasker-file-config`;
-
-const serviceYaml = `apiVersion: v1
-kind: Service
-metadata:
-  name: kube-tasker-api
-  namespace: kubetasker
-spec:
-  selector:
-    app: kube-tasker-api
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8080
-  # Used by the verification client to reach KubeTasker by DNS name.
-  # Verify from app: wget http://kube-tasker-api/config/status from inside the namespace.`;
-
-const clientPodYaml = `apiVersion: v1
-kind: Pod
-metadata:
-  name: kube-tasker-client
-  namespace: kubetasker
-spec:
-  restartPolicy: Never
-  containers:
-    - name: client
-      image: busybox:1.36
-      command: ['sh', '-c', 'sleep 3600']
-  # Used only as a simple in-cluster client for app verification commands.
-  # Verify from app: exec into this Pod and call the KubeTasker Service.`;
-
-const commandArgsYaml = `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: kube-tasker-api
-  namespace: kubetasker
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: kube-tasker-api
-  template:
-    metadata:
-      labels:
-        app: kube-tasker-api
-    spec:
-      containers:
-        - name: api
-          image: msomi22/kubetasker-api:0.2.0
-          # Overrides the image startup command.
-          # Used by KubeTasker only when this is the supported app startup shape.
-          # Verify from app: /health and /ready should still respond.
-          command: ['python']
-          args: ['-m', 'uvicorn', 'app.main:app', '--host', '0.0.0.0', '--port', '8080']
-          ports:
-            - containerPort: 8080
-          env:
-            - name: LOG_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: LOG_LEVEL
-            - name: APP_MODE
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: APP_MODE
-            - name: TASK_MODE
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: TASK_MODE
-            - name: ENABLE_SAMPLE_TASKS
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: ENABLE_SAMPLE_TASKS
-            - name: WELCOME_MESSAGE
-              valueFrom:
-                configMapKeyRef:
-                  name: kube-tasker-api-config
-                  key: WELCOME_MESSAGE
-            - name: API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: kube-tasker-api-secret
-                  key: API_TOKEN
-          volumeMounts:
-            - name: app-config-file
-              mountPath: /etc/kubetasker
-              readOnly: true
-      volumes:
-        - name: app-config-file
-          configMap:
-            name: kube-tasker-file-config`;
+const commandArgsPatchYaml = `# Optional: add this under the existing api container only if the question asks for command/args.
+# Keep the rest of deployment.yaml unchanged.
+command: ['python']
+args: ['-m', 'uvicorn', 'app.main:app', '--host', '0.0.0.0', '--port', '8080']`;
 
 const configStatusJson = `{
   "appMode": "learning",
@@ -296,41 +147,41 @@ const problem = defineLearningProblem({
   rendering: { variant: 'deep-dive', density: 'comfortable', accent: 'green' },
   prompt,
   question: prompt,
-  scenario: 'KubeTasker now runs as a workload and is reachable through a Service. This quiz uses runtime configuration to change app behavior, then verifies the result from the running app.',
-  starterThought: 'Do not only check that a Kubernetes object exists. Apply the manifests, confirm the Deployment uses the image shown in the YAML, then verify behavior from KubeTasker endpoints and logs.',
-  intuition: 'Runtime configuration is useful only when the app consumes it. Kubernetes stores, injects, or mounts values; KubeTasker proves those values are active through /config/status, /ready, /tasks/stats, root output, and logs.',
-  mentalPicture: 'Think of each manifest as a contract: comments say what KubeTasker expects, kubectl applies the contract, and app endpoints prove the contract is working.',
-  patternSignal: 'Use this sequence: create config objects, deploy the app, expose the Service, then verify from KubeTasker.',
-  invariant: 'For this quiz, runnable KubeTasker examples use the image shown in the Deployment manifest unless a step explicitly marks a comparison that does not require newly added runtime-configuration features.',
-  commonMistake: 'Restarting or copying an older KubeTasker Deployment for this quiz, then wondering why runtime-config behavior is missing.',
-  explanation: 'This quiz uses YAML comments plus kubectl apply and verification commands to show how KubeTasker consumes ConfigMaps, Secrets, environment variables, mounted files, command, args, Services, and readiness configuration.',
+  scenario: 'KubeTasker already has its namespace, Deployment, Service, and client Pod from [kubetasker-yaml-modify-001]. In this lesson, you add runtime configuration and amend only the Deployment fields needed to consume it.',
+  starterThought: 'Do not recreate files that already exist. Create the new runtime-configuration files, then update only the required parts of deployment.yaml.',
+  intuition: 'Runtime configuration changes app behavior without rebuilding the image. Kubernetes stores, injects, or mounts values; KubeTasker proves those values are active through /config/status, /ready, /tasks/stats, root output, and logs.',
+  mentalPicture: 'Think of runtime configuration as app settings supplied at Pod startup. ConfigMaps hold non-sensitive values, Secrets hold sensitive values, environment variables inject simple values, and mounted files inject structured config.',
+  patternSignal: 'Use this sequence: create config objects, amend the existing Deployment to consume them, apply the Deployment, then verify from KubeTasker.',
+  invariant: 'Only show or edit YAML that changes in this lesson. For unchanged files such as namespace.yaml, service.yaml, and client-pod.yaml, refer back to [kubetasker-yaml-modify-001].',
+  commonMistake: 'Replacing the whole Deployment or recreating unchanged manifests instead of updating only the runtime-configuration parts.',
+  explanation: 'This lesson introduces ConfigMaps, Secrets, environment variables, mounted config files, command, and args. It does not repeat the namespace, Service, or client Pod manifests from the earlier KubeTasker YAML lesson.',
   stepByStepBreakdown: [
-    'Read the comments inside the YAML to see which KubeTasker behavior depends on each field.',
-    'Apply ConfigMap, Secret, and mounted-file ConfigMap resources first.',
-    'Apply the KubeTasker Deployment with the image shown in the manifest.',
-    'Apply the Service and verification client Pod.',
-    'Verify from KubeTasker endpoints or logs that the app consumed the configuration.',
-    'Only use rollout restart later when the Deployment image has already been confirmed.'
+    'Confirm the files from [kubetasker-yaml-modify-001] exist, especially deployment.yaml, service.yaml, and client-pod.yaml.',
+    'Create the new runtime-configuration files: configmap.yaml, secret.yaml, and file-config-configmap.yaml.',
+    'Amend only the required parts of deployment.yaml so the Pod consumes the ConfigMap, Secret, and mounted file.',
+    'Apply the new config objects and the amended Deployment.',
+    'Use the existing Service and client Pod from [kubetasker-yaml-modify-001] to verify app behavior.',
+    'Avoid printing Secret values while still proving the app received the Secret.'
   ],
-  finalTakeaway: 'A good CKAD runtime configuration answer is not just valid YAML. It is valid YAML plus proof from the running app that the configuration was consumed safely.',
-  visualExplanation: 'The flow is config objects, Deployment, Service/client, then app verification.',
+  finalTakeaway: 'A good CKAD runtime configuration answer is not just valid YAML. It preserves existing manifests, changes only the required fields, and proves from the running app that configuration was consumed safely.',
+  visualExplanation: 'The flow is new config objects, targeted Deployment amendment, then app verification through the existing Service and client Pod.',
   visualWalkthrough: {
     title: 'Runtime configuration verification loop',
-    summary: 'Apply config objects first, run the app, then verify from KubeTasker.',
+    summary: 'Create config objects, amend the Deployment, then verify from KubeTasker.',
     diagram: {
       type: 'graph',
       variant: 'kubernetes-object-relationship',
-      title: 'YAML to verified app behavior',
+      title: 'Runtime config to verified app behavior',
       nodes: [
-        { id: 'config', label: 'Config objects\nConfigMap Secret files' },
-        { id: 'deploy', label: 'Deployment\nKubeTasker app' },
-        { id: 'service', label: 'Service and client\ncluster access' },
+        { id: 'config', label: 'New config objects\nConfigMap Secret file config' },
+        { id: 'deploy', label: 'Amended Deployment\nenv volumeMounts volumes' },
+        { id: 'service', label: 'Existing Service/client\nfrom previous question' },
         { id: 'app', label: 'KubeTasker endpoint\napp consumed config' },
         { id: 'logs', label: 'KubeTasker logs\nsafe startup evidence' }
       ],
       edges: [
         { from: 'config', to: 'deploy', label: 'referenced by Pod template' },
-        { from: 'deploy', to: 'service', label: 'selected by labels' },
+        { from: 'deploy', to: 'service', label: 'reuses existing access path' },
         { from: 'service', to: 'app', label: 'call app endpoints' },
         { from: 'deploy', to: 'logs', label: 'debug startup' }
       ]
@@ -341,71 +192,67 @@ const problem = defineLearningProblem({
       type: 'checklist',
       title: 'Objective',
       items: [
-        'I can read YAML comments to understand what KubeTasker uses from each manifest.',
-        'I can apply each manifest with kubectl.',
-        'I can verify Kubernetes wiring with get and describe commands.',
-        'I can verify the Deployment is using the image shown in the manifest.',
-        'I can verify app behavior from /config/status, /ready, /tasks/stats, /, and logs.',
-        'I can avoid leaking Secret values while still proving the app received a Secret.'
+        'I can create runtime configuration objects with ConfigMap and Secret.',
+        'I can amend only the required Deployment fields instead of replacing the whole manifest.',
+        'I can inject non-sensitive values using env from ConfigMap keys.',
+        'I can inject sensitive values using env from Secret keys without printing the Secret value.',
+        'I can mount ConfigMap data as a file inside the container.',
+        'I can verify app behavior from /config/status, /ready, /tasks/stats, /, and logs.'
       ]
     },
     {
       type: 'callout',
       tone: 'info',
-      title: 'Quiz image rule',
-      content: 'Use the image shown in the Deployment manifest for runnable KubeTasker examples in this quiz. Only use another image if a step explicitly says it is a comparison and the comparison does not require the newly added runtime-configuration features.'
+      title: 'What you will do next',
+      content: 'Create runtime-configuration files, amend the existing KubeTasker Deployment from [kubetasker-yaml-modify-001], then verify the running app consumed the values.'
     },
-    ...yamlExample('1. Namespace manifest', 'The namespace keeps all KubeTasker runtime configuration resources together. Read the YAML comments, then apply it.', 'namespace.yaml', namespaceYaml),
-    ...command('Apply the namespace', 'Create the namespace used by all later manifests.', 'k apply -f namespace.yaml'),
-    ...command('Verify the namespace', 'Kubernetes proof: the namespace exists and later objects should be created inside it.', 'k get ns kubetasker'),
+    {
+      type: 'callout',
+      tone: 'warning',
+      title: 'Do not recreate unchanged manifests',
+      content: 'Do not display or recreate namespace.yaml, service.yaml, or client-pod.yaml here. Those were introduced in [kubetasker-yaml-modify-001]. If any of them is missing in your workspace, go back to that question and create or apply it first.'
+    },
 
-    ...yamlExample('2. ConfigMap manifest', 'The comments inside this YAML show which values KubeTasker uses.', 'configmap.yaml', configMapYaml),
-    ...command('Apply the ConfigMap', 'Create or update the non-sensitive runtime settings. At this stage, only verify the Kubernetes object; app verification comes after the Deployment is running.', 'k apply -f configmap.yaml'),
+    ...yamlExample('1. Create the ConfigMap manifest', 'Create configmap.yaml. This is new content for this lesson because it stores non-sensitive runtime settings that KubeTasker will read through environment variables.', 'configmap.yaml', configMapYaml),
+    ...command('Apply the ConfigMap', 'Create or update the non-sensitive runtime settings.', 'k apply -f configmap.yaml'),
     ...command('Verify the ConfigMap exists', 'Kubernetes proof: confirm the object and keys exist in the correct namespace.', 'k -n kubetasker describe configmap kube-tasker-api-config'),
 
-    ...yamlExample('3. Secret manifest', 'The Secret provides sensitive runtime input. The YAML comments show how KubeTasker uses it and how to verify it later without printing the token.', 'secret.yaml', secretYaml),
-    ...command('Apply the Secret', 'Create or update the sensitive value. At this stage, only verify the Kubernetes object; app verification comes after the Deployment is running.', 'k apply -f secret.yaml'),
+    ...yamlExample('2. Create the Secret manifest', 'Create secret.yaml. This is new content for this lesson because it stores a sensitive runtime value. Verify that the Secret exists, but do not print the token value.', 'secret.yaml', secretYaml),
+    ...command('Apply the Secret', 'Create or update the sensitive runtime value.', 'k apply -f secret.yaml'),
     ...command('Verify the Secret exists without printing it', 'Kubernetes proof: confirm the Secret exists and has data without revealing the value.', `k -n kubetasker get secret kube-tasker-api-secret
 k -n kubetasker describe secret kube-tasker-api-secret`),
 
-    ...yamlExample('4. Mounted config file manifest', 'This ConfigMap becomes a file inside the container. KubeTasker reads it after the Deployment mounts it.', 'file-config-configmap.yaml', mountedConfigFileYaml),
+    ...yamlExample('3. Create the mounted config file manifest', 'Create file-config-configmap.yaml. This is new content for this lesson because it becomes a file mounted inside the KubeTasker container.', 'file-config-configmap.yaml', mountedConfigFileYaml),
     ...command('Apply the mounted file ConfigMap', 'Create or update the ConfigMap that will later be mounted as /etc/kubetasker/app-config.yaml.', 'k apply -f file-config-configmap.yaml'),
     ...command('Verify the file ConfigMap exists', 'Kubernetes proof: confirm the ConfigMap contains app-config.yaml.', 'k -n kubetasker describe configmap kube-tasker-file-config'),
 
-    ...yamlExample('5. Deployment manifest', 'The Deployment is the point where app verification becomes valid because it wires the image, ConfigMap values, Secret values, and mounted config file into the Pod.', 'deployment.yaml', deploymentYaml),
-    ...command('Apply the Deployment', 'Create or update the KubeTasker API Deployment.', `k apply -f deployment.yaml
+    ...yamlExample('4. Amend the existing Deployment manifest', 'Open deployment.yaml from [kubetasker-yaml-modify-001]. Do not replace the whole file. Add only the env, volumeMounts, and volumes blocks shown here in the correct YAML locations.', 'deployment-runtime-config-snippet.yaml', deploymentRuntimeConfigPatchYaml),
+    ...command('Apply the amended Deployment', 'Apply the Deployment after adding only the runtime-configuration fields.', `k apply -f deployment.yaml
 k -n kubetasker rollout status deploy/kube-tasker-api`),
-    ...command('Verify the Deployment image and wiring', 'Kubernetes proof: confirm the Deployment uses the expected image and has the expected selector, labels, env refs, Secret refs, volume, and mount.', `k -n kubetasker get deploy kube-tasker-api -o=jsonpath='{.spec.template.spec.containers[0].image}{"\\n"}'
-k -n kubetasker describe deploy kube-tasker-api
+    ...command('Verify the Deployment wiring', 'Kubernetes proof: confirm the Deployment has the expected env refs, Secret ref, volume, and mount.', `k -n kubetasker describe deploy kube-tasker-api
 k -n kubetasker get pods -l app=kube-tasker-api -o wide`),
 
-    ...yamlExample('6. Service manifest', 'The Service gives in-cluster clients a stable DNS name for KubeTasker. The comments show how the verification client will use it.', 'service.yaml', serviceYaml),
-    ...command('Apply the Service', 'Create the stable in-cluster access point for KubeTasker.', 'k apply -f service.yaml'),
-    ...command('Verify the Service selects the Pod', 'Kubernetes proof: endpoints should point to the KubeTasker Pod created by the Deployment.', `k -n kubetasker get svc kube-tasker-api
-k -n kubetasker get endpoints kube-tasker-api`),
-
-    ...yamlExample('7. Verification client manifest', 'The client Pod exists only so learners can call the KubeTasker Service from inside the cluster.', 'client-pod.yaml', clientPodYaml),
-    ...command('Apply the verification client', 'Create a simple client Pod for in-cluster app verification.', `k apply -f client-pod.yaml
-k -n kubetasker wait --for=condition=Ready pod/kube-tasker-client --timeout=90s`),
-    ...command('Verify KubeTasker from the client Pod', 'App proof: now that the Service and app are running, use the Service DNS name to verify runtime config behavior.', `k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health
+    ...command('Verify the existing Service and client Pod', 'Use the Service and client Pod introduced in [kubetasker-yaml-modify-001]. If either is missing, return to that question and create or apply it before continuing.', `k -n kubetasker get svc kube-tasker-api
+k -n kubetasker get endpoints kube-tasker-api
+k -n kubetasker get pod kube-tasker-client`),
+    ...command('Verify KubeTasker from the client Pod', 'App proof: use the existing client Pod to call the KubeTasker Service DNS name and confirm runtime configuration was consumed.', `k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health
 k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/ready
 k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/config/status
 k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/tasks/stats
 k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/`),
     ...command('Verify KubeTasker startup logs', 'App proof: logs should safely confirm runtime config loading without exposing Secret values.', 'k -n kubetasker logs deploy/kube-tasker-api'),
 
-    ...jsonExample('Expected /config/status response', 'This is the kind of safe app-level proof expected after the Deployment, Service, and client Pod are applied. Secret values are never shown.', 'config-status-response.json', configStatusJson),
+    ...jsonExample('Expected /config/status response', 'This is the kind of safe app-level proof expected after the Deployment is amended and the existing Service/client path is working. Secret values are never shown.', 'config-status-response.json', configStatusJson),
 
-    ...command('Later: apply config changes to the confirmed app', 'Use rollout restart only after the Deployment image is already confirmed. This prevents restarting an older app image that cannot prove the runtime-config behavior required by this quiz.', `k apply -f configmap.yaml
-k -n kubetasker get deploy kube-tasker-api -o=jsonpath='{.spec.template.spec.containers[0].image}{"\\n"}'
+    ...command('Later: apply config changes to the confirmed app', 'Use rollout restart only after the Deployment is already confirmed and the app consumes runtime configuration.', `k apply -f configmap.yaml
 k -n kubetasker rollout restart deploy/kube-tasker-api
 k -n kubetasker rollout status deploy/kube-tasker-api
 k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/config/status`),
 
-    ...yamlExample('8. Optional command and args override', 'Use this only when the app image supports the startup shape. The manifest is a full Deployment so it remains valid if copied.', 'command-args-deployment.yaml', commandArgsYaml),
-    ...command('Apply the command/args Deployment', 'Replace the Deployment with the supported command/args startup form while keeping the required image for this quiz.', `k apply -f command-args-deployment.yaml
-k -n kubetasker rollout status deploy/kube-tasker-api`),
-    ...command('Verify command/args from the app', 'App proof: the API must still start. If command or args are wrong, /health and /ready will fail and logs will show startup errors.', `k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health
+    ...yamlExample('5. Optional command and args amendment', 'Use this only when the question asks for command/args. Do not replace the Deployment. Add only these fields under the existing api container.', 'command-args-snippet.yaml', commandArgsPatchYaml),
+    ...command('Apply and verify command/args amendment', 'If command or args are wrong, /health and /ready will fail and logs will show startup errors.', `k apply -f deployment.yaml
+k -n kubetasker rollout status deploy/kube-tasker-api
+k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health
 k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/ready
 k -n kubetasker logs deploy/kube-tasker-api`),
 
@@ -413,9 +260,9 @@ k -n kubetasker logs deploy/kube-tasker-api`),
       type: 'comparison',
       title: 'Debugging pattern',
       items: [
-        { label: 'If app verification endpoints are missing', content: 'First confirm the Deployment image matches the image shown in the manifest.' },
-        { label: 'If Kubernetes object is missing', content: 'Use get/describe first, then re-apply the YAML in the correct namespace.' },
-        { label: 'If the object exists but the app shows old values', content: 'Confirm the Deployment image, restart or roll the Deployment, then call /config/status again.' },
+        { label: 'If app verification endpoints are missing', content: 'First confirm the Deployment was amended and rolled out.' },
+        { label: 'If a config object is missing', content: 'Use get/describe first, then re-apply the new YAML in the correct namespace.' },
+        { label: 'If the object exists but the app shows old values', content: 'Restart or roll the Deployment, then call /config/status again.' },
         { label: 'If Secret exists but app says token is missing', content: 'Check secretKeyRef name/key in the Deployment. Do not print the token value.' },
         { label: 'If mountedConfigLoaded is false', content: 'Check the ConfigMap key, volume name, mountPath, and the path KubeTasker reads.' },
         { label: 'If Pod runs but /ready fails', content: 'Use /config/status and logs to find which required runtime configuration is invalid.' }
@@ -424,7 +271,7 @@ k -n kubetasker logs deploy/kube-tasker-api`),
     {
       type: 'section',
       title: 'Final takeaway',
-      content: 'For this quiz style, the YAML carries its own explanation through comments. Apply the config objects, run the Deployment using the image shown in the manifest, then verify from the app. Only use another image for an explicit comparison that does not depend on newly added runtime-configuration features.'
+      content: 'Runtime configuration work should preserve existing manifests. Create only the new config files, amend only the required Deployment fields, then verify from the running app without leaking Secret values.'
     }
   ]
 });
