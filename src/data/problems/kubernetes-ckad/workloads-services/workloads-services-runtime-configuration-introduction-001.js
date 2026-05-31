@@ -147,16 +147,16 @@ const problem = defineLearningProblem({
   rendering: { variant: 'deep-dive', density: 'comfortable', accent: 'green' },
   prompt,
   question: prompt,
-  scenario: 'KubeTasker already has its namespace, Deployment, Service, and client Pod from [kubetasker-yaml-modify-001]. In this lesson, you add runtime configuration and amend only the Deployment fields needed to consume it.',
-  starterThought: 'Do not recreate files that already exist. Create the new runtime-configuration files, then update only the required parts of deployment.yaml.',
+  scenario: 'KubeTasker already has namespace.yaml, deployment.yaml, service.yaml, and client-pod.yaml from [kubetasker-yaml-modify-001]. In this lesson, you create new runtime-configuration files and amend only the required parts of deployment.yaml.',
+  starterThought: 'Do not recreate files that already exist. Reuse the manifests from [kubetasker-yaml-modify-001], apply them if needed, then update only the required parts of deployment.yaml.',
   intuition: 'Runtime configuration changes app behavior without rebuilding the image. Kubernetes stores, injects, or mounts values; KubeTasker proves those values are active through /config/status, /ready, /tasks/stats, root output, and logs.',
   mentalPicture: 'Think of runtime configuration as app settings supplied at Pod startup. ConfigMaps hold non-sensitive values, Secrets hold sensitive values, environment variables inject simple values, and mounted files inject structured config.',
-  patternSignal: 'Use this sequence: create config objects, amend the existing Deployment to consume them, apply the Deployment, then verify from KubeTasker.',
-  invariant: 'Only show or edit YAML that changes in this lesson. For unchanged files such as namespace.yaml, service.yaml, and client-pod.yaml, refer back to [kubetasker-yaml-modify-001].',
+  patternSignal: 'Use this sequence: ensure existing base manifests are applied, create config objects, amend the existing Deployment to consume them, apply the Deployment, then verify from KubeTasker.',
+  invariant: 'Only show YAML that is new or changing in this lesson. For unchanged files, name the manifest, point to [kubetasker-yaml-modify-001], and show only the apply or verify command.',
   commonMistake: 'Replacing the whole Deployment or recreating unchanged manifests instead of updating only the runtime-configuration parts.',
-  explanation: 'This lesson introduces ConfigMaps, Secrets, environment variables, mounted config files, command, and args. It does not repeat the namespace, Service, or client Pod manifests from the earlier KubeTasker YAML lesson.',
+  explanation: 'This lesson introduces ConfigMaps, Secrets, environment variables, mounted config files, command, and args. It does not repeat unchanged namespace, Service, or client Pod YAML from the earlier KubeTasker YAML lesson.',
   stepByStepBreakdown: [
-    'Confirm the files from [kubetasker-yaml-modify-001] exist, especially deployment.yaml, service.yaml, and client-pod.yaml.',
+    'Use namespace.yaml, deployment.yaml, service.yaml, and client-pod.yaml from [kubetasker-yaml-modify-001]. Apply them if they are not already applied.',
     'Create the new runtime-configuration files: configmap.yaml, secret.yaml, and file-config-configmap.yaml.',
     'Amend only the required parts of deployment.yaml so the Pod consumes the ConfigMap, Secret, and mounted file.',
     'Apply the new config objects and the amended Deployment.',
@@ -164,22 +164,24 @@ const problem = defineLearningProblem({
     'Avoid printing Secret values while still proving the app received the Secret.'
   ],
   finalTakeaway: 'A good CKAD runtime configuration answer is not just valid YAML. It preserves existing manifests, changes only the required fields, and proves from the running app that configuration was consumed safely.',
-  visualExplanation: 'The flow is new config objects, targeted Deployment amendment, then app verification through the existing Service and client Pod.',
+  visualExplanation: 'The flow is existing base manifests, new config objects, targeted Deployment amendment, then app verification through the existing Service and client Pod.',
   visualWalkthrough: {
     title: 'Runtime configuration verification loop',
-    summary: 'Create config objects, amend the Deployment, then verify from KubeTasker.',
+    summary: 'Reuse existing manifests, create config objects, amend the Deployment, then verify from KubeTasker.',
     diagram: {
       type: 'graph',
       variant: 'kubernetes-object-relationship',
       title: 'Runtime config to verified app behavior',
       nodes: [
+        { id: 'base', label: 'Existing base manifests\nfrom kubetasker-yaml-modify-001' },
         { id: 'config', label: 'New config objects\nConfigMap Secret file config' },
-        { id: 'deploy', label: 'Amended Deployment\nenv volumeMounts volumes' },
-        { id: 'service', label: 'Existing Service/client\nfrom previous question' },
+        { id: 'deploy', label: 'Amended deployment.yaml\nenv volumeMounts volumes' },
+        { id: 'service', label: 'Existing Service/client\nfrom kubetasker-yaml-modify-001' },
         { id: 'app', label: 'KubeTasker endpoint\napp consumed config' },
         { id: 'logs', label: 'KubeTasker logs\nsafe startup evidence' }
       ],
       edges: [
+        { from: 'base', to: 'deploy', label: 'amend existing Deployment' },
         { from: 'config', to: 'deploy', label: 'referenced by Pod template' },
         { from: 'deploy', to: 'service', label: 'reuses existing access path' },
         { from: 'service', to: 'app', label: 'call app endpoints' },
@@ -204,14 +206,23 @@ const problem = defineLearningProblem({
       type: 'callout',
       tone: 'info',
       title: 'What you will do next',
-      content: 'Create runtime-configuration files, amend the existing KubeTasker Deployment from [kubetasker-yaml-modify-001], then verify the running app consumed the values.'
+      content: 'Reuse the base manifests from [kubetasker-yaml-modify-001], create new runtime-configuration files, amend only deployment.yaml, then verify that KubeTasker consumed the values.'
     },
     {
       type: 'callout',
       tone: 'warning',
-      title: 'Do not recreate unchanged manifests',
-      content: 'Do not display or recreate namespace.yaml, service.yaml, or client-pod.yaml here. Those were introduced in [kubetasker-yaml-modify-001]. If any of them is missing in your workspace, go back to that question and create or apply it first.'
+      title: 'Reuse existing manifests; do not repeat their YAML here',
+      content: 'The base files namespace.yaml, deployment.yaml, service.yaml, and client-pod.yaml were introduced in [kubetasker-yaml-modify-001]. This lesson names them and gives apply commands when needed, but it only shows YAML for new files or changed Deployment snippets.'
     },
+
+    ...command('0. Apply the existing base manifests if needed', 'Use the files from [kubetasker-yaml-modify-001]. Do not recreate or copy their YAML here. Apply them only if your namespace, Deployment, Service, or client Pod is missing.', `k apply -f namespace.yaml
+k apply -f deployment.yaml
+k apply -f service.yaml
+k apply -f client-pod.yaml`),
+    ...command('Confirm the existing base resources', 'This checks the base resources introduced in [kubetasker-yaml-modify-001] before adding runtime configuration.', `k get ns kubetasker
+k -n kubetasker get deploy kube-tasker-api
+k -n kubetasker get svc kube-tasker-api
+k -n kubetasker get pod kube-tasker-client`),
 
     ...yamlExample('1. Create the ConfigMap manifest', 'Create configmap.yaml. This is new content for this lesson because it stores non-sensitive runtime settings that KubeTasker will read through environment variables.', 'configmap.yaml', configMapYaml),
     ...command('Apply the ConfigMap', 'Create or update the non-sensitive runtime settings.', 'k apply -f configmap.yaml'),
@@ -227,12 +238,14 @@ k -n kubetasker describe secret kube-tasker-api-secret`),
     ...command('Verify the file ConfigMap exists', 'Kubernetes proof: confirm the ConfigMap contains app-config.yaml.', 'k -n kubetasker describe configmap kube-tasker-file-config'),
 
     ...yamlExample('4. Amend the existing Deployment manifest', 'Open deployment.yaml from [kubetasker-yaml-modify-001]. Do not replace the whole file. Add only the env, volumeMounts, and volumes blocks shown here in the correct YAML locations.', 'deployment-runtime-config-snippet.yaml', deploymentRuntimeConfigPatchYaml),
-    ...command('Apply the amended Deployment', 'Apply the Deployment after adding only the runtime-configuration fields.', `k apply -f deployment.yaml
+    ...command('Apply the amended Deployment', 'Apply deployment.yaml after adding only the runtime-configuration fields shown above.', `k apply -f deployment.yaml
 k -n kubetasker rollout status deploy/kube-tasker-api`),
     ...command('Verify the Deployment wiring', 'Kubernetes proof: confirm the Deployment has the expected env refs, Secret ref, volume, and mount.', `k -n kubetasker describe deploy kube-tasker-api
 k -n kubetasker get pods -l app=kube-tasker-api -o wide`),
 
-    ...command('Verify the existing Service and client Pod', 'Use the Service and client Pod introduced in [kubetasker-yaml-modify-001]. If either is missing, return to that question and create or apply it before continuing.', `k -n kubetasker get svc kube-tasker-api
+    ...command('Confirm the existing Service and client Pod still work', 'Use service.yaml and client-pod.yaml from [kubetasker-yaml-modify-001]. If either resource is missing, apply the existing file again; do not show or recreate its YAML in this lesson.', `k apply -f service.yaml
+k apply -f client-pod.yaml
+k -n kubetasker get svc kube-tasker-api
 k -n kubetasker get endpoints kube-tasker-api
 k -n kubetasker get pod kube-tasker-client`),
     ...command('Verify KubeTasker from the client Pod', 'App proof: use the existing client Pod to call the KubeTasker Service DNS name and confirm runtime configuration was consumed.', `k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health
