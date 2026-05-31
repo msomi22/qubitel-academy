@@ -69,9 +69,9 @@ npm run preview
 - Problem authoring guide: `docs/problem-authoring.md`
 - GitHub issue authoring guide: `docs/github-issue-authoring-guidelines.md`
 
-## Configure the PayPal support CTA
+## Configure the support CTA
 
-Copy `.env.example` to `.env` and set your real PayPal hosted donation button ID:
+Copy `.env.example` to `.env` and set your support payment links:
 
 ```bash
 cp .env.example .env
@@ -80,10 +80,14 @@ cp .env.example .env
 Then edit:
 
 ```text
+VITE_PAYPAL_SUPPORT_LINK=""
 VITE_PAYPAL_HOSTED_BUTTON_ID="YOUR_REAL_PAYPAL_HOSTED_BUTTON_ID"
+VITE_PAYSTACK_SUPPORT_LINK=""
 ```
 
-The UI component reads this from `src/config/siteConfig.js`, so payment data is not hardcoded inside the button component. The visible CTA copy is owned by the app config and defaults to `🚀 Support from $1`.
+The visible CTA copy is owned by `src/config/siteConfig.js` and defaults to `🚀 Support from $1`. Clicking it opens a frontend-only support options modal. PayPal uses `VITE_PAYPAL_SUPPORT_LINK` when configured, then falls back to the hosted PayPal donation URL. Paystack appears only when `VITE_PAYSTACK_SUPPORT_LINK` is configured.
+
+Do not put private secrets in frontend environment variables or `.env.example`. Hosted payment links are public URLs only.
 
 ## Add real production content
 
