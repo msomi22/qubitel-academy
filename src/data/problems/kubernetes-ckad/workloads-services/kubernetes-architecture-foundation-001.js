@@ -179,7 +179,7 @@ const problem = defineLearningProblem({
     {
       type: 'section',
       title: 'How to read the visual walkthrough diagram',
-      content: 'In the visual walkthrough section below, read the diagram from left to right: learner terminal and kubectl on the left, control plane components in the middle, worker node execution below, and Service/DNS/networking on the right. The API server is the main coordination point. Worker nodes run the Pods. Kubernetes objects describe what should exist.'
+      content: 'In the visual walkthrough section, read the diagram from left to right: learner terminal and kubectl on the left, control plane components in the middle, worker node execution below, and Service/DNS/networking on the right. The API server is the main coordination point. Worker nodes run the Pods. Kubernetes objects describe what should exist.'
     },
     {
       type: 'section',
