@@ -12,8 +12,16 @@ function command(title, explanation, code, language = 'bash') {
 function fileBlock(title, explanation, filename, code) {
   return [
     { type: 'section', title, content: explanation },
-    { type: 'code', title: filename, filename, language: 'yaml', code }
+    { type: 'code', filename, language: 'yaml', code }
   ];
+}
+
+function vimCommand(step, filename, action = 'create or edit') {
+  return command(
+    `${step}. Open ${filename} with vim`,
+    `Run this command to ${action} ${filename} inside the kubetasker-manifests folder. Press i to enter insert mode, paste the YAML shown in the next block, then save using :wq as explained above.`,
+    `vim ${filename}`
+  );
 }
 
 const namespaceYaml = `apiVersion: v1
@@ -238,31 +246,43 @@ const problem = defineLearningProblem({
     },
     ...command('1. Create a manifest folder', 'Create a small folder to keep the files for this lesson together. The files are normal text files that describe Kubernetes desired state.', 'mkdir -p kubetasker-manifests'),
     ...command('2. Enter the manifest folder', 'Move into the folder so each file you create belongs to this lesson.', 'cd kubetasker-manifests'),
-    ...fileBlock('3. Create the namespace manifest', 'This file describes the workspace where the KubeTasker resources will live.', 'namespace.yaml', namespaceYaml),
-    ...fileBlock('4. Create the Deployment manifest', 'This file describes the API workload. It asks Kubernetes to run one KubeTasker API Pod using the course image.', 'deployment.yaml', deploymentYamlV1),
-    ...fileBlock('5. Create the Service manifest', 'This file gives the API a stable internal name. The selector must match the Pod label created by the Deployment template.', 'service.yaml', serviceYaml),
-    ...fileBlock('6. Create the client pod manifest', 'This file creates a temporary BusyBox pod that stays alive so you can test the Service from inside the cluster.', 'client-pod.yaml', clientPodYaml),
-    ...command('7. Apply the namespace file', 'Apply the namespace first because the other files place objects inside that namespace.', 'k apply -f namespace.yaml'),
-    ...command('8. Apply the Deployment file', 'Apply the Deployment so Kubernetes creates the ReplicaSet and API Pod.', 'k apply -f deployment.yaml'),
-    ...command('9. Apply the Service file', 'Apply the Service so the API gets a stable internal name.', 'k apply -f service.yaml'),
-    ...command('10. Apply the client pod file', 'Apply the client pod so you have a small pod available for DNS and HTTP testing.', 'k apply -f client-pod.yaml'),
-    ...command('11. Inspect the namespace', 'This confirms the workspace exists before you inspect namespaced resources.', 'k get namespace kubetasker'),
-    ...command('12. Inspect the Deployment', 'This confirms the workload object exists and shows its rollout status.', 'k -n kubetasker get deploy kube-tasker-api'),
-    ...command('13. Inspect the ReplicaSet', 'This confirms the Deployment created a ReplicaSet to maintain the API Pod count.', 'k -n kubetasker get rs'),
-    ...command('14. Inspect the Pods', 'This confirms the API Pod and client pod exist inside the lesson namespace.', 'k -n kubetasker get pods -o wide'),
-    ...command('15. Inspect the Service', 'This confirms the stable internal Service exists.', 'k -n kubetasker get svc kube-tasker-api'),
-    ...command('16. Inspect the Endpoints', 'This confirms the Service has found matching backend Pod IPs.', 'k -n kubetasker get endpoints kube-tasker-api'),
-    ...fileBlock('17. Modify the Deployment to use two replicas', 'Edit deployment.yaml so replicas changes from one to two. The changed line is marked in the YAML comment.', 'deployment.yaml', deploymentYamlV2),
-    ...command('18. Apply the modified Deployment file', 'Apply the file again. Kubernetes compares the new desired state with the live Deployment and scales the workload.', 'k apply -f deployment.yaml'),
-    ...command('19. Verify two API Pods', 'This confirms the replica change affected the live cluster.', 'k -n kubetasker get pods -l app=kube-tasker-api -o wide'),
-    ...fileBlock('20. Break the Service selector deliberately', 'Edit service.yaml and change the selector to a wrong label. The changed line is marked in the YAML comment so the failure point is obvious.', 'service.yaml', brokenServiceYaml),
-    ...command('21. Apply the broken Service file', 'Apply the broken file so the live Service selector no longer matches the API Pod labels.', 'k apply -f service.yaml'),
-    ...command('22. Inspect Endpoints after the broken selector', 'This should show no useful backend Pod IPs. The Service still exists, but it cannot find matching Pods.', 'k -n kubetasker get endpoints kube-tasker-api'),
-    ...fileBlock('23. Fix the Service selector', 'Restore the correct selector so the Service can find the API Pods again.', 'service.yaml', serviceYaml),
-    ...command('24. Apply the fixed Service file', 'Apply the corrected file so the live Service selector matches the API Pod labels again.', 'k apply -f service.yaml'),
-    ...command('25. Verify Endpoints after the fix', 'This confirms the Service has reconnected to the API Pods.', 'k -n kubetasker get endpoints kube-tasker-api'),
-    ...command('26. Wait for the client pod', 'Wait until the client pod is Ready before running the DNS verification command inside it.', 'k -n kubetasker wait --for=condition=Ready pod/kube-tasker-client --timeout=90s'),
-    ...command('27. Verify Service DNS from the client pod', 'This proves the client pod can reach the API through the Service name inside the namespace.', 'k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health'),
+    {
+      type: 'section',
+      title: 'How to create and save YAML files in this lesson',
+      content: 'For each YAML file, run the vim command shown, press i to enter insert mode, copy the YAML content from the next block, paste it into the file, press Esc, type :wq, and press Enter to save and close the file. You only need to learn this save pattern once; the later steps reuse it.'
+    },
+    ...vimCommand('3', 'namespace.yaml', 'create'),
+    ...fileBlock('4. Paste the namespace manifest', 'Paste this content into namespace.yaml. This file describes the workspace where the KubeTasker resources will live.', 'namespace.yaml', namespaceYaml),
+    ...vimCommand('5', 'deployment.yaml', 'create'),
+    ...fileBlock('6. Paste the Deployment manifest', 'Paste this content into deployment.yaml. This file describes the API workload and asks Kubernetes to run one KubeTasker API Pod using the course image.', 'deployment.yaml', deploymentYamlV1),
+    ...vimCommand('7', 'service.yaml', 'create'),
+    ...fileBlock('8. Paste the Service manifest', 'Paste this content into service.yaml. This file gives the API a stable internal name. The selector must match the Pod label created by the Deployment template.', 'service.yaml', serviceYaml),
+    ...vimCommand('9', 'client-pod.yaml', 'create'),
+    ...fileBlock('10. Paste the client pod manifest', 'Paste this content into client-pod.yaml. This file creates a temporary BusyBox pod that stays alive so you can test the Service from inside the cluster.', 'client-pod.yaml', clientPodYaml),
+    ...command('11. Apply the namespace file', 'Apply the namespace first because the other files place objects inside that namespace.', 'k apply -f namespace.yaml'),
+    ...command('12. Apply the Deployment file', 'Apply the Deployment so Kubernetes creates the ReplicaSet and API Pod.', 'k apply -f deployment.yaml'),
+    ...command('13. Apply the Service file', 'Apply the Service so the API gets a stable internal name.', 'k apply -f service.yaml'),
+    ...command('14. Apply the client pod file', 'Apply the client pod so you have a small pod available for DNS and HTTP testing.', 'k apply -f client-pod.yaml'),
+    ...command('15. Inspect the namespace', 'This confirms the workspace exists before you inspect namespaced resources.', 'k get namespace kubetasker'),
+    ...command('16. Inspect the Deployment', 'This confirms the workload object exists and shows its rollout status.', 'k -n kubetasker get deploy kube-tasker-api'),
+    ...command('17. Inspect the ReplicaSet', 'This confirms the Deployment created a ReplicaSet to maintain the API Pod count.', 'k -n kubetasker get rs'),
+    ...command('18. Inspect the Pods', 'This confirms the API Pod and client pod exist inside the lesson namespace.', 'k -n kubetasker get pods -o wide'),
+    ...command('19. Inspect the Service', 'This confirms the stable internal Service exists.', 'k -n kubetasker get svc kube-tasker-api'),
+    ...command('20. Inspect the Endpoints', 'This confirms the Service has found matching backend Pod IPs.', 'k -n kubetasker get endpoints kube-tasker-api'),
+    ...vimCommand('21', 'deployment.yaml', 'edit'),
+    ...fileBlock('22. Modify the Deployment to use two replicas', 'Replace the existing deployment.yaml content with this version so replicas changes from one to two. The changed line is marked in the YAML comment.', 'deployment.yaml', deploymentYamlV2),
+    ...command('23. Apply the modified Deployment file', 'Apply the file again. Kubernetes compares the new desired state with the live Deployment and scales the workload.', 'k apply -f deployment.yaml'),
+    ...command('24. Verify two API Pods', 'This confirms the replica change affected the live cluster.', 'k -n kubetasker get pods -l app=kube-tasker-api -o wide'),
+    ...vimCommand('25', 'service.yaml', 'edit'),
+    ...fileBlock('26. Break the Service selector deliberately', 'Replace the existing service.yaml content with this version so the selector intentionally uses a wrong label. The changed line is marked in the YAML comment so the failure point is obvious.', 'service.yaml', brokenServiceYaml),
+    ...command('27. Apply the broken Service file', 'Apply the broken file so the live Service selector no longer matches the API Pod labels.', 'k apply -f service.yaml'),
+    ...command('28. Inspect Endpoints after the broken selector', 'This should show no useful backend Pod IPs. The Service still exists, but it cannot find matching Pods.', 'k -n kubetasker get endpoints kube-tasker-api'),
+    ...vimCommand('29', 'service.yaml', 'edit'),
+    ...fileBlock('30. Fix the Service selector', 'Replace the existing service.yaml content with this corrected version so the Service can find the API Pods again.', 'service.yaml', serviceYaml),
+    ...command('31. Apply the fixed Service file', 'Apply the corrected file so the live Service selector matches the API Pod labels again.', 'k apply -f service.yaml'),
+    ...command('32. Verify Endpoints after the fix', 'This confirms the Service has reconnected to the API Pods.', 'k -n kubetasker get endpoints kube-tasker-api'),
+    ...command('33. Wait for the client pod', 'Wait until the client pod is Ready before running the DNS verification command inside it.', 'k -n kubetasker wait --for=condition=Ready pod/kube-tasker-client --timeout=90s'),
+    ...command('34. Verify Service DNS from the client pod', 'This proves the client pod can reach the API through the Service name inside the namespace.', 'k -n kubetasker exec kube-tasker-client -- wget -qO- http://kube-tasker-api/health'),
     {
       type: 'comparison',
       title: 'File changes and what they affect',
