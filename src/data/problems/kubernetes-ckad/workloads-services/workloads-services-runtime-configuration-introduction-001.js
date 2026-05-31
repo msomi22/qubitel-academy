@@ -98,16 +98,28 @@ type: Opaque
 stringData:
   api-token.txt: mounted-secret-token-for-lab`;
 
-const imageUpdateSnippet = `# Find the existing api container in deployment.yaml.
-# It already has an image line similar to this:
-containers:
-  - name: api
-    image: msomi22/kubetasker-api:0.1.1
-
-# Change only the image value to the v0.2.0 image:
-containers:
-  - name: api
-    image: msomi22/kubetasker-api:0.2.0`;
+const imageUpdateSnippet = `# This is the deployment.yaml file from the previous question.
+# Change only the image line marked below.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-tasker-api
+  namespace: kubetasker
+spec:
+  replicas: 2 # changed here
+  selector:
+    matchLabels:
+      app: kube-tasker-api
+  template:
+    metadata:
+      labels:
+        app: kube-tasker-api
+    spec:
+      containers:
+        - name: api
+          image: msomi22/kubetasker-api:0.2.0 # changed here: v0.2.0 runtime-config app
+          ports:
+            - containerPort: 8080`;
 
 const directEnvSnippet = `# Find the existing api container in deployment.yaml.
 # Add env under the same container, aligned with image and ports.
@@ -450,7 +462,7 @@ const problem = defineLearningProblem({
     ...command('0. Ensure the namespace exists', 'Start with namespace.yaml only. If you do not have this file yet, open the previous question from the link above and create it there first.', `k apply -f namespace.yaml
 k get ns kubetasker`),
 
-    ...editFileWithVim('1. Update the app image for runtime configuration', 'Open deployment.yaml. Find the existing api container and change only the image value to v0.2.0. This prepares the app for all verification steps in this lesson.', 'deployment.yaml', imageUpdateSnippet, 'image change in deployment.yaml'),
+    ...editFileWithVim('1. Update the app image for runtime configuration', 'Open deployment.yaml. Replace the existing file with the same content, but change only the image line marked with changed here to use v0.2.0. This prepares the app for all verification steps in this lesson.', 'deployment.yaml', imageUpdateSnippet, 'deployment.yaml with image update'),
     ...command('Apply the image update', 'Apply deployment.yaml after changing only the image line.', `k apply -f deployment.yaml
 k -n kubetasker rollout status deploy/kube-tasker-api`),
 
