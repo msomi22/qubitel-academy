@@ -152,7 +152,6 @@ const problem = defineLearningProblem({
   rendering: { variant: 'deep-dive', density: 'comfortable', accent: 'green' },
   prompt,
   question: prompt,
-  scenario: 'In this lesson, you learn how to configure a running Kubernetes application without rebuilding its container image.',
   starterThought: 'Runtime configuration is a controlled change to how the app starts and behaves. Update only the fields that change, then verify the app from inside the cluster.',
   intuition: 'Runtime configuration changes app behavior without rebuilding the image. Kubernetes stores, injects, or mounts values; KubeTasker proves those values are active through /config/status, /ready, /tasks/stats, root output, and logs.',
   mentalPicture: 'Think of runtime configuration as app settings supplied at Pod startup. ConfigMaps hold non-sensitive values, Secrets hold sensitive values, environment variables inject simple values, and mounted files inject structured config.',
