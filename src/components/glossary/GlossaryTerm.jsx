@@ -9,8 +9,8 @@ export default function GlossaryTerm({ children, term }) {
 
   if (!term) return <>{children}</>;
 
-  function toggleOpen() {
-    setOpen((current) => !current);
+  function openPopover() {
+    setOpen(true);
   }
 
   function close() {
@@ -25,7 +25,7 @@ export default function GlossaryTerm({ children, term }) {
 
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
-      toggleOpen();
+      openPopover();
     }
   }
 
@@ -36,10 +36,10 @@ export default function GlossaryTerm({ children, term }) {
         aria-describedby={open ? popoverId : undefined}
         className="glossary-term-button"
         onBlur={close}
-        onClick={toggleOpen}
-        onFocus={() => setOpen(true)}
+        onClick={openPopover}
+        onFocus={openPopover}
         onKeyDown={handleKeyDown}
-        onMouseEnter={() => setOpen(true)}
+        onMouseEnter={openPopover}
         type="button"
       >
         {children}
