@@ -17,7 +17,6 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0.82;
-  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
 .app-sidebar .nav-text {
@@ -27,16 +26,7 @@
   white-space: nowrap;
 }
 
-.app-sidebar .nav-section .nav-item:hover .nav-icon,
-.app-sidebar .nav-section .nav-item.active .nav-icon {
-  opacity: 1;
-}
-
-.app-sidebar .nav-section .nav-item.active .nav-icon {
-  transform: translateX(1px);
-}
-
-.app-sidebar .coffee-link {
+.app-sidebar .support-link {
   display: flex !important;
   align-items: center;
   justify-content: center;

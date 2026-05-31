@@ -10,7 +10,7 @@ A fast, multi-page learning platform for DSA and System Design mastery.
 - DSA and System Design pages load only the selected topic bank.
 - Random question page loads only the selected/random topic bank.
 - Changeable values such as PayPal configuration and storage keys live in `src/config/siteConfig.js`.
-- The PayPal coffee button is a reusable component: `src/components/BuyCoffeeButton.jsx`.
+- The learner support CTA is a reusable component: `src/components/SupportButton.jsx`.
 
 ## Topic coverage
 
@@ -69,7 +69,7 @@ npm run preview
 - Problem authoring guide: `docs/problem-authoring.md`
 - GitHub issue authoring guide: `docs/github-issue-authoring-guidelines.md`
 
-## Configure the PayPal coffee button
+## Configure the PayPal support CTA
 
 Copy `.env.example` to `.env` and set your real PayPal hosted donation button ID:
 
@@ -83,7 +83,7 @@ Then edit:
 VITE_PAYPAL_HOSTED_BUTTON_ID="YOUR_REAL_PAYPAL_HOSTED_BUTTON_ID"
 ```
 
-The UI component reads this from `src/config/siteConfig.js`, so payment data is not hardcoded inside the button component.
+The UI component reads this from `src/config/siteConfig.js`, so payment data is not hardcoded inside the button component. The visible CTA copy is owned by the app config and defaults to `🚀 Support from $1`.
 
 ## Add real production content
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import GlobalSearch from './GlobalSearch.jsx';
+import SupportButton from './SupportButton.jsx';
 import { usePreferences } from '../hooks/usePreferences.js';
 import { categories } from '../services/questionBankService.js';
 
@@ -22,9 +23,9 @@ function pageTitle(pathname) {
   if (pathname === '/settings') return 'Settings';
   if (pathname.startsWith('/problem/')) return 'Focused Problem';
 
-  const categoryMatch = pathname.match(/^\/category\/([^/]+)/);
-  if (categoryMatch) {
-    const category = categories.find((item) => item.id === categoryMatch[1]);
+  if (pathname.startsWith('/category/')) {
+    const categoryId = pathname.split('/')[2];
+    const category = categories.find((item) => item.id === categoryId);
     return category?.name || 'Category Practice';
   }
 
@@ -92,6 +93,7 @@ export default function Navbar() {
             {item.label}
           </NavLink>
         ))}
+        <SupportButton className="mobile-support-link" />
       </nav>
     </>
   );

@@ -16,7 +16,7 @@ import {
 } from '../services/dashboardLearningPathService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import ProgressChart from '../components/ProgressChart.jsx';
-import BuyCoffeeButton from '../components/BuyCoffeeButton.jsx';
+import SupportButton from '../components/SupportButton.jsx';
 
 const emptySummary = { total: 0, done: 0, percent: 0 };
 
@@ -197,7 +197,7 @@ export default function Home() {
               {isNewUser ? 'Start learning' : 'Continue recommended path'}
             </Link>
             <Link className="btn ghost" to="/random">Random practice</Link>
-            <BuyCoffeeButton className="btn coffee-btn" />
+            <SupportButton className="btn support-cta" />
           </div>
 
           {/* Start Here track — shown to new users or those with low progress */}

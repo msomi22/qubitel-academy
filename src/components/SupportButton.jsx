@@ -8,11 +8,21 @@ function paypalUrl() {
   return url.toString();
 }
 
-export default function BuyCoffeeButton({ className = 'coffee' }) {
+export default function SupportButton({ className = 'support-link' }) {
   if (!siteConfig.paypal.enabled) return null;
+
+  const { label, title, tooltip } = siteConfig.support;
+
   return (
-    <a href={paypalUrl()} target="_blank" rel="noreferrer" className={className}>
-      {siteConfig.paypal.label}
+    <a
+      href={paypalUrl()}
+      target="_blank"
+      rel="noreferrer"
+      className={className}
+      aria-label={title}
+      title={tooltip}
+    >
+      {label}
     </a>
   );
 }
