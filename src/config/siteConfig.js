@@ -1,3 +1,4 @@
+const defaultPaypalSupportLink = 'https://www.paypal.com/ncp/payment/X9PVPTEPKSGS8';
 const defaultPaystackSupportLink = 'https://paystack.shop/pay/1lrvz0bahb';
 
 export const siteConfig = {
@@ -30,7 +31,7 @@ export const siteConfig = {
   },
   paypal: {
     enabled: import.meta.env.VITE_PAYPAL_ENABLED !== 'false',
-    supportLink: import.meta.env.VITE_PAYPAL_SUPPORT_LINK || '',
+    supportLink: import.meta.env.VITE_PAYPAL_SUPPORT_LINK || defaultPaypalSupportLink,
     hostedButtonId: import.meta.env.VITE_PAYPAL_HOSTED_BUTTON_ID || 'GFP9HAYP9P5NY',
     currencyCode: import.meta.env.VITE_PAYPAL_CURRENCY || 'USD'
   }
