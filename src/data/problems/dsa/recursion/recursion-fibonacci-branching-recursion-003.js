@@ -1,7 +1,5 @@
 import { defineLearningProblem } from '../../../../problems/problemAuthoring.js';
 
-const stack = (...frames) => frames.map((frame) => (typeof frame === 'string' ? { call: frame } : frame));
-
 const problem = defineLearningProblem({
   id: 'recursion-fibonacci-branching-recursion-003',
   category: 'dsa',
@@ -76,146 +74,16 @@ const problem = defineLearningProblem({
 }`,
   finalTakeaway: 'Fibonacci is the learner\'s first branching-recursion exercise: one parent call creates two child calls, waits, receives values, adds them, and returns upward.',
   selfExplanationPrompt: 'Before moving on, trace fib(4) on paper. Write the active stack, mark which parent is waiting, and circle each repeated call.',
-  visualExplanation: 'Trace fib(5). Watch calls get pushed, parents pause, base cases return, frames pop, values add during unwinding, and repeated work appear.',
+  visualExplanation: 'Trace fib(4). Watch parent calls go to sleep, child calls return, and answers get substituted into the parent equations.',
   visualWalkthrough: {
-    title: 'Fibonacci branching recursion walkthrough - fib(5)',
-    summary: 'The visual shows active memory, waiting parent calls, returned values, value addition, and repeated work while tracing fib(5).',
+    title: 'Fibonacci(4) - The Math Substitution Visualizer',
+    summary: 'Watch how parent functions go to sleep, wait for their children, and substitute the answers into their equations.',
     diagram: {
       id: 'recursion-fibonacci-branching-recursion-003-walkthrough',
       type: 'recursion-branching',
-      title: 'Fibonacci branching recursion walkthrough - fib(5)',
-      summary: 'fib(5) branches into fib(4) and fib(3). Each non-base call waits for two child answers.',
-      stackTitle: 'Active call stack',
-      treeTitle: 'Call checkpoints',
-      frames: [
-        {
-          title: 'Ready to trace fib(5)',
-          action: 'Ready',
-          kind: 'neutral',
-          description: 'We will trace fib(5). The final answer should be 5, but first we need to see how memory behaves.',
-          stack: [],
-          tree: [{ label: 'fib(5)', kind: 'waiting' }]
-        },
-        {
-          title: 'Push fib(5)',
-          action: 'Push',
-          kind: 'push',
-          description: 'fib(5) enters memory. It is not a base case, so it needs fib(4) and fib(3).',
-          stack: stack({ call: 'fib(5)', detail: 'waiting for fib(4) + fib(3)', kind: 'waiting' }),
-          waiting: [{ label: 'fib(5)', detail: 'waits for fib(4) and fib(3)' }],
-          tree: [{ label: 'fib(5)', kind: 'push' }, { label: 'fib(4)', kind: 'waiting' }, { label: 'fib(3)', kind: 'waiting' }]
-        },
-        {
-          title: 'Push fib(4)',
-          action: 'Push',
-          kind: 'push',
-          description: 'Java evaluates the left side first, so fib(4) starts while fib(5) pauses.',
-          stack: stack({ call: 'fib(4)', detail: 'waiting for fib(3) + fib(2)', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          waiting: [{ label: 'fib(5)', detail: 'waits for fib(4) and fib(3)' }, { label: 'fib(4)', detail: 'waits for fib(3) and fib(2)' }],
-          tree: [{ label: 'fib(5)', kind: 'waiting' }, { label: 'fib(4)', kind: 'push' }, { label: 'fib(3)', kind: 'waiting' }, { label: 'fib(2)', kind: 'waiting' }]
-        },
-        {
-          title: 'Push fib(3)',
-          action: 'Push',
-          kind: 'push',
-          description: 'fib(4) also evaluates its left child first, so fib(3) starts and fib(4) waits.',
-          stack: stack({ call: 'fib(3)', detail: 'waiting for fib(2) + fib(1)', kind: 'waiting' }, { call: 'fib(4)', detail: 'paused', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          waiting: [{ label: 'fib(5)', detail: 'waits for fib(4) and fib(3)' }, { label: 'fib(4)', detail: 'waits for fib(3) and fib(2)' }, { label: 'fib(3)', detail: 'waits for fib(2) and fib(1)' }],
-          tree: [{ label: 'fib(5)', kind: 'waiting' }, { label: 'fib(4)', kind: 'waiting' }, { label: 'fib(3)', kind: 'push' }, { label: 'fib(2)', kind: 'waiting' }, { label: 'fib(1)', kind: 'base' }]
-        },
-        {
-          title: 'Push fib(2)',
-          action: 'Push',
-          kind: 'push',
-          description: 'fib(2) is still not a base case. It needs fib(1) and fib(0).',
-          stack: stack({ call: 'fib(2)', detail: 'waiting for fib(1) + fib(0)', kind: 'waiting' }, { call: 'fib(3)', detail: 'paused', kind: 'waiting' }, { call: 'fib(4)', detail: 'paused', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          waiting: [{ label: 'fib(2)', detail: 'waits for fib(1) and fib(0)' }, { label: 'fib(3)', detail: 'waits for fib(2) and fib(1)' }],
-          tree: [{ label: 'fib(2)', kind: 'push' }, { label: 'fib(1)', kind: 'base' }, { label: 'fib(0)', kind: 'base' }]
-        },
-        {
-          title: 'Push fib(1)',
-          action: 'Base case',
-          kind: 'base',
-          description: 'fib(1) is a direct answer. No more recursive calls are needed from this frame.',
-          stack: stack({ call: 'fib(1)', detail: 'base case returns 1', kind: 'base' }, { call: 'fib(2)', detail: 'paused', kind: 'waiting' }, { call: 'fib(3)', detail: 'paused', kind: 'waiting' }, { call: 'fib(4)', detail: 'paused', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          waiting: [{ label: 'fib(2)', detail: 'waiting for fib(1) result first' }],
-          tree: [{ label: 'fib(1)', kind: 'base' }]
-        },
-        {
-          title: 'Pop fib(1)',
-          action: 'Pop',
-          kind: 'pop',
-          description: 'fib(1) returns 1 and its stack frame is removed. Control goes back to fib(2).',
-          stack: stack({ call: 'fib(2)', detail: 'has left value 1, needs fib(0)', kind: 'waiting' }, { call: 'fib(3)', detail: 'paused', kind: 'waiting' }, { call: 'fib(4)', detail: 'paused', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          returned: [{ label: 'fib(1) -> 1', detail: 'left child of fib(2)' }]
-        },
-        {
-          title: 'Push fib(0)',
-          action: 'Base case',
-          kind: 'base',
-          description: 'Now fib(2) evaluates its right child. fib(0) is also a direct answer.',
-          stack: stack({ call: 'fib(0)', detail: 'base case returns 0', kind: 'base' }, { call: 'fib(2)', detail: 'waiting to add 1 + 0', kind: 'waiting' }, { call: 'fib(3)', detail: 'paused', kind: 'waiting' }, { call: 'fib(4)', detail: 'paused', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          returned: [{ label: 'fib(1) -> 1', detail: 'already returned' }],
-          tree: [{ label: 'fib(2)', kind: 'waiting' }, { label: 'fib(1)', kind: 'return' }, { label: 'fib(0)', kind: 'base' }]
-        },
-        {
-          title: 'Pop fib(0)',
-          action: 'Pop',
-          kind: 'pop',
-          description: 'fib(0) returns 0 and is removed from the stack.',
-          stack: stack({ call: 'fib(2)', detail: 'ready to add 1 + 0', kind: 'return' }, { call: 'fib(3)', detail: 'paused', kind: 'waiting' }, { call: 'fib(4)', detail: 'paused', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          returned: [{ label: 'fib(1) -> 1' }, { label: 'fib(0) -> 0' }]
-        },
-        {
-          title: 'Pop fib(2)',
-          action: 'Unwind',
-          kind: 'pop',
-          description: 'fib(2) now has both child answers, so it adds them and returns 1.',
-          stack: stack({ call: 'fib(3)', detail: 'has left value fib(2) = 1', kind: 'waiting' }, { call: 'fib(4)', detail: 'paused', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          returned: [{ label: 'fib(2) -> 1', detail: 'computed from 1 + 0' }],
-          addition: { title: 'Return addition', body: 'fib(2) = fib(1) + fib(0) = 1 + 0 = 1' }
-        },
-        {
-          title: 'Complete fib(3)',
-          action: 'Unwind',
-          kind: 'pop',
-          description: 'fib(3) still needs its right child fib(1). That base case returns 1, so fib(3) can return 2.',
-          stack: stack({ call: 'fib(4)', detail: 'has left value fib(3) = 2', kind: 'waiting' }, { call: 'fib(5)', detail: 'paused', kind: 'waiting' }),
-          returned: [{ label: 'fib(2) -> 1' }, { label: 'fib(1) -> 1' }, { label: 'fib(3) -> 2' }],
-          repeated: [{ label: 'fib(1)', detail: 'this base case is reached again' }],
-          addition: { title: 'Return addition', body: 'fib(3) = fib(2) + fib(1) = 1 + 1 = 2' }
-        },
-        {
-          title: 'Complete fib(4)',
-          action: 'Unwind',
-          kind: 'pop',
-          description: 'fib(4) now computes its right child fib(2). That repeats work already done inside fib(3).',
-          stack: stack({ call: 'fib(5)', detail: 'has left value fib(4) = 3, needs right fib(3)', kind: 'waiting' }),
-          returned: [{ label: 'fib(3) -> 2' }, { label: 'fib(2) -> 1' }, { label: 'fib(4) -> 3' }],
-          repeated: [{ label: 'fib(2)', detail: 'computed again for fib(4)' }, { label: 'fib(1)', detail: 'reached many times' }],
-          addition: { title: 'Return addition', body: 'fib(4) = fib(3) + fib(2) = 2 + 1 = 3' }
-        },
-        {
-          title: 'Compute right fib(3)',
-          action: 'Repeat work',
-          kind: 'repeat',
-          description: 'fib(5) now starts its right child fib(3). This is repeated work because fib(3) was already computed while solving fib(4).',
-          stack: stack({ call: 'fib(3)', detail: 'recomputed as right child of fib(5)', kind: 'repeat' }, { call: 'fib(5)', detail: 'waiting to add 3 + fib(3)', kind: 'waiting' }),
-          waiting: [{ label: 'fib(5)', detail: 'waits for the second child fib(3)' }],
-          repeated: [{ label: 'fib(3)', detail: 'computed again' }, { label: 'fib(2)', detail: 'will be computed again inside fib(3)' }, { label: 'fib(1)', detail: 'will be reached again' }],
-          tree: [{ label: 'fib(5)', kind: 'waiting' }, { label: 'fib(4) = 3', kind: 'return' }, { label: 'fib(3)', kind: 'repeat' }]
-        },
-        {
-          title: 'Pop fib(5)',
-          action: 'Final',
-          kind: 'final',
-          description: 'The right fib(3) returns 2. fib(5) adds the left value 3 and right value 2, then returns 5.',
-          stack: [],
-          returned: [{ label: 'fib(4) -> 3' }, { label: 'fib(3) -> 2' }, { label: 'fib(5) -> 5' }],
-          repeated: [{ label: 'Naive recursion repeats calls', detail: 'memoization will fix this later in dynamic programming' }],
-          addition: { title: 'Final addition', body: 'fib(5) = fib(4) + fib(3) = 3 + 2 = 5' }
-        }
-      ]
+      input: 4,
+      title: 'Fibonacci(4) - The Math Substitution Visualizer',
+      summary: 'Watch how parent functions go to sleep, wait for their children, and substitute the answers into their equations.'
     }
   },
   body: [
