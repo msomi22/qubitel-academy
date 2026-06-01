@@ -171,6 +171,58 @@ body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-r
     inset 0 -4px 0 rgba(52, 211, 153, 0.2) !important;
 }
 
+/* Keep the sliding-window state panel focused on the current mental state. */
+.config-visual-sliding-window .config-visual-state-row:not(.active) {
+  display: none !important;
+}
+
+.config-visual-sliding-window .config-visual-state-row.active {
+  background: rgba(255, 252, 244, 0.96) !important;
+  isolation: isolate;
+}
+
+.config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+.config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success {
+  background: linear-gradient(180deg, rgba(220, 252, 231, 0.98), rgba(187, 247, 208, 0.94)) !important;
+}
+
+.config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window {
+  background: linear-gradient(180deg, rgba(219, 234, 254, 0.98), rgba(191, 219, 254, 0.92)) !important;
+}
+
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+.dark .config-visual-sliding-window .config-visual-state-row.active,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active {
+  background: rgba(15, 23, 42, 0.98) !important;
+}
+
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+.dark .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+.dark .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success {
+  background: linear-gradient(180deg, rgba(6, 78, 59, 0.98), rgba(6, 95, 70, 0.94)) !important;
+}
+
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+.dark .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window {
+  background: linear-gradient(180deg, rgba(30, 64, 175, 0.98), rgba(15, 23, 42, 0.96)) !important;
+}
+
 /*
   Standardize the Container With Most Water visual so it feels like the other
   config-driven walkthroughs instead of a separate hardcoded dark infographic.
@@ -207,7 +259,7 @@ body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-r
   border-bottom-color: rgba(86, 67, 42, 0.26) !important;
 }
 
-.config-visual-container-water .container-water-bar {
+.config-visual-container-water .container-water-bar:not(.left):not(.right):not(.best) {
   border-color: rgba(86, 67, 42, 0.26) !important;
   background: linear-gradient(180deg, rgba(86, 67, 42, 0.14), rgba(86, 67, 42, 0.06)) !important;
 }
