@@ -2,10 +2,10 @@
   max-width: 980px;
   margin: 0 auto;
   border-radius: 18px;
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(17, 24, 39, 0.92));
-  color: var(--text-strong, #e5e7eb);
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+  background: #ffffff;
+  color: #333333;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
   padding: 1.25rem;
 }
 
@@ -44,17 +44,17 @@
 
 .recursion-factorial-header p {
   margin: 0;
-  color: var(--text-muted, #aab4c5);
+  color: #666666;
   font-size: 0.95rem;
   line-height: 1.35;
 }
 
 .recursion-factorial-header.is-descent h3 {
-  color: #7aa2ff;
+  color: #4263eb;
 }
 
 .recursion-factorial-header.is-return h3 {
-  color: #45f0cf;
+  color: #0ca678;
 }
 
 .recursion-factorial-box {
@@ -76,29 +76,29 @@
 .recursion-factorial-box.is-visible {
   opacity: 1;
   transform: translateY(0);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
 }
 
 .recursion-factorial-box.is-active {
-  box-shadow: 0 0 0 4px rgba(122, 162, 255, 0.18), 0 16px 30px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 0 0 4px rgba(66, 99, 235, 0.14), 0 14px 24px rgba(15, 23, 42, 0.08);
 }
 
 .recursion-factorial-box.is-descent {
-  background: rgba(37, 99, 235, 0.16);
-  border-color: rgba(122, 162, 255, 0.44);
-  color: #bcd0ff;
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #4263eb;
 }
 
 .recursion-factorial-box.is-base {
-  background: rgba(34, 197, 94, 0.14);
-  border-color: rgba(134, 239, 172, 0.48);
-  color: #bbf7d0;
+  background: #ebfbee;
+  border-color: #8ce99a;
+  color: #2b8a3e;
 }
 
 .recursion-factorial-box.is-return {
-  background: rgba(20, 184, 166, 0.14);
-  border-color: rgba(94, 234, 212, 0.48);
-  color: #99f6e4;
+  background: #e6fcf5;
+  border-color: #96f2d7;
+  color: #0ca678;
 }
 
 .recursion-factorial-box span:last-child {
@@ -114,11 +114,11 @@
   gap: 0.75rem;
   margin-top: 1.25rem;
   padding-top: 1.2rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.18);
+  border-top: 1px solid #eeeeee;
 }
 
 .recursion-factorial-controls button {
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  border: 0;
   border-radius: 10px;
   padding: 0.7rem 1.2rem;
   font: inherit;
@@ -133,16 +133,16 @@
 }
 
 .recursion-factorial-controls button:disabled {
-  background: rgba(31, 41, 55, 0.72);
-  color: rgba(148, 163, 184, 0.64);
+  background: #e9ecef;
+  color: #adb5bd;
   cursor: not-allowed;
   opacity: 1;
 }
 
 .recursion-factorial-back,
 .recursion-factorial-restart {
-  background: rgba(30, 41, 59, 0.86);
-  color: #cbd5e1;
+  background: #f1f3f5;
+  color: #495057;
 }
 
 .recursion-factorial-next {
@@ -154,93 +154,123 @@
 .recursion-factorial-status {
   margin: 0;
   text-align: center;
-  color: var(--text-muted, #aab4c5);
+  color: #495057;
   font-size: 1.02rem;
   font-weight: 650;
   line-height: 1.35;
 }
 
-:root[data-theme="light"] .recursion-factorial-shell,
-.app-shell.light .recursion-factorial-shell {
-  background: #ffffff;
-  color: #333333;
-  border-color: rgba(15, 23, 42, 0.08);
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+:root[data-theme="dark"] .recursion-factorial-shell,
+.app-shell.dark .recursion-factorial-shell,
+.app-shell.theme-dark .recursion-factorial-shell,
+[data-theme="dark"] .recursion-factorial-shell {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(17, 24, 39, 0.92));
+  color: var(--text-strong, #e5e7eb);
+  border-color: rgba(148, 163, 184, 0.22);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
 }
 
-:root[data-theme="light"] .recursion-factorial-header p,
-.app-shell.light .recursion-factorial-header p {
-  color: #666666;
+:root[data-theme="dark"] .recursion-factorial-header p,
+.app-shell.dark .recursion-factorial-header p,
+.app-shell.theme-dark .recursion-factorial-header p,
+[data-theme="dark"] .recursion-factorial-header p {
+  color: var(--text-muted, #aab4c5);
 }
 
-:root[data-theme="light"] .recursion-factorial-header.is-descent h3,
-.app-shell.light .recursion-factorial-header.is-descent h3 {
-  color: #4263eb;
+:root[data-theme="dark"] .recursion-factorial-header.is-descent h3,
+.app-shell.dark .recursion-factorial-header.is-descent h3,
+.app-shell.theme-dark .recursion-factorial-header.is-descent h3,
+[data-theme="dark"] .recursion-factorial-header.is-descent h3 {
+  color: #7aa2ff;
 }
 
-:root[data-theme="light"] .recursion-factorial-header.is-return h3,
-.app-shell.light .recursion-factorial-header.is-return h3 {
-  color: #0ca678;
+:root[data-theme="dark"] .recursion-factorial-header.is-return h3,
+.app-shell.dark .recursion-factorial-header.is-return h3,
+.app-shell.theme-dark .recursion-factorial-header.is-return h3,
+[data-theme="dark"] .recursion-factorial-header.is-return h3 {
+  color: #45f0cf;
 }
 
-:root[data-theme="light"] .recursion-factorial-box.is-visible,
-.app-shell.light .recursion-factorial-box.is-visible {
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+:root[data-theme="dark"] .recursion-factorial-box.is-visible,
+.app-shell.dark .recursion-factorial-box.is-visible,
+.app-shell.theme-dark .recursion-factorial-box.is-visible,
+[data-theme="dark"] .recursion-factorial-box.is-visible {
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
 }
 
-:root[data-theme="light"] .recursion-factorial-box.is-active,
-.app-shell.light .recursion-factorial-box.is-active {
-  box-shadow: 0 0 0 4px rgba(66, 99, 235, 0.14), 0 14px 24px rgba(15, 23, 42, 0.08);
+:root[data-theme="dark"] .recursion-factorial-box.is-active,
+.app-shell.dark .recursion-factorial-box.is-active,
+.app-shell.theme-dark .recursion-factorial-box.is-active,
+[data-theme="dark"] .recursion-factorial-box.is-active {
+  box-shadow: 0 0 0 4px rgba(122, 162, 255, 0.18), 0 16px 30px rgba(0, 0, 0, 0.24);
 }
 
-:root[data-theme="light"] .recursion-factorial-box.is-descent,
-.app-shell.light .recursion-factorial-box.is-descent {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #4263eb;
+:root[data-theme="dark"] .recursion-factorial-box.is-descent,
+.app-shell.dark .recursion-factorial-box.is-descent,
+.app-shell.theme-dark .recursion-factorial-box.is-descent,
+[data-theme="dark"] .recursion-factorial-box.is-descent {
+  background: rgba(37, 99, 235, 0.16);
+  border-color: rgba(122, 162, 255, 0.44);
+  color: #bcd0ff;
 }
 
-:root[data-theme="light"] .recursion-factorial-box.is-base,
-.app-shell.light .recursion-factorial-box.is-base {
-  background: #ebfbee;
-  border-color: #8ce99a;
-  color: #2b8a3e;
+:root[data-theme="dark"] .recursion-factorial-box.is-base,
+.app-shell.dark .recursion-factorial-box.is-base,
+.app-shell.theme-dark .recursion-factorial-box.is-base,
+[data-theme="dark"] .recursion-factorial-box.is-base {
+  background: rgba(34, 197, 94, 0.14);
+  border-color: rgba(134, 239, 172, 0.48);
+  color: #bbf7d0;
 }
 
-:root[data-theme="light"] .recursion-factorial-box.is-return,
-.app-shell.light .recursion-factorial-box.is-return {
-  background: #e6fcf5;
-  border-color: #96f2d7;
-  color: #0ca678;
+:root[data-theme="dark"] .recursion-factorial-box.is-return,
+.app-shell.dark .recursion-factorial-box.is-return,
+.app-shell.theme-dark .recursion-factorial-box.is-return,
+[data-theme="dark"] .recursion-factorial-box.is-return {
+  background: rgba(20, 184, 166, 0.14);
+  border-color: rgba(94, 234, 212, 0.48);
+  color: #99f6e4;
 }
 
-:root[data-theme="light"] .recursion-factorial-controls,
-.app-shell.light .recursion-factorial-controls {
-  border-top-color: #eeeeee;
+:root[data-theme="dark"] .recursion-factorial-controls,
+.app-shell.dark .recursion-factorial-controls,
+.app-shell.theme-dark .recursion-factorial-controls,
+[data-theme="dark"] .recursion-factorial-controls {
+  border-top-color: rgba(148, 163, 184, 0.18);
 }
 
-:root[data-theme="light"] .recursion-factorial-controls button,
-.app-shell.light .recursion-factorial-controls button {
-  border: 0;
+:root[data-theme="dark"] .recursion-factorial-controls button,
+.app-shell.dark .recursion-factorial-controls button,
+.app-shell.theme-dark .recursion-factorial-controls button,
+[data-theme="dark"] .recursion-factorial-controls button {
+  border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
-:root[data-theme="light"] .recursion-factorial-controls button:disabled,
-.app-shell.light .recursion-factorial-controls button:disabled {
-  background: #e9ecef;
-  color: #adb5bd;
+:root[data-theme="dark"] .recursion-factorial-controls button:disabled,
+.app-shell.dark .recursion-factorial-controls button:disabled,
+.app-shell.theme-dark .recursion-factorial-controls button:disabled,
+[data-theme="dark"] .recursion-factorial-controls button:disabled {
+  background: rgba(31, 41, 55, 0.72);
+  color: rgba(148, 163, 184, 0.64);
 }
 
-:root[data-theme="light"] .recursion-factorial-back,
-:root[data-theme="light"] .recursion-factorial-restart,
-.app-shell.light .recursion-factorial-back,
-.app-shell.light .recursion-factorial-restart {
-  background: #f1f3f5;
-  color: #495057;
+:root[data-theme="dark"] .recursion-factorial-back,
+:root[data-theme="dark"] .recursion-factorial-restart,
+.app-shell.dark .recursion-factorial-back,
+.app-shell.dark .recursion-factorial-restart,
+.app-shell.theme-dark .recursion-factorial-back,
+.app-shell.theme-dark .recursion-factorial-restart,
+[data-theme="dark"] .recursion-factorial-back,
+[data-theme="dark"] .recursion-factorial-restart {
+  background: rgba(30, 41, 59, 0.86);
+  color: #cbd5e1;
 }
 
-:root[data-theme="light"] .recursion-factorial-status,
-.app-shell.light .recursion-factorial-status {
-  color: #495057;
+:root[data-theme="dark"] .recursion-factorial-status,
+.app-shell.dark .recursion-factorial-status,
+.app-shell.theme-dark .recursion-factorial-status,
+[data-theme="dark"] .recursion-factorial-status {
+  color: var(--text-muted, #aab4c5);
 }
 
 @media (max-width: 860px) {
