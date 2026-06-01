@@ -112,24 +112,6 @@ const visualWalkthrough = {
       }
     ]
   },
-  steps: [
-    {
-      title: '1. Freeze the frame size',
-      body: 'k = 3 means every valid candidate must contain exactly three neighboring values. This is the invariant that protects the solution from off-by-one mistakes.'
-    },
-    {
-      title: '2. Build the first frame',
-      body: 'Add the first k values once. That gives both the first windowSum and the initial bestSum.'
-    },
-    {
-      title: '3. Slide by replacing one value',
-      body: 'For every next position, subtract the value leaving on the left and add the value entering on the right.'
-    },
-    {
-      title: '4. Keep only the best memory',
-      body: 'After each valid slide, compare windowSum with bestSum. At the end, bestSum is the answer.'
-    }
-  ],
   productionMapping: [
     'Rolling transaction-volume dashboards over the last k minutes',
     'Fraud detection counters where only the newest event enters and the oldest event leaves',
