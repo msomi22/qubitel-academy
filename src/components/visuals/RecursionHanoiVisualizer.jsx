@@ -346,20 +346,6 @@ function MoveList({ moves }) {
   );
 }
 
-function StatusBar({ activeEvent, latestMove }) {
-  if (!activeEvent) return null;
-
-  const latestMoveText = latestMove
-    ? ` Latest physical move: disk ${latestMove.disk}, ${latestMove.from} → ${latestMove.to}.`
-    : '';
-
-  return (
-    <div className="recursion-hanoi-status-bar">
-      <strong>{activeEvent.title}</strong> {activeEvent.note}{latestMoveText}
-    </div>
-  );
-}
-
 export default function RecursionHanoiVisualizer({ diagram }) {
   const diskCount = Number.isInteger(diagram?.disks) ? diagram.disks : 3;
   const events = useMemo(() => makeTrace(diskCount), [diskCount]);
@@ -376,7 +362,6 @@ export default function RecursionHanoiVisualizer({ diagram }) {
   }, [activeIndex, diagram]);
 
   const runtime = useMemo(() => buildRuntime(events, activeIndex, diskCount), [events, activeIndex, diskCount]);
-  const activeEvent = runtime.activeEvent;
   const stackTopFirst = [...runtime.stack].reverse();
   const progress = activeIndex < 0 ? 0 : ((activeIndex + 1) / events.length) * 100;
 
@@ -441,8 +426,6 @@ export default function RecursionHanoiVisualizer({ diagram }) {
           <MoveList moves={runtime.completedMoves} />
         </aside>
       </div>
-
-      <StatusBar activeEvent={activeEvent} latestMove={runtime.latestMove} />
     </section>
   );
 }
