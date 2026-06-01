@@ -4,13 +4,33 @@ function asArray(value) {
   return Array.isArray(value) ? value : [];
 }
 
+function getStorageKey(diagram) {
+  return `recursion-factorial-step:${diagram?.id || diagram?.title || 'default'}`;
+}
+
+function readStoredStep(diagram, maxStep) {
+  if (typeof window === 'undefined') return 0;
+
+  const savedValue = window.sessionStorage.getItem(getStorageKey(diagram));
+  const parsedValue = Number.parseInt(savedValue || '0', 10);
+
+  if (Number.isNaN(parsedValue)) return 0;
+  return Math.min(Math.max(parsedValue, 0), maxStep);
+}
+
 export default function RecursionFactorialVisualizer({ diagram }) {
   const frames = asArray(diagram?.frames);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const maxStep = Math.max(0, frames.length - 1);
+  const [activeIndex, setActiveIndex] = useState(() => readStoredStep(diagram, maxStep));
 
   useEffect(() => {
-    setActiveIndex(0);
-  }, [diagram]);
+    setActiveIndex(readStoredStep(diagram, maxStep));
+  }, [diagram, maxStep]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    window.sessionStorage.setItem(getStorageKey(diagram), String(activeIndex));
+  }, [activeIndex, diagram]);
 
   if (!frames.length) return null;
 
@@ -22,13 +42,12 @@ export default function RecursionFactorialVisualizer({ diagram }) {
   ];
 
   const returnSteps = asArray(diagram.returnSteps).length ? asArray(diagram.returnSteps) : [
-    { step: 8, label: 'fact(4) = 4 × 6', value: '= 24', kind: 'return' },
-    { step: 7, label: 'fact(3) = 3 × 2', value: '= 6', kind: 'return' },
-    { step: 6, label: 'fact(2) = 2 × 1', value: '= 2', kind: 'return' },
-    { step: 5, label: 'fact(1) = 1', value: '1', kind: 'return' }
+    { step: 8, label: 'fact(4) = 4 × fact(3)', value: 'fact(3) returned 6 → 24', kind: 'return' },
+    { step: 7, label: 'fact(3) = 3 × fact(2)', value: 'fact(2) returned 2 → 6', kind: 'return' },
+    { step: 6, label: 'fact(2) = 2 × fact(1)', value: 'fact(1) returned 1 → 2', kind: 'return' },
+    { step: 5, label: 'fact(1) = 1', value: 'base case', kind: 'return' }
   ];
 
-  const maxStep = frames.length - 1;
   const activeFrame = frames[activeIndex] || frames[0];
 
   const getStepClass = (step) => [
@@ -60,6 +79,7 @@ export default function RecursionFactorialVisualizer({ diagram }) {
         .recursion-factorial-box.is-descent { background: #eef2ff; border-color: #c7d2fe; color: #4263eb; }
         .recursion-factorial-box.is-base { background: #ebfbee; border-color: #8ce99a; color: #2b8a3e; }
         .recursion-factorial-box.is-return { background: #e6fcf5; border-color: #96f2d7; color: #0ca678; }
+        .recursion-factorial-box span:last-child { text-align: right; font-size: 0.96rem; line-height: 1.25; }
         .recursion-factorial-controls { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 0.75rem; margin-top: 1.25rem; padding-top: 1.2rem; border-top: 1px solid #eeeeee; }
         .recursion-factorial-controls button { border: 0; border-radius: 10px; padding: 0.7rem 1.2rem; font: inherit; font-size: 1rem; font-weight: 900; cursor: pointer; transition: background 160ms ease, opacity 160ms ease; }
         .recursion-factorial-controls button:disabled { background: #e9ecef; color: #adb5bd; cursor: not-allowed; opacity: 1; }
