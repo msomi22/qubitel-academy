@@ -1,3 +1,8 @@
+.recursion-factorial-shell,
+.recursion-factorial-shell * {
+  box-sizing: border-box;
+}
+
 .recursion-factorial-shell {
   width: 100%;
   max-width: none;
@@ -120,7 +125,7 @@
 }
 
 .recursion-factorial-controls button {
-  border: 0;
+  border: 1px solid transparent;
   border-radius: 10px;
   padding: 0.7rem 1.2rem;
   font: inherit;
@@ -239,13 +244,6 @@
 .app-shell.theme-dark .recursion-factorial-controls,
 [data-theme="dark"] .recursion-factorial-controls {
   border-top-color: rgba(148, 163, 184, 0.18);
-}
-
-:root[data-theme="dark"] .recursion-factorial-controls button,
-.app-shell.dark .recursion-factorial-controls button,
-.app-shell.theme-dark .recursion-factorial-controls button,
-[data-theme="dark"] .recursion-factorial-controls button {
-  border: 1px solid rgba(148, 163, 184, 0.22);
 }
 
 :root[data-theme="dark"] .recursion-factorial-controls button:disabled,
