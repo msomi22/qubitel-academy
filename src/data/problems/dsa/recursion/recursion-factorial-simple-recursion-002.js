@@ -34,19 +34,19 @@ const problem = defineLearningProblem({
   starterThought: 'Factorial has a natural smaller problem: n! = n × (n - 1)!. The smallest direct answer is 0! = 1 or 1! = 1.',
   intuition: 'Factorial is beginner-friendly because it has one clear job: multiply the current number by the factorial of the number just below it. To compute 5!, first find 4!, then multiply that answer by 5. To find 4!, first find 3!, then multiply by 4. This continues until the base case returns 1.',
   plainLanguageExplanation: 'The symbol n! is read as “n factorial.” It means multiply n by every whole number below it until 1. So 4! means 4 × 3 × 2 × 1 = 24. Recursion works here because 4! can be written as 4 × 3!, and 3! can be written as 3 × 2!.',
-  mentalPicture: 'Do this exactly as you would on paper. Draw two areas. On the left, draw the descent: fact(4) calls fact(3), fact(3) calls fact(2), fact(2) calls fact(1). On the right, draw the return: fact(1) = 1, fact(2) = 2 × 1 = 2, fact(3) = 3 × 2 = 6, fact(4) = 4 × 6 = 24. Beside it, imagine a stack of plates: push calls while going down, pop calls while coming back up.',
+  mentalPicture: 'See the whole picture first. Calls go down: fact(4) → fact(3) → fact(2) → fact(1). Then answers come back up: fact(1) = 1, fact(2) = 2 × 1 = 2, fact(3) = 3 × 2 = 6, fact(4) = 4 × 6 = 24. At the same time, picture a stack of plates: each new call is pushed on top during descent, and each completed call is popped during return.',
   patternSignal: 'Use simple recursion when the problem can be expressed as the current value plus the same problem on a smaller input.',
   invariant: 'Every recursive call must reduce n, so the function eventually reaches n == 0 or n == 1.',
   bruteForceThought: 'An iterative loop can multiply from 1 to n, but this exercise is about learning how recursive calls pause and return.',
   optimizationJourney: 'There is no overlapping subproblem here, so memoization is unnecessary. The goal is to master the call stack before moving to harder recursion.',
   stepByStepBreakdown: [
-    'Write the original call on paper: fact(4).',
-    'Draw the descent column: fact(4) → fact(3) → fact(2) → fact(1).',
-    'Push one plate for every call that is waiting.',
-    'Circle the base case: fact(1) returns 1.',
-    'Draw the unwinding column upward: fact(2) = 2 × 1 = 2.',
-    'Continue returning: fact(3) = 3 × 2 = 6, then fact(4) = 4 × 6 = 24.',
-    'Pop one plate for every completed return.'
+    'Start with the bigger picture: calls go down, returns come back up.',
+    'Draw the left column for CALL STACK (DESCENT): fact(4), fact(3), fact(2), fact(1).',
+    'Mark the bottom base case: return 1.',
+    'Draw the right column for UNWINDING (RETURN): fact(1) = 1, fact(2) = 2, fact(3) = 6, fact(4) = 24.',
+    'Use the stack-of-plates mental model: push one call for each descent step.',
+    'Then pop one call for each return step.',
+    'Practice this paper trace until the downward and upward flow feels automatic.'
   ],
   finalPattern: 'Linear recursion with one smaller recursive call and one direct base case.',
   commonMistake: 'Forgetting the base case causes infinite recursion until the call stack overflows.',
@@ -62,7 +62,7 @@ const problem = defineLearningProblem({
     'Large n can overflow numeric types or exceed stack depth, but that is outside this beginner exercise.'
   ],
   complexityAnalysis: 'Time is O(n) because the function makes one recursive call for each value from n down to 1. Space is O(n) because each call waits on the call stack until the base case returns.',
-  explanation: 'For fact(4), the function first descends through waiting calls: fact(4), fact(3), fact(2), and fact(1). The base case fact(1) returns 1. Then each completed call unwinds: fact(2) returns 2, fact(3) returns 6, and fact(4) returns 24.',
+  explanation: 'For fact(4), recursion first descends through smaller calls: fact(4), fact(3), fact(2), and fact(1). That is the downward phase. Then the base case returns 1, and the solution unwinds upward: fact(2) returns 2, fact(3) returns 6, and fact(4) returns 24.',
   solutionCode: `class Solution {
     public long factorial(int n) {
         if (n < 0) {
@@ -76,185 +76,182 @@ const problem = defineLearningProblem({
         return n * factorial(n - 1);
     }
 }`,
-  finalTakeaway: 'Factorial is the simplest recursion exercise: define the smallest answer, draw the descent, mark the base case, then draw the return path as the stack unwinds.',
-  selfExplanationPrompt: 'Before reading the solution, draw fact(4) on paper. Left side: call stack descent. Right side: unwinding return values. Then mark every push and pop.',
-  visualExplanation: 'The visual uses fact(4), just like a paper classroom diagram. Each click adds one step to the descent or one step to the return side, so learners see calls go down and answers come back up.',
+  finalTakeaway: 'Factorial is the simplest recursion exercise: see the calls going down, see the answers coming back up, and connect both with the push/pop behavior of the call stack.',
+  selfExplanationPrompt: 'Before reading the solution, draw fact(4) on paper exactly this way: left side for calls going down, right side for returns coming up, and a stack-of-plates note beside it for push and pop actions.',
+  visualExplanation: 'The visual walkthrough first shows the bigger picture, then builds it step by step. Learners should see both flows at all times: the CALL STACK (DESCENT) on the left and the UNWINDING (RETURN) on the right.',
   visualWalkthrough: {
-    title: 'Factorial on paper — descent and unwinding',
-    summary: 'Draw recursion like a paper diagram: calls go down on the left, the base case stops the descent, and return values come back up on the right.',
+    title: 'Factorial on paper — calls go down, returns come back up',
+    summary: 'This is the full recursion picture. First, the calls go down the left side until the base case is reached. Then the answers come back up the right side as the call stack unwinds.',
     diagram: {
       type: 'array',
-      title: 'fact(4): call stack descent and unwinding return',
-      description: 'Each cell is one call frame. The visual shows what is pushed during descent and what is popped during return.',
-      values: ['fact(4)', 'fact(3)', 'fact(2)', 'fact(1)', 'base case'],
-      stateTitle: 'Paper trace step',
-      stateDescription: 'Use the state panel as your paper: left column is CALL STACK (DESCENT), right column is UNWINDING (RETURN).',
+      title: 'fact(4): CALL STACK (DESCENT) and UNWINDING (RETURN)',
+      description: 'The cells represent the recursive calls. Use the state panel to track the bigger picture: calls going down, returns going up, and push/pop stack actions.',
+      values: ['fact(4)', 'fact(3)', 'fact(2)', 'fact(1)'],
+      stateTitle: 'Recursion picture',
+      stateDescription: 'Always read the state in four parts: Big idea, calls going down, returns going up, and stack of plates.',
       legend: [
-        { role: 'current', label: 'current call / pushed plate', marker: 'PUSH' },
+        { role: 'current', label: 'current active call', marker: '↓ or PUSH' },
         { role: 'window', label: 'waiting call on stack', marker: 'WAIT' },
-        { role: 'success', label: 'returned / popped plate', marker: 'RETURN' },
+        { role: 'success', label: 'returned call during unwind', marker: '↑ or POP' },
         { role: 'answer', label: 'base case or final answer', marker: '✓' }
       ],
       frames: [
         {
-          title: '1. Big idea before drawing',
-          description: 'Recursion breaks a problem into smaller versions, solves the smallest one, then builds the answer back up.',
-          items: [],
+          title: '1. The bigger picture first',
+          description: 'Before tracing step by step, look at the whole shape of recursion. Calls go down. Returns come back up.',
+          items: [
+            { index: 0, role: 'window', caption: 'call 4' },
+            { index: 1, role: 'window', caption: 'call 3' },
+            { index: 2, role: 'window', caption: 'call 2' },
+            { index: 3, role: 'answer', caption: 'base case at 1' }
+          ],
           state: {
             label: 'BIG IDEA',
             role: 'answer',
             values: {
-              bigIdea: 'Go down with calls. Come back up with returns.',
-              paperLayout: 'Left: CALL STACK (DESCENT). Right: UNWINDING (RETURN).',
-              stackOfPlates: 'Push calls going down, pop calls coming back up.'
+              bigIdea: 'Recursion breaks a problem into smaller instances of the same problem, solves the smallest one, then builds the solution back up.',
+              callsGoingDown: 'fact(4) ↓ fact(3) ↓ fact(2) ↓ fact(1) ↓ base case',
+              returnsGoingUp: 'base case 1 ↑ fact(2) = 2 ↑ fact(3) = 6 ↑ fact(4) = 24',
+              callStackDescent: 'CALL STACK (DESCENT): fact(4), fact(3), fact(2), fact(1)',
+              unwindingReturn: 'UNWINDING (RETURN): fact(1)=1, fact(2)=2, fact(3)=6, fact(4)=24',
+              stackOfPlates: 'Push calls going down. Pop calls coming back up.'
             },
-            helper: 'This is the mental picture students should draw until it becomes automatic.'
+            helper: 'This is the exact paper picture a beginner should learn to draw.'
           }
         },
         {
-          title: '2. CALL STACK: push fact(4)',
-          description: 'Start the descent. fact(4) calls itself with a smaller input: fact(3).',
+          title: '2. CALL STACK (DESCENT): start at fact(4)',
+          description: 'The first call is fact(4). It cannot finish yet, so it calls fact(3).',
           items: [
-            { index: 0, role: 'current', caption: 'push fact(4)' }
+            { index: 0, role: 'current', caption: 'calls fact(3)' }
           ],
           state: {
             label: 'CALL STACK (DESCENT)',
             values: {
-              drawLeftColumn: 'fact(4)',
-              noteBesideArrow: 'calls itself',
-              stackOfPlates: '[fact(4)]',
-              waitingExpression: 'fact(4) = 4 × fact(3)',
-              unwindRightColumn: 'not started yet'
+              bigIdea: 'We are in the going-down phase.',
+              callsGoingDown: 'fact(4) ↓ ...',
+              returnsGoingUp: 'nothing returned yet',
+              callStackDescent: 'fact(4)',
+              unwindingReturn: 'not started yet',
+              stackOfPlates: 'push fact(4) → [fact(4)]'
             },
-            helper: 'fact(4) is now a waiting plate on the stack.'
+            helper: 'The stack begins with the original call.'
           }
         },
         {
-          title: '3. CALL STACK: push fact(3)',
-          description: 'Draw fact(3) under fact(4). fact(3) calls fact(2).',
+          title: '3. CALL STACK (DESCENT): go down to fact(3)',
+          description: 'fact(4) is waiting. Now fact(3) becomes the active call and it calls fact(2).',
           items: [
-            { index: 0, role: 'window', caption: 'waits' },
-            { index: 1, role: 'current', caption: 'push fact(3)' }
+            { index: 0, role: 'window', caption: 'fact(4) waits' },
+            { index: 1, role: 'current', caption: 'calls fact(2)' }
           ],
           state: {
             label: 'CALL STACK (DESCENT)',
             values: {
-              drawLeftColumn: 'fact(4) ↓ fact(3)',
-              noteBesideArrow: 'calls itself',
-              stackOfPlates: '[fact(4), fact(3)]',
-              waitingExpression: 'fact(3) = 3 × fact(2)',
-              unwindRightColumn: 'not started yet'
+              bigIdea: 'Each call creates a smaller problem.',
+              callsGoingDown: 'fact(4) ↓ fact(3) ↓ ...',
+              returnsGoingUp: 'nothing returned yet',
+              callStackDescent: 'fact(4) → fact(3)',
+              unwindingReturn: 'not started yet',
+              stackOfPlates: 'push fact(3) → [fact(4), fact(3)]'
             },
-            helper: 'The new call sits on top of the older waiting call.'
+            helper: 'The most recent call sits on top of the older waiting call.'
           }
         },
         {
-          title: '4. CALL STACK: push fact(2)',
-          description: 'Draw fact(2) under fact(3). fact(2) calls fact(1).',
+          title: '4. CALL STACK (DESCENT): go down to fact(2)',
+          description: 'fact(3) is now waiting. The active call becomes fact(2), which still needs fact(1).',
           items: [
-            { index: 0, role: 'window', caption: 'waits' },
-            { index: 1, role: 'window', caption: 'waits' },
-            { index: 2, role: 'current', caption: 'push fact(2)' }
+            { index: 0, role: 'window', caption: 'fact(4) waits' },
+            { index: 1, role: 'window', caption: 'fact(3) waits' },
+            { index: 2, role: 'current', caption: 'calls fact(1)' }
           ],
           state: {
             label: 'CALL STACK (DESCENT)',
             values: {
-              drawLeftColumn: 'fact(4) ↓ fact(3) ↓ fact(2)',
-              noteBesideArrow: 'calls itself',
-              stackOfPlates: '[fact(4), fact(3), fact(2)]',
-              waitingExpression: 'fact(2) = 2 × fact(1)',
-              unwindRightColumn: 'not started yet'
+              bigIdea: 'We are still moving downward.',
+              callsGoingDown: 'fact(4) ↓ fact(3) ↓ fact(2) ↓ ...',
+              returnsGoingUp: 'nothing returned yet',
+              callStackDescent: 'fact(4) → fact(3) → fact(2)',
+              unwindingReturn: 'not started yet',
+              stackOfPlates: 'push fact(2) → [fact(4), fact(3), fact(2)]'
             },
-            helper: 'The call stack grows while the function keeps finding smaller problems.'
+            helper: 'Every lower frame is paused until the smaller call returns.'
           }
         },
         {
-          title: '5. CALL STACK: push fact(1), then stop',
-          description: 'Draw fact(1). This is the base case, so it returns 1 without making another call.',
+          title: '5. CALL STACK (DESCENT): reach fact(1) base case',
+          description: 'fact(1) is the stopping point. This is the base case, so recursion stops going down here.',
           items: [
-            { index: 0, role: 'window', caption: 'waits' },
-            { index: 1, role: 'window', caption: 'waits' },
-            { index: 2, role: 'window', caption: 'waits' },
-            { index: 3, role: 'answer', caption: 'base case' }
+            { index: 0, role: 'window', caption: 'fact(4) waits' },
+            { index: 1, role: 'window', caption: 'fact(3) waits' },
+            { index: 2, role: 'window', caption: 'fact(2) waits' },
+            { index: 3, role: 'answer', caption: 'base case: return 1' }
           ],
           state: {
             label: 'BASE CASE',
             role: 'answer',
             values: {
-              drawLeftColumn: 'fact(4) ↓ fact(3) ↓ fact(2) ↓ fact(1)',
-              baseCaseCard: 'fact(1) = 1',
-              stackOfPlates: '[fact(4), fact(3), fact(2), fact(1)]',
-              unwindRightColumn: 'fact(1) = 1'
+              bigIdea: 'The smallest problem is solved directly.',
+              callsGoingDown: 'fact(4) ↓ fact(3) ↓ fact(2) ↓ fact(1) ↓ base case',
+              returnsGoingUp: 'base case will now start the upward return',
+              callStackDescent: 'fact(4) → fact(3) → fact(2) → fact(1)',
+              unwindingReturn: 'fact(1) = 1',
+              stackOfPlates: 'push fact(1) → [fact(4), fact(3), fact(2), fact(1)]'
             },
-            helper: 'Circle the base case on paper. This is where descent ends and unwinding begins.'
+            helper: 'This is the turning point: calls stop going down, and returns begin coming up.'
           }
         },
         {
-          title: '6. UNWINDING: pop fact(1), return 1',
-          description: 'Remove fact(1) from the top of the stack and pass 1 back to fact(2).',
+          title: '6. UNWINDING (RETURN): come back up to fact(2)',
+          description: 'The base case returns 1. That answer comes back up to fact(2), which can now finish.',
           items: [
-            { index: 0, role: 'window', caption: 'waits' },
-            { index: 1, role: 'window', caption: 'waits' },
-            { index: 2, role: 'current', caption: 'receives 1' },
+            { index: 0, role: 'window', caption: 'fact(4) waits' },
+            { index: 1, role: 'window', caption: 'fact(3) waits' },
+            { index: 2, role: 'current', caption: '2 × 1 = 2' },
             { index: 3, role: 'success', caption: 'pop fact(1)' }
           ],
           state: {
             label: 'UNWINDING (RETURN)',
             values: {
-              popAction: 'pop fact(1)',
-              stackOfPlates: '[fact(4), fact(3), fact(2)]',
-              drawRightColumn: 'fact(1) = 1',
-              returnsTo: 'fact(2) receives 1'
+              bigIdea: 'Now the solution is being built back up.',
+              callsGoingDown: 'descent is complete',
+              returnsGoingUp: 'fact(1) = 1 ↑ fact(2) = 2',
+              callStackDescent: 'left side already drawn',
+              unwindingReturn: 'fact(1) = 1, then fact(2) = 2 × 1 = 2',
+              stackOfPlates: 'pop fact(1) → [fact(4), fact(3), fact(2)]'
             },
-            helper: 'Coming back up always starts from the top plate.'
+            helper: 'The first return climbs one level upward.'
           }
         },
         {
-          title: '7. UNWINDING: pop fact(2), return 2',
-          description: 'fact(2) can now finish: fact(2) = 2 × 1 = 2.',
+          title: '7. UNWINDING (RETURN): come back up to fact(3)',
+          description: 'fact(2) returned 2. Now fact(3) uses that answer: fact(3) = 3 × 2 = 6.',
           items: [
-            { index: 0, role: 'window', caption: 'waits' },
-            { index: 1, role: 'current', caption: 'receives 2' },
+            { index: 0, role: 'window', caption: 'fact(4) waits' },
+            { index: 1, role: 'current', caption: '3 × 2 = 6' },
             { index: 2, role: 'success', caption: 'pop fact(2)' },
             { index: 3, role: 'success', caption: 'returned 1' }
           ],
           state: {
             label: 'UNWINDING (RETURN)',
             values: {
-              popAction: 'pop fact(2)',
-              stackOfPlates: '[fact(4), fact(3)]',
-              drawRightColumn: 'fact(1) = 1 ↑ fact(2) = 2 × 1 = 2',
-              returnsTo: 'fact(3) receives 2'
+              bigIdea: 'Each higher call finishes using the returned value from below.',
+              callsGoingDown: 'descent is complete',
+              returnsGoingUp: 'fact(1) = 1 ↑ fact(2) = 2 ↑ fact(3) = 6',
+              callStackDescent: 'left side already drawn',
+              unwindingReturn: 'fact(1) = 1, fact(2) = 2, fact(3) = 3 × 2 = 6',
+              stackOfPlates: 'pop fact(2) → [fact(4), fact(3)]'
             },
-            helper: 'Write the return value beside the waiting call on your paper.'
+            helper: 'The return path is now clearly moving upward.'
           }
         },
         {
-          title: '8. UNWINDING: pop fact(3), return 6',
-          description: 'fact(3) can now finish: fact(3) = 3 × 2 = 6.',
+          title: '8. UNWINDING (RETURN): come back up to fact(4)',
+          description: 'fact(3) returned 6. Now fact(4) uses that answer: fact(4) = 4 × 6 = 24.',
           items: [
-            { index: 0, role: 'current', caption: 'receives 6' },
+            { index: 0, role: 'answer', caption: '4 × 6 = 24' },
             { index: 1, role: 'success', caption: 'pop fact(3)' },
-            { index: 2, role: 'success', caption: 'returned 2' },
-            { index: 3, role: 'success', caption: 'returned 1' }
-          ],
-          state: {
-            label: 'UNWINDING (RETURN)',
-            values: {
-              popAction: 'pop fact(3)',
-              stackOfPlates: '[fact(4)]',
-              drawRightColumn: 'fact(1) = 1 ↑ fact(2) = 2 ↑ fact(3) = 3 × 2 = 6',
-              returnsTo: 'fact(4) receives 6'
-            },
-            helper: 'The return side climbs upward while the stack gets smaller.'
-          }
-        },
-        {
-          title: '9. UNWINDING: pop fact(4), return 24',
-          description: 'fact(4) can now finish: fact(4) = 4 × 6 = 24.',
-          items: [
-            { index: 0, role: 'answer', caption: 'pop fact(4)' },
-            { index: 1, role: 'success', caption: 'returned 6' },
             { index: 2, role: 'success', caption: 'returned 2' },
             { index: 3, role: 'success', caption: 'returned 1' }
           ],
@@ -262,12 +259,14 @@ const problem = defineLearningProblem({
             label: 'UNWINDING (RETURN)',
             role: 'answer',
             values: {
-              popAction: 'pop fact(4)',
-              stackOfPlates: '[]',
-              drawRightColumn: 'fact(1) = 1 ↑ fact(2) = 2 ↑ fact(3) = 6 ↑ fact(4) = 4 × 6 = 24',
-              finalAnswer: 'fact(4) = 24'
+              bigIdea: 'The original call now receives the full answer.',
+              callsGoingDown: 'fact(4) ↓ fact(3) ↓ fact(2) ↓ fact(1)',
+              returnsGoingUp: 'fact(1) = 1 ↑ fact(2) = 2 ↑ fact(3) = 6 ↑ fact(4) = 24',
+              callStackDescent: 'CALL STACK (DESCENT): fact(4), fact(3), fact(2), fact(1)',
+              unwindingReturn: 'UNWINDING (RETURN): fact(1)=1, fact(2)=2, fact(3)=6, fact(4)=24',
+              stackOfPlates: 'pop fact(3), then pop fact(4) → []'
             },
-            helper: 'The stack is empty. The original call has returned its final answer.'
+            helper: 'This frame should match the paper diagram in the learner’s head: left side down, right side up.'
           },
           finalResult: { title: 'Final answer', body: 'fact(4) returns 24.' }
         }
