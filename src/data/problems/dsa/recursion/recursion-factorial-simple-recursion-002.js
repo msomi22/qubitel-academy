@@ -34,19 +34,19 @@ const problem = defineLearningProblem({
   starterThought: 'Factorial has a natural smaller problem: n! = n × (n - 1)!. The smallest direct answer is 0! = 1 or 1! = 1.',
   intuition: 'Factorial is beginner-friendly because it has one clear job: multiply the current number by the factorial of the number just below it. To compute 5!, first find 4!, then multiply that answer by 5. To find 4!, first find 3!, then multiply by 4. This continues until the base case returns 1.',
   plainLanguageExplanation: 'The symbol n! is read as “n factorial.” It means multiply n by every whole number below it until 1. So 4! means 4 × 3 × 2 × 1 = 24. Recursion works here because 4! can be written as 4 × 3!, and 3! can be written as 3 × 2!.',
-  mentalPicture: 'Picture the call stack as plates. A new recursive call is placed on top of the stack. A completed call is removed from the top. The last call pushed is the first one that returns.',
+  mentalPicture: 'Do this exactly as you would on paper. On the left, draw the call tree as a chain: factorial(5) → factorial(4) → factorial(3) → factorial(2) → factorial(1). On the right, draw a stack of plates. Each new call is a plate added on top. Each return removes the top plate and writes the returned value beside the waiting call below it.',
   patternSignal: 'Use simple recursion when the problem can be expressed as the current value plus the same problem on a smaller input.',
   invariant: 'Every recursive call must reduce n, so the function eventually reaches n == 0 or n == 1.',
   bruteForceThought: 'An iterative loop can multiply from 1 to n, but this exercise is about learning how recursive calls pause and return.',
   optimizationJourney: 'There is no overlapping subproblem here, so memoization is unnecessary. The goal is to master the call stack before moving to harder recursion.',
   stepByStepBreakdown: [
-    'Understand the meaning first: n! means n × (n - 1) × (n - 2) × ... × 1.',
-    'Define the base case: if n is 0 or 1, return 1.',
-    'Define the recursive case: return n * factorial(n - 1).',
-    'Make sure each call moves closer to the base case by subtracting 1 from n.',
-    'Push each new recursive call onto the call stack until the base case is reached.',
-    'Pop each completed call from the stack as it returns a value.',
-    'Unwind the calls: 1, then 2 * 1, then 3 * 2, then 4 * 6, then 5 * 24.'
+    'Write the original call on paper: factorial(5).',
+    'Draw an arrow to the smaller call: factorial(5) needs factorial(4).',
+    'Push factorial(5) onto the stack of plates because it is now waiting.',
+    'Repeat the same paper action for factorial(4), factorial(3), and factorial(2).',
+    'Stop when factorial(1) reaches the base case and returns 1.',
+    'Pop factorial(1), then write return 1 beside factorial(2).',
+    'Pop each waiting call one by one, writing the multiplication and returned value beside it.'
   ],
   finalPattern: 'Linear recursion with one smaller recursive call and one direct base case.',
   commonMistake: 'Forgetting the base case causes infinite recursion until the call stack overflows.',
@@ -76,135 +76,135 @@ const problem = defineLearningProblem({
         return n * factorial(n - 1);
     }
 }`,
-  finalTakeaway: 'Factorial is the simplest recursion exercise: define the smallest answer, push smaller calls until the base case, then pop completed calls as the answer unwinds.',
-  selfExplanationPrompt: 'Before reading the solution, trace factorial(4) on paper and write what gets pushed, what waits, and what gets popped.',
-  visualExplanation: 'The visual uses factorial(5). Each click shows exactly one stack action: either a call is pushed onto the stack, the base case returns, or a completed call is popped from the stack with its return value.',
+  finalTakeaway: 'Factorial is the simplest recursion exercise: define the smallest answer, draw the call tree, push smaller calls onto the stack, then pop completed calls as the answer unwinds.',
+  selfExplanationPrompt: 'Before reading the solution, draw factorial(5) on paper. Use one side for the call tree and one side for the stack of plates. Mark every push and every pop.',
+  visualExplanation: 'The visual uses factorial(5) and follows the same paper method learners should practice: draw the call chain, push one plate per call, then pop one plate per return. Each click changes the stack by one clear action.',
   visualWalkthrough: {
-    title: 'Factorial call stack — push and pop walkthrough',
-    summary: 'Every frame shows the stack changing by one important action: push a call, hit the base case, then pop calls as return values are produced.',
+    title: 'Factorial on paper — call tree and stack of plates',
+    summary: 'Pretend you are drawing this by hand. Each frame shows what to draw next in the call tree and what plate is added to or removed from the stack.',
     diagram: {
       type: 'array',
-      title: 'Call stack for factorial(5)',
-      description: 'Read the array from left to right as bottom to top of the stack. The rightmost active call is the top of the stack.',
-      values: ['factorial(5)', 'factorial(4)', 'factorial(3)', 'factorial(2)', 'factorial(1)'],
-      stateTitle: 'Current stack action',
-      stateDescription: 'Each frame names exactly what was pushed, what is waiting, or what was popped.',
+      title: 'Stack of plates for factorial(5)',
+      description: 'Each cell is one stack plate. Build the stack from factorial(5) up to factorial(1), then remove plates from factorial(1) back down to factorial(5).',
+      values: ['5! plate', '4! plate', '3! plate', '2! plate', '1! plate'],
+      stateTitle: 'Paper trace',
+      stateDescription: 'Draw the call tree on paper and update the stack of plates after every click.',
       legend: [
-        { role: 'current', label: 'just pushed / active top', marker: 'P' },
-        { role: 'window', label: 'waiting on stack', marker: 'W' },
-        { role: 'success', label: 'returned / popped', marker: 'R' },
-        { role: 'answer', label: 'final answer', marker: '✓' }
+        { role: 'current', label: 'plate just added / active call', marker: 'PUSH' },
+        { role: 'window', label: 'plate waiting below', marker: 'WAIT' },
+        { role: 'success', label: 'plate removed with return value', marker: 'POP' },
+        { role: 'answer', label: 'final returned answer', marker: 'DONE' }
       ],
       frames: [
         {
-          title: '1. Push factorial(5)',
-          description: 'The first call enters the stack. It cannot finish until factorial(4) returns.',
+          title: '1. Draw factorial(5), then push its plate',
+          description: 'On paper, write factorial(5). It needs factorial(4), so put the factorial(5) plate on the stack while it waits.',
           items: [
-            { index: 0, role: 'current', caption: 'push' }
+            { index: 0, role: 'current', caption: 'push 5!' }
           ],
-          state: { label: 'PUSH', values: { pushed: 'factorial(5)', stackNow: '[factorial(5)]', waitingFor: 'factorial(4)' }, helper: 'factorial(5) is paused at: 5 × factorial(4).' }
+          state: { label: 'PAPER STEP 1', values: { callTree: 'factorial(5)', stackOfPlatesTopLast: '[5!]', waitingExpression: '5 × factorial(4)' }, helper: 'The first plate is waiting for a smaller answer.' }
         },
         {
-          title: '2. Push factorial(4)',
-          description: 'factorial(5) is waiting. The new top of the stack is factorial(4).',
+          title: '2. Draw factorial(4), then push its plate',
+          description: 'Extend the call tree: factorial(5) → factorial(4). Put the factorial(4) plate on top of factorial(5).',
           items: [
-            { index: 0, role: 'window', caption: 'waiting' },
-            { index: 1, role: 'current', caption: 'push' }
+            { index: 0, role: 'window', caption: '5! waits' },
+            { index: 1, role: 'current', caption: 'push 4!' }
           ],
-          state: { label: 'PUSH', values: { pushed: 'factorial(4)', stackNow: '[factorial(5), factorial(4)]', waitingFor: 'factorial(3)' }, helper: 'factorial(4) is paused at: 4 × factorial(3).' }
+          state: { label: 'PAPER STEP 2', values: { callTree: 'factorial(5) → factorial(4)', stackOfPlatesTopLast: '[5!, 4!]', waitingExpression: '4 × factorial(3)' }, helper: 'The newest plate is always placed on top.' }
         },
         {
-          title: '3. Push factorial(3)',
-          description: 'The stack grows because the function keeps asking for a smaller factorial.',
+          title: '3. Draw factorial(3), then push its plate',
+          description: 'Extend the call tree again and add the factorial(3) plate to the top of the stack.',
           items: [
-            { index: 0, role: 'window', caption: 'waiting' },
-            { index: 1, role: 'window', caption: 'waiting' },
-            { index: 2, role: 'current', caption: 'push' }
+            { index: 0, role: 'window', caption: '5! waits' },
+            { index: 1, role: 'window', caption: '4! waits' },
+            { index: 2, role: 'current', caption: 'push 3!' }
           ],
-          state: { label: 'PUSH', values: { pushed: 'factorial(3)', stackNow: '[factorial(5), factorial(4), factorial(3)]', waitingFor: 'factorial(2)' }, helper: 'factorial(3) is paused at: 3 × factorial(2).' }
+          state: { label: 'PAPER STEP 3', values: { callTree: 'factorial(5) → factorial(4) → factorial(3)', stackOfPlatesTopLast: '[5!, 4!, 3!]', waitingExpression: '3 × factorial(2)' }, helper: 'Keep drawing until the base case is reached.' }
         },
         {
-          title: '4. Push factorial(2)',
-          description: 'factorial(2) becomes the top frame. It still needs factorial(1).',
+          title: '4. Draw factorial(2), then push its plate',
+          description: 'factorial(2) still has a smaller problem: factorial(1). Add the factorial(2) plate on top.',
           items: [
-            { index: 0, role: 'window', caption: 'waiting' },
-            { index: 1, role: 'window', caption: 'waiting' },
-            { index: 2, role: 'window', caption: 'waiting' },
-            { index: 3, role: 'current', caption: 'push' }
+            { index: 0, role: 'window', caption: '5! waits' },
+            { index: 1, role: 'window', caption: '4! waits' },
+            { index: 2, role: 'window', caption: '3! waits' },
+            { index: 3, role: 'current', caption: 'push 2!' }
           ],
-          state: { label: 'PUSH', values: { pushed: 'factorial(2)', stackNow: '[factorial(5), factorial(4), factorial(3), factorial(2)]', waitingFor: 'factorial(1)' }, helper: 'factorial(2) is paused at: 2 × factorial(1).' }
+          state: { label: 'PAPER STEP 4', values: { callTree: 'factorial(5) → factorial(4) → factorial(3) → factorial(2)', stackOfPlatesTopLast: '[5!, 4!, 3!, 2!]', waitingExpression: '2 × factorial(1)' }, helper: 'Every plate below the top is paused and waiting.' }
         },
         {
-          title: '5. Push factorial(1): base case',
-          description: 'factorial(1) reaches the base case. No more recursive calls are needed.',
+          title: '5. Draw factorial(1), then mark base case',
+          description: 'factorial(1) is the base case. Add its plate, circle it on paper, and write returns 1.',
           items: [
-            { index: 0, role: 'window', caption: 'waiting' },
-            { index: 1, role: 'window', caption: 'waiting' },
-            { index: 2, role: 'window', caption: 'waiting' },
-            { index: 3, role: 'window', caption: 'waiting' },
+            { index: 0, role: 'window', caption: '5! waits' },
+            { index: 1, role: 'window', caption: '4! waits' },
+            { index: 2, role: 'window', caption: '3! waits' },
+            { index: 3, role: 'window', caption: '2! waits' },
             { index: 4, role: 'current', caption: 'base case' }
           ],
-          state: { label: 'PUSH + BASE CASE', values: { pushed: 'factorial(1)', stackNow: '[factorial(5), factorial(4), factorial(3), factorial(2), factorial(1)]', returns: 1 }, helper: 'The base case stops the stack from growing forever.' }
+          state: { label: 'BASE CASE', values: { callTree: 'factorial(5) → factorial(4) → factorial(3) → factorial(2) → factorial(1)', stackOfPlatesTopLast: '[5!, 4!, 3!, 2!, 1!]', writeOnPaper: 'factorial(1) = 1' }, helper: 'The base case is where the stack stops growing.' }
         },
         {
-          title: '6. Pop factorial(1), return 1',
-          description: 'The top call is complete, so it is removed from the stack and returns 1 to factorial(2).',
+          title: '6. Remove the factorial(1) plate',
+          description: 'Pop the top plate. Write return 1 beside factorial(2), because factorial(2) was waiting for that answer.',
           items: [
-            { index: 0, role: 'window', caption: 'waiting' },
-            { index: 1, role: 'window', caption: 'waiting' },
-            { index: 2, role: 'window', caption: 'waiting' },
+            { index: 0, role: 'window', caption: '5! waits' },
+            { index: 1, role: 'window', caption: '4! waits' },
+            { index: 2, role: 'window', caption: '3! waits' },
             { index: 3, role: 'current', caption: 'receives 1' },
-            { index: 4, role: 'success', caption: 'pop 1' }
+            { index: 4, role: 'success', caption: 'pop 1!' }
           ],
-          state: { label: 'POP', values: { popped: 'factorial(1)', returned: 1, stackNow: '[factorial(5), factorial(4), factorial(3), factorial(2)]' }, helper: 'Now factorial(2) can continue.' }
+          state: { label: 'POP 1!', values: { removedPlate: '1!', returnedValue: 1, stackOfPlatesTopLast: '[5!, 4!, 3!, 2!]', writeOnPaper: 'factorial(2) receives 1' }, helper: 'Only the top plate can be removed.' }
         },
         {
-          title: '7. Pop factorial(2), return 2',
-          description: 'factorial(2) resumes, computes 2 × 1, and returns 2 to factorial(3).',
+          title: '7. Remove the factorial(2) plate',
+          description: 'factorial(2) now computes 2 × 1 = 2. Pop its plate and write return 2 beside factorial(3).',
           items: [
-            { index: 0, role: 'window', caption: 'waiting' },
-            { index: 1, role: 'window', caption: 'waiting' },
+            { index: 0, role: 'window', caption: '5! waits' },
+            { index: 1, role: 'window', caption: '4! waits' },
             { index: 2, role: 'current', caption: 'receives 2' },
-            { index: 3, role: 'success', caption: 'pop 2' },
+            { index: 3, role: 'success', caption: 'pop 2!' },
             { index: 4, role: 'success', caption: 'returned 1' }
           ],
-          state: { label: 'POP', values: { popped: 'factorial(2)', computes: '2 × 1', returned: 2, stackNow: '[factorial(5), factorial(4), factorial(3)]' }, helper: 'A popped call passes its answer to the call below it.' }
+          state: { label: 'POP 2!', values: { removedPlate: '2!', computation: '2 × 1 = 2', returnedValue: 2, stackOfPlatesTopLast: '[5!, 4!, 3!]', writeOnPaper: 'factorial(3) receives 2' }, helper: 'This is return unwinding: answers move back down the call tree.' }
         },
         {
-          title: '8. Pop factorial(3), return 6',
-          description: 'factorial(3) resumes, computes 3 × 2, and returns 6 to factorial(4).',
+          title: '8. Remove the factorial(3) plate',
+          description: 'factorial(3) computes 3 × 2 = 6. Pop its plate and write return 6 beside factorial(4).',
           items: [
-            { index: 0, role: 'window', caption: 'waiting' },
+            { index: 0, role: 'window', caption: '5! waits' },
             { index: 1, role: 'current', caption: 'receives 6' },
-            { index: 2, role: 'success', caption: 'pop 6' },
+            { index: 2, role: 'success', caption: 'pop 3!' },
             { index: 3, role: 'success', caption: 'returned 2' },
             { index: 4, role: 'success', caption: 'returned 1' }
           ],
-          state: { label: 'POP', values: { popped: 'factorial(3)', computes: '3 × 2', returned: 6, stackNow: '[factorial(5), factorial(4)]' }, helper: 'The returned value keeps moving down the waiting stack.' }
+          state: { label: 'POP 3!', values: { removedPlate: '3!', computation: '3 × 2 = 6', returnedValue: 6, stackOfPlatesTopLast: '[5!, 4!]', writeOnPaper: 'factorial(4) receives 6' }, helper: 'Every popped plate completes one waiting expression.' }
         },
         {
-          title: '9. Pop factorial(4), return 24',
-          description: 'factorial(4) resumes, computes 4 × 6, and returns 24 to factorial(5).',
+          title: '9. Remove the factorial(4) plate',
+          description: 'factorial(4) computes 4 × 6 = 24. Pop its plate and write return 24 beside factorial(5).',
           items: [
             { index: 0, role: 'current', caption: 'receives 24' },
-            { index: 1, role: 'success', caption: 'pop 24' },
+            { index: 1, role: 'success', caption: 'pop 4!' },
             { index: 2, role: 'success', caption: 'returned 6' },
             { index: 3, role: 'success', caption: 'returned 2' },
             { index: 4, role: 'success', caption: 'returned 1' }
           ],
-          state: { label: 'POP', values: { popped: 'factorial(4)', computes: '4 × 6', returned: 24, stackNow: '[factorial(5)]' }, helper: 'Only the original call remains waiting.' }
+          state: { label: 'POP 4!', values: { removedPlate: '4!', computation: '4 × 6 = 24', returnedValue: 24, stackOfPlatesTopLast: '[5!]', writeOnPaper: 'factorial(5) receives 24' }, helper: 'Only the original call remains on the paper stack.' }
         },
         {
-          title: '10. Pop factorial(5), return 120',
-          description: 'factorial(5) resumes, computes 5 × 24, and returns the final answer.',
+          title: '10. Remove the factorial(5) plate',
+          description: 'factorial(5) computes 5 × 24 = 120. Pop the final plate and box the answer on paper.',
           items: [
-            { index: 0, role: 'answer', caption: 'pop 120' },
+            { index: 0, role: 'answer', caption: 'pop 5!' },
             { index: 1, role: 'success', caption: 'returned 24' },
             { index: 2, role: 'success', caption: 'returned 6' },
             { index: 3, role: 'success', caption: 'returned 2' },
             { index: 4, role: 'success', caption: 'returned 1' }
           ],
-          state: { label: 'FINAL POP', values: { popped: 'factorial(5)', computes: '5 × 24', returned: 120, stackNow: '[]' }, helper: 'The stack is empty because the original call has finished.' },
+          state: { label: 'FINAL POP', values: { removedPlate: '5!', computation: '5 × 24 = 120', returnedValue: 120, stackOfPlatesTopLast: '[]', writeOnPaper: 'factorial(5) = 120' }, helper: 'The stack is empty. The original call has finished.' },
           finalResult: { title: 'Final answer', body: 'factorial(5) returns 120.' }
         }
       ]
@@ -215,6 +215,12 @@ const problem = defineLearningProblem({
       type: 'section',
       title: 'What factorial means',
       content: 'Factorial is written with an exclamation mark. 5! means 5 × 4 × 3 × 2 × 1. 3! means 3 × 2 × 1. The result of 0! is defined as 1, which gives recursion a clean stopping answer.'
+    },
+    {
+      type: 'callout',
+      tone: 'info',
+      title: 'Paper practice rule',
+      content: 'For recursion, do not only read code. Draw the call tree and the stack of plates on paper until pushing calls and popping returns becomes automatic.'
     },
     {
       type: 'callout',
@@ -231,14 +237,14 @@ const problem = defineLearningProblem({
   solutionBody: [
     {
       type: 'table',
-      title: 'factorial(5) return table',
-      columns: ['Call popped', 'Waiting expression completed', 'Returned value'],
+      title: 'Paper return table for factorial(5)',
+      columns: ['Plate removed', 'What you write beside the call tree', 'Returned value'],
       rows: [
         ['factorial(1)', 'base case', '1'],
-        ['factorial(2)', '2 × factorial(1)', '2 × 1 = 2'],
-        ['factorial(3)', '3 × factorial(2)', '3 × 2 = 6'],
-        ['factorial(4)', '4 × factorial(3)', '4 × 6 = 24'],
-        ['factorial(5)', '5 × factorial(4)', '5 × 24 = 120']
+        ['factorial(2)', '2 × factorial(1) = 2 × 1', '2'],
+        ['factorial(3)', '3 × factorial(2) = 3 × 2', '6'],
+        ['factorial(4)', '4 × factorial(3) = 4 × 6', '24'],
+        ['factorial(5)', '5 × factorial(4) = 5 × 24', '120']
       ]
     }
   ],
