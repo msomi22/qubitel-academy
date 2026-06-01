@@ -13,6 +13,7 @@
   --hanoi-accent: #f59e0b;
   --hanoi-success: #16a34a;
   --hanoi-warning: #d97706;
+  --hanoi-danger: #dc2626;
   --hanoi-border: rgba(15, 23, 42, 0.1);
   --hanoi-shadow: 0 20px 48px rgba(15, 23, 42, 0.12);
   width: 100%;
@@ -124,47 +125,8 @@
   font-weight: 900;
 }
 
-.recursion-hanoi-current-card {
-  max-width: 1180px;
-  margin: 0 auto 1.05rem;
-  border: 1px solid var(--hanoi-border);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.74);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-  padding: clamp(0.9rem, 1.7vw, 1.15rem);
-}
-
-.recursion-hanoi-current-card strong {
-  display: block;
-  color: var(--hanoi-primary);
-  font-size: clamp(1rem, 2vw, 1.15rem);
-}
-
-.recursion-hanoi-current-card p {
-  margin: 0.35rem 0 0.65rem;
-  color: var(--hanoi-text);
-  line-height: 1.5;
-}
-
-.recursion-hanoi-current-card code {
-  display: inline-flex;
-  border-radius: 999px;
-  background: rgba(245, 158, 11, 0.14);
-  color: var(--hanoi-warning);
-  padding: 0.35rem 0.65rem;
-  font-weight: 900;
-}
-
-.recursion-hanoi-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.85fr);
-  gap: clamp(1rem, 2.4vw, 1.55rem);
-  max-width: 1360px;
-  margin: 0 auto;
-  align-items: start;
-}
-
 .recursion-hanoi-board-card,
+.recursion-hanoi-tree-card,
 .recursion-hanoi-memory-card {
   min-width: 0;
   border: 1px solid var(--hanoi-border);
@@ -174,7 +136,13 @@
   padding: clamp(1rem, 2vw, 1.35rem);
 }
 
+.recursion-hanoi-board-card.is-wide {
+  max-width: 1360px;
+  margin: 0 auto 1.05rem;
+}
+
 .recursion-hanoi-board-card h4,
+.recursion-hanoi-tree-card h4,
 .recursion-hanoi-memory-card h4,
 .recursion-hanoi-moves h4 {
   margin: 0 0 0.9rem;
@@ -187,7 +155,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(0.75rem, 2vw, 1.2rem);
-  min-height: 360px;
+  min-height: 300px;
 }
 
 .recursion-hanoi-rod-card {
@@ -226,7 +194,7 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  min-height: 280px;
+  min-height: 240px;
   padding: 1rem 0.55rem 1.15rem;
 }
 
@@ -286,12 +254,133 @@
 }
 
 .recursion-hanoi-disk.disk-3 {
-  background: linear-gradient(180deg, #fed7aa, #fb923c);
+  background: linear-gradient(180deg, #fecaca, #f87171);
 }
 
 .recursion-hanoi-disk.is-moving {
   transform: translateY(-6px) scale(1.03);
   box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.22), 0 14px 24px rgba(15, 23, 42, 0.18);
+}
+
+.recursion-hanoi-lower-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
+  gap: clamp(1rem, 2.4vw, 1.55rem);
+  max-width: 1360px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.recursion-hanoi-tree-card {
+  min-height: clamp(430px, 48vw, 620px);
+  overflow: hidden;
+}
+
+.recursion-hanoi-tree-scroll {
+  width: 100%;
+  overflow: auto;
+  padding: 1rem 0.35rem 2rem;
+}
+
+.recursion-hanoi-tree-root {
+  min-width: max-content;
+  display: flex;
+  justify-content: center;
+  padding: 0 1rem;
+}
+
+.recursion-hanoi-tree-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.recursion-hanoi-tree-children {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.7rem, 2vw, 1.2rem);
+  margin-top: 2rem;
+  position: relative;
+}
+
+.recursion-hanoi-tree-children::before {
+  content: '';
+  position: absolute;
+  top: -1.05rem;
+  left: 12%;
+  right: 12%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.5), transparent);
+}
+
+.recursion-hanoi-tree-children > .recursion-hanoi-tree-branch::before {
+  content: '';
+  position: absolute;
+  top: -1.05rem;
+  left: 50%;
+  width: 2px;
+  height: 1.05rem;
+  background: rgba(100, 116, 139, 0.5);
+  transform: translateX(-50%);
+}
+
+.recursion-hanoi-tree-node {
+  display: grid;
+  gap: 0.32rem;
+  min-width: clamp(142px, 15vw, 190px);
+  border: 2px solid rgba(15, 23, 42, 0.3);
+  border-radius: 12px;
+  background: #f0f4f8;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+  padding: 0.75rem 0.9rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.recursion-hanoi-tree-node.is-active {
+  background: #e3f2fd;
+  border-color: var(--hanoi-primary);
+  box-shadow: 0 0 20px rgba(29, 78, 216, 0.38);
+  transform: scale(1.04);
+}
+
+.recursion-hanoi-tree-node.is-returned {
+  border-color: var(--hanoi-success);
+  background: #ecfdf5;
+  opacity: 0.9;
+}
+
+.recursion-hanoi-tree-node strong {
+  color: var(--hanoi-primary);
+  font-size: 0.98rem;
+}
+
+.recursion-hanoi-tree-node code {
+  color: var(--hanoi-muted);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.recursion-hanoi-tree-node span {
+  color: var(--hanoi-danger);
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.recursion-hanoi-stack-label {
+  margin: 0.8rem 0 0.55rem;
+  color: var(--hanoi-muted);
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recursion-hanoi-stack-label.is-bottom {
+  margin-top: 0.85rem;
 }
 
 .recursion-hanoi-stack {
@@ -370,6 +459,23 @@
   text-align: center;
 }
 
+.recursion-hanoi-status-bar {
+  max-width: 1360px;
+  margin: 1.05rem auto 0;
+  border-radius: 14px;
+  background: #111827;
+  color: #e5e7eb;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.18);
+  padding: 1rem 1.1rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  font-size: clamp(0.86rem, 1.5vw, 0.96rem);
+  line-height: 1.5;
+}
+
+.recursion-hanoi-status-bar strong {
+  color: #93c5fd;
+}
+
 @keyframes recursionHanoiPopIn {
   from {
     opacity: 0;
@@ -394,6 +500,7 @@
   --hanoi-accent: #fbbf24;
   --hanoi-success: #4ade80;
   --hanoi-warning: #fbbf24;
+  --hanoi-danger: #fca5a5;
   --hanoi-border: rgba(148, 163, 184, 0.22);
   --hanoi-shadow: 0 20px 48px rgba(0, 0, 0, 0.34);
   background:
@@ -401,18 +508,33 @@
     linear-gradient(135deg, #0f172a, #111827);
 }
 
-:root[data-theme='dark'] .recursion-hanoi-current-card,
-.app-shell.dark .recursion-hanoi-current-card,
-.app-shell.theme-dark .recursion-hanoi-current-card,
-[data-theme='dark'] .recursion-hanoi-current-card {
-  background: rgba(15, 23, 42, 0.76);
-}
-
 :root[data-theme='dark'] .recursion-hanoi-rod-card,
 .app-shell.dark .recursion-hanoi-rod-card,
 .app-shell.theme-dark .recursion-hanoi-rod-card,
-[data-theme='dark'] .recursion-hanoi-rod-card {
+[data-theme='dark'] .recursion-hanoi-rod-card,
+:root[data-theme='dark'] .recursion-hanoi-tree-node,
+.app-shell.dark .recursion-hanoi-tree-node,
+.app-shell.theme-dark .recursion-hanoi-tree-node,
+[data-theme='dark'] .recursion-hanoi-tree-node {
   background: linear-gradient(180deg, rgba(30, 41, 59, 0.94), rgba(15, 23, 42, 0.86));
+}
+
+:root[data-theme='dark'] .recursion-hanoi-tree-node.is-active,
+.app-shell.dark .recursion-hanoi-tree-node.is-active,
+.app-shell.theme-dark .recursion-hanoi-tree-node.is-active,
+[data-theme='dark'] .recursion-hanoi-tree-node.is-active,
+:root[data-theme='dark'] .recursion-hanoi-frame.is-active,
+.app-shell.dark .recursion-hanoi-frame.is-active,
+.app-shell.theme-dark .recursion-hanoi-frame.is-active,
+[data-theme='dark'] .recursion-hanoi-frame.is-active {
+  background: rgba(30, 64, 175, 0.42);
+}
+
+:root[data-theme='dark'] .recursion-hanoi-tree-node.is-returned,
+.app-shell.dark .recursion-hanoi-tree-node.is-returned,
+.app-shell.theme-dark .recursion-hanoi-tree-node.is-returned,
+[data-theme='dark'] .recursion-hanoi-tree-node.is-returned {
+  background: rgba(20, 83, 45, 0.38);
 }
 
 :root[data-theme='dark'] .recursion-hanoi-frame,
@@ -422,15 +544,8 @@
   background: rgba(120, 53, 15, 0.35);
 }
 
-:root[data-theme='dark'] .recursion-hanoi-frame.is-active,
-.app-shell.dark .recursion-hanoi-frame.is-active,
-.app-shell.theme-dark .recursion-hanoi-frame.is-active,
-[data-theme='dark'] .recursion-hanoi-frame.is-active {
-  background: rgba(30, 64, 175, 0.42);
-}
-
 @media (max-width: 1020px) {
-  .recursion-hanoi-layout {
+  .recursion-hanoi-lower-layout {
     grid-template-columns: 1fr;
   }
 
@@ -467,5 +582,15 @@
 
   .recursion-hanoi-disk {
     min-height: 1.95rem;
+  }
+
+  .recursion-hanoi-tree-node {
+    min-width: 132px;
+    padding: 0.65rem 0.7rem;
+  }
+
+  .recursion-hanoi-tree-children {
+    gap: 0.45rem;
+    margin-top: 1.65rem;
   }
 }
