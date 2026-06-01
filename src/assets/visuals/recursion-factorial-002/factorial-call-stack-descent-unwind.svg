@@ -1,0 +1,161 @@
+<svg width="1400" height="820" viewBox="0 0 1400 820" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Factorial recursion call stack descent and unwinding return</title>
+  <desc id="desc">Animated educational diagram showing factorial calls going down, base case, and return values coming back up with stack push and pop mental model.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FBFF"/>
+      <stop offset="0.56" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F0FDFA"/>
+    </linearGradient>
+    <linearGradient id="blueCard" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#EFF6FF"/>
+      <stop offset="1" stop-color="#DBEAFE"/>
+    </linearGradient>
+    <linearGradient id="purpleCard" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F5F3FF"/>
+      <stop offset="1" stop-color="#EDE9FE"/>
+    </linearGradient>
+    <linearGradient id="greenCard" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ECFDF5"/>
+      <stop offset="1" stop-color="#D1FAE5"/>
+    </linearGradient>
+    <linearGradient id="returnCard" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F0FDFA"/>
+      <stop offset="1" stop-color="#CCFBF1"/>
+    </linearGradient>
+    <marker id="arrowDown" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto-start-reverse">
+      <path d="M2 2 L12 7 L2 12 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="arrowUp" markerWidth="14" markerHeight="14" refX="7" refY="7" orient="auto">
+      <path d="M2 2 L12 7 L2 12 Z" fill="#0D9488"/>
+    </marker>
+    <style>
+      .title { font: 800 34px Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill:#0F172A; }
+      .sub { font: 500 22px Inter, ui-sans-serif, system-ui, sans-serif; fill:#334155; }
+      .section-blue { font: 900 32px Inter, ui-sans-serif, system-ui, sans-serif; fill:#1D4ED8; letter-spacing:1.5px; }
+      .section-teal { font: 900 32px Inter, ui-sans-serif, system-ui, sans-serif; fill:#0F766E; letter-spacing:1.5px; }
+      .cardText { font: 800 46px Inter, ui-sans-serif, system-ui, sans-serif; fill:#0F172A; }
+      .smallText { font: 700 22px Inter, ui-sans-serif, system-ui, sans-serif; fill:#334155; }
+      .handTextBlue { font: italic 700 25px Inter, ui-sans-serif, system-ui, sans-serif; fill:#2563EB; }
+      .handTextTeal { font: italic 700 25px Inter, ui-sans-serif, system-ui, sans-serif; fill:#0D9488; }
+      .returnText { font: 800 36px Inter, ui-sans-serif, system-ui, sans-serif; fill:#0F172A; }
+      .answer { fill:#0F766E; font-weight:900; }
+      .pill { font: 800 20px Inter, ui-sans-serif, system-ui, sans-serif; fill:#0F172A; }
+      .descend-card, .return-card, .base-card, .plate { filter:url(#shadow); }
+      .pulse-blue { animation: pulseBlue 6.4s ease-in-out infinite; transform-origin:center; }
+      .pulse-green { animation: pulseGreen 6.4s ease-in-out infinite; transform-origin:center; }
+      .fade1 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:0s; }
+      .fade2 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:.45s; opacity:0; }
+      .fade3 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:.9s; opacity:0; }
+      .fade4 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:1.35s; opacity:0; }
+      .fade5 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:1.8s; opacity:0; }
+      .ret1 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:2.4s; opacity:0; }
+      .ret2 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:3.0s; opacity:0; }
+      .ret3 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:3.6s; opacity:0; }
+      .ret4 { animation: fadeIn 6.4s ease-in-out infinite; animation-delay:4.2s; opacity:0; }
+      .flowDown { stroke-dasharray: 240; stroke-dashoffset:240; animation: drawLine 6.4s ease-in-out infinite; }
+      .flowUp { stroke-dasharray: 240; stroke-dashoffset:240; animation: drawLine 6.4s ease-in-out infinite; animation-delay:2.2s; }
+      @keyframes fadeIn { 0%, 8% { opacity:0; transform:translateY(-6px);} 18%, 82% {opacity:1; transform:translateY(0);} 100% {opacity:.38;} }
+      @keyframes drawLine { 0%, 10% { stroke-dashoffset:240; opacity:.25;} 45%, 82% { stroke-dashoffset:0; opacity:1;} 100% { stroke-dashoffset:0; opacity:.35;} }
+      @keyframes pulseBlue { 0%, 100% { transform:scale(1); opacity:1;} 35% { transform:scale(1.04); opacity:1;} }
+      @keyframes pulseGreen { 0%, 100% { transform:scale(1); opacity:1;} 58% { transform:scale(1.04); opacity:1;} }
+    </style>
+  </defs>
+
+  <rect width="1400" height="820" rx="36" fill="url(#bg)"/>
+
+  <rect x="42" y="34" width="1316" height="132" rx="28" fill="#FFFBEB" stroke="#FBBF24" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="104" cy="100" r="34" fill="#FBBF24" opacity=".25"/>
+  <text x="87" y="113" font-size="52">💡</text>
+  <text x="162" y="88" class="title">Big idea:</text>
+  <text x="332" y="88" class="sub">Recursion breaks a problem into smaller instances of the same problem,</text>
+  <text x="162" y="125" class="sub">solves the smallest one, then builds the solution back up.</text>
+  <path d="M945 72 C1000 46 1048 72 1085 119" stroke="#6366F1" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 14"/>
+  <path d="M1085 119 C1128 176 1192 136 1242 76" stroke="#0D9488" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 14"/>
+  <text x="1016" y="74" class="handTextBlue">go down</text>
+  <text x="1192" y="74" class="handTextTeal">come back up</text>
+
+  <text x="72" y="230" class="section-blue">CALL STACK (DESCENT)</text>
+  <text x="782" y="230" class="section-teal">UNWINDING (RETURN)</text>
+
+  <!-- Descent cards -->
+  <g class="fade1 pulse-blue">
+    <rect class="descend-card" x="72" y="260" width="450" height="92" rx="22" fill="url(#blueCard)" stroke="#2563EB" stroke-width="4"/>
+    <circle cx="132" cy="306" r="32" fill="#2563EB" opacity=".9"/>
+    <text x="121" y="318" font-size="36" font-weight="900" fill="white">4</text>
+    <text x="214" y="322" class="cardText">fact(4)</text>
+  </g>
+  <path class="flowDown" d="M297 354 L297 405" stroke="#2563EB" stroke-width="8" marker-end="url(#arrowDown)"/>
+  <text x="78" y="392" class="handTextBlue">calls itself</text>
+
+  <g class="fade2">
+    <rect class="descend-card" x="72" y="412" width="450" height="92" rx="22" fill="url(#blueCard)" stroke="#2563EB" stroke-width="4"/>
+    <circle cx="132" cy="458" r="32" fill="#2563EB" opacity=".9"/>
+    <text x="121" y="470" font-size="36" font-weight="900" fill="white">3</text>
+    <text x="214" y="474" class="cardText">fact(3)</text>
+  </g>
+  <path class="flowDown" d="M297 506 L297 557" stroke="#2563EB" stroke-width="8" marker-end="url(#arrowDown)"/>
+  <text x="78" y="544" class="handTextBlue">calls itself</text>
+
+  <g class="fade3">
+    <rect class="descend-card" x="72" y="564" width="450" height="92" rx="22" fill="url(#purpleCard)" stroke="#7C3AED" stroke-width="4"/>
+    <circle cx="132" cy="610" r="32" fill="#7C3AED" opacity=".9"/>
+    <text x="121" y="622" font-size="36" font-weight="900" fill="white">2</text>
+    <text x="214" y="626" class="cardText">fact(2)</text>
+  </g>
+  <path class="flowDown" d="M297 658 L297 706" stroke="#7C3AED" stroke-width="8" marker-end="url(#arrowDown)"/>
+  <text x="78" y="696" class="handTextBlue">calls itself</text>
+
+  <g class="fade4">
+    <rect class="descend-card" x="72" y="704" width="450" height="76" rx="22" fill="url(#purpleCard)" stroke="#7C3AED" stroke-width="4"/>
+    <circle cx="132" cy="742" r="28" fill="#7C3AED" opacity=".9"/>
+    <text x="123" y="752" font-size="31" font-weight="900" fill="white">1</text>
+    <text x="214" y="756" font-size="40" font-weight="900" fill="#0F172A">fact(1)</text>
+  </g>
+
+  <g class="fade5 pulse-green">
+    <rect class="base-card" x="560" y="690" width="190" height="88" rx="22" fill="url(#greenCard)" stroke="#16A34A" stroke-width="4"/>
+    <circle cx="608" cy="734" r="28" fill="#16A34A"/>
+    <path d="M594 733 L604 744 L624 718" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="646" y="727" class="smallText">base case:</text>
+    <text x="646" y="758" class="smallText">return 1</text>
+  </g>
+
+  <!-- Return cards -->
+  <g class="ret4">
+    <rect class="return-card" x="782" y="260" width="480" height="82" rx="22" fill="url(#returnCard)" stroke="#0D9488" stroke-width="4"/>
+    <text x="822" y="313" class="returnText">fact(4) = 4 × 6 = <tspan class="answer">24</tspan></text>
+  </g>
+  <g class="ret3">
+    <rect class="return-card" x="782" y="412" width="480" height="82" rx="22" fill="url(#returnCard)" stroke="#0D9488" stroke-width="4"/>
+    <text x="822" y="465" class="returnText">fact(3) = 3 × 2 = <tspan class="answer">6</tspan></text>
+  </g>
+  <g class="ret2">
+    <rect class="return-card" x="782" y="564" width="480" height="82" rx="22" fill="url(#returnCard)" stroke="#0D9488" stroke-width="4"/>
+    <text x="822" y="617" class="returnText">fact(2) = 2 × 1 = <tspan class="answer">2</tspan></text>
+  </g>
+  <g class="ret1">
+    <rect class="return-card" x="782" y="704" width="480" height="76" rx="22" fill="url(#returnCard)" stroke="#0D9488" stroke-width="4"/>
+    <text x="822" y="754" class="returnText">fact(1) = <tspan class="answer">1</tspan></text>
+  </g>
+
+  <path class="flowUp" d="M770 706 C735 640 735 548 770 494" stroke="#0D9488" stroke-width="8" marker-end="url(#arrowUp)"/>
+  <path class="flowUp" d="M770 554 C735 488 735 396 770 342" stroke="#0D9488" stroke-width="8" marker-end="url(#arrowUp)"/>
+  <text x="704" y="530" class="handTextTeal" transform="rotate(-90 704 530)">returns</text>
+
+  <!-- Stack of plates panel -->
+  <rect x="1266" y="260" width="92" height="520" rx="28" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="3"/>
+  <text x="1290" y="305" class="pill" transform="rotate(90 1290 305)">STACK OF PLATES</text>
+  <g transform="translate(1285 420)">
+    <rect class="plate fade1" x="0" y="210" width="52" height="20" rx="10" fill="#1D4ED8"/>
+    <rect class="plate fade2" x="0" y="180" width="52" height="20" rx="10" fill="#2563EB"/>
+    <rect class="plate fade3" x="0" y="150" width="52" height="20" rx="10" fill="#7C3AED"/>
+    <rect class="plate fade4" x="0" y="120" width="52" height="20" rx="10" fill="#8B5CF6"/>
+    <rect class="plate fade5" x="0" y="90" width="52" height="20" rx="10" fill="#16A34A"/>
+  </g>
+  <text x="1280" y="742" font-size="18" font-weight="800" fill="#334155">push ↓</text>
+  <text x="1280" y="768" font-size="18" font-weight="800" fill="#0F766E">pop ↑</text>
+</svg>
