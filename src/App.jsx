@@ -23,7 +23,7 @@ const ProgressPage = lazy(() => import('./pages/ProgressPage.jsx'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
 const ProblemPage = lazy(() => import('./pages/ProblemPage.jsx'));
 
-function RouteScrollReset({ theme }) {
+function RouteScrollReset() {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ function RouteScrollReset({ theme }) {
       window.cancelAnimationFrame(frameId);
       window.clearTimeout(timeoutId);
     };
-  }, [pathname, theme]);
+  }, [pathname]);
 
   return null;
 }
@@ -58,7 +58,7 @@ export default function App() {
   const { theme } = usePreferences();
   return (
     <div className={`app-shell ${theme}`}>
-      <RouteScrollReset theme={theme} />
+      <RouteScrollReset />
 
       {/* First-visit onboarding — shows once, stores dismissal in localStorage */}
       <OnboardingOverlay />
