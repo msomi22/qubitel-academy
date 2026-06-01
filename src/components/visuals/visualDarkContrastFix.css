@@ -170,3 +170,176 @@ body[data-theme='dark'] .config-visual .config-visual-array-item.config-visual-r
     0 12px 26px rgba(6, 95, 70, 0.34),
     inset 0 -4px 0 rgba(52, 211, 153, 0.2) !important;
 }
+
+/* Keep the sliding-window state panel focused on the current mental state. */
+.config-visual-sliding-window .config-visual-state-row:not(.active) {
+  display: none !important;
+}
+
+.config-visual-sliding-window .config-visual-state-row.active {
+  background: rgba(255, 252, 244, 0.96) !important;
+  isolation: isolate;
+}
+
+.config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+.config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success {
+  background: linear-gradient(180deg, rgba(220, 252, 231, 0.98), rgba(187, 247, 208, 0.94)) !important;
+}
+
+.config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window {
+  background: linear-gradient(180deg, rgba(219, 234, 254, 0.98), rgba(191, 219, 254, 0.92)) !important;
+}
+
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+.dark .config-visual-sliding-window .config-visual-state-row.active,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active {
+  background: rgba(15, 23, 42, 0.98) !important;
+}
+
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+.dark .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+.dark .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-answer,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-success {
+  background: linear-gradient(180deg, rgba(6, 78, 59, 0.98), rgba(6, 95, 70, 0.94)) !important;
+}
+
+html[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+body[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+.dark .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+[data-theme='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+[data-color-mode='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window,
+[data-appearance='dark'] .config-visual-sliding-window .config-visual-state-row.active.config-visual-role-window {
+  background: linear-gradient(180deg, rgba(30, 64, 175, 0.98), rgba(15, 23, 42, 0.96)) !important;
+}
+
+/*
+  Standardize the Container With Most Water visual so it feels like the other
+  config-driven walkthroughs instead of a separate hardcoded dark infographic.
+*/
+.config-visual-container-water .container-water-stage {
+  background:
+    radial-gradient(circle at 25% 20%, rgba(59, 130, 246, 0.12), transparent 32%),
+    linear-gradient(135deg, rgba(255, 252, 244, 0.96) 0%, rgba(255, 255, 255, 0.86) 100%) !important;
+  border-color: rgba(86, 67, 42, 0.14) !important;
+  color: var(--text-strong, #2f261b) !important;
+  box-shadow: 0 14px 36px rgba(74, 53, 27, 0.08) !important;
+}
+
+.config-visual-container-water .container-water-panel {
+  background: rgba(255, 255, 255, 0.62) !important;
+  border-color: rgba(86, 67, 42, 0.12) !important;
+  color: var(--text-strong, #2f261b) !important;
+}
+
+.config-visual-container-water .container-water-panel h4,
+.config-visual-container-water .container-water-width {
+  color: #1d4ed8 !important;
+}
+
+.config-visual-container-water .container-water-metric span:first-child,
+.config-visual-container-water .container-water-reason,
+.config-visual-container-water .container-water-index,
+.config-visual-container-water .container-water-y-label {
+  color: var(--text-muted, #756a5a) !important;
+}
+
+.config-visual-container-water .container-water-chart {
+  border-left-color: rgba(86, 67, 42, 0.26) !important;
+  border-bottom-color: rgba(86, 67, 42, 0.26) !important;
+}
+
+.config-visual-container-water .container-water-bar:not(.left):not(.right):not(.best) {
+  border-color: rgba(86, 67, 42, 0.26) !important;
+  background: linear-gradient(180deg, rgba(86, 67, 42, 0.14), rgba(86, 67, 42, 0.06)) !important;
+}
+
+.config-visual-container-water .container-water-value {
+  color: var(--text-strong, #2f261b) !important;
+}
+
+html[data-theme='dark'] .config-visual-container-water .container-water-stage,
+body[data-theme='dark'] .config-visual-container-water .container-water-stage,
+.dark .config-visual-container-water .container-water-stage,
+[data-theme='dark'] .config-visual-container-water .container-water-stage,
+[data-color-mode='dark'] .config-visual-container-water .container-water-stage,
+[data-appearance='dark'] .config-visual-container-water .container-water-stage {
+  background:
+    radial-gradient(circle at 25% 20%, rgba(59, 130, 246, 0.18), transparent 32%),
+    linear-gradient(135deg, rgba(15, 23, 42, 0.96) 0%, rgba(17, 24, 39, 0.92) 100%) !important;
+  border-color: var(--visual-border, rgba(148, 163, 184, 0.18)) !important;
+  color: var(--visual-text, #f8fafc) !important;
+  box-shadow: var(--visual-shadow, 0 18px 45px rgba(0, 0, 0, 0.34)) !important;
+}
+
+html[data-theme='dark'] .config-visual-container-water .container-water-panel,
+body[data-theme='dark'] .config-visual-container-water .container-water-panel,
+.dark .config-visual-container-water .container-water-panel,
+[data-theme='dark'] .config-visual-container-water .container-water-panel,
+[data-color-mode='dark'] .config-visual-container-water .container-water-panel,
+[data-appearance='dark'] .config-visual-container-water .container-water-panel {
+  background: var(--visual-surface-strong, rgba(31, 41, 55, 0.9)) !important;
+  border-color: var(--visual-border, rgba(148, 163, 184, 0.18)) !important;
+  color: var(--visual-text, #f8fafc) !important;
+}
+
+html[data-theme='dark'] .config-visual-container-water .container-water-panel h4,
+html[data-theme='dark'] .config-visual-container-water .container-water-width,
+body[data-theme='dark'] .config-visual-container-water .container-water-panel h4,
+body[data-theme='dark'] .config-visual-container-water .container-water-width,
+.dark .config-visual-container-water .container-water-panel h4,
+.dark .config-visual-container-water .container-water-width,
+[data-theme='dark'] .config-visual-container-water .container-water-panel h4,
+[data-theme='dark'] .config-visual-container-water .container-water-width,
+[data-color-mode='dark'] .config-visual-container-water .container-water-panel h4,
+[data-color-mode='dark'] .config-visual-container-water .container-water-width,
+[data-appearance='dark'] .config-visual-container-water .container-water-panel h4,
+[data-appearance='dark'] .config-visual-container-water .container-water-width {
+  color: var(--visual-window-text, #bfdbfe) !important;
+}
+
+html[data-theme='dark'] .config-visual-container-water .container-water-metric span:first-child,
+html[data-theme='dark'] .config-visual-container-water .container-water-reason,
+html[data-theme='dark'] .config-visual-container-water .container-water-index,
+html[data-theme='dark'] .config-visual-container-water .container-water-y-label,
+body[data-theme='dark'] .config-visual-container-water .container-water-metric span:first-child,
+body[data-theme='dark'] .config-visual-container-water .container-water-reason,
+body[data-theme='dark'] .config-visual-container-water .container-water-index,
+body[data-theme='dark'] .config-visual-container-water .container-water-y-label,
+.dark .config-visual-container-water .container-water-metric span:first-child,
+.dark .config-visual-container-water .container-water-reason,
+.dark .config-visual-container-water .container-water-index,
+.dark .config-visual-container-water .container-water-y-label,
+[data-theme='dark'] .config-visual-container-water .container-water-metric span:first-child,
+[data-theme='dark'] .config-visual-container-water .container-water-reason,
+[data-theme='dark'] .config-visual-container-water .container-water-index,
+[data-theme='dark'] .config-visual-container-water .container-water-y-label,
+[data-color-mode='dark'] .config-visual-container-water .container-water-metric span:first-child,
+[data-color-mode='dark'] .config-visual-container-water .container-water-reason,
+[data-color-mode='dark'] .config-visual-container-water .container-water-index,
+[data-color-mode='dark'] .config-visual-container-water .container-water-y-label,
+[data-appearance='dark'] .config-visual-container-water .container-water-metric span:first-child,
+[data-appearance='dark'] .config-visual-container-water .container-water-reason,
+[data-appearance='dark'] .config-visual-container-water .container-water-index,
+[data-appearance='dark'] .config-visual-container-water .container-water-y-label {
+  color: var(--visual-muted, rgba(203, 213, 225, 0.84)) !important;
+}
+
+html[data-theme='dark'] .config-visual-container-water .container-water-value,
+body[data-theme='dark'] .config-visual-container-water .container-water-value,
+.dark .config-visual-container-water .container-water-value,
+[data-theme='dark'] .config-visual-container-water .container-water-value,
+[data-color-mode='dark'] .config-visual-container-water .container-water-value,
+[data-appearance='dark'] .config-visual-container-water .container-water-value {
+  color: var(--visual-text, #f8fafc) !important;
+}
