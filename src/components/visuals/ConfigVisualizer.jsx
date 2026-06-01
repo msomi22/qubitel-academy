@@ -119,6 +119,31 @@ function VisualStyles() {
       .config-visual-timeline-step.is-active .config-visual-timeline-dot { background: rgba(82, 116, 76, 0.35); border-color: rgba(82, 116, 76, 0.45); }
       .config-visual-edge-list { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.65rem; }
 
+      .recursion-factorial-shell { max-width: 980px; margin: 0 auto; border-radius: 18px; background: #ffffff; color: #333333; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08); padding: 1.25rem; }
+      .recursion-factorial-big-idea { background: #fff9db; border: 2px solid #ffec99; border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.1rem; }
+      .recursion-factorial-big-idea h3 { margin: 0 0 0.4rem; color: #d9480f; font-size: 1.2rem; font-family: inherit; }
+      .recursion-factorial-big-idea p { margin: 0; color: #333333; line-height: 1.5; }
+      .recursion-factorial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4rem; }
+      .recursion-factorial-column { display: flex; flex-direction: column; gap: 0.95rem; }
+      .recursion-factorial-return-list { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 0.95rem; }
+      .recursion-factorial-header { text-align: center; margin-bottom: 0.3rem; }
+      .recursion-factorial-header h3 { margin: 0 0 0.25rem; font-family: inherit; font-size: 1.38rem; font-weight: 900; letter-spacing: 0.02em; }
+      .recursion-factorial-header p { margin: 0; color: #666666; font-size: 0.95rem; line-height: 1.35; }
+      .recursion-factorial-header.is-descent h3 { color: #4263eb; }
+      .recursion-factorial-header.is-return h3 { color: #0ca678; }
+      .recursion-factorial-box { min-height: 66px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 2px solid; border-radius: 12px; padding: 0.9rem 1.15rem; font-size: 1.08rem; font-weight: 850; opacity: 0.12; transform: translateY(-10px); transition: opacity 220ms ease, transform 220ms ease, box-shadow 220ms ease; }
+      .recursion-factorial-box.is-visible { opacity: 1; transform: translateY(0); box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05); }
+      .recursion-factorial-box.is-active { box-shadow: 0 0 0 4px rgba(66, 99, 235, 0.14), 0 14px 24px rgba(15, 23, 42, 0.08); }
+      .recursion-factorial-box.is-descent { background: #eef2ff; border-color: #c7d2fe; color: #4263eb; }
+      .recursion-factorial-box.is-base { background: #ebfbee; border-color: #8ce99a; color: #2b8a3e; }
+      .recursion-factorial-box.is-return { background: #e6fcf5; border-color: #96f2d7; color: #0ca678; }
+      .recursion-factorial-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1.25rem; padding-top: 1.2rem; border-top: 1px solid #eeeeee; }
+      .recursion-factorial-controls button { border: 0; border-radius: 10px; padding: 0.7rem 1.2rem; font: inherit; font-size: 1rem; font-weight: 900; cursor: pointer; transition: background 160ms ease, opacity 160ms ease; }
+      .recursion-factorial-controls button:disabled { background: #e9ecef; color: #adb5bd; cursor: not-allowed; opacity: 1; }
+      .recursion-factorial-back { background: #f1f3f5; color: #495057; }
+      .recursion-factorial-next { background: #4263eb; color: #ffffff; }
+      .recursion-factorial-status { flex: 1; margin: 0; text-align: center; color: #495057; font-size: 1.02rem; font-weight: 650; line-height: 1.35; }
+
       .stack-visual-stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 0.6fr); gap: 0.8rem; align-items: stretch; }
       .stack-visual-input-row { display: flex; flex-wrap: wrap; gap: 0.42rem; align-items: center; margin-bottom: 0.7rem; }
       .stack-visual-char { min-width: 42px; min-height: 42px; display: grid; place-items: center; border-radius: 14px; border: 1px solid rgba(86, 67, 42, 0.14); background: rgba(255, 255, 255, 0.72); color: var(--text-strong, #2f261b); font-family: var(--font-mono); font-weight: 950; box-shadow: 0 8px 18px rgba(74, 53, 27, 0.06); }
@@ -158,7 +183,7 @@ function VisualStyles() {
       .container-water-metric { display: flex; justify-content: space-between; gap: 1rem; padding: 0.25rem 0; font-weight: 800; font-size: 0.9rem; }
       .container-water-metric span:first-child { color: #cbd5e1; font-weight: 650; }
       .container-water-reason { margin: 0; color: #e2e8f0; line-height: 1.42; font-size: 0.92rem; }
-      @media (max-width: 860px) { .config-visual-layout, .container-water-panels, .stack-visual-stage { grid-template-columns: 1fr; } .config-visual-controls span { width: 100%; margin-left: 0; } .container-water-stage { min-height: 300px; } }
+      @media (max-width: 860px) { .config-visual-layout, .container-water-panels, .stack-visual-stage, .recursion-factorial-grid { grid-template-columns: 1fr; } .config-visual-controls span { width: 100%; margin-left: 0; } .container-water-stage { min-height: 300px; } .recursion-factorial-return-list { justify-content: flex-start; } .recursion-factorial-controls { flex-wrap: wrap; } .recursion-factorial-status { order: -1; flex-basis: 100%; } }
     `}</style>
   );
 }
@@ -293,6 +318,74 @@ function StackView({ diagram, frame }) {
         </div>
       </aside>
     </div>
+  );
+}
+
+function RecursionFactorialView({ diagram, activeIndex, frames, onPrevious, onNext }) {
+  const descentSteps = asArray(diagram.descentSteps).length ? asArray(diagram.descentSteps) : [
+    { step: 1, label: '1. fact(4)', value: '4!', kind: 'descent' },
+    { step: 2, label: '2. fact(3)', value: '3!', kind: 'descent' },
+    { step: 3, label: '3. fact(2)', value: '2!', kind: 'descent' },
+    { step: 4, label: '✔ Base case: return 1', value: 'fact(1) = 1', kind: 'base' }
+  ];
+  const returnSteps = asArray(diagram.returnSteps).length ? asArray(diagram.returnSteps) : [
+    { step: 8, label: 'fact(4) = 4 × 6', value: '= 24', kind: 'return' },
+    { step: 7, label: 'fact(3) = 3 × 2', value: '= 6', kind: 'return' },
+    { step: 6, label: 'fact(2) = 2 × 1', value: '= 2', kind: 'return' },
+    { step: 5, label: 'fact(1) = 1', value: '1', kind: 'return' }
+  ];
+  const maxStep = Math.max(frames.length - 1, ...descentSteps.map((step) => step.step), ...returnSteps.map((step) => step.step));
+  const currentMessage = frames[activeIndex]?.description || diagram.summary || 'Click Next to begin.';
+  const stepClass = (step) => [
+    'recursion-factorial-box',
+    `is-${step.kind || 'descent'}`,
+    activeIndex >= step.step ? 'is-visible' : '',
+    activeIndex === step.step ? 'is-active' : ''
+  ].filter(Boolean).join(' ');
+
+  return (
+    <section className="config-visual config-visual-recursion-factorial" aria-label={diagram.title || 'Factorial recursion walkthrough'}>
+      <VisualStyles />
+      <div className="recursion-factorial-shell">
+        <div className="recursion-factorial-big-idea">
+          <h3>{diagram.bigIdeaTitle || '💡 Big idea'}</h3>
+          <p>{diagram.bigIdea || 'Recursion breaks a problem into smaller instances of the same problem, solves the smallest one, then builds the solution back up.'}</p>
+        </div>
+        <div className="recursion-factorial-grid">
+          <div className="recursion-factorial-column">
+            <div className="recursion-factorial-header is-descent">
+              <h3>{diagram.descentTitle || 'CALL STACK (DESCENT)'}</h3>
+              <p>{diagram.descentSubtitle || 'We keep calling the function with smaller inputs.'}</p>
+            </div>
+            {descentSteps.map((step) => (
+              <div className={stepClass(step)} key={step.step}>
+                <span>{step.label}</span>
+                <span>{step.value}</span>
+              </div>
+            ))}
+          </div>
+          <div className="recursion-factorial-column">
+            <div className="recursion-factorial-header is-return">
+              <h3>{diagram.returnTitle || 'UNWINDING (RETURN)'}</h3>
+              <p>{diagram.returnSubtitle || 'We return and build the result back up.'}</p>
+            </div>
+            <div className="recursion-factorial-return-list">
+              {returnSteps.map((step) => (
+                <div className={stepClass(step)} key={step.step}>
+                  <span>{step.label}</span>
+                  <span>{step.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="recursion-factorial-controls" data-no-card-nav>
+          <button type="button" className="recursion-factorial-back" onClick={onPrevious} disabled={activeIndex === 0}>← Back</button>
+          <p className="recursion-factorial-status" role="status">{currentMessage}</p>
+          <button type="button" className="recursion-factorial-next" onClick={onNext} disabled={activeIndex >= maxStep}>Next →</button>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -471,6 +564,10 @@ export default function ConfigVisualizer({ diagram }) {
     setPlaying(false);
     setActiveIndex((current) => (current >= frames.length - 1 ? 0 : current + 1));
   };
+  const goNextBounded = () => {
+    setPlaying(false);
+    setActiveIndex((current) => (current >= frames.length - 1 ? current : current + 1));
+  };
   const togglePlay = () => {
     if (activeIndex >= frames.length - 1) {
       setActiveIndex(0);
@@ -479,6 +576,10 @@ export default function ConfigVisualizer({ diagram }) {
     }
     setPlaying((current) => !current);
   };
+
+  if (visualType === 'recursion-factorial') {
+    return <RecursionFactorialView diagram={diagram} activeIndex={activeIndex} frames={frames} onPrevious={goPrevious} onNext={goNextBounded} />;
+  }
 
   const view = (() => {
     if (visualType === 'container-water') return <ContainerWaterView diagram={diagram} frame={activeFrame} />;
