@@ -350,13 +350,7 @@ function MoveList({ moves }) {
 }
 
 function StatusBar({ activeEvent, latestMove }) {
-  if (!activeEvent) {
-    return (
-      <div className="recursion-hanoi-status-bar">
-        <strong>System ready.</strong> Click Next Step to call hanoi(3, A, B, C). All disks are waiting on Rod A.
-      </div>
-    );
-  }
+  if (!activeEvent) return null;
 
   const latestMoveText = latestMove
     ? ` Latest physical move: disk ${latestMove.disk}, ${latestMove.from} → ${latestMove.to}.`
@@ -395,12 +389,6 @@ export default function RecursionHanoiVisualizer({ diagram }) {
 
   return (
     <section className="recursion-hanoi-shell" aria-label={diagram?.title || `Tower of Hanoi with ${diskCount} disks`}>
-      <header className="recursion-hanoi-hero">
-        <span className="recursion-hanoi-kicker">Recursive planning + computer memory</span>
-        <h3>{diagram?.title || `Tower of Hanoi(${diskCount}) - Move Planning in Memory`}</h3>
-        <p>{diagram?.summary || 'Watch rods, disks, stack frames, paused calls, emitted moves, and returns happen together.'}</p>
-      </header>
-
       <div className="recursion-hanoi-progress" aria-hidden="true">
         <span style={{ width: `${progress}%` }} />
       </div>
