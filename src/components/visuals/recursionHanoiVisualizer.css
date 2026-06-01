@@ -1,0 +1,471 @@
+.recursion-hanoi-shell,
+.recursion-hanoi-shell * {
+  box-sizing: border-box;
+}
+
+.recursion-hanoi-shell {
+  --hanoi-bg: #f4f7fb;
+  --hanoi-card: #ffffff;
+  --hanoi-card-soft: #f8fafc;
+  --hanoi-text: #111827;
+  --hanoi-muted: #64748b;
+  --hanoi-primary: #1d4ed8;
+  --hanoi-accent: #f59e0b;
+  --hanoi-success: #16a34a;
+  --hanoi-warning: #d97706;
+  --hanoi-border: rgba(15, 23, 42, 0.1);
+  --hanoi-shadow: 0 20px 48px rgba(15, 23, 42, 0.12);
+  width: 100%;
+  margin: 1.25rem 0 0;
+  padding: clamp(1rem, 2vw, 1.55rem);
+  overflow: hidden;
+  border: 1px solid var(--hanoi-border);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top left, rgba(245, 158, 11, 0.16), transparent 30%),
+    linear-gradient(135deg, var(--hanoi-bg), #eef4ff);
+  color: var(--hanoi-text);
+}
+
+.recursion-hanoi-hero {
+  max-width: 980px;
+  margin: 0 auto 1rem;
+  text-align: center;
+}
+
+.recursion-hanoi-kicker {
+  display: inline-flex;
+  margin-bottom: 0.45rem;
+  border: 1px solid rgba(29, 78, 216, 0.2);
+  border-radius: 999px;
+  background: rgba(29, 78, 216, 0.08);
+  color: var(--hanoi-primary);
+  padding: 0.32rem 0.72rem;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recursion-hanoi-hero h3 {
+  margin: 0 0 0.45rem;
+  color: var(--hanoi-text);
+  font-size: clamp(1.35rem, 2.8vw, 2.08rem);
+  line-height: 1.12;
+}
+
+.recursion-hanoi-hero p {
+  margin: 0;
+  color: var(--hanoi-text);
+  font-size: clamp(0.95rem, 1.7vw, 1.13rem);
+  line-height: 1.55;
+}
+
+.recursion-hanoi-progress {
+  max-width: 1180px;
+  height: 0.55rem;
+  margin: 0.65rem auto 1rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.18);
+}
+
+.recursion-hanoi-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--hanoi-primary), var(--hanoi-accent));
+  transition: width 0.22s ease;
+}
+
+.recursion-hanoi-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.recursion-hanoi-controls button {
+  border: 0;
+  border-radius: 10px;
+  background: var(--hanoi-primary);
+  color: #ffffff;
+  padding: 0.72rem 1.12rem;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(29, 78, 216, 0.18);
+  transition: transform 0.18s ease, filter 0.18s ease, opacity 0.18s ease;
+}
+
+.recursion-hanoi-controls button:hover:not(:disabled),
+.recursion-hanoi-controls button:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(0.96);
+  outline: 3px solid rgba(29, 78, 216, 0.26);
+  outline-offset: 2px;
+}
+
+.recursion-hanoi-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.recursion-hanoi-controls .recursion-hanoi-next {
+  background: linear-gradient(135deg, var(--hanoi-accent), var(--hanoi-warning));
+}
+
+.recursion-hanoi-controls span {
+  color: var(--hanoi-muted);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.recursion-hanoi-current-card {
+  max-width: 1180px;
+  margin: 0 auto 1.05rem;
+  border: 1px solid var(--hanoi-border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  padding: clamp(0.9rem, 1.7vw, 1.15rem);
+}
+
+.recursion-hanoi-current-card strong {
+  display: block;
+  color: var(--hanoi-primary);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+}
+
+.recursion-hanoi-current-card p {
+  margin: 0.35rem 0 0.65rem;
+  color: var(--hanoi-text);
+  line-height: 1.5;
+}
+
+.recursion-hanoi-current-card code {
+  display: inline-flex;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--hanoi-warning);
+  padding: 0.35rem 0.65rem;
+  font-weight: 900;
+}
+
+.recursion-hanoi-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.85fr);
+  gap: clamp(1rem, 2.4vw, 1.55rem);
+  max-width: 1360px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.recursion-hanoi-board-card,
+.recursion-hanoi-memory-card {
+  min-width: 0;
+  border: 1px solid var(--hanoi-border);
+  border-radius: 18px;
+  background: var(--hanoi-card);
+  box-shadow: var(--hanoi-shadow);
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.recursion-hanoi-board-card h4,
+.recursion-hanoi-memory-card h4,
+.recursion-hanoi-moves h4 {
+  margin: 0 0 0.9rem;
+  color: var(--hanoi-text);
+  text-align: center;
+  font-size: clamp(1.03rem, 2vw, 1.2rem);
+}
+
+.recursion-hanoi-rods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.2rem);
+  min-height: 360px;
+}
+
+.recursion-hanoi-rod-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(100, 116, 139, 0.18);
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--hanoi-card-soft), rgba(255, 255, 255, 0.86));
+}
+
+.recursion-hanoi-rod-card header {
+  display: grid;
+  gap: 0.16rem;
+  border-bottom: 1px solid rgba(100, 116, 139, 0.14);
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.recursion-hanoi-rod-card header strong {
+  color: var(--hanoi-primary);
+  font-size: 1.05rem;
+}
+
+.recursion-hanoi-rod-card header span {
+  color: var(--hanoi-muted);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.recursion-hanoi-rod-stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 280px;
+  padding: 1rem 0.55rem 1.15rem;
+}
+
+.recursion-hanoi-rod-stage::after {
+  content: '';
+  position: absolute;
+  right: 12%;
+  bottom: 0.95rem;
+  left: 12%;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.22);
+}
+
+.recursion-hanoi-rod-pole {
+  position: absolute;
+  bottom: 0.95rem;
+  left: 50%;
+  width: 0.72rem;
+  height: 78%;
+  transform: translateX(-50%);
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, rgba(100, 116, 139, 0.44), rgba(100, 116, 139, 0.16));
+}
+
+.recursion-hanoi-disk-stack {
+  z-index: 1;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  width: 100%;
+  gap: 0.35rem;
+}
+
+.recursion-hanoi-disk {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4.5rem;
+  min-height: 2.15rem;
+  border: 2px solid rgba(15, 23, 42, 0.12);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fbbf24, #f59e0b);
+  color: #111827;
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  font-weight: 950;
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.14);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.recursion-hanoi-disk.disk-1 {
+  background: linear-gradient(180deg, #bfdbfe, #60a5fa);
+}
+
+.recursion-hanoi-disk.disk-2 {
+  background: linear-gradient(180deg, #bbf7d0, #4ade80);
+}
+
+.recursion-hanoi-disk.disk-3 {
+  background: linear-gradient(180deg, #fed7aa, #fb923c);
+}
+
+.recursion-hanoi-disk.is-moving {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.22), 0 14px 24px rgba(15, 23, 42, 0.18);
+}
+
+.recursion-hanoi-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.72rem;
+  min-height: 130px;
+}
+
+.recursion-hanoi-frame {
+  border: 2px solid var(--hanoi-accent);
+  border-radius: 12px;
+  background: #fff7ed;
+  box-shadow: inset 5px 0 0 var(--hanoi-accent);
+  padding: 0.78rem 0.88rem;
+  animation: recursionHanoiPopIn 0.18s ease-out;
+}
+
+.recursion-hanoi-frame.is-active {
+  border-color: var(--hanoi-primary);
+  background: #eff6ff;
+  box-shadow: inset 5px 0 0 var(--hanoi-primary);
+}
+
+.recursion-hanoi-frame div {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.recursion-hanoi-frame strong {
+  color: var(--hanoi-primary);
+  font-size: 0.98rem;
+}
+
+.recursion-hanoi-frame small {
+  color: var(--hanoi-muted);
+  font-weight: 800;
+}
+
+.recursion-hanoi-frame p {
+  margin: 0.45rem 0 0;
+  color: var(--hanoi-text);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.recursion-hanoi-empty {
+  margin: 1rem 0;
+  color: var(--hanoi-muted);
+  text-align: center;
+  font-weight: 800;
+}
+
+.recursion-hanoi-moves {
+  margin-top: 1rem;
+  border-top: 1px solid var(--hanoi-border);
+  padding-top: 1rem;
+}
+
+.recursion-hanoi-moves ol {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding-left: 1.35rem;
+}
+
+.recursion-hanoi-moves li {
+  color: var(--hanoi-text);
+  font-weight: 800;
+}
+
+.recursion-hanoi-moves p {
+  margin: 0;
+  color: var(--hanoi-muted);
+  line-height: 1.45;
+  text-align: center;
+}
+
+@keyframes recursionHanoiPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+:root[data-theme='dark'] .recursion-hanoi-shell,
+.app-shell.dark .recursion-hanoi-shell,
+.app-shell.theme-dark .recursion-hanoi-shell,
+[data-theme='dark'] .recursion-hanoi-shell {
+  --hanoi-bg: #0f172a;
+  --hanoi-card: rgba(15, 23, 42, 0.94);
+  --hanoi-card-soft: rgba(30, 41, 59, 0.94);
+  --hanoi-text: #e5e7eb;
+  --hanoi-muted: #aab4c5;
+  --hanoi-primary: #93c5fd;
+  --hanoi-accent: #fbbf24;
+  --hanoi-success: #4ade80;
+  --hanoi-warning: #fbbf24;
+  --hanoi-border: rgba(148, 163, 184, 0.22);
+  --hanoi-shadow: 0 20px 48px rgba(0, 0, 0, 0.34);
+  background:
+    radial-gradient(circle at top left, rgba(251, 191, 36, 0.14), transparent 30%),
+    linear-gradient(135deg, #0f172a, #111827);
+}
+
+:root[data-theme='dark'] .recursion-hanoi-current-card,
+.app-shell.dark .recursion-hanoi-current-card,
+.app-shell.theme-dark .recursion-hanoi-current-card,
+[data-theme='dark'] .recursion-hanoi-current-card {
+  background: rgba(15, 23, 42, 0.76);
+}
+
+:root[data-theme='dark'] .recursion-hanoi-rod-card,
+.app-shell.dark .recursion-hanoi-rod-card,
+.app-shell.theme-dark .recursion-hanoi-rod-card,
+[data-theme='dark'] .recursion-hanoi-rod-card {
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.94), rgba(15, 23, 42, 0.86));
+}
+
+:root[data-theme='dark'] .recursion-hanoi-frame,
+.app-shell.dark .recursion-hanoi-frame,
+.app-shell.theme-dark .recursion-hanoi-frame,
+[data-theme='dark'] .recursion-hanoi-frame {
+  background: rgba(120, 53, 15, 0.35);
+}
+
+:root[data-theme='dark'] .recursion-hanoi-frame.is-active,
+.app-shell.dark .recursion-hanoi-frame.is-active,
+.app-shell.theme-dark .recursion-hanoi-frame.is-active,
+[data-theme='dark'] .recursion-hanoi-frame.is-active {
+  background: rgba(30, 64, 175, 0.42);
+}
+
+@media (max-width: 1020px) {
+  .recursion-hanoi-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .recursion-hanoi-memory-card {
+    order: -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .recursion-hanoi-shell {
+    border-radius: 18px;
+    padding: 0.85rem;
+  }
+
+  .recursion-hanoi-controls {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .recursion-hanoi-controls button,
+  .recursion-hanoi-controls span {
+    width: 100%;
+    text-align: center;
+  }
+
+  .recursion-hanoi-rods {
+    grid-template-columns: 1fr;
+    min-height: unset;
+  }
+
+  .recursion-hanoi-rod-stage {
+    min-height: 210px;
+  }
+
+  .recursion-hanoi-disk {
+    min-height: 1.95rem;
+  }
+}
