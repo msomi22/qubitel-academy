@@ -11,7 +11,8 @@ export const VISUAL_TYPES = Object.freeze({
   HEAP: 'heap',
   STATE: 'state',
   STACK: 'stack',
-  CONTAINER_WATER: 'container-water'
+  CONTAINER_WATER: 'container-water',
+  RECURSION_FACTORIAL: 'recursion-factorial'
 });
 
 export const GRID_ALIASES = new Set([
@@ -30,7 +31,8 @@ export const GENERIC_VISUAL_TYPES = new Set([
   VISUAL_TYPES.HEAP,
   VISUAL_TYPES.STATE,
   VISUAL_TYPES.STACK,
-  VISUAL_TYPES.CONTAINER_WATER
+  VISUAL_TYPES.CONTAINER_WATER,
+  VISUAL_TYPES.RECURSION_FACTORIAL
 ]);
 
 export function normalizeVisualType(type) {
