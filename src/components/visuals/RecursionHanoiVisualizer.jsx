@@ -335,16 +335,13 @@ function StackFrame({ frame, index, total }) {
 function MoveList({ moves }) {
   const visibleMoves = moves.slice(-5);
 
+  if (!visibleMoves.length) return null;
+
   return (
     <div className="recursion-hanoi-moves">
-      <h4>Emitted Moves</h4>
-      {visibleMoves.length ? (
-        <ol>
-          {visibleMoves.map((move) => <li key={move}>{move}</li>)}
-        </ol>
-      ) : (
-        <p>No move has been emitted yet. The first few clicks only build the recursive plan in memory.</p>
-      )}
+      <ol>
+        {visibleMoves.map((move) => <li key={move}>{move}</li>)}
+      </ol>
     </div>
   );
 }
