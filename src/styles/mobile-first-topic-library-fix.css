@@ -53,6 +53,15 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 
+  .category-page .topic-picker.scalable-topic-picker {
+    display: grid !important;
+    grid-auto-flow: row !important;
+    grid-auto-columns: auto !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    overflow: hidden !important;
+    scroll-snap-type: none !important;
+  }
+
   .topic-tab,
   .category-card,
   .question-card,
@@ -63,6 +72,11 @@
     max-width: 100%;
     min-width: 0;
     overflow-x: hidden;
+  }
+
+  .category-page .topic-tab {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 
   .topic-tab *,
