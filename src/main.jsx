@@ -27,6 +27,7 @@ import './styles/responsive-sidebar-layout.css';
 import './styles/responsive-topic-library-cards.css';
 import './styles/mobile-first-topic-library-fix.css';
 import './styles/focused-text-wrap-fix.css';
+import './styles/mobile-first-recursion-factorial.css';
 import './styles/glossary.css';
 
 createRoot(document.getElementById('root')).render(
