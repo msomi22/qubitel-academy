@@ -170,6 +170,113 @@ export const topicManifest = [
     ]
   },
   {
+    "id": "recursion",
+    "name": "RECUR — Recursion",
+    "category": "dsa",
+    "description": "Master recursive thinking, base cases, call stack tracing, return unwinding, branching choices, and the foundations behind DFS, backtracking, divide-and-conquer, trees, and dynamic programming.",
+    "questionBank": {
+      "mode": "discovered"
+    },
+    "objectives": [
+      "Explain the three laws of recursion: self-call, base case, and progress toward termination.",
+      "Trace recursive calls using the call stack mental model.",
+      "Identify base cases and recursive cases before writing code.",
+      "Explain how values return and unwind after the base case is reached.",
+      "Recognize when recursion leads into DFS, trees, backtracking, divide-and-conquer, and dynamic programming.",
+      "Practice recursion from simple linear calls to branching choice trees."
+    ],
+    "notes": {
+      "summary": "Recursion solves a problem by reducing it into smaller versions of the same problem. The learner must understand the base case, the recursive case, and how each call moves closer to stopping.",
+      "strategy": "Before writing recursive code, define the smallest answer, the work done in the current call, and the smaller problem passed to the next call.",
+      "mentalModel": [
+        "Each recursive call pauses the current function and pushes a new frame onto the call stack.",
+        "The base case stops new calls from being added.",
+        "After the base case returns, stack frames pop one by one and each paused call continues.",
+        "For branching recursion, each call may create multiple smaller calls, forming a recursion tree.",
+        "If the input does not move toward the base case, recursion will not terminate safely."
+      ]
+    },
+    "roadmap": [
+      {
+        "stage": "Stage A",
+        "title": "Recursion foundations",
+        "purpose": "Teach the base case, recursive case, progress toward termination, and call stack tracing.",
+        "currentExamples": [],
+        "nearTermAdditions": [
+          "Recursion — The Gateway to Everything",
+          "Factorial(n)",
+          "Sum of digits"
+        ],
+        "futureIdeas": [
+          "What makes a recursive function stop?",
+          "What gets pushed onto the call stack?",
+          "What happens when recursive calls return?"
+        ]
+      },
+      {
+        "stage": "Stage B",
+        "title": "Linear recursion",
+        "purpose": "Teach one-call recursion where each call makes the problem smaller by one step.",
+        "currentExamples": [],
+        "nearTermAdditions": [
+          "Reverse a string",
+          "Check palindrome with two-pointer recursion"
+        ],
+        "futureIdeas": [
+          "Where does the answer get built?",
+          "What work happens before the recursive call?",
+          "What work happens after the recursive call returns?"
+        ]
+      },
+      {
+        "stage": "Stage C",
+        "title": "Divide-and-conquer recursion",
+        "purpose": "Teach recursion that splits the search or computation space into smaller independent pieces.",
+        "currentExamples": [],
+        "nearTermAdditions": [
+          "Power(x, n)",
+          "Recursive binary search"
+        ],
+        "futureIdeas": [
+          "Why does halving the input change complexity?",
+          "What is the combine step?",
+          "How is divide-and-conquer different from simple linear recursion?"
+        ]
+      },
+      {
+        "stage": "Stage D",
+        "title": "Branching recursion and choices",
+        "purpose": "Teach recursion where each call explores multiple choices, preparing learners for backtracking.",
+        "currentExamples": [],
+        "nearTermAdditions": [
+          "Generate all subsets",
+          "Generate all permutations",
+          "Tower of Hanoi"
+        ],
+        "futureIdeas": [
+          "What is the choice at each call?",
+          "What state is carried forward?",
+          "When does the recursion tree stop expanding?"
+        ]
+      },
+      {
+        "stage": "Stage E",
+        "title": "Bridge to advanced patterns",
+        "purpose": "Connect recursion to DFS, tree traversal, backtracking, divide-and-conquer, and dynamic programming.",
+        "currentExamples": [],
+        "nearTermAdditions": [
+          "Recursion to DFS mental model",
+          "Recursion to DP overlapping subproblems"
+        ],
+        "futureIdeas": [
+          "Why does DFS naturally use recursion?",
+          "Why does Fibonacci reveal overlapping subproblems?",
+          "When should recursion be converted to iteration or memoization?"
+        ]
+      }
+    ]
+  },
+  {
     "id": "dynamic-programming",
     "name": "STATE — Dynamic Programming",
     "category": "dsa",
