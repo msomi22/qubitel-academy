@@ -357,8 +357,9 @@ function TopicSection({
                 openFocusedProblem(question);
               }}
               onKeyDown={(event) => {
-                if (event.key !== 'Enter') return;
+                if (event.key !== 'Enter' && event.key !== ' ') return;
                 if (shouldIgnoreCardNavigation(event)) return;
+                event.preventDefault();
                 openFocusedProblem(question);
               }}
             >
