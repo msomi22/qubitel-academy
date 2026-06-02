@@ -10,11 +10,7 @@ function pluralize(count, singular, plural = `${singular}s`) {
   return `${count} ${count === 1 ? singular : plural}`;
 }
 
-function getFilterSummary(completionFilter, visibleTopicCount, allTopicsCount, questionSearch) {
-  if (questionSearch?.trim()) {
-    return `${pluralize(visibleTopicCount, 'topic')} include matching questions.`;
-  }
-
+function getFilterSummary(completionFilter, visibleTopicCount, allTopicsCount) {
   if (completionFilter === 'completed') {
     return `${pluralize(visibleTopicCount, 'topic')} contain completed questions.`;
   }
@@ -63,9 +59,7 @@ export default function TopicLibrary({
   onDifficultyChange,
   difficultyOptions,
   completionFilter,
-  onCompletionFilterChange,
-  questionSearch = '',
-  onQuestionSearchChange
+  onCompletionFilterChange
 }) {
   const [sortBy, setSortBy] = useState('recommended');
   const [currentPage, setCurrentPage] = useState(1);
@@ -126,7 +120,7 @@ export default function TopicLibrary({
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [difficulty, completionFilter, sortBy, selectedId, questionSearch]);
+  }, [difficulty, completionFilter, sortBy, selectedId]);
 
   useEffect(() => {
     if (safePage === currentPage) return;
@@ -157,27 +151,13 @@ export default function TopicLibrary({
             {getFilterSummary(
               completionFilter,
               filteredTopics.length,
-              allTopicsCount ?? topics.length,
-              questionSearch
+              allTopicsCount ?? topics.length
             )}
           </p>
         </div>
       </div>
 
       <div className="topic-library-controls premium-question-toolbar" aria-label="Question filters">
-        <label className="premium-question-toolbar__search">
-          <span>Search questions</span>
-
-          <input
-            type="search"
-            value={questionSearch}
-            onChange={(event) => onQuestionSearchChange?.(event.target.value)}
-            placeholder="Search questions..."
-            aria-label="Search questions in this topic"
-            autoComplete="off"
-          />
-        </label>
-
         <label>
           <span>Difficulty</span>
 
@@ -285,7 +265,7 @@ export default function TopicLibrary({
       {filteredTopics.length === 0 ? (
         <div className="empty-state glass-lite premium-question-empty">
           <h3>No topics found</h3>
-          <p>Try clearing the search, difficulty, or status filters.</p>
+          <p>Try clearing the difficulty or status filters.</p>
         </div>
       ) : null}
 

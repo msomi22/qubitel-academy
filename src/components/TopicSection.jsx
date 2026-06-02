@@ -1,7 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import QuestionCard from './QuestionCard.jsx';
 import Button from './Button.jsx';
 
 import { performanceConfig } from '../config/performanceConfig.js';
@@ -319,129 +318,126 @@ function TopicSection({
 
   return (
     <section className="topic-section premium-question-section" ref={sectionRef}>
-      <div className="section-head premium-question-section-head">
-        <div>
-          <p className="eyebrow">Question grid</p>
-
-          <h2>{topic.name}</h2>
-
-          <p>{topic.description}</p>
-
-          <p className="render-note">
-            {activeDifficulty !== 'all'
-              ? `Showing ${activeDifficulty} questions only. `
-              : ''}
-            {searchQuery ? `Matching "${searchQuery}". ` : ''}
-            Showing {totalQuestions ? pageStart + 1 : 0}-{pageEnd} of{' '}
-            {totalQuestions} questions.
-          </p>
-        </div>
-      </div>
-
       {totalQuestions === 0 ? (
         <div className="empty-state glass-lite premium-question-empty">
           <h3>No questions found</h3>
           <p>Try another search, difficulty, or status filter.</p>
         </div>
       ) : (
-        <div className="card-grid compact-grid problem-list-grid premium-question-grid">
-          {visibleQuestions.map((question) => (
-            <div
-              key={question.id}
-              role="button"
-              tabIndex={0}
-              className="clickable-problem-card-shell premium-question-card-shell"
-              aria-label={`Open ${question.title} in focused workspace`}
-              onClick={(event) => {
-                if (shouldIgnoreCardNavigation(event)) return;
-                openFocusedProblem(question);
-              }}
-              onKeyDown={(event) => {
-                if (event.key !== 'Enter' && event.key !== ' ') return;
-                if (shouldIgnoreCardNavigation(event)) return;
-                event.preventDefault();
-                openFocusedProblem(question);
-              }}
-            >
-              <QuestionCard
-                question={question}
-                completed={!!completed[question.id]}
-                onToggle={onToggle}
-                disableCardNavigation
-                compact
-              />
+        <div className="premium-question-table-card" aria-label={`${topic.name} questions`}>
+          <div className="premium-question-table-head">
+            <div>
+              <p className="eyebrow">Questions ({totalQuestions || '0'})</p>
+              <p className="render-note">
+                {activeDifficulty !== 'all'
+                  ? `${activeDifficulty} only. `
+                  : ''}
+                {searchQuery ? `Matching "${searchQuery}". ` : ''}
+                Showing {totalQuestions ? pageStart + 1 : 0}-{pageEnd} of {totalQuestions}.
+              </p>
             </div>
-          ))}
+          </div>
+
+          <div className="premium-question-table" role="table" aria-label={`${topic.name} question list`}>
+            <div className="premium-question-row premium-question-row--header" role="row">
+              <span role="columnheader">#</span>
+              <span role="columnheader">Difficulty</span>
+              <span role="columnheader">Question</span>
+              <span role="columnheader" className="premium-question-status-header">Progress</span>
+              <span role="columnheader" className="sr-only">Open</span>
+            </div>
+
+            {visibleQuestions.map((question, index) => {
+              const questionNumber = pageStart + index + 1;
+              const isCompleted = !!completed[question.id];
+
+              return (
+                <div
+                  key={question.id}
+                  role="button"
+                  tabIndex={0}
+                  className={`premium-question-row premium-question-row--item ${isCompleted ? 'is-complete' : ''}`}
+                  aria-label={`Open ${question.title} in focused workspace`}
+                  onClick={(event) => {
+                    if (shouldIgnoreCardNavigation(event)) return;
+                    openFocusedProblem(question);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key !== 'Enter' && event.key !== ' ') return;
+                    if (shouldIgnoreCardNavigation(event)) return;
+                    event.preventDefault();
+                    openFocusedProblem(question);
+                  }}
+                >
+                  <span className="premium-question-number">{questionNumber}</span>
+                  <span className={`pill difficulty-${String(question.difficulty || '').toLowerCase() || 'practice'}`}>
+                    {question.difficulty || 'Practice'}
+                  </span>
+                  <span className="premium-question-title">{question.title}</span>
+                  <button
+                    type="button"
+                    className="premium-question-progress"
+                    aria-label={`${isCompleted ? 'Reset progress for' : 'Mark complete'} ${question.title}`}
+                    onClick={() => onToggle?.(question.id)}
+                  >
+                    {isCompleted ? 'Complete' : 'Todo'}
+                  </button>
+                  <span className="premium-question-chevron" aria-hidden="true">›</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {totalPages > 1 ? (
+            <nav
+              className="pagination glass-lite premium-question-pagination"
+              aria-label={`${topic.name} question pages`}
+            >
+              <div className="pagination-controls">
+                <Button
+                  className="ghost premium-pagination-arrow"
+                  onClick={() => goToPage(safePage - 1)}
+                  disabled={safePage === 1}
+                  aria-label="Previous page"
+                >
+                  ‹
+                </Button>
+
+                {pageNumbers[0] > 1 ? (
+                  <span className="pagination-gap">...</span>
+                ) : null}
+
+                {pageNumbers.map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    className={`page-btn ${
+                      page === safePage ? 'active' : ''
+                    }`}
+                    onClick={() => goToPage(page)}
+                    aria-current={page === safePage ? 'page' : undefined}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                {pageNumbers.at(-1) < totalPages ? (
+                  <span className="pagination-gap">...</span>
+                ) : null}
+
+                <Button
+                  className="ghost premium-pagination-arrow"
+                  onClick={() => goToPage(safePage + 1)}
+                  disabled={safePage === totalPages}
+                  aria-label="Next page"
+                >
+                  ›
+                </Button>
+              </div>
+            </nav>
+          ) : null}
         </div>
       )}
-
-      {totalPages > 1 ? (
-        <nav
-          className="pagination glass-lite premium-question-pagination"
-          aria-label={`${topic.name} question pages`}
-        >
-          <div className="pagination-summary">
-            Page <strong>{safePage}</strong> of{' '}
-            <strong>{totalPages}</strong>
-          </div>
-
-          <div className="pagination-controls">
-            <Button
-              className="ghost"
-              onClick={() => goToPage(1)}
-              disabled={safePage === 1}
-            >
-              First
-            </Button>
-
-            <Button
-              className="ghost"
-              onClick={() => goToPage(safePage - 1)}
-              disabled={safePage === 1}
-            >
-              Previous
-            </Button>
-
-            {pageNumbers[0] > 1 ? (
-              <span className="pagination-gap">...</span>
-            ) : null}
-
-            {pageNumbers.map((page) => (
-              <button
-                key={page}
-                type="button"
-                className={`page-btn ${
-                  page === safePage ? 'active' : ''
-                }`}
-                onClick={() => goToPage(page)}
-                aria-current={page === safePage ? 'page' : undefined}
-              >
-                {page}
-              </button>
-            ))}
-
-            {pageNumbers.at(-1) < totalPages ? (
-              <span className="pagination-gap">...</span>
-            ) : null}
-
-            <Button
-              className="ghost"
-              onClick={() => goToPage(safePage + 1)}
-              disabled={safePage === totalPages}
-            >
-              Next
-            </Button>
-
-            <Button
-              className="ghost"
-              onClick={() => goToPage(totalPages)}
-              disabled={safePage === totalPages}
-            >
-              Last
-            </Button>
-          </div>
-        </nav>
-      ) : null}
 
       <TopicLearningGuide topic={topic} />
     </section>

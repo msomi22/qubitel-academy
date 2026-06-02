@@ -14,7 +14,6 @@ import {
   buildCategorySearchParams,
   readCategorySearchState
 } from '../services/categoryNavigationService.js';
-import { useDebouncedValue } from '../hooks/useDebouncedValue.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 
 import {
@@ -22,37 +21,6 @@ import {
   getVisibleTopicsForCategory,
   loadTopicBank
 } from '../services/questionBankService.js';
-
-function normalizeSearchText(value) {
-  return String(value || '').trim().toLowerCase();
-}
-
-function questionMatchesSearch(question, query) {
-  const normalizedQuery = normalizeSearchText(query);
-  if (!normalizedQuery) return true;
-
-  const haystack = [
-    question.title,
-    question.summary,
-    question.shortSummary,
-    question.scenario,
-    question.question,
-    question.prompt,
-    question.starterThought,
-    question.primaryPattern,
-    question.finalPattern,
-    question.pattern,
-    question.category,
-    question.type,
-    question.difficulty,
-    ...(question.tags || [])
-  ]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
-
-  return haystack.includes(normalizedQuery);
-}
 
 export default function CategoryPage({ fixedCategoryId }) {
   const params = useParams();
@@ -77,13 +45,11 @@ export default function CategoryPage({ fixedCategoryId }) {
 
   const [topicDifficulty, setTopicDifficulty] = useState(searchState.difficulty || ALL_FILTER);
   const [completionFilter, setCompletionFilter] = useState(searchState.completionFilter || 'all');
-  const [questionSearch, setQuestionSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(searchState.page || 1);
 
   const [loadingTopics, setLoadingTopics] = useState(true);
   const [loadingBanks, setLoadingBanks] = useState(true);
 
-  const debouncedQuestionSearch = useDebouncedValue(questionSearch, 160);
 
   useEffect(() => {
     setTopicDifficulty(searchState.difficulty || ALL_FILTER);
@@ -100,7 +66,6 @@ export default function CategoryPage({ fixedCategoryId }) {
 
     setLoadingTopics(true);
     setLoadingBanks(true);
-    setQuestionSearch('');
 
     getVisibleTopicsForCategory(categoryId)
       .then(async (nextTopics) => {
@@ -174,9 +139,6 @@ export default function CategoryPage({ fixedCategoryId }) {
     topicDifficulty
   ]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [debouncedQuestionSearch]);
 
   const topicsWithBanks = useMemo(() => {
     return topics.map((topic) => {
@@ -220,8 +182,6 @@ export default function CategoryPage({ fixedCategoryId }) {
           completed,
           topicDifficulty,
           completionFilter
-        ).filter((question) =>
-          questionMatchesSearch(question, debouncedQuestionSearch)
         );
 
         return {
@@ -231,7 +191,7 @@ export default function CategoryPage({ fixedCategoryId }) {
         };
       })
       .filter((topic) => topic.filteredCount > 0);
-  }, [topicsWithBanks, topicDifficulty, completionFilter, completed, debouncedQuestionSearch]);
+  }, [topicsWithBanks, topicDifficulty, completionFilter, completed]);
 
   const selectedTopic = useMemo(() => {
     return filteredTopics.find((topic) => topic.id === selectedId);
@@ -320,17 +280,57 @@ export default function CategoryPage({ fixedCategoryId }) {
 
   return (
     <main className="page category-page premium-topic-page">
+      <Link className="premium-topic-back" to="/categories">
+        <span aria-hidden="true">←</span> Back to Categories
+      </Link>
+
       <section className="page-title premium-topic-header">
-        <Link className="premium-topic-back" to="/categories">
-          Back to Categories
-        </Link>
-        <p className="eyebrow">{category.shortName || category.name}</p>
-        <h1>{category.name}</h1>
-        <p>{category.description}</p>
+        <div className="premium-topic-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M9.5 4.5a3 3 0 0 0-3 3v.25A3.25 3.25 0 0 0 5 13.95 3.5 3.5 0 0 0 9.5 19.5V4.5Z" />
+            <path d="M14.5 4.5a3 3 0 0 1 3 3v.25A3.25 3.25 0 0 1 19 13.95a3.5 3.5 0 0 1-4.5 5.55V4.5Z" />
+            <path d="M9.5 8.5H7.75M9.5 12H7m2.5 3.5H7.75M14.5 8.5h1.75M14.5 12H17m-2.5 3.5h1.75" />
+          </svg>
+        </div>
+
+        <div className="premium-topic-copy">
+          <p className="eyebrow">{category.shortName || category.name}</p>
+          <h1>{category.name}</h1>
+          <p>{category.description}</p>
+        </div>
+
         <div className="premium-topic-meta" aria-label={`${category.name} summary`}>
-          <span>{topicsWithBanks.length} {topicsWithBanks.length === 1 ? 'Topic' : 'Topics'}</span>
-          <span>{categoryProgress.total} {categoryProgress.total === 1 ? 'Question' : 'Questions'}</span>
-          <span>{categoryProgress.percent}% complete</span>
+          <span>
+            <span className="premium-topic-stat-value">
+              <svg className="premium-topic-stat-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 7v14" />
+                <path d="M3 18a1 1 0 0 1-1-1V5a2 2 0 0 1 2-2h6a3 3 0 0 1 3 3v15a3 3 0 0 0-3-3H3Z" />
+                <path d="M21 18h-7a3 3 0 0 0-3 3V6a3 3 0 0 1 3-3h6a2 2 0 0 1 2 2v12a1 1 0 0 1-1 1Z" />
+              </svg>
+              <strong>{topicsWithBanks.length}</strong>
+            </span>
+            <small>{topicsWithBanks.length === 1 ? 'Topic' : 'Topics'}</small>
+          </span>
+          <span>
+            <span className="premium-topic-stat-value">
+              <svg className="premium-topic-stat-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3 19 6v5c0 4.5-2.8 8.5-7 10-4.2-1.5-7-5.5-7-10V6l7-3Z" />
+                <path d="m9 12 2 2 4-5" />
+              </svg>
+              <strong>{categoryProgress.total}</strong>
+            </span>
+            <small>{categoryProgress.total === 1 ? 'Question' : 'Questions'}</small>
+          </span>
+          <span>
+            <span className="premium-topic-stat-value">
+              <svg className="premium-topic-stat-icon premium-topic-stat-icon--progress" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="8" className="premium-topic-progress-track" />
+                <path d="M12 4a8 8 0 0 1 7.4 5" className="premium-topic-progress-meter" />
+              </svg>
+              <strong>{categoryProgress.percent}%</strong>
+            </span>
+            <small>Progress</small>
+          </span>
         </div>
       </section>
 
@@ -349,8 +349,6 @@ export default function CategoryPage({ fixedCategoryId }) {
             difficultyOptions={topicDifficultyOptions}
             completionFilter={completionFilter}
             onCompletionFilterChange={handleCompletionFilterChange}
-            questionSearch={questionSearch}
-            onQuestionSearchChange={setQuestionSearch}
           />
 
           {selectedTopic ? (
@@ -360,7 +358,6 @@ export default function CategoryPage({ fixedCategoryId }) {
               completed={completed}
               onToggle={handleCompletionClick}
               activeDifficulty={topicDifficulty}
-              searchQuery={debouncedQuestionSearch}
               currentPage={currentPage}
               onPageChange={setCurrentPage}
               returnContext={returnContext}
@@ -368,7 +365,7 @@ export default function CategoryPage({ fixedCategoryId }) {
           ) : (
             <div className="empty-state glass-lite premium-question-empty">
               <h3>No questions found</h3>
-              <p>Try a broader search or clear the difficulty and status filters.</p>
+              <p>Try clearing the difficulty or status filters.</p>
             </div>
           )}
 
