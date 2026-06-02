@@ -20,7 +20,6 @@ export default function CategoriesPage() {
   return (
     <main className="page category-page premium-categories-page">
       <section className="categories-page-intro" aria-labelledby="categories-page-title">
-        <p className="categories-page-kicker">Topic Library</p>
         <h1 id="categories-page-title">Topics</h1>
         <p>Choose a topic to start learning.</p>
       </section>
@@ -28,7 +27,6 @@ export default function CategoriesPage() {
       <CategoryLibrary
         categories={categories}
         completed={completed}
-        title="Topics"
       />
     </main>
   );

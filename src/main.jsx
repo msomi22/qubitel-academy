@@ -28,6 +28,7 @@ import './styles/responsive-topic-library-cards.css';
 import './styles/mobile-first-topic-library-fix.css';
 import './styles/focused-text-wrap-fix.css';
 import './styles/glossary.css';
+import './styles/categories-premium-grid.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
