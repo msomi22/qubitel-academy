@@ -320,17 +320,38 @@ export default function CategoryPage({ fixedCategoryId }) {
 
   return (
     <main className="page category-page premium-topic-page">
+      <Link className="premium-topic-back" to="/categories">
+        <span aria-hidden="true">←</span> Back to Categories
+      </Link>
+
       <section className="page-title premium-topic-header">
-        <Link className="premium-topic-back" to="/categories">
-          Back to Categories
-        </Link>
-        <p className="eyebrow">{category.shortName || category.name}</p>
-        <h1>{category.name}</h1>
-        <p>{category.description}</p>
+        <div className="premium-topic-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M9.5 4.5a3 3 0 0 0-3 3v.25A3.25 3.25 0 0 0 5 13.95 3.5 3.5 0 0 0 9.5 19.5V4.5Z" />
+            <path d="M14.5 4.5a3 3 0 0 1 3 3v.25A3.25 3.25 0 0 1 19 13.95a3.5 3.5 0 0 1-4.5 5.55V4.5Z" />
+            <path d="M9.5 8.5H7.75M9.5 12H7m2.5 3.5H7.75M14.5 8.5h1.75M14.5 12H17m-2.5 3.5h1.75" />
+          </svg>
+        </div>
+
+        <div className="premium-topic-copy">
+          <p className="eyebrow">{category.shortName || category.name}</p>
+          <h1>{category.name}</h1>
+          <p>{category.description}</p>
+        </div>
+
         <div className="premium-topic-meta" aria-label={`${category.name} summary`}>
-          <span>{topicsWithBanks.length} {topicsWithBanks.length === 1 ? 'Topic' : 'Topics'}</span>
-          <span>{categoryProgress.total} {categoryProgress.total === 1 ? 'Question' : 'Questions'}</span>
-          <span>{categoryProgress.percent}% complete</span>
+          <span>
+            <strong>{topicsWithBanks.length}</strong>
+            <small>{topicsWithBanks.length === 1 ? 'Topic' : 'Topics'}</small>
+          </span>
+          <span>
+            <strong>{categoryProgress.total}</strong>
+            <small>{categoryProgress.total === 1 ? 'Question' : 'Questions'}</small>
+          </span>
+          <span>
+            <strong>{categoryProgress.percent}%</strong>
+            <small>Progress</small>
+          </span>
         </div>
       </section>
 
