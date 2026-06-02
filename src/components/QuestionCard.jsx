@@ -271,7 +271,7 @@ function QuestionCard({ question, completed, onToggle, disableCardNavigation = f
         <div className="meta-strip">
           <span className={`pill type-pill ${typeClass}`}>{typeLabel}</span>
           <span className={`pill ${difficultyClass}`}>{question.difficulty}</span>
-          <span className="time-pill">Clock {getDisplayTime(question)}</span>
+          <span className="time-pill">Time {getDisplayTime(question)}</span>
         </div>
         <button className="mark" onClick={() => onToggle?.(question.id)}>{completed ? 'Reset progress' : 'Mark complete'}</button>
       </div>
