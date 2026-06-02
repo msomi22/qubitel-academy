@@ -269,12 +269,12 @@
     width: 100% !important;
     height: var(--nav-height) !important;
     display: grid !important;
-    grid-template-columns: minmax(110px, auto) minmax(0, 1fr) auto !important;
+    grid-template-columns: 34px minmax(82px, 22vw) minmax(0, 1fr) auto !important;
     grid-template-rows: 1fr !important;
-    grid-template-areas: "brand search theme" !important;
+    grid-template-areas: "menu brand search theme" !important;
     align-items: center !important;
     gap: 8px !important;
-    padding: 14px 14px !important;
+    padding: 14px 12px !important;
     overflow: visible !important;
   }
 
@@ -288,8 +288,8 @@
     align-items: center !important;
     justify-content: flex-start !important;
     min-width: 0 !important;
-    width: min(116px, 27vw) !important;
-    height: 44px !important;
+    width: min(96px, 22vw) !important;
+    height: 40px !important;
     color: var(--text-primary) !important;
     text-decoration: none !important;
   }
@@ -298,7 +298,7 @@
     display: none !important;
     width: 100% !important;
     height: auto !important;
-    max-height: 42px !important;
+    max-height: 38px !important;
     object-fit: contain !important;
     object-position: left center !important;
   }
@@ -325,9 +325,16 @@
 
   .app-shell .topbar .mobile-menu-toggle {
     grid-area: menu !important;
-    display: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     justify-self: start !important;
     align-self: center !important;
+    width: 34px !important;
+    height: 40px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+    border-radius: 12px !important;
   }
 
   .app-shell .topbar .icon-btn {
@@ -338,13 +345,13 @@
     transform: none !important;
     margin: 0 !important;
     width: auto !important;
-    min-width: 60px !important;
+    min-width: 58px !important;
     height: 40px !important;
-    padding: 0 5px !important;
+    padding: 0 4px !important;
     border-color: transparent !important;
     background: transparent !important;
     box-shadow: none !important;
-    font-size: 0.68rem !important;
+    font-size: 0.66rem !important;
     font-weight: 800 !important;
   }
 
@@ -418,23 +425,28 @@
   .app-shell .nav.topbar,
   .app-shell .navbar.topbar,
   .app-shell .topbar {
-    grid-template-columns: minmax(102px, auto) minmax(0, 1fr) auto !important;
-    gap: 8px !important;
-    padding-inline: 12px !important;
+    grid-template-columns: 32px minmax(72px, 20vw) minmax(0, 1fr) auto !important;
+    gap: 7px !important;
+    padding-inline: 10px !important;
+  }
+
+  .app-shell .topbar .mobile-menu-toggle {
+    width: 32px !important;
+    min-width: 32px !important;
   }
 
   .app-shell .topbar .topbar-brand {
-    width: min(104px, 27vw) !important;
+    width: min(84px, 20vw) !important;
   }
 
   .app-shell .topbar .icon-btn {
-    min-width: 58px !important;
-    padding-inline: 4px !important;
-    font-size: 0.66rem !important;
+    min-width: 56px !important;
+    padding-inline: 3px !important;
+    font-size: 0.64rem !important;
   }
 
   .app-shell .topbar .theme-toggle {
-    gap: 4px !important;
+    gap: 3px !important;
   }
 
   .app-shell .topbar .theme-toggle svg {
