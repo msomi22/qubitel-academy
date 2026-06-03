@@ -1,4 +1,5 @@
-.premium-mobile-topic-card {
+.premium-mobile-topic-card,
+.premium-topic-rail-mobile-code {
   display: none;
 }
 
@@ -47,23 +48,16 @@
   }
 
   .premium-topic-dashboard-shell .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-icon,
-  .premium-topic-dashboard-shell .premium-topic-rail-icon {
-    display: none !important;
-  }
-
-  .premium-topic-dashboard-shell .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy,
-  .premium-topic-dashboard-shell .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy strong,
-  .premium-topic-dashboard-shell .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy small,
-  .premium-topic-dashboard-shell .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy em,
-  .premium-topic-dashboard-shell .premium-topic-rail-copy,
-  .premium-topic-dashboard-shell .premium-topic-rail-copy strong,
-  .premium-topic-dashboard-shell .premium-topic-rail-copy small,
+  .premium-topic-dashboard-shell .premium-topic-rail-icon,
+  .premium-topic-dashboard-shell .premium-mobile-topic-card,
   .premium-topic-dashboard-shell .premium-topic-rail-copy em,
+  .premium-topic-dashboard-shell .premium-topic-rail-title,
   .premium-topic-chip-code {
     display: none !important;
   }
 
-  .premium-mobile-topic-card {
+  .premium-topic-dashboard-shell .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy,
+  .premium-topic-dashboard-shell .premium-topic-rail-copy {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -72,7 +66,7 @@
     gap: 0.35rem !important;
   }
 
-  .premium-mobile-topic-card strong {
+  .premium-topic-dashboard-shell .premium-topic-rail-mobile-code {
     display: inline-flex !important;
     align-items: center !important;
     overflow: hidden !important;
@@ -85,7 +79,7 @@
     white-space: nowrap !important;
   }
 
-  .premium-mobile-topic-card strong::after {
+  .premium-topic-dashboard-shell .premium-topic-rail-mobile-code::after {
     content: "/";
     margin-left: 0.35rem;
     color: var(--muted, var(--text-secondary));
@@ -93,7 +87,7 @@
     opacity: 0.82;
   }
 
-  .premium-mobile-topic-card small {
+  .premium-topic-dashboard-shell .premium-topic-rail-copy small {
     display: inline-block !important;
     overflow: hidden !important;
     color: var(--muted, var(--text-secondary)) !important;
