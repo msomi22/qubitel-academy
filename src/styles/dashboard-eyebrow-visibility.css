@@ -1,0 +1,36 @@
+/* Dashboard command-center label visibility polish.
+   Keep the premium small-label style, but improve readability on desktop and phone. */
+
+.dashboard-command-center .dashboard-command-hero .eyebrow,
+.dashboard-command-center .dashboard-command-card .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--dashboard-teal) 24%, transparent);
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--dashboard-teal) 13%, transparent);
+  color: color-mix(in srgb, var(--dashboard-teal) 72%, var(--text-primary) 28%) !important;
+  font-size: 0.7rem;
+  font-weight: 950;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .dashboard-command-center .dashboard-command-hero .eyebrow,
+:root[data-theme="dark"] .dashboard-command-center .dashboard-command-card .eyebrow {
+  color: color-mix(in srgb, var(--dashboard-teal) 78%, #ffffff 22%) !important;
+  background: color-mix(in srgb, var(--dashboard-teal) 16%, transparent);
+  border-color: color-mix(in srgb, var(--dashboard-teal) 32%, transparent);
+}
+
+@media (max-width: 760px) {
+  .dashboard-command-center .dashboard-command-hero .eyebrow,
+  .dashboard-command-center .dashboard-command-card .eyebrow {
+    padding: 3px 7px;
+    font-size: 0.64rem;
+    letter-spacing: 0.13em;
+  }
+}
