@@ -69,6 +69,10 @@ function difficultyClassName(difficulty) {
   return `difficulty-${normalized}`;
 }
 
+function getEstimatedTime(question) {
+  return question?.estimatedTime || question?.metadata?.estimatedTime || '10 min';
+}
+
 function TopicMetadataList({ className, items }) {
   if (!hasListItems(items)) return null;
 
@@ -180,7 +184,7 @@ function TopicLearningGuide({ topic }) {
                 <h3 id={`${topic.id}-roadmap-heading`}>Roadmap</h3>
                 <p>
                   Follow the stages in order to connect the current practice set
-                  with near-term and future Sliding Window coverage.
+                  with near-term and future coverage.
                 </p>
               </div>
             </div>
@@ -321,7 +325,7 @@ function TopicSection({
   }
 
   return (
-    <section className="topic-section premium-question-section" ref={sectionRef}>
+    <section className="topic-section premium-question-section premium-topic-detail" ref={sectionRef}>
       {totalQuestions === 0 ? (
         <div className="empty-state glass-lite premium-question-empty">
           <h3>No questions found</h3>
@@ -331,23 +335,19 @@ function TopicSection({
         <div className="premium-question-table-card" aria-label={`${topic.name} questions`}>
           <div className="premium-question-table-head">
             <div>
-              <p className="eyebrow">Questions ({totalQuestions || '0'})</p>
               <h2>{topic.name}</h2>
-              <p className="render-note">
-                {activeDifficulty !== 'all'
-                  ? `${activeDifficulty} only. `
-                  : ''}
-                Showing {totalQuestions ? pageStart + 1 : 0}-{pageEnd} of {totalQuestions}.
-              </p>
+              <p>{topic.description}</p>
             </div>
+            <span className="premium-topic-question-count">{totalQuestions} questions</span>
           </div>
 
           <div className="premium-question-table" role="table" aria-label={`${topic.name} question list`}>
             <div className="premium-question-row premium-question-row--header" role="row">
               <span role="columnheader">#</span>
-              <span role="columnheader">Level</span>
               <span role="columnheader">Question</span>
-              <span role="columnheader" className="premium-question-status-header">Progress</span>
+              <span role="columnheader">Difficulty</span>
+              <span role="columnheader">Status</span>
+              <span role="columnheader">Est. Time</span>
               <span role="columnheader" className="sr-only">Open</span>
             </div>
 
@@ -374,73 +374,70 @@ function TopicSection({
                   }}
                 >
                   <span className="premium-question-number">{questionNumber}</span>
+                  <span className="premium-question-title">{question.title}</span>
                   <span className={`pill ${difficultyClassName(question.difficulty)}`}>
                     {question.difficulty || 'Practice'}
                   </span>
-                  <span className="premium-question-title">{question.title}</span>
                   <button
                     type="button"
-                    className="premium-question-progress"
+                    className="premium-question-status"
                     data-no-card-nav
                     aria-label={`${isCompleted ? 'Reset progress for' : 'Mark complete'} ${question.title}`}
                     onClick={() => onToggle?.(question.id)}
                   >
-                    {isCompleted ? 'Complete' : 'Todo'}
+                    {isCompleted ? '✓' : ''}
                   </button>
+                  <span className="premium-question-time">{getEstimatedTime(question)}</span>
                   <span className="premium-question-chevron" aria-hidden="true">›</span>
                 </div>
               );
             })}
           </div>
 
-          {totalPages > 1 ? (
-            <nav
-              className="pagination glass-lite premium-question-pagination"
-              aria-label={`${topic.name} question pages`}
-            >
-              <div className="pagination-controls">
-                <Button
-                  className="ghost premium-pagination-arrow"
-                  onClick={() => goToPage(safePage - 1)}
-                  disabled={safePage === 1}
-                  aria-label="Previous page"
-                >
-                  ‹
-                </Button>
+          <div className="premium-question-footer">
+            <p>Showing {totalQuestions ? pageStart + 1 : 0}-{pageEnd} of {totalQuestions}</p>
 
-                {pageNumbers[0] > 1 ? (
-                  <span className="pagination-gap">…</span>
-                ) : null}
-
-                {pageNumbers.map((page) => (
-                  <button
-                    key={page}
-                    type="button"
-                    className={`page-btn ${
-                      page === safePage ? 'active' : ''
-                    }`}
-                    onClick={() => goToPage(page)}
-                    aria-current={page === safePage ? 'page' : undefined}
+            {totalPages > 1 ? (
+              <nav
+                className="pagination glass-lite premium-question-pagination"
+                aria-label={`${topic.name} question pages`}
+              >
+                <div className="pagination-controls">
+                  <Button
+                    className="ghost premium-pagination-arrow"
+                    onClick={() => goToPage(safePage - 1)}
+                    disabled={safePage === 1}
+                    aria-label="Previous page"
                   >
-                    {page}
-                  </button>
-                ))}
+                    ←
+                  </Button>
 
-                {pageNumbers.at(-1) < totalPages ? (
-                  <span className="pagination-gap">…</span>
-                ) : null}
+                  {pageNumbers.map((page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      className={`page-btn ${
+                        page === safePage ? 'active' : ''
+                      }`}
+                      onClick={() => goToPage(page)}
+                      aria-current={page === safePage ? 'page' : undefined}
+                    >
+                      {page}
+                    </button>
+                  ))}
 
-                <Button
-                  className="ghost premium-pagination-arrow"
-                  onClick={() => goToPage(safePage + 1)}
-                  disabled={safePage === totalPages}
-                  aria-label="Next page"
-                >
-                  ›
-                </Button>
-              </div>
-            </nav>
-          ) : null}
+                  <Button
+                    className="ghost premium-pagination-arrow"
+                    onClick={() => goToPage(safePage + 1)}
+                    disabled={safePage === totalPages}
+                    aria-label="Next page"
+                  >
+                    →
+                  </Button>
+                </div>
+              </nav>
+            ) : null}
+          </div>
         </div>
       )}
 
