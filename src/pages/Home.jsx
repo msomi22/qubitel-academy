@@ -15,10 +15,19 @@ import {
   getTopicLearningTitle
 } from '../services/dashboardLearningPathService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
-import ProgressChart from '../components/ProgressChart.jsx';
 import SupportButton from '../components/SupportButton.jsx';
 
 const emptySummary = { total: 0, done: 0, percent: 0 };
+
+const categoryIconMap = {
+  dsa: '⌁',
+  system: '▣',
+  java: '☕',
+  'kubernetes-ckad': '⎈',
+  aptitude: '∑',
+  'ml-ai': 'AI',
+  'engineering-leadership': '★'
+};
 
 function getTopicLearningPath(topic) {
   if (!topic?.category || !topic?.id) return '/random';
@@ -36,78 +45,144 @@ function buildLearningStage(percent) {
   if (percent >= 80) {
     return {
       label: 'Senior interview polish',
-      description: 'You are now in refinement mode: revisit weak topics, explain trade-offs aloud, and practice mixed questions.'
+      description: 'Refine weak topics, explain trade-offs aloud, and practice mixed questions.'
     };
   }
 
   if (percent >= 50) {
     return {
       label: 'Depth and consistency',
-      description: 'Keep building breadth, but start comparing patterns and explaining why one approach beats another.'
+      description: 'Keep building breadth while comparing patterns and why one approach wins.'
     };
   }
 
   if (percent >= 20) {
     return {
       label: 'Pattern recognition sprint',
-      description: 'Focus on recognizing the shape of each problem before jumping into implementation details.'
+      description: 'Focus on recognizing the problem shape before jumping into implementation.'
     };
   }
 
   return {
     label: 'Foundation builder',
-    description: 'Start with high-signal fundamentals and build a steady habit before increasing difficulty.'
+    description: 'Start with high-signal fundamentals and build a steady learning habit.'
   };
 }
 
-function DashboardCard({ eyebrow, title, children, action }) {
-  return (
-    <article className="glass learning-dashboard-card">
-      <p className="eyebrow">{eyebrow}</p>
-      <h2>{title}</h2>
-      <div>{children}</div>
-      {action ? <div className="dashboard-card-action">{action}</div> : null}
-    </article>
-  );
+function clampPercent(value) {
+  return Math.max(0, Math.min(100, Number(value) || 0));
 }
 
-function StartHereTrack({ topics, className = '' }) {
-  return (
-    <div className={className}>
-      <p className="eyebrow" style={{ marginBottom: 10 }}>Recommended starting path</p>
-      <div className="start-here-track">
-        {topics.map((topic, i) => {
-          const count = topic.count ?? 0;
-          const label = getTopicDisplayName(topic);
-          const title = getTopicLearningTitle(topic);
-          const to = getTopicLearningPath(topic);
+function getCategoryIcon(category) {
+  return categoryIconMap[category?.id] || String(category?.name || '•').slice(0, 2).toUpperCase();
+}
 
-          return (
-            <div key={topic.id} className="start-here-step">
-              <Link
-                to={to}
-                className="start-here-step-card"
-                title={`${title}. ${count} ${count === 1 ? 'quiz' : 'quizzes'} available.`}
-              >
-                <span className="step-num">{i + 1}</span>
-                <span className="start-here-step-label">{label}</span>
-                <span className="start-here-step-count">
-                  {count} {count === 1 ? 'quiz' : 'quizzes'}
-                </span>
-              </Link>
-              {i < topics.length - 1 && (
-                <div className="start-here-connector" aria-hidden="true" />
-              )}
-            </div>
-          );
-        })}
-      </div>
+function getCategorySubtitle(category) {
+  if (category?.description) return category.description;
+  const topicCount = Number(category?.topicCount || 0);
+  const quizCount = Number(category?.quizCount || 0);
+
+  if (quizCount > 0) return `${quizCount} practice questions`;
+  return `${topicCount} ${topicCount === 1 ? 'topic bank' : 'topic banks'}`;
+}
+
+function ProgressBar({ percent, label }) {
+  const safePercent = clampPercent(percent);
+
+  return (
+    <div className="dashboard-progress-bar" aria-label={label} role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={safePercent}>
+      <span style={{ width: `${safePercent}%` }} />
     </div>
   );
 }
 
+function ProgressRing({ percent }) {
+  const safePercent = clampPercent(percent);
+
+  return (
+    <div
+      className="dashboard-progress-ring"
+      role="progressbar"
+      aria-label="Overall learning progress"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-valuenow={safePercent}
+      style={{ '--progress': `${safePercent}%` }}
+    >
+      <span>{safePercent}%</span>
+      <small>Overall</small>
+    </div>
+  );
+}
+
+function CommandCard({ eyebrow, title, children, className = '', action }) {
+  return (
+    <article className={`glass dashboard-command-card ${className}`.trim()}>
+      <div className="dashboard-command-card__head">
+        <div>
+          <p className="eyebrow">{eyebrow}</p>
+          <h2>{title}</h2>
+        </div>
+        {action ? <div className="dashboard-command-card__action">{action}</div> : null}
+      </div>
+      {children}
+    </article>
+  );
+}
+
+function MetricTile({ value, label, helper }) {
+  return (
+    <div className="dashboard-metric-tile">
+      <strong>{value}</strong>
+      <span>{label}</span>
+      {helper ? <small>{helper}</small> : null}
+    </div>
+  );
+}
+
+function TopicProgressRow({ topic }) {
+  return (
+    <Link to={getTopicLearningPath(topic)} className="dashboard-topic-row">
+      <span className="dashboard-topic-row__icon" aria-hidden="true">↗</span>
+      <span className="dashboard-topic-row__copy">
+        <strong>{getTopicDisplayName(topic)}</strong>
+        <small>{topic.progress.done}/{topic.progress.total} complete</small>
+      </span>
+      <span className="dashboard-topic-row__percent">{topic.progress.percent}%</span>
+    </Link>
+  );
+}
+
+function CategoryProgressRow({ category }) {
+  const percent = clampPercent(category.progressPercent);
+
+  return (
+    <Link to={categoryPath(category.id)} className="dashboard-category-row">
+      <span className="dashboard-category-row__icon" aria-hidden="true">{getCategoryIcon(category)}</span>
+      <span className="dashboard-category-row__copy">
+        <strong>{category.name}</strong>
+        <small>{getCategorySubtitle(category)}</small>
+        <ProgressBar percent={percent} label={`${category.name} progress`} />
+      </span>
+      <span className="dashboard-category-row__percent">{percent}%</span>
+    </Link>
+  );
+}
+
+function PracticeAction({ to, icon, title, description }) {
+  return (
+    <Link to={to} className="dashboard-practice-action">
+      <span aria-hidden="true">{icon}</span>
+      <span>
+        <strong>{title}</strong>
+        <small>{description}</small>
+      </span>
+    </Link>
+  );
+}
+
 export default function Home() {
-  const { completed } = usePreferences();
+  const { completed, randomCount = 0 } = usePreferences();
   const [summary, setSummary] = useState(emptySummary);
   const [categories, setCategories] = useState([]);
   const [countedCategories, setCountedCategories] = useState([]);
@@ -153,133 +228,130 @@ export default function Home() {
 
   const nextTopic = useMemo(() => {
     const unfinished = topicProgressRows.filter((topic) => topic.progress.percent < 100);
-    return [...unfinished].sort((a, b) => {
-      const byProgress = a.progress.percent - b.progress.percent;
-      if (byProgress !== 0) return byProgress;
-      return a.name.localeCompare(b.name);
-    })[0];
+    const activeTopic = [...unfinished]
+      .filter((topic) => topic.progress.done > 0)
+      .sort((a, b) => b.progress.percent - a.progress.percent || a.name.localeCompare(b.name))[0];
+    const recommendedTopic = getRecommendedStartTopics(unfinished, { limit: 1 })[0];
+
+    return activeTopic || recommendedTopic || unfinished[0] || null;
   }, [topicProgressRows]);
 
-  const weakAreas = useMemo(() => [...topicProgressRows]
-    .filter((topic) => topic.progress.percent < 60)
-    .sort((a, b) => a.progress.percent - b.progress.percent)
-    .slice(0, 3), [topicProgressRows]);
+  const weakAreas = useMemo(() => {
+    const lowProgressTopics = [...topicProgressRows]
+      .filter((topic) => topic.progress.percent < 75)
+      .sort((a, b) => a.progress.percent - b.progress.percent || b.progress.total - a.progress.total)
+      .slice(0, 3);
+
+    return lowProgressTopics.length ? lowProgressTopics : recommendedStartTopics.slice(0, 3);
+  }, [recommendedStartTopics, topicProgressRows]);
+
+  const categoryProgressRows = useMemo(() => [...countedCategories]
+    .sort((a, b) => {
+      const progressDelta = Number(b.progressPercent > 0) - Number(a.progressPercent > 0);
+      if (progressDelta !== 0) return progressDelta;
+
+      return (b.quizCount || 0) - (a.quizCount || 0) || a.name.localeCompare(b.name);
+    })
+    .slice(0, 4), [countedCategories]);
 
   const strongestCategory = useMemo(() => [...countedCategories]
     .sort((a, b) => (b.progressPercent || 0) - (a.progressPercent || 0))[0], [countedCategories]);
 
-  const isNewUser = summary.done === 0;
   const nextTopicPath = getTopicLearningPath(nextTopic);
+  const nextTopicLabel = nextTopic ? getTopicDisplayName(nextTopic) : 'Review progress';
+  const nextTopicTitle = nextTopic ? getTopicLearningTitle(nextTopic) : 'All visible topics are complete.';
 
   return (
-    <div className="learning-dashboard-page">
-      <section className="hero-card glass learning-hero dashboard-hero">
-        <div className="dashboard-hero__main">
-          <div className="dashboard-hero__identity">
-            <p className="eyebrow dashboard-hero__eyebrow">Senior developer learning platform</p>
+    <div className="learning-dashboard-page dashboard-command-center">
+      <section className="glass dashboard-command-hero" aria-labelledby="dashboard-command-title">
+        <div className="dashboard-command-hero__copy">
+          <p className="eyebrow">Learning command center</p>
+          <h1 id="dashboard-command-title">Welcome back! 👋</h1>
+          <p>Keep your momentum going. Your next useful action is always one tap away.</p>
+
+          <div className="dashboard-command-hero__progress">
+            <span>Overall progress</span>
+            <strong>{summary.done}/{loadingStats ? '…' : summary.total} questions</strong>
+            <ProgressBar percent={summary.percent} label="Overall dashboard progress" />
           </div>
-
-          <h1 className="dashboard-hero__title">
-            {isNewUser
-              ? 'Go from mid-level to senior — one pattern at a time.'
-              : 'Master DSA, algorithms, system design, and backend engineering.'}
-          </h1>
-
-          {/* Value prop — tells new users why this beats raw LeetCode */}
-          <p className="hero-value-prop dashboard-hero__description">
-            {isNewUser
-              ? 'Pattern-based DSA and system design, structured like a curriculum — not a random problem dump. Start with the highest-signal topics and build up from there.'
-              : 'Senior Dev Accelerator helps developers prepare for coding interviews, strengthen computer science fundamentals, and build practical senior-level engineering skills.'}
-          </p>
-
-          <div className="hero-actions dashboard-hero__actions">
-            <Link className="btn" to={nextTopic ? nextTopicPath : '/random'}>
-              {isNewUser ? 'Start learning' : 'Continue recommended path'}
-            </Link>
-            <Link className="btn ghost" to="/random">Random practice</Link>
-            <SupportButton className="btn support-cta" />
-          </div>
-
-          {/* Start Here track — shown to new users or those with low progress */}
-          {summary.percent < 20 && recommendedStartTopics.length > 0 && (
-            <StartHereTrack topics={recommendedStartTopics} className="dashboard-hero__path" />
-          )}
         </div>
 
-        <div className="learning-hero-panel glass-lite dashboard-hero__stage-panel">
-          <span>Current stage</span>
-          <strong>{learningStage.label}</strong>
-          <p>{learningStage.description}</p>
+        <ProgressRing percent={summary.percent} />
+
+        <div className="dashboard-command-hero__actions">
+          <Link className="btn dashboard-command-primary" to={nextTopic ? nextTopicPath : '/progress'}>
+            Continue Learning
+          </Link>
+          <Link className="btn ghost dashboard-command-secondary" to="/random">Random Practice</Link>
         </div>
       </section>
 
-      <section className="dashboard-grid learning-stats-grid">
-        <ProgressChart {...summary} />
-        <div className="glass stat"><h2>{categories.length}</h2><p>categories</p></div>
-        <div className="glass stat"><h2>{topicCount}</h2><p>topic banks</p></div>
-        <div className="glass stat"><h2>{loadingStats ? '…' : summary.total}</h2><p>practice questions</p></div>
-      </section>
-
-      <section className="learning-dashboard-grid">
-        <DashboardCard
-          eyebrow="Next best action"
-          title={nextTopic ? nextTopic.name : 'All topics complete'}
-          action={
-            <Link className="btn" to={nextTopic ? nextTopicPath : '/progress'}>
-              {nextTopic ? 'Open topic' : 'Review progress'}
-            </Link>
-          }
-        >
-          <p>
-            {nextTopic
-              ? nextTopic.description
-              : 'Excellent work. Move into review mode and revisit older questions until your explanations feel automatic.'}
-          </p>
+      <section className="dashboard-command-split" aria-label="Recommended dashboard actions">
+        <CommandCard eyebrow="Continue learning" title={nextTopicLabel} className="dashboard-action-card">
+          <p>{nextTopicTitle}</p>
           {nextTopic ? (
-            <div className="dashboard-mini-progress">
+            <div className="dashboard-inline-progress">
               <span>{nextTopic.progress.done}/{nextTopic.progress.total} complete</span>
-              <meter min="0" max={nextTopic.progress.total} value={nextTopic.progress.done} />
+              <strong>{nextTopic.progress.percent}%</strong>
+              <ProgressBar percent={nextTopic.progress.percent} label={`${nextTopic.name} progress`} />
             </div>
-          ) : null}
-        </DashboardCard>
+          ) : (
+            <p className="dashboard-empty-note">You have completed the visible question set. Review progress or start random practice.</p>
+          )}
+          <Link className="dashboard-card-link" to={nextTopic ? nextTopicPath : '/progress'}>
+            {nextTopic ? 'Resume topic' : 'Review progress'}
+          </Link>
+        </CommandCard>
 
-        <DashboardCard eyebrow="Focus areas" title="Weak topics to revisit">
-          <div className="weak-area-list">
+        <CommandCard eyebrow="Focus areas" title="Weak topics" className="dashboard-action-card">
+          <div className="dashboard-topic-list">
             {weakAreas.length ? weakAreas.map((topic) => (
-              <Link key={topic.id} to={getTopicLearningPath(topic)} className="weak-area-row">
-                <span>{topic.name}</span>
-                <strong>{topic.progress.percent}%</strong>
-              </Link>
-            )) : <p>No weak areas yet. Start solving questions to unlock useful recommendations.</p>}
+              <TopicProgressRow key={topic.id} topic={topic} />
+            )) : <p className="dashboard-empty-note">Start solving questions to unlock focus signals.</p>}
           </div>
-        </DashboardCard>
-
-        <DashboardCard eyebrow="Progress signal" title="Momentum summary">
-          <ul className="dashboard-checklist">
-            <li><strong>{summary.done}</strong> questions completed.</li>
-            <li><strong>{remainingQuestions}</strong> questions remaining.</li>
-            <li>
-              <strong>{strongestCategory?.name || 'No category yet'}</strong>{' '}
-              is currently your strongest path.
-            </li>
-          </ul>
-        </DashboardCard>
+          <Link className="dashboard-card-link" to="/categories">View all focus areas</Link>
+        </CommandCard>
       </section>
 
-      <section className="learning-map glass">
-        <h2>Practical senior software engineering roadmap</h2>
-        <p>
-          Follow a focused path across data structures and algorithms, LeetCode-style
-          patterns, system design diagrams, microservices, API design, databases,
-          distributed systems, caching, observability, and backend performance optimization.
-        </p>
-        <div className="road">
-          <span>Recognize pattern</span>
-          <span>State invariant</span>
-          <span>Explain trade-off</span>
-          <span>Design clean solution</span>
-          <span>Review progress</span>
-        </div>
+      <section className="dashboard-command-grid" aria-label="Dashboard learning summary">
+        <CommandCard
+          eyebrow="Category progress"
+          title="Learning paths"
+          action={<Link to="/categories">View all categories</Link>}
+          className="dashboard-category-card"
+        >
+          <div className="dashboard-category-list">
+            {categoryProgressRows.length ? categoryProgressRows.map((category) => (
+              <CategoryProgressRow key={category.id} category={category} />
+            )) : <p className="dashboard-empty-note">Category progress will appear once the question banks finish loading.</p>}
+          </div>
+        </CommandCard>
+
+        <CommandCard eyebrow="Today's practice" title="Quick starts" className="dashboard-practice-card">
+          <div className="dashboard-practice-list">
+            <PracticeAction to="/random" icon="🎯" title="Random Question" description="One fresh question from visible banks" />
+            <PracticeAction to="/random" icon="⚡" title="Mixed Quiz" description="Use random mode for mixed practice" />
+            <PracticeAction to="/progress" icon="📈" title="Progress Review" description="Check completed and remaining work" />
+          </div>
+        </CommandCard>
+
+        <CommandCard eyebrow="Quick stats" title="Momentum" className="dashboard-stats-card">
+          <div className="dashboard-metric-grid">
+            <MetricTile value={summary.done} label="Completed" helper="visible banks" />
+            <MetricTile value={remainingQuestions} label="Remaining" />
+            <MetricTile value={randomCount} label="Random runs" />
+            <MetricTile value={topicCount} label="Topic banks" />
+          </div>
+        </CommandCard>
+
+        <CommandCard eyebrow="Current stage" title={learningStage.label} className="dashboard-stage-card">
+          <p>{learningStage.description}</p>
+          <ul className="dashboard-stage-list">
+            <li><strong>{categories.length}</strong> categories available.</li>
+            <li><strong>{strongestCategory?.name || 'No category yet'}</strong> is your strongest visible path.</li>
+          </ul>
+          <SupportButton className="dashboard-support-link" />
+        </CommandCard>
       </section>
     </div>
   );
