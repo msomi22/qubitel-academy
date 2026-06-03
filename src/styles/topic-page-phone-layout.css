@@ -30,14 +30,15 @@
   .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker,
   .premium-topic-dashboard-shell .premium-topic-rail-list {
     display: flex !important;
+    flex-wrap: nowrap !important;
     grid-template-columns: none !important;
     grid-auto-flow: initial !important;
-    gap: 8px !important;
+    gap: 10px !important;
     width: 100% !important;
     max-height: none !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    padding: 0 2px 4px !important;
+    padding: 0 4px 6px !important;
     scroll-snap-type: x mandatory !important;
     scrollbar-width: none !important;
     -webkit-overflow-scrolling: touch !important;
@@ -50,43 +51,65 @@
 
   .premium-topic-dashboard-shell .topic-tab.glass,
   .premium-topic-dashboard-shell .premium-topic-rail-item {
-    flex: 0 0 min(178px, 62vw) !important;
+    flex: 0 0 calc((100% - 10px) / 2) !important;
     display: grid !important;
-    grid-template-columns: 24px minmax(0, 1fr) !important;
+    grid-template-columns: 26px minmax(0, 1fr) !important;
+    grid-template-areas:
+      "icon code"
+      "icon count" !important;
     align-items: center !important;
-    gap: 8px !important;
+    justify-items: start !important;
+    gap: 4px 8px !important;
     width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
-    min-height: 64px !important;
-    padding: 8px !important;
+    min-height: 70px !important;
+    padding: 10px !important;
     border-radius: 12px !important;
+    text-align: left !important;
     scroll-snap-align: start !important;
   }
 
   .premium-topic-dashboard-shell .premium-topic-rail-icon {
-    width: 22px !important;
-    height: 22px !important;
+    grid-area: icon !important;
+    width: 24px !important;
+    height: 24px !important;
+    justify-self: center !important;
+  }
+
+  .premium-topic-dashboard-shell .premium-topic-rail-copy {
+    display: contents !important;
   }
 
   .premium-topic-dashboard-shell .topic-tab strong,
-  .premium-topic-rail-copy strong {
-    display: -webkit-box !important;
-    overflow: hidden !important;
-    -webkit-box-orient: vertical !important;
-    -webkit-line-clamp: 2 !important;
-    font-size: 0.74rem !important;
-    line-height: 1.1 !important;
-    white-space: normal !important;
+  .premium-topic-rail-copy strong,
+  .premium-topic-rail-copy em {
+    display: none !important;
   }
 
   .premium-topic-dashboard-shell .topic-tab small,
-  .premium-topic-rail-copy small,
-  .premium-topic-rail-copy em {
+  .premium-topic-rail-copy small {
+    grid-area: count !important;
     display: block !important;
+    max-width: 100% !important;
     overflow: hidden !important;
+    color: var(--muted, var(--text-secondary)) !important;
     font-size: 0.62rem !important;
-    line-height: 1.12 !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .premium-topic-chip-code {
+    grid-area: code !important;
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    color: var(--text, var(--text-primary)) !important;
+    font-size: 0.78rem !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
   }
