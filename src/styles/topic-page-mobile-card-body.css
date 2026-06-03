@@ -10,6 +10,9 @@
     grid-auto-flow: column !important;
     grid-auto-columns: calc((100% - 10px) / 2) !important;
     grid-template-columns: none !important;
+    grid-auto-rows: 74px !important;
+    align-items: start !important;
+    align-content: start !important;
     gap: 10px !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
@@ -30,11 +33,14 @@
     display: grid !important;
     grid-template-columns: 26px minmax(0, 1fr) !important;
     align-items: center !important;
+    align-self: start !important;
     gap: 8px !important;
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
-    min-height: 70px !important;
+    height: 74px !important;
+    min-height: 74px !important;
+    max-height: 74px !important;
     padding: 10px !important;
     text-align: left !important;
     scroll-snap-align: start !important;
