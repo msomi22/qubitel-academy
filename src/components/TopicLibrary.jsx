@@ -39,6 +39,28 @@ function getTopicIconType(topic) {
   return 'default';
 }
 
+function getTopicShortLabel(topic) {
+  const type = getTopicIconType(topic);
+  const labels = {
+    communication: 'COMM',
+    delegation: 'DELG',
+    ownership: 'OWN',
+    mentorship: 'MENT',
+    delivery: 'DLVR',
+    recursion: 'RECUR',
+    graph: 'NODES',
+    pair: 'PAIR',
+    prefix: 'PREF',
+    search: 'SEAR',
+    stack: 'STACK',
+    state: 'STATE',
+    window: 'WIND',
+    default: String(topic.name || 'TOPIC').split(/\s|—|-/).filter(Boolean)[0]?.slice(0, 5).toUpperCase() || 'TOPIC'
+  };
+
+  return labels[type] || labels.default;
+}
+
 function TopicIcon({ topic }) {
   const type = getTopicIconType(topic);
   const commonProps = {
@@ -137,6 +159,7 @@ export default function TopicLibrary({
             <button key={topic.id} type="button" className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${fullyCompleted ? 'done' : ''}`} onClick={() => onSelect(topic.id)}>
               <TopicIcon topic={topic} />
               <span className="premium-topic-rail-copy"><strong>{topic.name}</strong><small>{count} questions</small><em>{progress.done}/{progress.total || count} complete</em></span>
+              <span className="premium-topic-chip-code" aria-hidden="true">{getTopicShortLabel(topic)}</span>
             </button>
           );
         })}
