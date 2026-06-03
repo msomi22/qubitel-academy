@@ -43,6 +43,7 @@ import './styles/topic-page-back-link.css';
 import './styles/problem-page-timer-visibility.css';
 import './styles/topic-page-adaptive-hero-compact.css';
 import './styles/topic-page-phone-layout.css';
+import './styles/topic-page-phone-polish.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
