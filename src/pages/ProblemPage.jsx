@@ -43,6 +43,14 @@ function pillClass(type, label, difficulty) {
   return 'meta-pill';
 }
 
+function isMcqType(type) {
+  return type === 'mcq' || type === 'multiple-choice';
+}
+
+function problemTypeLabel(type) {
+  return String(type || 'problem').replace(/-/g, ' ');
+}
+
 export default function ProblemPage() {
   const { questionId } = useParams();
   const location = useLocation();
@@ -156,14 +164,16 @@ export default function ProblemPage() {
     : categoryPath(categoryId);
   const primaryPattern = entry.question.finalPattern || entry.topic?.name;
   const isComplexSystemDesign = entry.question.type === 'complex-system-design';
-  const isMcq = entry.question.type === 'mcq';
+  const isMcq = isMcqType(entry.question.type);
+  const isComplete = !!completed[entry.question.id];
   const introText = isMcq ? '' : entry.question.question || entry.topic?.description || entry.question.scenario;
 
   const problemTags = uniqueItems([
     { label: entry.question.difficulty, type: 'difficulty' },
     { label: entry.question.estimatedTime, type: 'meta' },
     { label: primaryPattern, type: 'topic' },
-    { label: entry.question.type, type: 'meta' }
+    { label: problemTypeLabel(entry.question.type), type: 'meta' },
+    { label: isComplete ? 'Completed' : 'In progress', type: 'meta' }
   ]);
 
   return (
@@ -192,11 +202,11 @@ export default function ProblemPage() {
         </div>
 
         <div className="reference-action-group" aria-label="Focused problem actions">
-          <NavLink className="btn ghost" to={categoryBackPath}>Back to category</NavLink>
+          <NavLink className="btn ghost" to={categoryBackPath}>Back to topic</NavLink>
 
           {!isComplexSystemDesign ? (
             <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
-              {completed[entry.question.id] ? 'Reset progress' : 'Mark complete'}
+              {isComplete ? 'Reset progress' : 'Mark complete'}
             </button>
           ) : null}
         </div>
@@ -205,14 +215,14 @@ export default function ProblemPage() {
       {isComplexSystemDesign ? (
         <ComplexSystemDesignProblem
           question={entry.question}
-          completed={!!completed[entry.question.id]}
+          completed={isComplete}
           onToggle={handleCompletionClick}
           onMarkComplete={handleMarkComplete}
         />
       ) : (
         <FocusedProblemWorkspace
           question={entry.question}
-          completed={!!completed[entry.question.id]}
+          completed={isComplete}
           onToggle={handleCompletionClick}
           onMarkComplete={handleMarkComplete}
           hideTopline
