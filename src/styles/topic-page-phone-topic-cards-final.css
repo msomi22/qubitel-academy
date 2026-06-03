@@ -1,0 +1,55 @@
+@media (max-width: 760px) {
+  .premium-topic-dashboard-shell .premium-topic-rail-list {
+    gap: 10px !important;
+    padding: 0 4px 6px !important;
+  }
+
+  .premium-topic-dashboard-shell .premium-topic-rail-item {
+    flex: 0 0 calc((100% - 10px) / 2) !important;
+    grid-template-columns: 26px minmax(0, 1fr) !important;
+    grid-template-areas:
+      "icon code"
+      "icon count" !important;
+    align-items: center !important;
+    justify-items: start !important;
+    min-height: 70px !important;
+    padding: 10px !important;
+    text-align: left !important;
+  }
+
+  .premium-topic-dashboard-shell .premium-topic-rail-icon {
+    grid-area: icon !important;
+  }
+
+  .premium-topic-dashboard-shell .premium-topic-rail-copy {
+    display: contents !important;
+  }
+
+  .premium-topic-dashboard-shell .premium-topic-rail-copy strong,
+  .premium-topic-dashboard-shell .premium-topic-rail-copy em {
+    display: none !important;
+  }
+
+  .premium-topic-dashboard-shell .premium-topic-rail-copy small {
+    grid-area: count !important;
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    font-size: 0.62rem !important;
+    font-weight: 800 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .premium-topic-chip-code {
+    grid-area: code !important;
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    font-size: 0.78rem !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+}
