@@ -31,29 +31,4 @@
     width: 74px !important;
     grid-template-columns: repeat(2, 37px) !important;
   }
-
-  .premium-topic-dashboard-shell .premium-topic-rail-item {
-    flex-basis: 96px !important;
-    grid-template-columns: minmax(0, 1fr) !important;
-    justify-items: center !important;
-    align-content: center !important;
-    min-height: 78px !important;
-    text-align: center !important;
-  }
-
-  .premium-topic-dashboard-shell .premium-topic-rail-copy {
-    display: none !important;
-  }
-
-  .premium-topic-chip-code {
-    display: block;
-    max-width: 100%;
-    overflow: hidden;
-    color: var(--text, var(--text-primary));
-    font-size: 0.62rem;
-    font-weight: 950;
-    line-height: 1;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 }
