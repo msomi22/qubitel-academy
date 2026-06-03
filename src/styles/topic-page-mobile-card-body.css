@@ -1,5 +1,6 @@
 .premium-mobile-topic-card,
-.premium-topic-rail-mobile-code {
+.premium-topic-rail-mobile-code,
+.premium-topic-rail-compact {
   display: none;
 }
 
@@ -35,7 +36,7 @@
     grid-template-columns: minmax(0, 1fr) !important;
     place-items: center !important;
     align-self: start !important;
-    gap: 3px !important;
+    gap: 0 !important;
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
@@ -47,11 +48,9 @@
     scroll-snap-align: start !important;
   }
 
-  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item > *,
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-icon,
   html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy,
-  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy *,
-  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-mobile-topic-card,
-  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-mobile-topic-card * {
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-mobile-topic-card {
     display: none !important;
     visibility: hidden !important;
     opacity: 0 !important;
@@ -64,38 +63,59 @@
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    color: transparent !important;
-    font-size: 0 !important;
-    line-height: 0 !important;
   }
 
   html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item::before,
   html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact {
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    place-items: center !important;
+    gap: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    text-align: center !important;
+  }
+
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact strong,
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact small {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     width: 100% !important;
     max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
     text-align: center !important;
-    text-overflow: clip !important;
+    text-overflow: ellipsis !important;
     white-space: nowrap !important;
   }
 
-  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item::before {
-    content: attr(data-mobile-code) !important;
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact strong {
     color: var(--text, var(--text-primary)) !important;
-    font-size: clamp(0.72rem, 3vw, 0.86rem) !important;
+    font-size: clamp(0.82rem, 3.3vw, 0.95rem) !important;
     font-weight: 950 !important;
     letter-spacing: 0.01em !important;
     line-height: 1 !important;
   }
 
-  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item::after {
-    content: attr(data-mobile-count) !important;
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact small {
     color: var(--muted, var(--text-secondary)) !important;
-    font-size: clamp(0.62rem, 2.55vw, 0.74rem) !important;
+    font-size: clamp(0.68rem, 2.7vw, 0.78rem) !important;
     font-weight: 850 !important;
-    letter-spacing: 0 !important;
     line-height: 1 !important;
   }
 
