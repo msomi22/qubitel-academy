@@ -184,7 +184,7 @@ export default function CategoryPage({ fixedCategoryId }) {
           <p className="eyebrow">Unknown category</p>
           <h1>Category not found</h1>
           <p>This category does not exist in the category manifest.</p>
-          <Link className="btn" to="/">Go back home</Link>
+          <Link className="btn" to="/categories">Go back to categories</Link>
         </section>
       </main>
     );
@@ -192,6 +192,10 @@ export default function CategoryPage({ fixedCategoryId }) {
 
   return (
     <main className="page category-page premium-topic-dashboard-page">
+      <div className="premium-category-back-row">
+        <Link className="premium-category-back-link" to="/categories">← All categories</Link>
+      </div>
+
       <section className="premium-category-overview-card">
         <div className="premium-category-icon"><CategoryIcon /></div>
         <div className="premium-category-copy">
