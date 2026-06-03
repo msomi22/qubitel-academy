@@ -39,6 +39,7 @@ import './styles/topic-page-category-overview-controls.css';
 import './styles/topic-page-compact-density.css';
 import './styles/topic-page-control-row-compact.css';
 import './styles/topic-page-view-toggle-icon-fix.css';
+import './styles/topic-page-back-link.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
