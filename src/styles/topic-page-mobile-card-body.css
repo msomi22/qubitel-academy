@@ -1,4 +1,6 @@
-.premium-mobile-topic-card {
+.premium-mobile-topic-card,
+.premium-topic-rail-mobile-code,
+.premium-topic-rail-compact {
   display: none;
 }
 
@@ -31,59 +33,101 @@
   .premium-topic-dashboard-shell .topic-tab.glass,
   .premium-topic-dashboard-shell .premium-topic-rail-item {
     display: grid !important;
-    grid-template-columns: 26px minmax(0, 1fr) !important;
-    align-items: center !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    place-items: center !important;
     align-self: start !important;
-    gap: 8px !important;
+    gap: 0 !important;
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
     height: 74px !important;
     min-height: 74px !important;
     max-height: 74px !important;
-    padding: 10px !important;
-    text-align: left !important;
+    padding: 10px 6px !important;
+    text-align: center !important;
     scroll-snap-align: start !important;
   }
 
-  .premium-topic-dashboard-shell .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-icon,
-  .premium-topic-dashboard-shell .premium-topic-rail-icon {
-    width: 24px !important;
-    height: 24px !important;
-    justify-self: center !important;
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-icon,
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-copy,
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-mobile-topic-card {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
-  .premium-topic-dashboard-shell .premium-topic-rail-copy,
-  .premium-topic-chip-code {
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item::before,
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item::after {
+    content: none !important;
     display: none !important;
   }
 
-  .premium-mobile-topic-card {
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact {
     display: grid !important;
-    min-width: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-flow: row !important;
+    grid-auto-rows: max-content !important;
+    align-items: center !important;
+    justify-items: center !important;
+    align-content: center !important;
+    justify-content: center !important;
     gap: 5px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    text-align: center !important;
   }
 
-  .premium-mobile-topic-card strong {
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact strong,
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact small {
     display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    align-self: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow: hidden !important;
+    text-align: center !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact strong {
+    grid-row: 1 !important;
     color: var(--text, var(--text-primary)) !important;
-    font-size: 0.8rem !important;
+    font-size: clamp(0.82rem, 3.3vw, 0.95rem) !important;
     font-weight: 950 !important;
+    letter-spacing: 0.01em !important;
     line-height: 1 !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
   }
 
-  .premium-mobile-topic-card small {
-    display: block !important;
-    overflow: hidden !important;
+  html body .premium-topic-dashboard-shell .topic-picker.scalable-topic-picker.premium-topic-rail-list > .topic-tab.glass.premium-topic-rail-item .premium-topic-rail-compact small {
+    grid-row: 2 !important;
     color: var(--muted, var(--text-secondary)) !important;
-    font-size: 0.62rem !important;
-    font-weight: 800 !important;
+    font-size: clamp(0.68rem, 2.7vw, 0.78rem) !important;
+    font-weight: 850 !important;
     line-height: 1 !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
   }
 
   .premium-topic-dashboard-shell .premium-question-row--item {

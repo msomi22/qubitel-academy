@@ -21,6 +21,10 @@ function getFullTopicProgress(topic, completed = {}) {
   return topicProgress(topic, completed);
 }
 
+function getQuestionCountLabel(count) {
+  return `${count} ${count === 1 ? 'question' : 'questions'}`;
+}
+
 function getTopicIconType(topic) {
   const source = `${topic.id || topic.name || ''}`.toLowerCase();
   if (source.includes('communication')) return 'communication';
@@ -151,15 +155,18 @@ export default function TopicLibrary({
       <div className="topic-picker scalable-topic-picker premium-topic-rail-list">
         {visibleTopics.map((topic) => {
           const count = topic.filteredCount ?? topic.count ?? 0;
+          const countLabel = getQuestionCountLabel(count);
+          const shortLabel = getTopicShortLabel(topic);
           const progress = getVisibleTopicProgress(topic, completed);
           const fullProgress = getFullTopicProgress(topic, completed);
           const fullyCompleted = fullProgress.total > 0 && fullProgress.done === fullProgress.total;
+          const progressTotal = progress.total || count;
 
           return (
-            <button key={topic.id} type="button" className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${fullyCompleted ? 'done' : ''}`} onClick={() => onSelect(topic.id)}>
+            <button key={topic.id} type="button" aria-label={`${shortLabel} — ${topic.name}, ${countLabel}, ${progress.done}/${progressTotal} complete`} className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${fullyCompleted ? 'done' : ''}`} onClick={() => onSelect(topic.id)}>
               <TopicIcon topic={topic} />
-              <span className="premium-topic-rail-copy"><strong>{topic.name}</strong><small>{count} questions</small><em>{progress.done}/{progress.total || count} complete</em></span>
-              <span className="premium-mobile-topic-card" aria-hidden="true"><strong>{getTopicShortLabel(topic)}</strong><small>{count} questions</small></span>
+              <span className="premium-topic-rail-copy"><strong>{topic.name}</strong><em>{progress.done}/{progressTotal} complete</em></span>
+              <span className="premium-topic-rail-compact" aria-hidden="true"><strong>{shortLabel}</strong><small>{countLabel}</small></span>
             </button>
           );
         })}
