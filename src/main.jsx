@@ -30,6 +30,7 @@ import './styles/focused-text-wrap-fix.css';
 import './styles/glossary.css';
 import './styles/categories-premium-grid.css';
 import './styles/problem-page-premium-mobile.css';
+import './styles/topic-page-premium-question-grid.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
