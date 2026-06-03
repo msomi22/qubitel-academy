@@ -49,6 +49,8 @@ import './styles/topic-page-mobile-card-body.css';
 import './styles/problem-page-mobile-text-wrap-final.css';
 import './styles/dashboard-mobile-premium.css';
 import './styles/dashboard-command-center-width.css';
+import './styles/workspace-secondary-pages-polish.css';
+import './styles/random-page-premium-polish.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

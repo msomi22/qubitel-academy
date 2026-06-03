@@ -1,0 +1,453 @@
+/* Issue #254: polish Recent, Progress, and Settings secondary workspace pages. */
+
+.progress-page-focused,
+.settings-page {
+  --workspace-teal: var(--dashboard-teal, #14b8a6);
+  --workspace-teal-soft: color-mix(in srgb, var(--workspace-teal) 15%, transparent);
+  --workspace-panel-bg: color-mix(in srgb, var(--bg-card, var(--card)) 93%, transparent);
+  width: 100%;
+  max-width: min(1180px, 100%);
+  gap: 14px;
+  margin-inline: auto;
+  padding-bottom: calc(var(--bottom-nav-height, 64px) + 26px);
+}
+
+.progress-page-focused .progress-table-card,
+.settings-page .settings-page-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  gap: 14px;
+  padding: clamp(16px, 2vw, 22px);
+  border: 1px solid color-mix(in srgb, var(--workspace-teal) 22%, var(--line, var(--border)));
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--workspace-teal) 13%, transparent), transparent 36%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-card, var(--card)) 96%, var(--workspace-teal) 4%), var(--workspace-panel-bg));
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent),
+    0 18px 42px rgb(0 0 0 / 0.14),
+    var(--shadow-soft, 0 16px 34px rgb(0 0 0 / 0.10));
+}
+
+.progress-page-focused .progress-table-card::after,
+.settings-page .settings-page-card::after {
+  content: '';
+  position: absolute;
+  inset: auto -12% -42% 35%;
+  z-index: -1;
+  height: 190px;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--workspace-teal) 14%, transparent), transparent 68%);
+  pointer-events: none;
+}
+
+.progress-page-focused .progress-card-head,
+.settings-page .settings-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.progress-page-focused .progress-card-head > div,
+.settings-page .settings-card-head > div {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.progress-page-focused .progress-card-head .eyebrow,
+.settings-page .settings-card-head .eyebrow {
+  margin: 0;
+  color: var(--workspace-teal) !important;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  font-size: 0.64rem;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.progress-page-focused .progress-card-head h1,
+.settings-page .settings-card-head h1 {
+  margin: 0;
+  color: var(--text-primary, var(--text));
+  font-family: var(--font-sans, Inter, ui-sans-serif, system-ui, sans-serif);
+  font-size: clamp(1.55rem, 2.4vw, 2.05rem);
+  font-style: normal;
+  font-weight: 900;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.progress-page-focused .progress-card-head p:last-child,
+.settings-page .settings-card-head p:last-child,
+.settings-page .settings-empty-state p {
+  margin: 0;
+  color: var(--text-secondary, var(--muted));
+  font-size: 0.94rem;
+  line-height: 1.48;
+}
+
+.progress-page-focused .progress-toolbar {
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--workspace-teal) 18%, var(--line, var(--border)));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg-card, var(--card)) 70%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 6%, transparent);
+}
+
+.progress-page-focused .progress-filter-tabs {
+  gap: 6px;
+}
+
+.progress-page-focused .progress-filter-tab {
+  min-height: 32px;
+  padding: 6px 12px;
+  border-color: color-mix(in srgb, var(--line, var(--border)) 72%, transparent);
+  background: color-mix(in srgb, var(--bg-card, var(--card)) 72%, transparent);
+  color: color-mix(in srgb, var(--text-secondary, var(--muted)) 92%, var(--text-primary, var(--text)) 8%);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.progress-page-focused .progress-filter-tab:hover,
+.progress-page-focused .progress-filter-tab.active {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--workspace-teal) 58%, var(--line, var(--border)) 42%);
+  background: color-mix(in srgb, var(--workspace-teal) 14%, transparent);
+  color: var(--workspace-teal);
+}
+
+.progress-page-focused .progress-table-controls {
+  gap: 8px;
+}
+
+.progress-page-focused .progress-table-controls label {
+  gap: 6px;
+}
+
+.progress-page-focused .progress-table-controls span {
+  color: color-mix(in srgb, var(--text-secondary, var(--muted)) 86%, var(--text-primary, var(--text)) 14%);
+  font-size: 0.64rem;
+  font-weight: 950;
+  letter-spacing: 0.11em;
+}
+
+.progress-page-focused .progress-table-controls select {
+  min-height: 32px;
+  min-width: 112px;
+  padding-inline: 12px 30px;
+  border: 1px solid color-mix(in srgb, var(--workspace-teal) 20%, var(--line, var(--border)));
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-card, var(--card)) 95%, #fff 3%), color-mix(in srgb, var(--bg-card, var(--card)) 88%, #000 8%));
+  color: var(--text-primary, var(--text));
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.progress-page-focused .progress-table-controls select:focus {
+  border-color: var(--workspace-teal);
+  outline: 0;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--workspace-teal) 20%, transparent);
+}
+
+.progress-page-focused .progress-table-scroll {
+  border: 1px solid color-mix(in srgb, var(--workspace-teal) 16%, var(--line, var(--border)));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg-card, var(--card)) 68%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 5%, transparent);
+}
+
+.progress-page-focused .progress-topic-table th,
+.progress-page-focused .progress-topic-table td {
+  padding: 9px 12px;
+  border-bottom-color: color-mix(in srgb, var(--line, var(--border)) 82%, transparent);
+}
+
+.progress-page-focused .progress-topic-table th {
+  background: color-mix(in srgb, var(--workspace-teal) 8%, var(--bg-card, var(--card)) 74%);
+  color: color-mix(in srgb, var(--text-secondary, var(--muted)) 88%, var(--text-primary, var(--text)) 12%);
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+}
+
+.progress-page-focused .progress-topic-table tbody tr {
+  background: color-mix(in srgb, var(--bg-card, var(--card)) 54%, transparent);
+}
+
+.progress-page-focused .progress-topic-table tbody tr:hover {
+  background: color-mix(in srgb, var(--workspace-teal) 8%, transparent);
+}
+
+.progress-page-focused .progress-topic-name {
+  gap: 3px;
+}
+
+.progress-page-focused .progress-topic-name strong {
+  color: var(--text-primary, var(--text));
+  font-size: 0.9rem;
+  font-weight: 850;
+  line-height: 1.18;
+}
+
+.progress-page-focused .progress-topic-name span,
+.progress-page-focused .recent-question-table td,
+.progress-page-focused .recent-date-cell {
+  color: var(--text-secondary, var(--muted));
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.progress-page-focused .progress-solved-count {
+  color: var(--text-primary, var(--text));
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.progress-page-focused .progress-bar-cell {
+  grid-template-columns: minmax(112px, 1fr) 36px;
+  gap: 8px;
+  color: var(--text-secondary, var(--muted));
+  font-size: 0.8rem;
+}
+
+.progress-page-focused .progress-bar-track {
+  height: 7px;
+  border: 1px solid color-mix(in srgb, var(--workspace-teal) 14%, var(--line, var(--border)));
+  background: color-mix(in srgb, var(--line, var(--border)) 58%, transparent);
+}
+
+.progress-page-focused .progress-bar-fill {
+  background: linear-gradient(90deg, var(--workspace-teal), color-mix(in srgb, var(--accent, #38bdf8) 76%, var(--workspace-teal)));
+}
+
+.progress-page-focused .progress-status-chip {
+  min-width: 88px;
+  padding: 5px 9px;
+  border-color: color-mix(in srgb, var(--line, var(--border)) 82%, transparent);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.progress-page-focused .progress-status-chip.in-progress,
+.progress-page-focused .recent-difficulty.medium {
+  border-color: color-mix(in srgb, var(--workspace-teal) 44%, transparent);
+  background: color-mix(in srgb, var(--workspace-teal) 12%, transparent);
+  color: var(--workspace-teal);
+}
+
+.progress-page-focused .progress-status-chip.not-started {
+  background: color-mix(in srgb, var(--line, var(--border)) 36%, transparent);
+  color: var(--text-secondary, var(--muted));
+}
+
+.progress-page-focused .progress-status-chip.completed,
+.progress-page-focused .recent-difficulty.easy {
+  border-color: color-mix(in srgb, var(--ok) 42%, transparent);
+  background: color-mix(in srgb, var(--ok) 12%, transparent);
+  color: var(--ok);
+}
+
+.progress-page-focused .recent-difficulty.hard {
+  border-color: color-mix(in srgb, var(--danger) 42%, transparent);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+}
+
+.progress-page-focused .progress-open-btn {
+  min-height: 31px;
+  padding: 5px 12px;
+  border-color: color-mix(in srgb, var(--workspace-teal) 26%, var(--line, var(--border)));
+  background: color-mix(in srgb, var(--workspace-teal) 10%, transparent);
+  color: var(--text-primary, var(--text));
+  font-size: 0.8rem;
+  font-weight: 950;
+}
+
+.progress-page-focused .progress-open-btn:hover,
+.progress-page-focused .progress-open-btn:focus-visible {
+  border-color: var(--workspace-teal);
+  color: var(--workspace-teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--workspace-teal) 16%, transparent);
+}
+
+.progress-page-focused .recent-unavailable-action {
+  min-height: 31px;
+  padding: 5px 12px;
+  border-color: color-mix(in srgb, var(--line, var(--border)) 82%, transparent);
+  background: color-mix(in srgb, var(--line, var(--border)) 26%, transparent);
+  color: var(--text-secondary, var(--muted));
+  font-size: 0.8rem;
+}
+
+.progress-page-focused .progress-empty-state,
+.settings-page .settings-empty-state {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px dashed color-mix(in srgb, var(--workspace-teal) 30%, var(--line, var(--border)) 70%);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--workspace-teal) 6%, transparent);
+  color: var(--text-secondary, var(--muted));
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.progress-page-focused .recent-empty-state strong,
+.settings-page .settings-empty-state strong {
+  color: var(--text-primary, var(--text));
+  font-size: 0.96rem;
+}
+
+.progress-page-focused .recent-empty-state span,
+.settings-page .settings-empty-state span {
+  color: var(--text-secondary, var(--muted));
+  font-size: 0.88rem;
+}
+
+.progress-page-focused .progress-pagination {
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.progress-page-focused .progress-pagination p {
+  color: var(--text-secondary, var(--muted));
+  font-size: 0.82rem;
+}
+
+.progress-page-focused .progress-page-controls {
+  gap: 6px;
+}
+
+.progress-page-focused .progress-page-controls .page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--workspace-teal) 24%, var(--line, var(--border)));
+  background: color-mix(in srgb, var(--bg-card, var(--card)) 70%, transparent);
+  color: var(--text-primary, var(--text));
+  font-size: 0.78rem;
+}
+
+.progress-page-focused .progress-page-controls .page-btn.active,
+.progress-page-focused .progress-page-controls .page-btn:hover:not(:disabled) {
+  border-color: var(--workspace-teal);
+  background: color-mix(in srgb, var(--workspace-teal) 14%, transparent);
+  color: var(--workspace-teal);
+}
+
+.settings-page .settings-page-card {
+  align-content: start;
+  min-height: 220px;
+}
+
+.settings-page .settings-card-head {
+  padding-bottom: 2px;
+}
+
+.settings-page .settings-empty-state {
+  place-items: center;
+  min-height: 116px;
+  text-align: center;
+}
+
+.settings-page .settings-empty-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 2px;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--workspace-teal) 38%, var(--line, var(--border)));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--workspace-teal) 12%, transparent);
+  color: var(--workspace-teal);
+  font-size: 1.2rem;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 10%, transparent);
+}
+
+@media (max-width: 720px) {
+  .progress-page-focused,
+  .settings-page {
+    gap: 12px;
+    padding-inline: 0;
+    padding-bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px) + 34px);
+  }
+
+  .progress-page-focused .progress-table-card,
+  .settings-page .settings-page-card {
+    gap: 12px;
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .progress-page-focused .progress-card-head h1,
+  .settings-page .settings-card-head h1 {
+    font-size: clamp(1.45rem, 7vw, 1.8rem);
+  }
+
+  .progress-page-focused .progress-toolbar,
+  .progress-page-focused .progress-table-controls,
+  .progress-page-focused .progress-table-controls label {
+    align-items: stretch;
+  }
+
+  .progress-page-focused .progress-toolbar,
+  .progress-page-focused .progress-table-controls {
+    flex-direction: column;
+  }
+
+  .progress-page-focused .progress-table-controls label,
+  .progress-page-focused .progress-table-controls select {
+    width: 100%;
+  }
+
+  .progress-page-focused .progress-filter-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .progress-page-focused .progress-filter-tab {
+    width: 100%;
+  }
+
+  .progress-page-focused .progress-topic-table {
+    min-width: 700px;
+  }
+
+  .progress-page-focused .recent-question-table {
+    min-width: 780px;
+  }
+
+  .progress-page-focused .progress-pagination {
+    align-items: stretch;
+  }
+
+  .progress-page-focused .progress-page-controls {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 1px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-page-focused .progress-filter-tab {
+    transition: none;
+  }
+
+  .progress-page-focused .progress-filter-tab:hover,
+  .progress-page-focused .progress-filter-tab.active {
+    transform: none;
+  }
+}
