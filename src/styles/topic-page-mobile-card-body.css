@@ -85,4 +85,37 @@
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
   }
+
+  .premium-topic-dashboard-shell .premium-question-row--item {
+    grid-template-columns: 30px minmax(0, 1fr) 20px !important;
+    grid-template-areas:
+      "num title chev"
+      "num meta chev" !important;
+  }
+
+  .premium-topic-dashboard-shell .premium-question-row .pill {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: start !important;
+  }
+
+  .premium-question-status {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: center !important;
+    width: 16px !important;
+    height: 16px !important;
+    margin-left: 0 !important;
+    margin-right: 18px !important;
+    font-size: 0 !important;
+  }
+
+  .premium-question-time {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    min-width: 48px !important;
+    text-align: right !important;
+    font-size: 0.62rem !important;
+  }
 }
