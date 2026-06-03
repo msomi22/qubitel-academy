@@ -215,7 +215,7 @@ export default function ProblemPage() {
           <small>{isMcq ? 'Select an answer, then review the explanation.' : 'Read, draft mentally, then compare with the solution.'}</small>
 
           <div className="reference-action-group premium-problem-actions">
-            <NavLink className="btn ghost" to={categoryBackPath}>Topic</NavLink>
+            <NavLink className="btn ghost" to={categoryBackPath}>Back to topic</NavLink>
 
             {!isComplexSystemDesign ? (
               <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
