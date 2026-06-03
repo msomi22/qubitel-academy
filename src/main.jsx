@@ -37,6 +37,7 @@ import './styles/topic-page-mobile-two-column.css';
 import './styles/topic-page-final-rail-table-tuning.css';
 import './styles/topic-page-category-overview-controls.css';
 import './styles/topic-page-compact-density.css';
+import './styles/topic-page-control-row-compact.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
