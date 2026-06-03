@@ -159,7 +159,7 @@ export default function TopicLibrary({
             <button key={topic.id} type="button" className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${fullyCompleted ? 'done' : ''}`} onClick={() => onSelect(topic.id)}>
               <TopicIcon topic={topic} />
               <span className="premium-topic-rail-copy"><strong>{topic.name}</strong><small>{count} questions</small><em>{progress.done}/{progress.total || count} complete</em></span>
-              <span className="premium-topic-chip-code" aria-hidden="true">{getTopicShortLabel(topic)}</span>
+              <span className="premium-mobile-topic-card" aria-hidden="true"><strong>{getTopicShortLabel(topic)}</strong><small>{count} questions</small></span>
             </button>
           );
         })}
