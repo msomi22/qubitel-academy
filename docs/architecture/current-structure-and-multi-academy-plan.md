@@ -6,7 +6,11 @@ Documentation proposal for issue #261.
 
 This document records the current Senior Dev Accelerator project structure and proposes a safe, phased path toward multi-academy support using the same codebase.
 
-The current production experience at https://academy.qubitel.net must remain Senior Dev Accelerator.
+The current production experience at:
+
+https://academy.qubitel.net
+
+must remain Senior Dev Accelerator.
 
 Future academies should be delivered through dedicated subdomains while sharing the same platform foundation.
 
@@ -42,11 +46,44 @@ Academy
       ├─ Practice
       └─ Assessments
 
+## Lessons
+
 Lessons teach concepts.
+
+Examples:
+
+- Sliding Window Fundamentals
+- Java HashMap Basics
+- CKAD ConfigMaps
+- Grade 3 Nouns
+- Customer Complaint Handling
+
+## Practice
+
 Practice applies knowledge.
+
+Examples:
+
+- MCQs
+- Coding Questions
+- Scenario Questions
+- Exercises
+- Labs
+
+## Assessments
+
 Assessments measure readiness.
 
-Preferred terminology:
+Examples:
+
+- Topic Assessments
+- Timed Quizzes
+- Mock Exams
+- Certification Simulations
+
+## Preferred Terminology
+
+Use:
 
 - Lessons
 - Practice
@@ -57,46 +94,115 @@ Avoid:
 - Problems
 - Exams
 
-because they are niche-specific and do not scale across all academies.
+because they are niche-specific and do not scale well across all academies.
+
+---
+
+# Academy Hierarchy Examples
+
+Academy is an internal platform boundary and is normally selected automatically by subdomain.
+
+Learners typically do not choose an academy manually.
+
+## Technology Academy
+
+academy.qubitel.net
+
+Technology Academy
+└─ DSA
+   └─ Sliding Window
+      ├─ Lessons
+      ├─ Practice
+      └─ Assessments
+
+## CBC Academy
+
+cbc.academy.qubitel.net
+
+CBC Academy
+└─ Grade 3
+   └─ English
+      ├─ Lessons
+      ├─ Practice
+      └─ Assessments
+
+## Customer Experience Academy
+
+cx.academy.qubitel.net
+
+Customer Experience Academy
+└─ Customer Support
+   └─ Complaint Handling
+      ├─ Lessons
+      ├─ Practice
+      └─ Assessments
 
 ---
 
 # Platform Direction
 
-Technology Academy
-- DSA
-- Java
-- CKAD
-- System Design
-- Aptitude
-- ML / AI
+Qubitel Academy Platform
 
-CBC Academy
+- Technology Academy
+- CBC Academy
+- Customer Experience Academy
+
+---
+
+# Naming Conventions
+
+## Display Names
+
+Display names may contain spaces.
+
+Examples:
+
+- Technology Academy
+- CBC Academy
+- Customer Experience Academy
 - Grade 3
-- Grade 4
-- Future Grades
-
-Customer Experience Academy
 - Customer Support
-- IT Support
-- Helpdesk
-- Service Desk
-- Customer Success
+- Complaint Handling
+- Sliding Window
+
+## IDs, Routes, Folder Names and Manifest Keys
+
+Use lowercase kebab-case.
+
+Good:
+
+- tech
+- cbc
+- customer-experience
+- grade-3
+- customer-support
+- complaint-handling
+- sliding-window
+
+Bad:
+
+- Technology Academy
+- Grade 3
+- Customer Support
+- Complaint Handling
+
+## Example Folder Structure
+
+src/data/problems/tech/dsa/sliding-window/
+src/data/problems/cbc/grade-3/english/
+src/data/problems/customer-experience/customer-support/complaint-handling/
 
 ---
 
 # Academy Manifest
 
-Academy
-→ Category
-→ Topic
-→ Lessons / Practice / Assessments
+academyManifest
+categoryManifest
+topicManifest
 
-Future manifests:
+Conceptually:
 
-- academyManifest
-- categoryManifest
-- topicManifest
+Academy → Category → Topic → Lessons / Practice / Assessments
 
 ---
 
@@ -105,8 +211,6 @@ Future manifests:
 Keep:
 
 https://academy.qubitel.net
-
-as Senior Dev Accelerator.
 
 Future academies:
 
