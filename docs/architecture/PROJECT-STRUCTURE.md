@@ -426,4 +426,18 @@ No changes to the academy or category layer are needed.
 
 ---
 
+## Migration Note
+
+The current codebase still uses `src/data/problems/`, `topicManifest.js`, and `categoryManifest` as the active content source.
+
+The proposed `src/academies/` structure is the target model, not the first refactor.
+
+Migration should happen gradually:
+
+1. Add academy registry and subdomain detection.
+2. Make existing manifests academy-aware.
+3. Introduce `src/academies/` for new academy content.
+4. Keep existing tech content working during migration.
+5. Move tech content only after the new loader is stable.
+
 *Last updated: June 2026 — Qubitel Platform Team*
