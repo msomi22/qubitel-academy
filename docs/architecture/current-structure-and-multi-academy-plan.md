@@ -131,6 +131,153 @@ ml-ai
 engineering-leadership
 ```
 
+## Canonical Learning Model
+
+### Vision
+
+The platform should evolve from a problem-centric system into a learning-centric system.
+
+The same learning model should work across all academies, including:
+
+- Senior Dev Accelerator
+- CBC Exam Practice
+- Customer Support Academy
+- Future academies
+
+The platform's canonical structure is:
+
+Academy
+└─ Category
+   └─ Topic
+      ├─ Lessons
+      ├─ Practice
+      └─ Assessments
+
+### Lessons
+
+Lessons teach concepts.
+
+A lesson may include:
+
+- explanations
+- examples
+- visual walkthroughs
+- diagrams
+- notes
+- common mistakes
+- mental models
+
+Examples:
+
+- Sliding Window Fundamentals
+- Java HashMap Basics
+- CKAD ConfigMaps
+- Grade 3 Nouns
+- Customer Complaint Handling
+
+The goal of a lesson is understanding.
+
+### Practice
+
+Practice applies knowledge.
+
+Practice may include:
+
+- MCQs
+- coding questions
+- scenario questions
+- exercises
+- hands-on labs
+- guided activities
+
+Examples:
+
+- Two Sum
+- Sliding Window Maximum
+- Grade 3 Noun Identification
+- Customer Objection Handling Scenario
+
+The goal of practice is skill development.
+
+### Assessments
+
+Assessments measure readiness.
+
+Assessments may include:
+
+- timed quizzes
+- mock exams
+- certification simulations
+- topic assessments
+- end-of-topic exams
+
+Examples:
+
+- CKAD ConfigMap Assessment
+- Grade 3 English Topic Test
+- Customer Support Readiness Assessment
+
+The goal of an assessment is evaluation.
+
+### Why This Model
+
+The terms:
+
+- Lesson
+- Practice
+- Assessment
+
+are intentionally academy-neutral.
+
+They work equally well for:
+
+- software engineering
+- CBC education
+- customer support training
+- business training
+- future professional academies
+
+This vocabulary is preferred over:
+
+- Lesson
+- Problem
+- Exam
+
+because:
+
+- "Problem" is developer-centric.
+- "Exam" is school-centric.
+
+The selected terminology scales across all current and future academies.
+
+### Examples
+
+Senior Dev Accelerator
+
+DSA
+└─ Sliding Window
+   ├─ Lesson
+   ├─ Practice
+   └─ Assessment
+
+CBC Exam Practice
+
+English
+└─ Nouns
+   ├─ Lesson
+   ├─ Practice
+   └─ Assessment
+
+Customer Support Academy
+
+Customer Communication
+└─ Complaint Handling
+   ├─ Lesson
+   ├─ Practice
+   └─ Assessment
+
+This model should be treated as the long-term content architecture for the platform.
+
 The manifest model is simple and has worked well for adding CKAD, Aptitude, ML/AI, and Engineering Leadership.
 
 The main risk is that `topicManifest.js` will become too large if CBC and Customer Support content are added directly without an academy grouping strategy.
