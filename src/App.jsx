@@ -23,6 +23,7 @@ const RecentPage = lazy(() => import('./pages/RecentPage.jsx'));
 const ProgressPage = lazy(() => import('./pages/ProgressPage.jsx'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
 const ProblemPage = lazy(() => import('./pages/ProblemPage.jsx'));
+const ExamSessionPage = lazy(() => import('./pages/ExamSessionPage.jsx'));
 
 function RouteScrollReset() {
   const { pathname } = useLocation();
@@ -57,21 +58,23 @@ function RouteScrollReset() {
 export default function App() {
   useContentProtection();
   const { theme } = usePreferences();
+  const { pathname } = useLocation();
+  const isExamRoute = pathname.startsWith('/exam/');
 
   useEffect(() => {
     document.title = `${siteConfig.appName} | Learning Dashboard`;
   }, []);
 
   return (
-    <div className={`app-shell ${theme}`}>
+    <div className={`app-shell ${theme} ${isExamRoute ? 'exam-route-shell' : ''}`}>
       <RouteScrollReset />
 
       {/* First-visit onboarding — shows once, stores dismissal in localStorage */}
       <OnboardingOverlay />
 
-      <Navbar />
-      <div className="layout">
-        <Sidebar />
+      {!isExamRoute ? <Navbar /> : null}
+      <div className={`layout ${isExamRoute ? 'exam-route-layout' : ''}`}>
+        {!isExamRoute ? <Sidebar /> : null}
         <main className="page-wrap protect-content">
           {/* PageSkeleton replaces the blank LoadingCard for a better
               perceived-performance experience on route transitions */}
@@ -87,6 +90,7 @@ export default function App() {
               <Route path="/progress" element={<ProgressPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/problem/:questionId" element={<ProblemPage />} />
+              <Route path="/exam/:examId" element={<ExamSessionPage />} />
               <Route
                 path="*"
                 element={
@@ -103,9 +107,9 @@ export default function App() {
       </div>
 
       {/* Bottom navigation bar — visible on mobile only (CSS controls display) */}
-      <BottomNav />
+      {!isExamRoute ? <BottomNav /> : null}
 
-      <StatusBar />
+      {!isExamRoute ? <StatusBar /> : null}
     </div>
   );
 }

@@ -7,6 +7,7 @@ const defaults = {
   selectedTopics: {},
   selectedAnswers: {},
   timedQuestionAttempts: {},
+  examAttempts: {},
   complexDesignSubmissions: {}
 };
 
@@ -87,6 +88,19 @@ export const storageService = {
   },
   getTimedQuestionAttempt(questionId) {
     return this.read().timedQuestionAttempts?.[questionId] || null;
+  },
+  addExamAttempt(examId, attempt) {
+    const state = this.read();
+    const examAttempts = {
+      ...state.examAttempts,
+      [examId]: [...(state.examAttempts?.[examId] || []), attempt]
+    };
+
+    this.write({ examAttempts });
+    return examAttempts[examId];
+  },
+  getExamAttempts(examId) {
+    return [...(this.read().examAttempts?.[examId] || [])];
   },
   setComplexDesignSubmission(questionId, submission) {
     const state = this.read();

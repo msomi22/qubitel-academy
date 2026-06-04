@@ -2,6 +2,9 @@
   "id": "grade-3",
   "displayName": "Grade 3",
   "academy": "cbc",
+  "description": "Friendly Grade 3 lessons, practice, and exams.",
+  "domain": "CBC",
+  "featured": true,
   "topics": [
     "english"
   ]

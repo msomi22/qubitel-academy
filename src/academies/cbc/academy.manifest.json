@@ -7,5 +7,7 @@
     "cbc.academy.qubitel.net"
   ],
   "storageKey": "senior-dev-accelerator:v2:cbc",
-  "categories": []
+  "categories": [
+    "grade-3"
+  ]
 }

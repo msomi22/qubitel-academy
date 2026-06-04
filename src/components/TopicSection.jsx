@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from './Button.jsx';
 
 import { performanceConfig } from '../config/performanceConfig.js';
+import { createExamEntries } from '../services/examAttemptService.js';
 
 function clampPage(page, totalPages) {
   return Math.min(Math.max(page, 1), Math.max(totalPages, 1));
@@ -57,6 +58,15 @@ function difficultyClassName(difficulty) {
 
 function getEstimatedTime(question) {
   return question?.estimatedTime || question?.metadata?.estimatedTime || '10 min';
+}
+
+function isExamEntry(question) {
+  return question?.metadata?.assessmentType === 'exam-entry';
+}
+
+function isEntryComplete(question, completed) {
+  if (!isExamEntry(question)) return Boolean(completed[question.id]);
+  return question.examQuestions.every((examQuestion) => completed[examQuestion.id]);
 }
 
 function TopicMetadataList({ className, items }) {
@@ -115,7 +125,11 @@ function TopicSection({
   const isControlled = typeof currentPage === 'number';
 
   const safeQuestions = questions || topic.questions || [];
-  const orderedQuestions = useMemo(() => [...safeQuestions].sort(compareProblemsBySequence), [safeQuestions]);
+  const orderedQuestions = useMemo(
+    () => createExamEntries(safeQuestions).sort(compareProblemsBySequence),
+    [safeQuestions]
+  );
+  const itemLabel = orderedQuestions.some(isExamEntry) ? 'activities' : 'questions';
 
   const pageSize = Math.max(1, performanceConfig.questionsPerPage);
   const totalQuestions = orderedQuestions.length;
@@ -147,6 +161,10 @@ function TopicSection({
 
   function openFocusedProblem(question) {
     if (!question?.id) return;
+    if (isExamEntry(question)) {
+      navigate(`/exam/${question.id}`);
+      return;
+    }
     navigate(`/problem/${question.id}`, { state: { returnToCategory: { ...returnContext, questionId: question.id } } });
   }
 
@@ -167,14 +185,15 @@ function TopicSection({
         <div className="empty-state glass-lite premium-question-empty"><h3>No questions found</h3><p>Try another difficulty or clear the filter.</p></div>
       ) : (
         <div className="premium-question-table-card" aria-label={`${topic.name} questions`}>
-          <div className="premium-question-table-head"><div><h2>{topic.name}</h2><p>{topic.description}</p></div><span className="premium-topic-question-count">{totalQuestions} questions</span></div>
+          <div className="premium-question-table-head"><div><h2>{topic.name}</h2><p>{topic.description}</p></div><span className="premium-topic-question-count">{totalQuestions} {itemLabel}</span></div>
           <div className="premium-question-table" role="table" aria-label={`${topic.name} question list`}>
             <div className="premium-question-row premium-question-row--header" role="row"><span role="columnheader">#</span><span role="columnheader">Question</span><span role="columnheader">Difficulty</span><span role="columnheader">Status</span><span role="columnheader">Est. Time</span><span role="columnheader" className="sr-only">Open</span></div>
             {visibleQuestions.map((question, index) => {
               const questionNumber = pageStart + index + 1;
-              const isCompleted = !!completed[question.id];
+              const isCompleted = isEntryComplete(question, completed);
+              const actionLabel = isExamEntry(question) ? `Start ${question.title}` : `Open ${question.title} in focused workspace`;
               return (
-                <div key={question.id} role="button" tabIndex={0} className={`premium-question-row premium-question-row--item ${isCompleted ? 'is-complete' : ''}`} aria-label={`Open ${question.title} in focused workspace`} onClick={(event) => { if (shouldIgnoreCardNavigation(event)) return; openFocusedProblem(question); }} onKeyDown={(event) => { if (event.key !== 'Enter' && event.key !== ' ') return; if (shouldIgnoreCardNavigation(event)) return; event.preventDefault(); openFocusedProblem(question); }}>
+                <div key={question.id} role="button" tabIndex={0} className={`premium-question-row premium-question-row--item ${isExamEntry(question) ? 'is-exam-entry' : ''} ${isCompleted ? 'is-complete' : ''}`} aria-label={actionLabel} onClick={(event) => { if (shouldIgnoreCardNavigation(event)) return; openFocusedProblem(question); }} onKeyDown={(event) => { if (event.key !== 'Enter' && event.key !== ' ') return; if (shouldIgnoreCardNavigation(event)) return; event.preventDefault(); openFocusedProblem(question); }}>
                   <span className="premium-question-number">{questionNumber}</span>
                   <span className="premium-question-title">{question.title}</span>
                   <span className={`pill ${difficultyClassName(question.difficulty)}`}>{question.difficulty || 'Practice'}</span>

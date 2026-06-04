@@ -3,7 +3,32 @@
   "displayName": "English",
   "academy": "cbc",
   "category": "grade-3",
-  "lessons": [],
-  "practice": [],
-  "assessments": []
+  "description": "Grade 3 English practice with spelling lessons, practice, and exams.",
+  "status": "active",
+  "lessons": [
+    {
+      "id": "spelling-lesson-001",
+      "file": "lessons/spelling-lesson-001.js"
+    }
+  ],
+  "practice": [
+    {
+      "id": "spelling-practice-001",
+      "file": "practice/spelling-practice-001.js"
+    },
+    {
+      "id": "spelling-practice-002",
+      "file": "practice/spelling-practice-002.js"
+    }
+  ],
+  "assessments": [
+    {
+      "id": "spelling-exam-001",
+      "file": "assessments/spelling-exam-001.js"
+    },
+    {
+      "id": "spelling-exam-002",
+      "file": "assessments/spelling-exam-002.js"
+    }
+  ]
 }

@@ -48,11 +48,19 @@ test('generated manifest imports include every academy manifest on disk', () => 
   assert.deepEqual(generatedPaths, diskPaths);
 });
 
-test('future academies stay registered without learner-facing categories', () => {
-  assert.deepEqual(academyCatalogs.cbc.categories, []);
-  assert.deepEqual(academyCatalogs.cbc.topics, []);
+test('CBC exposes Grade 3 while Customer Experience stays registered without learner-facing categories', () => {
+  assert.deepEqual(academyCatalogs.cbc.categories.map((category) => category.id), ['grade-3']);
+  assert.deepEqual(academyCatalogs.cbc.topics.map((topic) => topic.id), ['english']);
   assert.deepEqual(academyCatalogs['customer-experience'].categories, []);
   assert.deepEqual(academyCatalogs['customer-experience'].topics, []);
+});
+
+test('CBC English declares the spelling lesson, practice sets, and exams', () => {
+  const english = academyCatalogs.cbc.topics.find((topic) => topic.id === 'english');
+
+  assert.deepEqual(english.lessons.map((item) => item.id), ['spelling-lesson-001']);
+  assert.deepEqual(english.practice.map((item) => item.id), ['spelling-practice-001', 'spelling-practice-002']);
+  assert.deepEqual(english.assessments.map((item) => item.id), ['spelling-exam-001', 'spelling-exam-002']);
 });
 
 test('academy manifests stay consistent with routing registry boundaries', () => {

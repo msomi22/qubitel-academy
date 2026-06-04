@@ -16,6 +16,7 @@ import {
   getProblemValidationResult
 } from '../problems/problemDiscovery.js';
 import { normalizeProblem } from '../problems/normalizeProblem.js';
+import { isExamQuestion } from './examAttemptService.js';
 
 const bankModules = import.meta.env
   ? import.meta.glob('../academies/*/_legacy/banks/**/*.js')
@@ -435,6 +436,31 @@ export async function findQuestionById(questionId) {
         question,
         topic: { ...topic, count: bank.questions.length },
         bank,
+        category,
+        categoryName: category?.name || topic.category
+      };
+    }
+  }
+
+  return null;
+}
+
+export async function findExamById(examId) {
+  const topics = await getVisibleTopics();
+
+  for (const topic of topics) {
+    const bank = await loadTopicBank(topic.id);
+    const questions = bank.questions
+      .filter((question) => isExamQuestion(question) && question.metadata.examId === examId)
+      .sort((a, b) => Number(a.metadata.sequence || 0) - Number(b.metadata.sequence || 0));
+
+    if (questions.length) {
+      const category = getCategory(topic.category);
+      return {
+        examId,
+        examTitle: questions[0].metadata.examTitle || examId,
+        questions,
+        topic,
         category,
         categoryName: category?.name || topic.category
       };

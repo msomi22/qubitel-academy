@@ -51,6 +51,7 @@ import './styles/dashboard-mobile-premium.css';
 import './styles/dashboard-command-center-width.css';
 import './styles/workspace-secondary-pages-polish.css';
 import './styles/random-page-premium-polish.css';
+import './styles/cbc-exam.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

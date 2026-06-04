@@ -1,0 +1,491 @@
+.app-shell.exam-route-shell,
+.app-shell.exam-route-shell.light,
+.app-shell.exam-route-shell.dark {
+  --cbc-exam-accent: #2f7d57;
+  --cbc-exam-accent-soft: color-mix(in srgb, var(--cbc-exam-accent) 12%, transparent);
+  --cbc-exam-border: color-mix(in srgb, var(--line, var(--border)) 72%, var(--cbc-exam-accent) 18%);
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+.app-shell.exam-route-shell .exam-route-layout,
+.app-shell.exam-route-shell.light .exam-route-layout,
+.app-shell.exam-route-shell.dark .exam-route-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  width: 100% !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.app-shell.exam-route-shell .exam-route-layout .page-wrap,
+.app-shell.exam-route-shell.light .exam-route-layout .page-wrap,
+.app-shell.exam-route-shell.dark .exam-route-layout .page-wrap {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  padding: clamp(16px, 3vw, 34px) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  background:
+    radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--cbc-exam-accent) 16%, transparent), transparent 36%),
+    var(--bg, var(--bg-primary));
+}
+
+.app-shell .cbc-exam-page,
+.app-shell.light .cbc-exam-page,
+.app-shell.dark .cbc-exam-page {
+  width: min(920px, 100%) !important;
+  max-width: 920px !important;
+  margin: 0 auto !important;
+  padding: 0 0 30px !important;
+  display: grid !important;
+  gap: 18px !important;
+}
+
+.cbc-exam-start-card,
+.cbc-exam-session-head,
+.cbc-exam-question-card,
+.cbc-exam-result-card,
+.cbc-exam-history,
+.cbc-answer-review {
+  border: 1px solid var(--cbc-exam-border);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 94%, transparent);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.12);
+}
+
+.cbc-exam-start-card,
+.cbc-exam-result-card {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  padding: clamp(26px, 6vw, 54px);
+  text-align: center;
+}
+
+.cbc-exam-start-card h1,
+.cbc-exam-result-card h1,
+.cbc-exam-session-head h1,
+.cbc-exam-question-card h2,
+.cbc-exam-history h2,
+.cbc-answer-review h2 {
+  margin: 0;
+  color: var(--text, var(--text-primary));
+  line-height: 1.14;
+}
+
+.cbc-exam-start-card h1,
+.cbc-exam-result-card h1 {
+  font-size: clamp(2rem, 7vw, 3.6rem);
+}
+
+.cbc-exam-start-card > p:not(.cbc-exam-kicker),
+.cbc-exam-result-card > p {
+  max-width: 620px;
+  margin: 0;
+  color: var(--muted, var(--text-secondary));
+  font-size: clamp(1rem, 2.5vw, 1.18rem);
+  line-height: 1.6;
+}
+
+.cbc-exam-kicker {
+  margin: 0;
+  color: var(--cbc-exam-accent);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cbc-exam-start-stats,
+.cbc-exam-result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: min(680px, 100%);
+}
+
+.cbc-exam-start-stats span,
+.cbc-exam-result-stats span {
+  display: grid;
+  gap: 4px;
+  min-height: 74px;
+  place-content: center;
+  padding: 12px;
+  border: 1px solid var(--cbc-exam-border);
+  border-radius: 16px;
+  background: var(--cbc-exam-accent-soft);
+  color: var(--muted, var(--text-secondary));
+  font-weight: 750;
+}
+
+.cbc-exam-start-stats strong,
+.cbc-exam-result-stats strong {
+  color: var(--text, var(--text-primary));
+  font-size: 1.3rem;
+}
+
+.cbc-exam-button,
+.cbc-exam-leave,
+.cbc-exam-history button {
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.cbc-exam-button.primary {
+  border-color: var(--cbc-exam-accent);
+  background: var(--cbc-exam-accent);
+  color: #fff;
+}
+
+.cbc-exam-button.secondary {
+  border-color: var(--cbc-exam-border);
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 88%, var(--cbc-exam-accent) 7%);
+  color: var(--text, var(--text-primary));
+}
+
+.cbc-exam-button.quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--muted, var(--text-secondary));
+}
+
+.cbc-exam-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.cbc-exam-result-actions,
+.cbc-exam-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.cbc-exam-session-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+}
+
+.cbc-exam-session-head > div:first-child {
+  display: grid;
+  gap: 6px;
+}
+
+.cbc-exam-session-head h1 {
+  font-size: clamp(1.35rem, 4vw, 2rem);
+}
+
+.cbc-exam-timer {
+  display: grid;
+  justify-items: center;
+  min-width: 98px;
+  padding: 10px 14px;
+  border: 2px solid color-mix(in srgb, var(--cbc-exam-accent) 65%, transparent);
+  border-radius: 16px;
+  background: var(--cbc-exam-accent-soft);
+  color: var(--cbc-exam-accent);
+}
+
+.cbc-exam-timer span {
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.cbc-exam-timer strong {
+  font-size: 1.35rem;
+}
+
+.cbc-exam-timer.ending {
+  border-color: #d97706;
+  background: color-mix(in srgb, #d97706 12%, transparent);
+  color: #b45309;
+}
+
+.cbc-exam-leave {
+  min-height: 42px;
+  padding-inline: 14px;
+  border-color: color-mix(in srgb, #b91c1c 44%, var(--cbc-exam-border));
+  background: color-mix(in srgb, #b91c1c 8%, transparent);
+  color: #b91c1c;
+}
+
+.cbc-exam-progress {
+  grid-column: 1 / -1;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--line, var(--border)) 68%, transparent);
+}
+
+.cbc-exam-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cbc-exam-accent);
+  transition: width 0.2s ease;
+}
+
+.cbc-exam-navigation {
+  justify-content: space-between;
+}
+
+.cbc-exam-navigation .cbc-exam-button {
+  min-width: min(180px, 42vw);
+}
+
+.cbc-exam-question-card {
+  display: grid;
+  gap: 22px;
+  padding: clamp(22px, 5vw, 42px);
+}
+
+.cbc-exam-objective,
+.cbc-exam-answer-status {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--cbc-exam-accent-soft);
+  color: var(--text, var(--text-primary));
+  font-weight: 760;
+}
+
+.cbc-exam-question-card h2 {
+  font-size: clamp(1.55rem, 5vw, 2.35rem);
+}
+
+.cbc-exam-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.cbc-exam-options button {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  min-height: 82px;
+  padding: 14px 18px;
+  border: 2px solid var(--cbc-exam-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 88%, transparent);
+  color: var(--text, var(--text-primary));
+  font: inherit;
+  font-size: clamp(1.05rem, 3vw, 1.28rem);
+  font-weight: 850;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cbc-exam-options button strong {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--cbc-exam-accent-soft);
+  color: var(--cbc-exam-accent);
+}
+
+.cbc-exam-options button:hover:not(:disabled),
+.cbc-exam-options button:focus-visible,
+.cbc-exam-options button.selected {
+  border-color: var(--cbc-exam-accent);
+  background: var(--cbc-exam-accent-soft);
+  outline: none;
+}
+
+.cbc-exam-options button:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
+.cbc-exam-options button.selected:disabled {
+  opacity: 1;
+}
+
+.cbc-exam-score {
+  display: grid;
+  gap: 4px;
+  color: var(--cbc-exam-accent);
+}
+
+.cbc-exam-score strong {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  line-height: 1;
+}
+
+.cbc-exam-score span {
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+.cbc-exam-history,
+.cbc-answer-review {
+  display: grid;
+  gap: 18px;
+  padding: clamp(20px, 4vw, 30px);
+}
+
+.cbc-exam-history-list,
+.cbc-answer-review-list {
+  display: grid;
+  gap: 10px;
+}
+
+.cbc-exam-history-list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--cbc-exam-border);
+  border-radius: 14px;
+}
+
+.cbc-exam-history-list article > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cbc-exam-history-list article > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.cbc-exam-history-list span,
+.cbc-answer-review-list small {
+  color: var(--muted, var(--text-secondary));
+}
+
+.cbc-exam-history button {
+  min-height: 38px;
+  padding-inline: 12px;
+  border-color: var(--cbc-exam-border);
+  background: var(--cbc-exam-accent-soft);
+  color: var(--text, var(--text-primary));
+}
+
+.cbc-attempt-status {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--cbc-exam-accent-soft);
+  color: var(--cbc-exam-accent);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
+.cbc-attempt-status.abandoned {
+  background: color-mix(in srgb, #b91c1c 10%, transparent);
+  color: #b91c1c;
+}
+
+.cbc-answer-review-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cbc-answer-review-list article {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--cbc-exam-border);
+  border-left: 5px solid #b91c1c;
+  border-radius: 14px;
+}
+
+.cbc-answer-review-list article.correct {
+  border-left-color: var(--cbc-exam-accent);
+}
+
+.cbc-answer-review-list article > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cbc-answer-review-list p,
+.cbc-answer-review-list small {
+  margin: 0;
+  line-height: 1.45;
+}
+
+.premium-question-row--item.is-exam-entry {
+  border-color: color-mix(in srgb, #2f7d57 46%, var(--line, var(--border))) !important;
+  background: color-mix(in srgb, #2f7d57 9%, var(--card, var(--bg-card))) !important;
+}
+
+@media (max-width: 700px) {
+  .app-shell.exam-route-shell,
+  .app-shell.exam-route-shell.light,
+  .app-shell.exam-route-shell.dark {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+  }
+
+  .app-shell.exam-route-shell .exam-route-layout,
+  .app-shell.exam-route-shell .exam-route-layout .page-wrap {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+  }
+
+  .app-shell.exam-route-shell .exam-route-layout .page-wrap {
+    padding: 12px !important;
+  }
+
+  .cbc-exam-start-stats,
+  .cbc-exam-result-stats,
+  .cbc-exam-options,
+  .cbc-answer-review-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cbc-exam-session-head {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 14px;
+  }
+
+  .cbc-exam-leave {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .cbc-exam-navigation {
+    position: sticky;
+    bottom: 8px;
+    z-index: 10;
+    padding: 8px;
+    border: 1px solid var(--cbc-exam-border);
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--card, var(--bg-card)) 94%, transparent);
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.16);
+  }
+
+  .cbc-exam-navigation .cbc-exam-button {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .cbc-exam-history-list article,
+  .cbc-exam-history-list article > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
