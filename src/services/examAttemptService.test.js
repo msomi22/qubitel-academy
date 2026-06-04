@@ -80,4 +80,6 @@ test('grades correct, incorrect, and timed-out answers separately', () => {
   assert.equal(attempt.percentage, 50);
   assert.equal(attempt.answers['exam-001-q002'].timedOut, true);
   assert.equal(attempt.answers['exam-001-q001'].selectedAnswer, 'right');
+  assert.deepEqual(attempt.answers['exam-001-q001'].options, ['wrong', 'right', 'other', 'last']);
+  assert.equal(attempt.answers['exam-001-q001'].correctAnswerIndex, 1);
 });
