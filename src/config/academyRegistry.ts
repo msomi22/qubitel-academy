@@ -27,7 +27,7 @@ export const academyRegistry: Record<AcademyId, AcademyConfig> = {
     productName: 'CBC Exam Practice',
     subdomains: ['cbc.academy.qubitel.net'],
     storageKey: 'senior-dev-accelerator:v2:cbc',
-    categoryIds: ['grade-3']
+    categoryIds: ['grade-1', 'grade-3']
   },
 
   'customer-experience': {
