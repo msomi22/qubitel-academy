@@ -32,7 +32,7 @@ function optionsFor(correctWord, wrongWords, answerPosition) {
 }
 
 const questions = words.map(([correctWord, wrongWords], index) => defineMcqProblem({
-  id: `grade-3-english-spelling-exam-002-q${String(index + 1).padStart(3, '0')}`,
+  id: `english-spelling-exam-002-q${String(index + 1).padStart(3, '0')}`,
   category: 'grade-3',
   topicId: 'english',
   title: `Spelling Exam 2 Question ${index + 1}`,
