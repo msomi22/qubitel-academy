@@ -1,7 +1,7 @@
 import { defineLearningProblem } from '../../../../../problems/problemAuthoring.js';
 
 const lesson = defineLearningProblem({
-  id: 'grade-3-english-spelling-lesson-001',
+  id: 'english-spelling-lesson-001',
   category: 'grade-3',
   topicId: 'english',
   title: 'Spelling: Choosing the Correct Word',
