@@ -3,6 +3,12 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  server: { port: 5173 },
+  server: {
+    port: 5173,
+    allowedHosts: [
+      'cbc.academy.qubitel.net',
+      'cx.academy.qubitel.net'
+    ]
+  },
   build: { target: 'es2020', cssCodeSplit: true }
 });

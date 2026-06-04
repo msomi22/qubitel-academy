@@ -118,12 +118,12 @@ export default function Sidebar() {
         >
           <img
             className="brand-logo brand-logo-light"
-            src="/brand-logo-light.svg"
+            src={siteConfig.brand.logoLight}
             alt={siteConfig.appName}
           />
           <img
             className="brand-logo brand-logo-dark"
-            src="/brand-logo-dark.svg"
+            src={siteConfig.brand.logoDark}
             alt=""
             aria-hidden="true"
           />

@@ -88,12 +88,12 @@ export default function Navbar() {
         <Link to="/" className="topbar-brand" aria-label={`${siteConfig.appName} dashboard`}>
           <img
             className="topbar-brand-logo topbar-brand-logo-light"
-            src="/brand-logo-light.svg"
+            src={siteConfig.brand.logoLight}
             alt={siteConfig.appName}
           />
           <img
             className="topbar-brand-logo topbar-brand-logo-dark"
-            src="/brand-logo-dark.svg"
+            src={siteConfig.brand.logoDark}
             alt=""
             aria-hidden="true"
           />

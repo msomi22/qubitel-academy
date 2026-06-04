@@ -3,19 +3,35 @@ import { getActiveAcademy } from './detectAcademy.ts';
 const defaultPaypalSupportLink = 'https://www.paypal.com/ncp/payment/X9PVPTEPKSGS8';
 const defaultPaystackSupportLink = 'https://paystack.shop/pay/1lrvz0bahb';
 const activeAcademy = getActiveAcademy();
+const academyBrandAssets = {
+  tech: {
+    logoLight: '/brand-logo-light.svg',
+    logoDark: '/brand-logo-dark.svg'
+  },
+  cbc: {
+    logoLight: '/academy-logos/cbc-logo-light.svg',
+    logoDark: '/academy-logos/cbc-logo-dark.svg'
+  },
+  'customer-experience': {
+    logoLight: '/academy-logos/cx-logo-light.svg',
+    logoDark: '/academy-logos/cx-logo-dark.svg'
+  }
+};
+const activeBrandAssets = academyBrandAssets[activeAcademy.id] || academyBrandAssets.tech;
 
 export const siteConfig = {
   academyId: activeAcademy.id,
   academyName: activeAcademy.displayName,
   appName: import.meta.env.VITE_APP_NAME || activeAcademy.productName,
-  tagline: import.meta.env.VITE_APP_TAGLINE || 'DSA + System Design mastery for junior and mid-level developers',
+  tagline: import.meta.env.VITE_APP_TAGLINE || 'Focused learning and practice for every academy',
   storageKey: import.meta.env.VITE_STORAGE_KEY || activeAcademy.storageKey,
+  brand: activeBrandAssets,
   support: {
     label: '🚀 Support from $1',
     title: `Support ${activeAcademy.productName}`,
     tooltip: 'Help create more learning content',
     intro:
-      'Help us add more CKAD, Java, DSA, System Design, Backend Engineering, and interview-prep questions faster.',
+      'Help us create more focused lessons, practice activities, assessments, and professional learning content.',
     methods: [
       {
         id: 'paypal',
