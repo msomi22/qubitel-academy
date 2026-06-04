@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
+import { getActiveAcademy } from '../config/detectAcademy.ts';
+import { siteConfig } from '../config/siteConfig.js';
 
-const STORAGE_KEY = 'sda_onboarding_done';
+const activeAcademy = getActiveAcademy();
+const STORAGE_KEY = activeAcademy.id === 'tech'
+  ? 'sda_onboarding_done'
+  : `${activeAcademy.storageKey}:onboarding-done`;
 
 const STEPS = [
   {
     icon: '📂',
     title: 'Pick a topic',
-    body: 'Browse DSA patterns and system design topics, organised by difficulty. Each topic has curated questions that match real senior-level interviews.'
+    body: 'Browse categories and topics organised around a focused learning path. Each topic contains curated material for deliberate practice.'
   },
   {
     icon: '⚡',
@@ -60,7 +65,7 @@ export default function OnboardingOverlay() {
       className="onboarding-overlay"
       role="dialog"
       aria-modal="true"
-      aria-label="Welcome to Senior Dev Accelerator"
+      aria-label={`Welcome to ${siteConfig.appName}`}
     >
       <div className="onboarding-card">
         <div className="onboarding-step-icon" aria-hidden="true">

@@ -1,0 +1,18 @@
+{
+  "id": "engineering-leadership",
+  "shortName": "Leadership",
+  "description": "Senior developer leadership practice for delegation, ownership, mentoring, communication, delivery judgment, and team effectiveness.",
+  "domain": "Engineering Leadership",
+  "tags": [
+    "leadership",
+    "management",
+    "mentorship"
+  ],
+  "route": "/category/engineering-leadership",
+  "featured": true,
+  "displayName": "Engineering Leadership",
+  "academy": "tech",
+  "topics": [
+    "management-track"
+  ]
+}

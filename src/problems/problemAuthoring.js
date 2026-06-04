@@ -1,4 +1,4 @@
-import { topicManifest } from '../data/topicManifest.js';
+import { topicManifest } from '../academies/catalog.js';
 import { normalizeProblem } from './normalizeProblem.js';
 
 const DEFAULT_DIFFICULTY = 'Medium';

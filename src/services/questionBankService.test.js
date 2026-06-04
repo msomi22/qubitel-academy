@@ -45,7 +45,7 @@ const topics = [
     questionBank: {
       legacyMerges: [
         {
-          path: '../data/banks/system/complex-system-design.js',
+          path: '../academies/tech/_legacy/banks/system/complex-system-design.js',
           idPrefixFrom: 'complex-system-design-',
           idPrefixTo: 'scalability-',
           topicId: 'scalability',
@@ -63,7 +63,7 @@ const topics = [
     questionBank: {
       legacyMerges: [
         {
-          path: '../data/banks/system/custom-complex.js',
+          path: '../academies/tech/_legacy/banks/system/custom-complex.js',
           idPrefixFrom: 'complex-system-design-',
           idPrefixTo: 'custom-merge-topic-',
           topicId: 'custom-merge-topic',
@@ -103,7 +103,7 @@ test('legacy topic loads as before when a legacy bank exists', async () => {
   const bank = await loadTopicBankFromSources('legacy-topic', {
     topics,
     modules: {
-      '../data/banks/dsa/legacy-topic.js': moduleLoader(legacyBank)
+      '../academies/tech/_legacy/banks/dsa/legacy-topic.js': moduleLoader(legacyBank)
     },
     getDiscoveredQuestions: async () => []
   });
@@ -128,7 +128,7 @@ test('legacy system-design type normalizes to simple-system-design from registry
   const bank = await loadTopicBankFromSources('scalability', {
     topics,
     modules: {
-      '../data/banks/system/scalability.js': moduleLoader(legacyBank)
+      '../academies/tech/_legacy/banks/system/scalability.js': moduleLoader(legacyBank)
     },
     getDiscoveredQuestions: async () => []
   });
@@ -152,7 +152,7 @@ test('legacy production-scenario type normalizes to simple-system-design from re
   const bank = await loadTopicBankFromSources('scalability', {
     topics,
     modules: {
-      '../data/banks/system/scalability.js': moduleLoader(legacyBank)
+      '../academies/tech/_legacy/banks/system/scalability.js': moduleLoader(legacyBank)
     },
     getDiscoveredQuestions: async () => []
   });
@@ -176,7 +176,7 @@ test.skip('normal simple-system-design problems continue working', async () => {
   const bank = await loadTopicBankFromSources('scalability', {
     topics,
     modules: {
-      '../data/banks/system/scalability.js': moduleLoader(legacyBank)
+      '../academies/tech/_legacy/banks/system/scalability.js': moduleLoader(legacyBank)
     },
     getDiscoveredQuestions: async () => []
   });
@@ -222,8 +222,8 @@ test('complex system-design questions still merge into scalability from manifest
   const bank = await loadTopicBankFromSources('scalability', {
     topics,
     modules: {
-      '../data/banks/system/scalability.js': moduleLoader(scalabilityBank),
-      '../data/banks/system/complex-system-design.js': moduleLoader(complexBank)
+      '../academies/tech/_legacy/banks/system/scalability.js': moduleLoader(scalabilityBank),
+      '../academies/tech/_legacy/banks/system/complex-system-design.js': moduleLoader(complexBank)
     },
     getDiscoveredQuestions: async () => []
   });
@@ -247,8 +247,8 @@ test('question bank service does not merge complex system design without topic m
   const bank = await loadTopicBankFromSources('plain-system-topic', {
     topics,
     modules: {
-      '../data/banks/system/plain-system-topic.js': moduleLoader(plainBank),
-      '../data/banks/system/complex-system-design.js': moduleLoader(complexBank)
+      '../academies/tech/_legacy/banks/system/plain-system-topic.js': moduleLoader(plainBank),
+      '../academies/tech/_legacy/banks/system/complex-system-design.js': moduleLoader(complexBank)
     },
     getDiscoveredQuestions: async () => []
   });
@@ -268,8 +268,8 @@ test('metadata-driven complex merge supports configurable source paths', async (
   const bank = await loadTopicBankFromSources('custom-merge-topic', {
     topics,
     modules: {
-      '../data/banks/system/custom-merge-topic.js': moduleLoader(baseBank),
-      '../data/banks/system/custom-complex.js': moduleLoader(customComplexBank)
+      '../academies/tech/_legacy/banks/system/custom-merge-topic.js': moduleLoader(baseBank),
+      '../academies/tech/_legacy/banks/system/custom-complex.js': moduleLoader(customComplexBank)
     },
     getDiscoveredQuestions: async () => []
   });
@@ -414,7 +414,7 @@ test('discovered question overrides duplicate legacy question by id', async () =
   const bank = await loadTopicBankFromSources('legacy-topic', {
     topics,
     modules: {
-      '../data/banks/dsa/legacy-topic.js': moduleLoader(legacyBank)
+      '../academies/tech/_legacy/banks/dsa/legacy-topic.js': moduleLoader(legacyBank)
     },
     getDiscoveredQuestions: async () => [
       { id: 'legacy-topic-001', type: 'coding', topicId: 'legacy-topic', title: 'Discovered version' }

@@ -1,0 +1,10 @@
+{
+  "id": "backtracking",
+  "category": "dsa",
+  "description": "Build a partial solution, test constraints, recurse deeper, then undo to try alternatives.",
+  "displayName": "CHOOSE — Backtracking",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

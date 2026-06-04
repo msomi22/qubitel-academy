@@ -1,0 +1,34 @@
+{
+  "id": "management-track",
+  "category": "engineering-leadership",
+  "description": "Practice senior engineering leadership judgment around delegation, ownership, mentoring, communication, delivery, and team growth.",
+  "questionBank": {
+    "mode": "discovered"
+  },
+  "displayName": "Management Track",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "management-track-communicating-technical-debt-in-business-terms-learning-001",
+      "file": "lessons/management-track-communicating-technical-debt-in-business-terms-learning-001.js"
+    },
+    {
+      "id": "management-track-constructive-feedback-without-damaging-trust-learning-001",
+      "file": "lessons/management-track-constructive-feedback-without-damaging-trust-learning-001.js"
+    },
+    {
+      "id": "management-track-delegation-without-abandonment-learning-001",
+      "file": "lessons/management-track-delegation-without-abandonment-learning-001.js"
+    },
+    {
+      "id": "management-track-handling-underperformance-without-avoidance-or-blame-learning-001",
+      "file": "lessons/management-track-handling-underperformance-without-avoidance-or-blame-learning-001.js"
+    },
+    {
+      "id": "management-track-reviewing-code-like-a-senior-learning-001",
+      "file": "lessons/management-track-reviewing-code-like-a-senior-learning-001.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

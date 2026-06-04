@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 220" role="img" aria-label="Customer Experience logo">
+  <defs>
+    <linearGradient id="cxDarkBg" x1="28" y1="28" x2="192" y2="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="cxDarkAccent" x1="230" y1="120" x2="850" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c4b5fd"/>
+      <stop offset="1" stop-color="#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="920" height="220" rx="32" fill="transparent"/>
+  <rect x="28" y="28" width="164" height="164" rx="40" fill="url(#cxDarkBg)"/>
+  <path d="M64 72h92a20 20 0 0 1 20 20v50a20 20 0 0 1-20 20h-31l-26 24v-24H64a20 20 0 0 1-20-20V92a20 20 0 0 1 20-20Z" fill="#ffffff"/>
+  <circle cx="82" cy="117" r="8" fill="#8b5cf6"/>
+  <circle cx="110" cy="117" r="8" fill="#6366f1"/>
+  <circle cx="138" cy="117" r="8" fill="#2563eb"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-weight="900">
+    <text x="230" y="98" font-size="58" fill="#f8fafc">Customer</text>
+    <text x="230" y="158" font-size="58" fill="url(#cxDarkAccent)">Experience</text>
+  </g>
+</svg>

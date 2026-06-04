@@ -1,0 +1,15 @@
+{
+  "id": "binary-search",
+  "category": "dsa",
+  "description": "Search sorted or monotonic spaces by repeatedly preserving the half that can still contain the answer.",
+  "displayName": "SEAR — Binary Search",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "binary-search-search-space-elimination",
+      "file": "lessons/binary-search-search-space-elimination.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

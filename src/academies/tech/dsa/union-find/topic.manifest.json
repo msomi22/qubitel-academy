@@ -1,0 +1,10 @@
+{
+  "id": "union-find",
+  "category": "dsa",
+  "description": "Maintain connected groups with representatives for dynamic connectivity and undirected cycle checks.",
+  "displayName": "UNION — Union-Find / DSU",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

@@ -9,6 +9,7 @@ import StatusBar from './components/StatusBar.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import OnboardingOverlay from './components/OnboardingOverlay.jsx';
 import PageSkeleton from './components/PageSkeleton.jsx';
+import { siteConfig } from './config/siteConfig.js';
 import { useContentProtection } from './hooks/useContentProtection.js';
 import { usePreferences } from './hooks/usePreferences.js';
 
@@ -56,6 +57,11 @@ function RouteScrollReset() {
 export default function App() {
   useContentProtection();
   const { theme } = usePreferences();
+
+  useEffect(() => {
+    document.title = `${siteConfig.appName} | Learning Dashboard`;
+  }, []);
+
   return (
     <div className={`app-shell ${theme}`}>
       <RouteScrollReset />

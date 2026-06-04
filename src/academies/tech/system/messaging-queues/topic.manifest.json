@@ -1,0 +1,15 @@
+{
+  "id": "messaging-queues",
+  "category": "system",
+  "description": "Decouple producers and consumers with queues, streams, retries, ordering, and idempotency.",
+  "displayName": "Messaging Queues",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [
+    {
+      "id": "messaging-queues-email-notification-001",
+      "file": "practice/messaging-queues-email-notification-001.js"
+    }
+  ],
+  "assessments": []
+}

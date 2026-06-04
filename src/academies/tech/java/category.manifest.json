@@ -1,0 +1,18 @@
+{
+  "id": "java",
+  "shortName": "Java",
+  "description": "Core Java, backend fundamentals, language behavior, and production-ready Java reasoning.",
+  "domain": "Backend Engineering",
+  "tags": [
+    "java",
+    "backend",
+    "engineering"
+  ],
+  "route": "/category/java",
+  "featured": true,
+  "displayName": "Java",
+  "academy": "tech",
+  "topics": [
+    "java-core"
+  ]
+}

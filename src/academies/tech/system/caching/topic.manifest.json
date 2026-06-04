@@ -1,0 +1,15 @@
+{
+  "id": "caching",
+  "category": "system",
+  "description": "Use caches to reduce latency and load while managing freshness, invalidation, and failure modes.",
+  "displayName": "Caching",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [
+    {
+      "id": "caching-product-details-001",
+      "file": "practice/caching-product-details-001.js"
+    }
+  ],
+  "assessments": []
+}

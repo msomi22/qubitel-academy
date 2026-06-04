@@ -1,0 +1,216 @@
+{
+  "id": "sliding-window",
+  "category": "dsa",
+  "description": "Use moving contiguous windows for subarray and substring questions while maintaining a validity invariant.",
+  "objectives": [
+    "Recognize when a problem is asking about a contiguous subarray or substring.",
+    "Distinguish fixed-size windows from variable-size windows before writing code.",
+    "Maintain a clear invariant: what makes the current window valid?",
+    "Update the answer only at the moment that is correct for the problem type.",
+    "Use sums, counts, frequency maps, products, distinct counts, and replacement budgets as window state.",
+    "Decide whether the prompt asks for one best window, many valid windows, or exact matches.",
+    "Explain why each pointer only moves forward and why the solution is O(n).",
+    "Identify when normal Sliding Window is unsafe and another pattern is a better fit."
+  ],
+  "notes": {
+    "summary": "Sliding Window works when candidates are contiguous and the next candidate can be built from the previous one. A window usually has a left boundary, a right boundary, and small state such as a sum, count map, product, distinct count, violation count, or replacement budget.",
+    "strategy": "Use a fixed-size window when the length is known upfront. Use a variable-size window when validity controls when the left pointer moves.",
+    "mentalModel": [
+      "Expand right to include new information.",
+      "Repair or shrink from the left when the invariant is broken or when a valid window can be improved.",
+      "Update the answer only at the correct moment for that problem type.",
+      "For count-all problems, count how many valid windows end at the current right pointer after the window has been repaired.",
+      "If negatives or non-monotonic state break the invariant, consider prefix sums, hash maps, or monotonic queues instead."
+    ]
+  },
+  "roadmap": [
+    {
+      "stage": "Stage A",
+      "title": "Foundations",
+      "purpose": "Teach what a window is, why contiguous matters, and how a fixed window reuses work instead of recomputing every candidate.",
+      "currentExamples": [
+        "Maximum Sum Subarray of Size K",
+        "Fixed Window Maximum Average"
+      ],
+      "nearTermAdditions": [
+        "Fixed Window State MCQ",
+        "Which value leaves and enters?",
+        "When is the first valid fixed window ready?",
+        "Maximum Average Subarray I",
+        "Contains Duplicate II as an index-distance/window-set example"
+      ],
+      "futureIdeas": [
+        "What makes the window contiguous?",
+        "Why does a fixed-size window subtract exactly one outgoing value?",
+        "When should the answer first be updated?"
+      ]
+    },
+    {
+      "stage": "Stage B",
+      "title": "Fixed-size counting and matching",
+      "purpose": "Teach exact-length windows with frequency arrays or maps so learners can match anagrams, permutations, and encoded fixed-length patterns.",
+      "currentExamples": [
+        "Count Anagrams Inside a String"
+      ],
+      "nearTermAdditions": [
+        "Permutation in String",
+        "Find All Anagrams in a String",
+        "Repeated DNA Sequences as a fixed-length encoded window example"
+      ],
+      "futureIdeas": [
+        "Why does an anagram window have fixed length?",
+        "What state changes when a character leaves the window?",
+        "How do frequency deltas avoid recomputing counts?",
+        "When are two frequency maps considered matched?"
+      ]
+    },
+    {
+      "stage": "Stage C",
+      "title": "Variable window: grow until valid, shrink while valid",
+      "purpose": "Teach shortest-valid-window problems where right grows the window until it works, then left shrinks it while it remains valid.",
+      "currentExamples": [
+        "Minimum Size Subarray Sum",
+        "Smallest Subarray With Sum At Least Target"
+      ],
+      "nearTermAdditions": [
+        "Minimum Window Substring / Minimum Window Containing All Characters",
+        "Shortest Subarray With OR at Least K as a careful bit-count state example"
+      ],
+      "futureIdeas": [
+        "Why update best before removing left?",
+        "What makes the current window valid?",
+        "Why does positivity matter for Minimum Size Subarray Sum?",
+        "What changes when validity depends on character requirements instead of numeric sum?"
+      ]
+    },
+    {
+      "stage": "Stage D",
+      "title": "Variable window: repair when invalid",
+      "purpose": "Teach longest-valid-window problems where the window may become invalid, then left moves until the invariant is restored.",
+      "currentExamples": [
+        "Longest Substring Without Repeating Characters",
+        "Fruit Into Baskets",
+        "Longest Subarray With At Most K Distinct Values"
+      ],
+      "nearTermAdditions": [
+        "Longest Substring With At Most K Distinct Characters",
+        "Longest Substring With At Most Two Distinct Characters",
+        "Longest Subarray of 1s After Deleting One Element"
+      ],
+      "futureIdeas": [
+        "When should best be updated: before or after repair?",
+        "Why must left sometimes move more than once?",
+        "What does the count map represent?",
+        "What exactly makes the window invalid?"
+      ]
+    },
+    {
+      "stage": "Stage E",
+      "title": "Budget / replacement windows",
+      "purpose": "Teach windows where validity depends on a limited number of flips, replacements, edits, or accumulated transformation cost.",
+      "currentExamples": [
+        "Max Consecutive Ones After K Flips",
+        "Longest Repeating Character Replacement"
+      ],
+      "nearTermAdditions": [
+        "Max Consecutive Ones III if not already represented clearly",
+        "Get Equal Substrings Within Budget",
+        "Frequency of the Most Frequent Element as a sorted-window budget variant"
+      ],
+      "futureIdeas": [
+        "What is the budget variable?",
+        "When is the budget exceeded?",
+        "Why can max frequency be treated carefully in character replacement?",
+        "How does sorting change the meaning of the window?"
+      ]
+    },
+    {
+      "stage": "Stage F",
+      "title": "Counting all valid subarrays/substrings",
+      "purpose": "Teach count-many-window problems where the answer is not one best length, but every valid window contribution.",
+      "currentExamples": [
+        "Subarray Product Less Than K"
+      ],
+      "nearTermAdditions": [
+        "Count Subarrays With Score Less Than K",
+        "Number of Substrings Containing All Three Characters",
+        "Count Subarrays Where Max Appears at Least K Times",
+        "Binary Subarrays With Sum as a boundary case that may use at-most counting or prefix sums",
+        "Count Number of Nice Subarrays as a boundary case where sliding window can combine with prefix/counting"
+      ],
+      "futureIdeas": [
+        "Why does a valid window ending at right contribute right - left + 1 subarrays?",
+        "When do we count after shrinking?",
+        "What changes between best-length and count-all problems?",
+        "When do we count substrings starting at left instead of ending at right?"
+      ]
+    },
+    {
+      "stage": "Stage G",
+      "title": "Edge cases and anti-patterns",
+      "purpose": "Teach when Sliding Window does not directly apply, including negative numbers, non-monotonic state, exact-K traps, prefix-sum boundaries, monotonic-deque boundaries, and substring/subarray versus subsequence confusion.",
+      "currentExamples": [],
+      "nearTermAdditions": [
+        "Negative numbers breaking monotonic sum assumptions",
+        "Prefix sums + hash map when normal Sliding Window cannot preserve validity",
+        "Monotonic deque when a normal window needs ordered max/min state",
+        "Contiguous substring/subarray versus subsequence decision checks",
+        "Exactly-K via atMost(K) - atMost(K - 1) or prefix counts"
+      ],
+      "futureIdeas": [
+        "Why does Minimum Size Subarray Sum require positive numbers?",
+        "Why does Subarray Sum Equals K not use a normal sliding window when negatives exist?",
+        "When should Sliding Window be replaced by prefix sums?",
+        "Why is Sliding Window Maximum a monotonic deque problem?",
+        "Why is subsequence not a sliding-window trigger?"
+      ]
+    }
+  ],
+  "displayName": "WIND — Sliding Window",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "longest-substring-without-repeating-characters",
+      "file": "lessons/longest-substring-without-repeating-characters.js"
+    },
+    {
+      "id": "minimum-size-subarray-sum",
+      "file": "lessons/minimum-size-subarray-sum.js"
+    }
+  ],
+  "practice": [
+    {
+      "id": "anagram-frequency-window-001",
+      "file": "practice/anagram-frequency-window-001.js"
+    },
+    {
+      "id": "sliding-window-001",
+      "file": "practice/sliding-window-001.js"
+    },
+    {
+      "id": "sliding-window-fixed-window-rolling-state-001",
+      "file": "practice/sliding-window-fixed-window-rolling-state-001.js"
+    },
+    {
+      "id": "sliding-window-fixed-window-slide-trace-001",
+      "file": "practice/sliding-window-fixed-window-slide-trace-001.js"
+    },
+    {
+      "id": "sliding-window-fixed-window-state-mcq-001",
+      "file": "practice/sliding-window-fixed-window-state-mcq-001.js"
+    },
+    {
+      "id": "sliding-window-fixed-window-update-timing-001",
+      "file": "practice/sliding-window-fixed-window-update-timing-001.js"
+    },
+    {
+      "id": "sliding-window-permutation-in-string-001",
+      "file": "practice/sliding-window-permutation-in-string-001.js"
+    },
+    {
+      "id": "substring-concatenation-words-001",
+      "file": "practice/substring-concatenation-words-001.js"
+    }
+  ],
+  "assessments": []
+}

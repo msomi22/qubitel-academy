@@ -1,0 +1,19 @@
+{
+  "id": "kubernetes-ckad",
+  "shortName": "CKAD",
+  "description": "Hands-on Kubernetes and CKAD preparation through the incremental KubeTasker project.",
+  "domain": "Cloud Native Engineering",
+  "tags": [
+    "kubernetes",
+    "ckad",
+    "cloud-native"
+  ],
+  "route": "/category/kubernetes-ckad",
+  "featured": true,
+  "displayName": "Kubernetes CKAD",
+  "academy": "tech",
+  "topics": [
+    "ckad-preparation",
+    "workloads-services"
+  ]
+}

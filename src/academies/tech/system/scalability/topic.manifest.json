@@ -1,0 +1,41 @@
+{
+  "id": "scalability",
+  "category": "system",
+  "description": "Design systems that keep working as users, traffic, data, and teams grow.",
+  "questionBank": {
+    "legacyMerges": [
+      {
+        "path": "../academies/tech/_legacy/banks/system/complex-system-design.js",
+        "idPrefixFrom": "complex-system-design-",
+        "idPrefixTo": "scalability-",
+        "topicId": "scalability",
+        "finalPattern": "Scalability",
+        "tags": [
+          "scalability"
+        ]
+      }
+    ]
+  },
+  "displayName": "Scalability",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [
+    {
+      "id": "sample-scalability-problem",
+      "file": "practice/sample-scalability-problem.js"
+    },
+    {
+      "id": "scalability-realtime-updates-001",
+      "file": "practice/scalability-realtime-updates-001.js"
+    },
+    {
+      "id": "scalability-url-shortener-001",
+      "file": "practice/scalability-url-shortener-001.js"
+    },
+    {
+      "id": "url-shortener-v2",
+      "file": "practice/url-shortener-v2.js"
+    }
+  ],
+  "assessments": []
+}

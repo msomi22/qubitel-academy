@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import GlobalSearch from './GlobalSearch.jsx';
 import SupportButton from './SupportButton.jsx';
+import { siteConfig } from '../config/siteConfig.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import { categories } from '../services/questionBankService.js';
 
@@ -29,7 +30,7 @@ function pageTitle(pathname) {
     return category?.name || 'Category Practice';
   }
 
-  return 'Senior Dev Accelerator';
+  return siteConfig.appName;
 }
 
 function ThemeIcon({ theme }) {
@@ -84,15 +85,15 @@ export default function Navbar() {
 
         <span className="topbar-title">{pageTitle(location.pathname)}</span>
 
-        <Link to="/" className="topbar-brand" aria-label="Senior Dev Accelerator dashboard">
+        <Link to="/" className="topbar-brand" aria-label={`${siteConfig.appName} dashboard`}>
           <img
             className="topbar-brand-logo topbar-brand-logo-light"
-            src="/brand-logo-light.svg"
-            alt="Senior Dev Accelerator"
+            src={siteConfig.brand.logoLight}
+            alt={siteConfig.appName}
           />
           <img
             className="topbar-brand-logo topbar-brand-logo-dark"
-            src="/brand-logo-dark.svg"
+            src={siteConfig.brand.logoDark}
             alt=""
             aria-hidden="true"
           />

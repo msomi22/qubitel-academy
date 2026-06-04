@@ -4,7 +4,7 @@
 
 This rubric protects the learning quality of Senior Dev Accelerator as the question bank grows for a larger global audience.
 
-It supports #95 by giving contributors and reviewers a shared quality gate for creating, reviewing, auditing, and improving production questions under `src/data/problems/**`.
+It supports #95 by giving contributors and reviewers a shared quality gate for creating, reviewing, auditing, and improving manifest-declared academy content.
 
 A strong production question should make the learner feel:
 

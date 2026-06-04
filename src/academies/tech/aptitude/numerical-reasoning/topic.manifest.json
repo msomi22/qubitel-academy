@@ -1,0 +1,18 @@
+{
+  "id": "numerical-reasoning",
+  "category": "aptitude",
+  "description": "Practice timed arithmetic, percentages, ratios, sequences, and data interpretation questions for aptitude assessments.",
+  "questionBank": {
+    "mode": "discovered"
+  },
+  "displayName": "Numerical Reasoning",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [
+    {
+      "id": "percentage-increase-basic-001",
+      "file": "practice/percentage-increase-basic-001.js"
+    }
+  ],
+  "assessments": []
+}

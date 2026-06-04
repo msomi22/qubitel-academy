@@ -1,0 +1,10 @@
+{
+  "id": "divide-conquer",
+  "category": "dsa",
+  "description": "Split into smaller independent subproblems, solve them, then combine the results correctly.",
+  "displayName": "SPLIT — Divide & Conquer",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

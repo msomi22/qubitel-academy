@@ -1,0 +1,20 @@
+{
+  "id": "tech",
+  "displayName": "Technology Academy",
+  "productName": "Senior Dev Accelerator",
+  "description": "Engineering and computer science learning for professionals.",
+  "subdomains": [
+    "academy.qubitel.net"
+  ],
+  "storageKey": "senior-dev-accelerator:v2",
+  "default": true,
+  "categories": [
+    "dsa",
+    "system",
+    "java",
+    "kubernetes-ckad",
+    "aptitude",
+    "ml-ai",
+    "engineering-leadership"
+  ]
+}

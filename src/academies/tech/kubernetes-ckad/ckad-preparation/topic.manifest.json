@@ -1,0 +1,18 @@
+{
+  "id": "ckad-preparation",
+  "category": "kubernetes-ckad",
+  "description": "Prepare a repeatable Kubernetes cloud lab before starting the KubeTasker CKAD stages.",
+  "questionBank": {
+    "mode": "discovered"
+  },
+  "displayName": "CKAD Preparation",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "ckad-preparation-cloud-lab-setup-001",
+      "file": "lessons/ckad-preparation-cloud-lab-setup-001.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

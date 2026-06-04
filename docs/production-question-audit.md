@@ -13,7 +13,7 @@ This audit now reflects the resolved production question quality pass completed 
 Reviewed production-visible questions under:
 
 ```text
-src/data/problems/**
+src/academies/tech/**/{lessons,practice,assessments}/*.js
 ```
 
 A production-visible question is any question that the current app logic treats as visible in production.
@@ -50,12 +50,12 @@ Each reviewed question was evaluated against the rubric standards for:
 
 ## Audit method and assumptions
 
-The repository currently has a manageable production-visible set, so this audit reviewed all discovered approved production questions found through `src/data/problems/**` metadata searches.
+The repository currently has a manageable production-visible set, so this audit reviewed all discovered approved production questions found through academy content metadata searches.
 
 Assumptions:
 
 - The audit treats `metadata.reviewStatus: 'approved'` plus `visibility` containing `prod` as the source of truth for production question visibility.
-- Files under `src/data/problems/**` that wrap legacy bank content were judged using both the wrapper and the inherited legacy content when visible from imports.
+- Authored files that inherit fields from compatibility banks were judged together with the inherited legacy content when visible from imports.
 - PR #129 removes the legacy URL shortener wrapper from production by changing its metadata to `reviewStatus: 'legacy'` and `visibility: ['dev']`.
 - The audit is intentionally practical rather than academic: each note should be easy to verify in the related production problem files.
 
@@ -100,7 +100,7 @@ No P0, P1, or P2 audit issues remain open in the reviewed production-visible set
 | System / scalability | 2 | 2 | 0 | 0 | 0 | URL shortener v2 is the only production-visible URL shortener walkthrough; realtime updates now covers connection ownership and fan-out. |
 | **Total** | **14** | **14** | **0** | **0** | **0** | No pending production-quality issue remains from this audit. |
 
-> Note: `dynamic-programming-020` is counted under DSA even though most learner content is inherited from `src/data/banks/dsa/minimum-sideway-jumps.js`.
+> Note: `dynamic-programming-020` is counted under DSA even though most learner content is inherited from `src/academies/tech/_legacy/banks/dsa/minimum-sideway-jumps.js`.
 
 ## Current production-visible question inventory
 

@@ -1,0 +1,31 @@
+{
+  "id": "java-core",
+  "category": "java",
+  "description": "Practice Java language fundamentals, object-oriented reasoning, collections, exceptions, and JVM basics.",
+  "questionBank": {
+    "mode": "discovered"
+  },
+  "displayName": "Java Core",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "checked-vs-unchecked-exceptions",
+      "file": "lessons/checked-vs-unchecked-exceptions.js"
+    },
+    {
+      "id": "hashmap-behavior",
+      "file": "lessons/hashmap-behavior.js"
+    }
+  ],
+  "practice": [
+    {
+      "id": "equals-vs-double-equals",
+      "file": "practice/equals-vs-double-equals.js"
+    },
+    {
+      "id": "pass-by-value-object-references",
+      "file": "practice/pass-by-value-object-references.js"
+    }
+  ],
+  "assessments": []
+}

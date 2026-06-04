@@ -93,7 +93,7 @@ test('validateProblemCollection detects duplicate ids', () => {
 
 test('discoverProblems loads default and named problem exports', async () => {
   const modules = {
-    '../data/problems/system/scalability/a.js': async () => ({
+    '../academies/tech/system/scalability/practice/a.js': async () => ({
       default: {
         id: 'discovered-default-1',
         type: 'simple-system-design',
@@ -104,7 +104,7 @@ test('discoverProblems loads default and named problem exports', async () => {
         question: 'Default question'
       }
     }),
-    '../data/problems/dsa/sliding-window/b.js': async () => ({
+    '../academies/tech/dsa/sliding-window/practice/b.js': async () => ({
       problem: {
         id: 'discovered-named-1',
         type: 'coding',

@@ -1,0 +1,18 @@
+{
+  "id": "aptitude",
+  "shortName": "Aptitude",
+  "description": "Timed numerical, verbal, logical, and cognitive reasoning practice for assessment preparation.",
+  "domain": "Assessment Prep",
+  "tags": [
+    "aptitude",
+    "reasoning",
+    "timed-practice"
+  ],
+  "route": "/category/aptitude",
+  "featured": true,
+  "displayName": "Aptitude Test",
+  "academy": "tech",
+  "topics": [
+    "numerical-reasoning"
+  ]
+}

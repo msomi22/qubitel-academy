@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import topic from '../data/banks/system/complex-system-design.js';
+import topic from '../academies/tech/_legacy/banks/system/complex-system-design.js';
 import {
   applyGatekeeperCaps,
   fuzzyWordMatches,

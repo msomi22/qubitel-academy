@@ -1,0 +1,39 @@
+{
+  "id": "bit-manipulation",
+  "category": "dsa",
+  "description": "Represent flags, parity, subsets, and cancellation rules using binary operations and masks.",
+  "displayName": "BITS — Bit Manipulation",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [
+    {
+      "id": "bit-manipulation-001",
+      "file": "practice/bit-manipulation-001.js"
+    },
+    {
+      "id": "bit-manipulation-002",
+      "file": "practice/bit-manipulation-002.js"
+    },
+    {
+      "id": "bit-manipulation-003",
+      "file": "practice/bit-manipulation-003.js"
+    },
+    {
+      "id": "bit-manipulation-004",
+      "file": "practice/bit-manipulation-004.js"
+    },
+    {
+      "id": "bit-manipulation-005",
+      "file": "practice/bit-manipulation-005.js"
+    },
+    {
+      "id": "bit-manipulation-006",
+      "file": "practice/bit-manipulation-006.js"
+    },
+    {
+      "id": "bit-manipulation-007",
+      "file": "practice/bit-manipulation-007.js"
+    }
+  ],
+  "assessments": []
+}

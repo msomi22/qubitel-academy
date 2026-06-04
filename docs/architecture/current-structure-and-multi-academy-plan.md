@@ -1,5 +1,9 @@
 # Multi-Academy Platform RFC
 
+> Implementation status: the active tech catalog/content migration is complete. Use
+> `docs/architecture/PROJECT-STRUCTURE.md` as the canonical source for current runtime rules.
+> CBC and Customer Experience remain registered but expose no learner-facing categories.
+
 ## Academy Hierarchy Explained
 
 ### Canonical Learning Model
@@ -263,28 +267,91 @@ sliding-window
 
 # Example Folder Structure
 
-```text
+```
 src/
-└── data/
-    └── content/
-        ├── tech/
-        │   └── dsa/
-        │       └── sliding-window/
-        │           ├── lessons/
-        │           ├── practice/
-        │           └── assessments/
-        │
-        ├── cbc/
-        │   └── grade-3/
-        │       └── english/
-        │           ├── lessons/
-        │           ├── practice/
-        │           └── assessments/
-        │
-        └── customer-experience/
-            └── customer-support/
-                └── complaint-handling/
-                    ├── lessons/
-                    ├── practice/
-                    └── assessments/
+│
+├── academies/                          # One subfolder per academy
+│   │
+│   ├── tech/                           # safe-id: lowercase kebab-case
+│   │   ├── academy.manifest.json       # Academy-level config
+│   │   │
+│   │   ├── dsa/                        # Category: Data Structures & Algorithms
+│   │   │   ├── category.manifest.json
+│   │   │   │
+│   │   │   ├── sliding-window/         # Topic
+│   │   │   │   ├── topic.manifest.json
+│   │   │   │   ├── lessons/
+│   │   │   │   │   ├── 01-what-is-sliding-window.md
+│   │   │   │   │   └── 02-fixed-vs-variable.md
+│   │   │   │   ├── practice/
+│   │   │   │   │   ├── max-sum-subarray.json
+│   │   │   │   │   └── longest-substring.json
+│   │   │   │   └── assessments/
+│   │   │   │       └── sliding-window-timed-quiz.json
+│   │   │   │
+│   │   │   └── two-pointers/
+│   │   │       └── ...
+│   │   │
+│   │   ├── java/
+│   │   ├── ckad/
+│   │   └── system-design/
+│   │
+│   ├── cbc/
+│   │   ├── academy.manifest.json
+│   │   │
+│   │   ├── grade-3/
+│   │   │   ├── category.manifest.json
+│   │   │   ├── english/
+│   │   │   │   ├── topic.manifest.json
+│   │   │   │   ├── lessons/
+│   │   │   │   ├── practice/
+│   │   │   │   └── assessments/
+│   │   │   └── mathematics/
+│   │   │       └── ...
+│   │   │
+│   │   ├── grade-4/
+│   │   └── grade-5/
+│   │
+│   └── customer-experience/
+│       ├── academy.manifest.json
+│       │
+│       ├── customer-support/
+│       │   ├── category.manifest.json
+│       │   ├── complaint-handling/
+│       │   │   ├── topic.manifest.json
+│       │   │   ├── lessons/
+│       │   │   ├── practice/
+│       │   │   └── assessments/
+│       │   └── de-escalation/
+│       │       └── ...
+│       │
+│       ├── it-support/
+│       ├── helpdesk/
+│       ├── service-desk/
+│       └── customer-success/
+│
+├── components/                         # Shared UI components
+│   ├── AcademyShell.tsx                # Top nav, sidebar, layout
+│   ├── TopicCard.tsx
+│   ├── ContentList.tsx
+│   ├── LessonViewer.tsx
+│   ├── PracticePlayer.tsx
+│   └── AssessmentRunner.tsx
+│
+├── hooks/
+│   ├── useAcademy.ts                   # Resolves academy from subdomain
+│   ├── useTopic.ts
+│   └── useContent.ts
+│
+├── lib/
+│   ├── registry.ts                     # Builds the global academy/category/topic tree
+│   ├── manifest.ts                     # Parses and validates manifest files
+│   └── content-loader.ts              # Lazy-loads lessons/practice/assessments
+│
+├── types/
+│   ├── academy.ts                      # Academy, Category, Topic interfaces
+│   └── content.ts                      # Lesson, PracticeItem, Assessment interfaces
+│
+└── config/
+    └── subdomain-map.ts               # Maps subdomains → academy safe-IDs
 ```

@@ -1,27 +1,28 @@
 # Adding New Problems
 
-The question bank supports two sources of problems:
+The question bank supports two academy-scoped sources:
 
-1. Existing legacy banks under `src/data/banks`.
-2. New one-file-per-problem files under `src/data/problems`.
+1. Manifest-declared one-file content under `src/academies/<academy>/<category>/<topic>/`.
+2. Compatibility banks under `src/academies/<academy>/_legacy/banks/`.
 
 The preferred workflow for new content is:
 
-1. Create a file under `src/data/problems/<category>/<topicId>/<problem-id>.js`.
-2. Export a problem object as `export default problem` or `export const problem = { ... }`.
-3. Add a config-driven `visualWalkthrough` whenever the question can reasonably benefit from showing state, movement, decisions, or transitions.
-4. Run `npm run test:unit`.
-5. Run `npm run build`.
-6. Open the app and verify the problem appears under the expected topic.
+1. Choose `lessons`, `practice`, or `assessments` for the content.
+2. Create a file under `src/academies/<academy>/<category>/<topicId>/<section>/<problem-id>.js`.
+3. Add its id and section-relative file path to the topic's `topic.manifest.json`.
+4. Export a problem object as `export default problem` or `export const problem = { ... }`.
+5. Add a config-driven `visualWalkthrough` whenever the question can reasonably benefit from showing state, movement, decisions, or transitions.
+6. Run `npm run test:unit` and `npm run build`.
+7. Open the app and verify the problem appears under the expected topic.
 
 ## Folder structure
 
 Use this structure for new problems:
 
 ```text
-src/data/problems/system/scalability/url-shortener.js
-src/data/problems/system/caching/cache-aside.js
-src/data/problems/dsa/sliding-window/max-sum-subarray.js
+src/academies/tech/system/scalability/practice/url-shortener.js
+src/academies/tech/system/caching/lessons/cache-aside.js
+src/academies/tech/dsa/sliding-window/practice/max-sum-subarray.js
 ```
 
 The folder names should match the problem metadata:
@@ -132,27 +133,27 @@ Use `coding` for existing DSA-style coding questions because that is the current
 
 ## Discovery and loading
 
-`src/problems/problemDiscovery.js` uses `import.meta.glob` to discover files under `src/data/problems/**/*.js`.
+`src/problems/problemDiscovery.js` uses the active academy catalog and `src/lib/content-loader.js` to select files declared by topic manifests.
 
 Each discovered problem is normalized, validated, and then merged into the matching topic by `questionBankService`.
 
-Legacy bank files under `src/data/banks` are now compatibility fallbacks. If a discovered problem and a legacy bank question use the same `id`, the discovered problem wins and the legacy duplicate is skipped for that topic. This lets migration happen gradually without showing duplicate questions or breaking old topics that still rely on banks.
+Legacy bank files under `src/academies/<academy>/_legacy/banks/` are compatibility fallbacks. If a discovered problem and a legacy bank question use the same `id`, the discovered problem wins and the legacy duplicate is skipped for that topic.
 
 ## Migrating legacy bank questions
 
-Legacy banks are being phased out. New authored content should use `src/data/problems` only, while `src/data/banks` remains a temporary compatibility layer for topics that have not been migrated yet.
+Legacy banks are being phased out. New authored content must use manifest-declared academy topic folders, while `_legacy/banks` remains a compatibility layer for topics that have not been fully migrated.
 
 When migrating a topic:
 
-1. Pick one source file: `src/data/banks/<category>/<topicId>.js`.
-2. Create one file per question under `src/data/problems/<category>/<topicId>/<problem-id>.js`.
+1. Pick one source file: `src/academies/tech/_legacy/banks/<category>/<topicId>.js`.
+2. Create one file per question under `src/academies/<academy>/<category>/<topicId>/<section>/<problem-id>.js`.
 3. Preserve the original `id` exactly. Do not rename, prefix, suffix, slugify, or regenerate it because progress and completed status are keyed by ID.
 4. Preserve existing authored fields unless a compatibility layer already normalizes them safely.
 5. Add `category: '<category>'` if the legacy object did not already have it.
 6. Preserve `topicId`; if missing, infer it from the legacy bank file name and add it explicitly.
 7. Keep complex system design problems conservative: preserve scoring dictionaries, model answers, weak-answer examples, final patterns, and evaluation fields.
 8. Preserve existing `visualWalkthrough` fields when present. When the migrated problem clearly benefits from a visual but does not have one, add a config-driven walkthrough instead of leaving a visual gap.
-9. Leave the old bank file as a compatibility shell or fallback until tests prove it is safe to remove its questions.
+9. Add every migrated file to the topic manifest, then leave the old bank as a fallback until tests prove its remaining questions are safe to remove.
 
 A migrated problem should look like this:
 
@@ -307,11 +308,12 @@ export default problem;
 
 ## Adding a brand-new topic
 
-1. Add a topic entry to `src/data/topicManifest.js`.
-2. Set the topic `id`, `name`, `category`, and `description`.
-3. Add one or more problem files under `src/data/problems/<category>/<topicId>/`.
-4. Run `npm run test:unit`.
-5. Open the category page and confirm the topic count is computed from loaded questions.
+1. Create `src/academies/<academy>/<category>/<topicId>/topic.manifest.json`.
+2. Set the topic `id`, `displayName`, `academy`, `category`, and content arrays.
+3. Add the topic id to its parent `category.manifest.json`.
+4. Add one or more manifest-declared content files under the topic.
+5. Run `npm run generate:academy-manifests`, `npm run test:unit`, and `npm run build`.
+6. Open the category page and confirm the topic count is computed from loaded questions.
 
 ## Adding a brand-new problem type
 

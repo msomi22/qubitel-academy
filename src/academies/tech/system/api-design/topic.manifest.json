@@ -1,0 +1,19 @@
+{
+  "id": "api-design",
+  "category": "system",
+  "description": "Create clear, secure, versioned, reliable APIs with strong contracts and operational behavior.",
+  "displayName": "API Design",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [
+    {
+      "id": "api-design-payment-idempotency-001",
+      "file": "practice/api-design-payment-idempotency-001.js"
+    },
+    {
+      "id": "api-design-rate-limiting-001",
+      "file": "practice/api-design-rate-limiting-001.js"
+    }
+  ],
+  "assessments": []
+}

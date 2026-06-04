@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { categoryManifest, topicManifest } from '../data/topicManifest.js';
-import hashmapBehavior from '../data/problems/java/java-core/hashmap-behavior.js';
-import checkedVsUncheckedExceptions from '../data/problems/java/java-core/checked-vs-unchecked-exceptions.js';
-import equalsVsDoubleEquals from '../data/problems/java/java-core/equals-vs-double-equals.js';
-import passByValueObjectReferences from '../data/problems/java/java-core/pass-by-value-object-references.js';
+import { categoryManifest, topicManifest } from '../academies/catalog.js';
+import hashmapBehavior from '../academies/tech/java/java-core/lessons/hashmap-behavior.js';
+import checkedVsUncheckedExceptions from '../academies/tech/java/java-core/lessons/checked-vs-unchecked-exceptions.js';
+import equalsVsDoubleEquals from '../academies/tech/java/java-core/practice/equals-vs-double-equals.js';
+import passByValueObjectReferences from '../academies/tech/java/java-core/practice/pass-by-value-object-references.js';
 import { discoverProblems, getDiscoveredQuestionsForTopic } from '../problems/problemDiscovery.js';
 import {
   filterCategoriesForActiveProfile,
@@ -15,10 +15,10 @@ import {
 import { searchQuestionIndex } from './searchService.js';
 
 const javaProblemModules = {
-  '../data/problems/java/java-core/hashmap-behavior.js': { default: hashmapBehavior },
-  '../data/problems/java/java-core/checked-vs-unchecked-exceptions.js': { default: checkedVsUncheckedExceptions },
-  '../data/problems/java/java-core/equals-vs-double-equals.js': { default: equalsVsDoubleEquals },
-  '../data/problems/java/java-core/pass-by-value-object-references.js': { default: passByValueObjectReferences }
+  '../academies/tech/java/java-core/lessons/hashmap-behavior.js': { default: hashmapBehavior },
+  '../academies/tech/java/java-core/lessons/checked-vs-unchecked-exceptions.js': { default: checkedVsUncheckedExceptions },
+  '../academies/tech/java/java-core/practice/equals-vs-double-equals.js': { default: equalsVsDoubleEquals },
+  '../academies/tech/java/java-core/practice/pass-by-value-object-references.js': { default: passByValueObjectReferences }
 };
 
 function makeSearchIndex(questions, topicId = 'java-core') {
@@ -75,7 +75,7 @@ test('production profile includes Java category search results', async () => {
   assert.ok(titlesFor('HashMap', searchIndex, { category: 'java' }).includes('HashMap Behavior at a High Level'));
 });
 
-test('java-core questions are discoverable from src/data/problems/java/java-core', async () => {
+test('java-core questions are discoverable from its academy topic folders', async () => {
   const questions = await getDiscoveredQuestionsForTopic('java-core', {
     modules: javaProblemModules,
     topics: topicManifest
@@ -118,7 +118,7 @@ test('production Java search excludes unapproved or dev-only Java questions', as
   const questions = await discoverProblems({
     modules: {
       ...javaProblemModules,
-      '../data/problems/java/java-core/dev-only.js': { default: devOnlyQuestion }
+      '../academies/tech/java/java-core/practice/dev-only.js': { default: devOnlyQuestion }
     },
     topics: topicManifest
   });

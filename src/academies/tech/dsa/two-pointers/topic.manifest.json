@@ -1,0 +1,15 @@
+{
+  "id": "two-pointers",
+  "category": "dsa",
+  "description": "Use two moving positions to reduce comparisons while preserving a search or partition invariant.",
+  "displayName": "PAIR — Two Pointers",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "container-with-most-water-two-pointers",
+      "file": "lessons/container-with-most-water-two-pointers.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

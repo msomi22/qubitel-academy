@@ -394,7 +394,7 @@ Why it fails: it is subjective and has no acceptance criteria.
 Every issue should reinforce these standards when relevant:
 
 - [ ] Learner-facing content is clear, practical, and explanation-first.
-- [ ] New real content normally lives under `src/data/problems/**`.
+- [ ] New real content lives under an academy topic's `lessons`, `practice`, or `assessments` folder and is declared in its topic manifest.
 - [ ] Production-visible content uses approved production metadata where applicable.
 - [ ] Visual walkthroughs are config-driven and use existing renderers where possible.
 - [ ] Counts and progress use reliable source-of-truth paths, not hardcoded values.
