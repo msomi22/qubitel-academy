@@ -41,18 +41,25 @@ test('generated manifest imports include every academy manifest on disk', () => 
     ...topicManifestRecords
   ].map((record) => record.path).sort();
   const diskPaths = walk(academiesRoot)
-    .filter((path) => /\/(academy|category|topic)\.manifest\.json$/.test(path))
-    .map((path) => `./${relative(academiesRoot, path).replaceAll('\\', '/')}`)
+    .filter((path) => path.endsWith('academy.manifest.json') || path.endsWith('category.manifest.json') || path.endsWith('topic.manifest.json'))
+    .map((path) => `./${relative(academiesRoot, path).split('\\').join('/')}`)
     .sort();
 
   assert.deepEqual(generatedPaths, diskPaths);
 });
 
-test('CBC exposes Grade 3 while Customer Experience stays registered without learner-facing categories', () => {
-  assert.deepEqual(academyCatalogs.cbc.categories.map((category) => category.id), ['grade-3']);
-  assert.deepEqual(academyCatalogs.cbc.topics.map((topic) => topic.id), ['english']);
+test('CBC exposes Grade 1 and Grade 3 while Customer Experience stays registered without learner-facing categories', () => {
+  assert.deepEqual(academyCatalogs.cbc.categories.map((category) => category.id), ['grade-1', 'grade-3']);
+  assert.deepEqual(academyCatalogs.cbc.topics.map((topic) => topic.id), ['foundation-practice', 'english']);
   assert.deepEqual(academyCatalogs['customer-experience'].categories, []);
   assert.deepEqual(academyCatalogs['customer-experience'].topics, []);
+});
+
+test('CBC Grade 1 declares the foundation practice pilot', () => {
+  const foundation = academyCatalogs.cbc.topics.find((topic) => topic.id === 'foundation-practice');
+
+  assert.equal(foundation.category, 'grade-1');
+  assert.deepEqual(foundation.practice.map((item) => item.id), ['foundation-practice-001']);
 });
 
 test('CBC English declares the spelling lesson, practice sets, and exams', () => {
