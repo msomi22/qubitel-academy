@@ -1,0 +1,11 @@
+{
+  "id": "grade-1",
+  "displayName": "Grade 1",
+  "academy": "cbc",
+  "description": "Friendly Grade 1 foundation practice with visual, read-aloud questions.",
+  "domain": "CBC",
+  "featured": true,
+  "topics": [
+    "foundation-practice"
+  ]
+}
