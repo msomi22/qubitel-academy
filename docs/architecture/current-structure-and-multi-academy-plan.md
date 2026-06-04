@@ -1,252 +1,580 @@
-# Current Structure and Multi-Academy Platform Plan
+# Multi-Academy Platform RFC
+## Senior Dev Accelerator Evolution Strategy
 
-## Status
+Version: Draft RFC 1.0
 
-Documentation proposal for issue #261.
+---
 
-This document records the current Senior Dev Accelerator project structure and proposes a safe, phased path toward multi-academy support using the same codebase.
+# 1. Executive Summary
 
-The current production experience at:
+This document defines the long-term architecture for evolving Senior Dev Accelerator from a single-academy platform into a multi-academy learning ecosystem while maintaining a single codebase.
+
+The current production experience:
 
 https://academy.qubitel.net
 
-must remain Senior Dev Accelerator.
+must remain unchanged.
 
-Future academies should be delivered through dedicated subdomains while sharing the same platform foundation.
+Future academies will be introduced through dedicated subdomains while sharing the same application, infrastructure, deployment process, content engine, progress engine, and assessment engine.
+
+The platform should support:
+
+- Technology Academy (current Senior Dev Accelerator)
+- CBC Academy
+- Customer Experience Academy
+- Future academies
+
+without requiring a separate codebase.
 
 ---
 
-# Executive Summary
+# 2. Goals
 
-Current model:
+## Business Goals
+
+- Expand beyond software engineering.
+- Reuse the same platform for multiple audiences.
+- Maintain one deployment pipeline.
+- Minimize maintenance overhead.
+- Allow future academies without architecture redesign.
+
+## Technical Goals
+
+- Single codebase.
+- Shared components.
+- Shared assessment engine.
+- Shared progress engine.
+- Shared content engine.
+- Academy-aware routing.
+- Academy-aware storage.
+- Academy-aware content filtering.
+
+---
+
+# 3. Non Goals
+
+The first implementation must NOT:
+
+- Move all files into new folders.
+- Rewrite routing.
+- Rewrite the UI.
+- Break existing URLs.
+- Break existing progress.
+- Change existing question IDs.
+- Change existing topic IDs.
+- Change existing category IDs.
+
+---
+
+# 4. Current State Analysis
+
+Current conceptual model:
 
 Category → Topic → Problem
 
-Future model:
+Examples:
 
-Academy
-└─ Category
-   └─ Topic
-      ├─ Lessons
-      ├─ Practice
-      └─ Assessments
+DSA
+└── Sliding Window
+    └── Questions
 
-The first implementation should be additive, not disruptive.
+Java
+└── Collections
+    └── Questions
+
+CKAD
+└── Pods
+    └── Questions
+
+This model works well for technology training but becomes limiting for:
+
+- CBC learners
+- Customer support training
+- Business training
+- Future academies
+
+because those audiences expect:
+
+Learn → Practice → Assess
+
+rather than:
+
+Topic → Problems
 
 ---
 
-# Canonical Learning Model
+# 5. Canonical Learning Model
 
-The platform should evolve from a problem-centric system into a learning-centric system.
+The platform should evolve to:
 
 Academy
-└─ Category
-   └─ Topic
-      ├─ Lessons
-      ├─ Practice
-      └─ Assessments
+└── Category
+    └── Topic
+        ├── Lessons
+        ├── Practice
+        └── Assessments
 
-## Lessons
+This model is academy-neutral.
 
-Lessons teach concepts.
+It works for:
+
+- Software Engineering
+- CBC Education
+- Customer Support
+- Customer Success
+- IT Support
+- Business Training
+- Future academies
+
+---
+
+# 6. Learning Lifecycle
+
+Every topic follows the same lifecycle.
+
+## Step 1: Lessons
+
+Purpose:
+
+Teach concepts.
 
 Examples:
 
 - Sliding Window Fundamentals
 - Java HashMap Basics
-- CKAD ConfigMaps
 - Grade 3 Nouns
-- Customer Complaint Handling
+- Complaint Handling Fundamentals
 
-## Practice
+Possible lesson content:
 
-Practice applies knowledge.
+- Explanations
+- Visual diagrams
+- Walkthroughs
+- Examples
+- Notes
+- Mental models
+- Common mistakes
+
+---
+
+## Step 2: Practice
+
+Purpose:
+
+Apply knowledge.
 
 Examples:
 
 - MCQs
-- Coding Questions
-- Scenario Questions
-- Exercises
-- Labs
+- Coding challenges
+- Scenario questions
+- Hands-on labs
+- Guided exercises
 
-## Assessments
+---
 
-Assessments measure readiness.
+## Step 3: Assessments
+
+Purpose:
+
+Measure readiness.
 
 Examples:
 
-- Topic Assessments
-- Timed Quizzes
-- Mock Exams
-- Certification Simulations
-
-## Preferred Terminology
-
-Use:
-
-- Lessons
-- Practice
-- Assessments
-
-Avoid:
-
-- Problems
-- Exams
-
-because they are niche-specific and do not scale well across all academies.
+- Timed quizzes
+- Mock exams
+- Certification simulations
+- End-of-topic tests
 
 ---
 
-# Academy Hierarchy Examples
+# 7. Academy Architecture
 
-Academy is an internal platform boundary and is normally selected automatically by subdomain.
+Academy is primarily an internal platform boundary.
 
-Learners typically do not choose an academy manually.
+Users generally do not select an academy manually.
 
-## Technology Academy
+Academy is determined by hostname.
+
+Examples:
+
+academy.qubitel.net → Technology Academy
+
+cbc.academy.qubitel.net → CBC Academy
+
+cx.academy.qubitel.net → Customer Experience Academy
+
+---
+
+# 8. Technology Academy
+
+Subdomain:
 
 academy.qubitel.net
 
-Technology Academy
-└─ DSA
-   └─ Sliding Window
-      ├─ Lessons
-      ├─ Practice
-      └─ Assessments
+Categories:
 
-## CBC Academy
+- DSA
+- Java
+- CKAD
+- System Design
+- Aptitude
+- ML / AI
+- Engineering Leadership
+
+Example:
+
+Technology Academy
+└── DSA
+    └── Sliding Window
+        ├── Lessons
+        ├── Practice
+        └── Assessments
+
+---
+
+# 9. CBC Academy
+
+Subdomain:
 
 cbc.academy.qubitel.net
 
-CBC Academy
-└─ Grade 3
-   └─ English
-      ├─ Lessons
-      ├─ Practice
-      └─ Assessments
+Categories:
 
-## Customer Experience Academy
+- Grade 3
+- Grade 4
+- Grade 5
+- Future grades
+
+Example:
+
+CBC Academy
+└── Grade 3
+    └── English
+        ├── Lessons
+        ├── Practice
+        └── Assessments
+
+Future Grade 3 subjects:
+
+- English
+- Kiswahili
+- Mathematics
+- Religious Education
+- Environmental Activities
+
+---
+
+# 10. Customer Experience Academy
+
+Subdomain:
 
 cx.academy.qubitel.net
 
+Categories:
+
+- Customer Support
+- IT Support
+- Helpdesk
+- Service Desk
+- Customer Success
+
+Example:
+
 Customer Experience Academy
-└─ Customer Support
-   └─ Complaint Handling
-      ├─ Lessons
-      ├─ Practice
-      └─ Assessments
+└── Customer Support
+    └── Complaint Handling
+        ├── Lessons
+        ├── Practice
+        └── Assessments
 
 ---
 
-# Platform Direction
-
-Qubitel Academy Platform
-
-- Technology Academy
-- CBC Academy
-- Customer Experience Academy
-
----
-
-# Naming Conventions
-
-## Display Names
+# 11. Naming Standards
 
 Display names may contain spaces.
 
 Examples:
 
-- Technology Academy
-- CBC Academy
 - Customer Experience Academy
 - Grade 3
 - Customer Support
-- Complaint Handling
-- Sliding Window
 
-## IDs, Routes, Folder Names and Manifest Keys
+Code identifiers must use kebab-case.
 
-Use lowercase kebab-case.
+Examples:
 
-Good:
-
-- tech
-- cbc
 - customer-experience
 - grade-3
 - customer-support
 - complaint-handling
-- sliding-window
 
-Bad:
+Never use spaces in:
 
-- Technology Academy
-- Grade 3
-- Customer Support
-- Complaint Handling
-
-## Example Folder Structure
-
-src/data/problems/tech/dsa/sliding-window/
-src/data/problems/cbc/grade-3/english/
-src/data/problems/customer-experience/customer-support/complaint-handling/
+- folder names
+- route segments
+- ids
+- manifest keys
 
 ---
 
-# Academy Manifest
+# 12. Folder Standards
 
-academyManifest
-categoryManifest
-topicManifest
+Current content:
+
+```text
+src/data/problems/
+```
+
+Future structure:
+
+```text
+src/
+└── data/
+    └── problems/
+        ├── tech/
+        │   └── dsa/
+        │       └── sliding-window/
+        │
+        ├── cbc/
+        │   └── grade-3/
+        │       └── english/
+        │
+        └── customer-experience/
+            └── customer-support/
+                └── complaint-handling/
+```
+
+---
+
+# 13. Manifest Standards
+
+Future manifests:
+
+```text
+src/data/manifests/
+├── academyManifest.js
+├── categoryManifest.js
+└── topicManifest.js
+```
 
 Conceptually:
 
-Academy → Category → Topic → Lessons / Practice / Assessments
+Academy
+→ Category
+→ Topic
+→ Lessons
+→ Practice
+→ Assessments
 
 ---
 
-# Product and Routing Strategy
+# 14. Routing Strategy
 
 Keep:
 
 https://academy.qubitel.net
 
-Future academies:
+unchanged.
 
-https://cbc.academy.qubitel.net
-https://cx.academy.qubitel.net
+Do NOT use:
+
+/cbc
+/customer-support
+
+as primary academy selectors.
+
+Prefer:
+
+cbc.academy.qubitel.net
+
+cx.academy.qubitel.net
+
+Benefits:
+
+- Cleaner separation.
+- Better branding.
+- Simpler content filtering.
+- Easier future expansion.
 
 ---
 
-# What Stays The Same
+# 15. Academy Registry
+
+Future:
+
+```text
+src/config/academyRegistry.js
+```
+
+Example:
+
+tech
+
+cbc
+
+customer-experience
+
+---
+
+# 16. Academy Detection
+
+Future:
+
+```text
+src/config/detectAcademy.js
+```
+
+Behavior:
+
+cbc.* → cbc
+
+cx.* → customer-experience
+
+everything else → tech
+
+---
+
+# 17. Shared Assessment Engine
+
+The same assessment engine should support:
+
+Technology:
+
+- Aptitude tests
+- CKAD readiness
+- Java assessments
+
+CBC:
+
+- Topic tests
+- End-term exams
+
+Customer Experience:
+
+- Scenario assessments
+- Readiness tests
+
+Features:
+
+- Timers
+- Auto submit
+- Auto fail on timeout
+- Result summaries
+- PDF export
+
+---
+
+# 18. Storage Strategy
+
+Current progress must remain intact.
+
+Future storage keys:
+
+senior-dev-accelerator:v2:tech
+
+senior-dev-accelerator:v2:cbc
+
+senior-dev-accelerator:v2:customer-experience
+
+Progress must never mix across academies.
+
+---
+
+# 19. What Stays The Same
+
+The first implementation should preserve:
 
 - problemDiscovery.js
 - problemAuthoring.js
 - contentProfile.js
-- existing category ids
-- existing topic ids
+- existing routes
+- existing categories
+- existing topics
 - existing question ids
-- existing production routes
 
 ---
 
-# Recommended Phases
+# 20. Recommended Phases
 
-1. Documentation
-2. Academy Registry
-3. Academy Detection
-4. Academy-Aware Site Config
-5. Academy-Aware Storage
-6. Academy-Aware Content Filtering
-7. CBC Academy Foundation
-8. Customer Experience Academy Foundation
-9. Shared Assessment Engine
-10. PDF Export
+Phase 1
+Documentation
+
+Phase 2
+Academy Registry
+
+Phase 3
+Academy Detection
+
+Phase 4
+Academy-Aware Site Config
+
+Phase 5
+Academy-Aware Storage
+
+Phase 6
+Academy-Aware Content Filtering
+
+Phase 7
+CBC Academy Foundation
+
+Phase 8
+Customer Experience Academy Foundation
+
+Phase 9
+Shared Assessment Engine
+
+Phase 10
+PDF Export
 
 ---
 
-# Final Recommendation
+# 21. Risks
+
+- Breaking existing URLs
+- Mixing progress across academies
+- Content leakage between academies
+- Large refactors
+- CSS complexity
+
+Mitigation:
+
+Introduce academy support incrementally.
+
+---
+
+# 22. GitHub Epic Structure
+
+Epic:
+
+Multi-Academy Platform Foundation
+
+Child Issues:
+
+- Academy Registry
+- Academy Detection
+- Academy-Aware Storage
+- Academy-Aware Content Filtering
+- CBC Foundation
+- Customer Experience Foundation
+- Shared Assessment Engine
+- PDF Export Engine
+
+---
+
+# 23. Acceptance Criteria
+
+- Academy layer exists.
+- Existing routes still work.
+- Existing progress still works.
+- CBC content is isolated.
+- Customer Experience content is isolated.
+- Academy detection works.
+- No user-visible regression.
+
+---
+
+# 24. Final Recommendation
 
 Start small.
 
@@ -255,4 +583,6 @@ The first runtime refactor should only introduce:
 - academyRegistry.js
 - detectAcademy.js
 
-with zero visible behavior change.
+No visible behavior should change.
+
+Once stable, proceed with academy-aware filtering and academy-specific content.
