@@ -1,0 +1,22 @@
+{
+  "id": "system",
+  "shortName": "System Design",
+  "description": "Architecture, scalability, APIs, data, queues, caching, and production trade-off practice.",
+  "domain": "Architecture",
+  "tags": [
+    "architecture",
+    "distributed systems",
+    "scalability"
+  ],
+  "route": "/category/system",
+  "featured": true,
+  "displayName": "System Design",
+  "academy": "tech",
+  "topics": [
+    "scalability",
+    "databases",
+    "caching",
+    "messaging-queues",
+    "api-design"
+  ]
+}

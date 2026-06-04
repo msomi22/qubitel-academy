@@ -1,0 +1,15 @@
+{
+  "id": "graphs",
+  "category": "dsa",
+  "description": "Model relationships as nodes and edges, then traverse for reachability, components, distance, or ordering.",
+  "displayName": "NODES — Graph BFS / DFS",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "number-of-islands-grid-traversal",
+      "file": "lessons/number-of-islands-grid-traversal.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

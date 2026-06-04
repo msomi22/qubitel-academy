@@ -1,0 +1,19 @@
+{
+  "id": "prefix-sum-hashing",
+  "category": "dsa",
+  "description": "Store cumulative states so range answers become subtraction or hash lookup problems.",
+  "displayName": "PREF — Prefix Sum & Hashing",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "product-of-array-except-self-prefix-suffix",
+      "file": "lessons/product-of-array-except-self-prefix-suffix.js"
+    },
+    {
+      "id": "two-sum-hash-map-complement",
+      "file": "lessons/two-sum-hash-map-complement.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

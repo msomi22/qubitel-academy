@@ -1,4 +1,4 @@
-// Copy this file into src/data/problems/system/<topicId>/<problem-id>.js
+// Copy this file into src/academies/tech/system/<topicId>/practice/<problem-id>.js
 // Required fields: id, type, category, topicId, title, difficulty, prompt/question.
 // Optional fields: constraints, hints, explanation, scoring, metadata.
 

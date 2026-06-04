@@ -10,7 +10,7 @@ For each problem:
 
 1. Create or review a dedicated GitHub issue.
 2. Confirm the category/topic placement.
-3. Author the problem using the one-file discovered problem workflow under `src/data/problems/dsa/<topic-id>/`.
+3. Author the problem under `src/academies/tech/dsa/<topic-id>/practice/` and declare it in the topic manifest.
 4. Review the content against `docs/content-quality-rubric.md`.
 5. Include a config-driven `visualWalkthrough` where it improves understanding.
 6. Mark production-visible only after review:
@@ -85,6 +85,6 @@ A balanced order is preferred so learners encounter different Hard problem famil
 - Each problem should be added in its own focused PR.
 - Each PR should close its own implementation issue.
 - Do not add all problems in one branch or PR.
-- Do not use `src/data/banks/**` as the primary source for new production-ready content.
+- Do not use `src/academies/tech/_legacy/banks/**` as the primary source for new production-ready content.
 - Existing legacy/raw versions may be used only as reference material and must still be rewritten/reviewed against the current rubric.
 - The first implementation issue should start with one problem only, preferably `substring-with-concatenation-of-all-words` because it directly validates the Hard path for the Sliding Window topic.

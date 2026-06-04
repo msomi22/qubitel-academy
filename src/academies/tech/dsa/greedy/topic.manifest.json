@@ -1,0 +1,10 @@
+{
+  "id": "greedy",
+  "category": "dsa",
+  "description": "Make a locally best choice only when an invariant or exchange argument proves it remains globally safe.",
+  "displayName": "GREED — Greedy",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

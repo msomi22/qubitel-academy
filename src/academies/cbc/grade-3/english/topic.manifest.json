@@ -1,4 +1,9 @@
 {
-    "id": "english",
-    "displayName": "English"
+  "id": "english",
+  "displayName": "English",
+  "academy": "cbc",
+  "category": "grade-3",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
 }

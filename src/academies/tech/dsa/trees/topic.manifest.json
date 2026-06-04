@@ -1,0 +1,10 @@
+{
+  "id": "trees",
+  "category": "dsa",
+  "description": "Master binary trees, BSTs, traversal, recursion, and tree-shaped decision problems.",
+  "displayName": "Trees",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

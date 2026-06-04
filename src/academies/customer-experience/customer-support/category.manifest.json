@@ -1,4 +1,8 @@
 {
-    "id": "customer-support",
-    "displayName": "Customer Support"
+  "id": "customer-support",
+  "displayName": "Customer Support",
+  "academy": "customer-experience",
+  "topics": [
+    "complaint-handling"
+  ]
 }

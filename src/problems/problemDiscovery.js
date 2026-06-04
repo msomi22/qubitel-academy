@@ -1,14 +1,18 @@
-import { topicManifest } from '../data/topicManifest.js';
+import {
+  getAcademyCatalog,
+  getActiveAcademyCatalog
+} from '../academies/catalog.js';
+import { selectCatalogContentModules } from '../lib/content-loader.js';
 import { problemTypeRegistry } from './problemTypeRegistry.js';
 import { normalizeProblem } from './normalizeProblem.js';
 import { validateProblemCollection } from './validateProblem.js';
 
-const discoveredProblemModules = import.meta.env
-  ? import.meta.glob('../data/problems/**/*.js')
+const academyContentModules = import.meta.env
+  ? import.meta.glob('../academies/*/*/*/{lessons,practice,assessments}/*.js')
   : {};
 
-let discoveryCache;
-let validationCache;
+const discoveryCache = new Map();
+const validationCache = new Map();
 
 function readProblemExports(module) {
   const exported = module?.default || module?.problem || module?.problems || null;
@@ -16,9 +20,14 @@ function readProblemExports(module) {
   return Array.isArray(exported) ? exported : [exported];
 }
 
-function normalizeDiscoveredProblem(problem, path, index) {
+function inferAcademyId(path) {
+  return path.match(/\/academies\/([^/]+)\//)?.[1] || null;
+}
+
+function normalizeDiscoveredProblem(problem, path, index, academyId) {
   return normalizeProblem({
     ...problem,
+    academyId: problem.academyId || academyId || inferAcademyId(path),
     metadata: {
       ...(problem.metadata || {}),
       sourcePath: path,
@@ -36,17 +45,22 @@ function reportValidationIssues(result) {
 }
 
 export async function discoverProblems(options = {}) {
-  const modules = options.modules || discoveredProblemModules;
-  const topics = options.topics || topicManifest;
+  const catalog = options.catalog
+    || (options.academyId ? getAcademyCatalog(options.academyId) : getActiveAcademyCatalog(options.hostname));
+  const academyId = options.academyId || catalog.academy.id;
+  const modules = options.modules || selectCatalogContentModules(catalog, academyContentModules);
+  const topics = options.topics || catalog.topics;
   const registry = options.registry || problemTypeRegistry;
-  const shouldUseCache = !options.modules && !options.topics && !options.registry;
+  const shouldUseCache = !options.modules && !options.topics && !options.registry && !options.catalog;
 
-  if (shouldUseCache && discoveryCache) return discoveryCache;
+  if (shouldUseCache && discoveryCache.has(academyId)) return discoveryCache.get(academyId);
 
   const entries = await Promise.all(
     Object.entries(modules).map(async ([path, loader]) => {
       const module = typeof loader === 'function' ? await loader() : loader;
-      return readProblemExports(module).map((problem, index) => normalizeDiscoveredProblem(problem, path, index));
+      return readProblemExports(module).map((problem, index) => (
+        normalizeDiscoveredProblem(problem, path, index, academyId)
+      ));
     })
   );
 
@@ -55,8 +69,8 @@ export async function discoverProblems(options = {}) {
   reportValidationIssues(validation);
 
   if (shouldUseCache) {
-    discoveryCache = problems;
-    validationCache = validation;
+    discoveryCache.set(academyId, problems);
+    validationCache.set(academyId, validation);
   }
 
   return problems;
@@ -68,15 +82,21 @@ export async function getDiscoveredQuestionsForTopic(topicId, options = {}) {
 }
 
 export async function getProblemValidationResult(options = {}) {
-  if (!options.modules && !options.topics && !options.registry && validationCache) return validationCache;
+  const catalog = options.catalog
+    || (options.academyId ? getAcademyCatalog(options.academyId) : getActiveAcademyCatalog(options.hostname));
+  const academyId = options.academyId || catalog.academy.id;
+  if (!options.modules && !options.topics && !options.registry && validationCache.has(academyId)) {
+    return validationCache.get(academyId);
+  }
+
   const problems = await discoverProblems(options);
   return validateProblemCollection(problems, {
-    topics: options.topics || topicManifest,
+    topics: options.topics || catalog.topics,
     registry: options.registry || problemTypeRegistry
   });
 }
 
 export function clearProblemDiscoveryCache() {
-  discoveryCache = undefined;
-  validationCache = undefined;
+  discoveryCache.clear();
+  validationCache.clear();
 }

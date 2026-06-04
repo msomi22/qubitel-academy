@@ -13,7 +13,7 @@ If a visual walkthrough is not included, the implementation or PR notes should b
 Normal problem additions should usually modify only files under:
 
 ```txt
-src/data/problems/...
+src/academies/<academy>/<category>/<topic>/{lessons,practice,assessments}/...
 ```
 
 Core React changes are acceptable only when adding a new reusable visual capability that many future problems can use.

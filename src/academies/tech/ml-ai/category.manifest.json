@@ -1,0 +1,18 @@
+{
+  "id": "ml-ai",
+  "shortName": "ML / AI",
+  "description": "Machine learning and AI engineering practice focused on model behavior, evaluation, data, and production trade-offs.",
+  "domain": "AI Engineering",
+  "tags": [
+    "machine-learning",
+    "ai",
+    "production-ml"
+  ],
+  "route": "/category/ml-ai",
+  "featured": true,
+  "displayName": "ML / AI",
+  "academy": "tech",
+  "topics": [
+    "ml-foundations"
+  ]
+}

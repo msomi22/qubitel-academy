@@ -5,18 +5,18 @@ import {
   filterTopicsForActiveProfile,
   isTopicVisibleForActiveProfile
 } from '../config/contentProfile.js';
-import { topicManifest } from '../data/topicManifest.js';
+import { topicManifest } from '../academies/catalog.js';
 import { validateProblemCollection } from './validateProblem.js';
 
-import binarySearch from '../data/problems/dsa/binary-search/binary-search-search-space-elimination.js';
-import coinChange from '../data/problems/dsa/dynamic-programming/coin-change-dp-state-transition.js';
-import numberOfIslands from '../data/problems/dsa/graphs/number-of-islands-grid-traversal.js';
-import validParentheses from '../data/problems/dsa/monotonic-stack-queue/valid-parentheses-stack.js';
-import productExceptSelf from '../data/problems/dsa/prefix-sum-hashing/product-of-array-except-self-prefix-suffix.js';
-import twoSum from '../data/problems/dsa/prefix-sum-hashing/two-sum-hash-map-complement.js';
-import slidingWindow from '../data/problems/dsa/sliding-window/longest-substring-without-repeating-characters.js';
-import minimumSizeSubarraySum from '../data/problems/dsa/sliding-window/minimum-size-subarray-sum.js';
-import containerWater from '../data/problems/dsa/two-pointers/container-with-most-water-two-pointers.js';
+import binarySearch from '../academies/tech/dsa/binary-search/lessons/binary-search-search-space-elimination.js';
+import coinChange from '../academies/tech/dsa/dynamic-programming/lessons/coin-change-dp-state-transition.js';
+import numberOfIslands from '../academies/tech/dsa/graphs/lessons/number-of-islands-grid-traversal.js';
+import validParentheses from '../academies/tech/dsa/monotonic-stack-queue/lessons/valid-parentheses-stack.js';
+import productExceptSelf from '../academies/tech/dsa/prefix-sum-hashing/lessons/product-of-array-except-self-prefix-suffix.js';
+import twoSum from '../academies/tech/dsa/prefix-sum-hashing/lessons/two-sum-hash-map-complement.js';
+import slidingWindow from '../academies/tech/dsa/sliding-window/lessons/longest-substring-without-repeating-characters.js';
+import minimumSizeSubarraySum from '../academies/tech/dsa/sliding-window/lessons/minimum-size-subarray-sum.js';
+import containerWater from '../academies/tech/dsa/two-pointers/lessons/container-with-most-water-two-pointers.js';
 
 const dsaMasteryProblems = [
   binarySearch,

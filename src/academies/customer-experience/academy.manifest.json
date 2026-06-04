@@ -1,5 +1,11 @@
 {
-    "id": "customer-experience",
-    "displayName": "Customer Experience Academy",
-    "productName": "Customer Experience Academy"
+  "id": "customer-experience",
+  "displayName": "Customer Experience Academy",
+  "productName": "Customer Experience Academy",
+  "description": "Customer support and service excellence learning.",
+  "subdomains": [
+    "cx.academy.qubitel.net"
+  ],
+  "storageKey": "senior-dev-accelerator:v2:customer-experience",
+  "categories": []
 }

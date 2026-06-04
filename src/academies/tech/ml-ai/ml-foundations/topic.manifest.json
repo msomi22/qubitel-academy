@@ -1,0 +1,23 @@
+{
+  "id": "ml-foundations",
+  "category": "ml-ai",
+  "description": "Build practical intuition for machine learning systems, model lifecycle, data quality, evaluation, and production behavior.",
+  "questionBank": {
+    "mode": "discovered"
+  },
+  "displayName": "ML Foundations",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "ml-foundations-training-vs-inference-learning-001",
+      "file": "lessons/ml-foundations-training-vs-inference-learning-001.js"
+    }
+  ],
+  "practice": [
+    {
+      "id": "ml-foundations-data-leakage-basic-mcq-002",
+      "file": "practice/ml-foundations-data-leakage-basic-mcq-002.js"
+    }
+  ],
+  "assessments": []
+}

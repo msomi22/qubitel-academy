@@ -1,0 +1,10 @@
+{
+  "id": "heap-priority-queue",
+  "category": "dsa",
+  "description": "Keep candidates ordered by priority so the best next item is cheap to access.",
+  "displayName": "HEAP — Heap / Priority Queue",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

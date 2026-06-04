@@ -1,0 +1,30 @@
+{
+  "id": "workloads-services",
+  "category": "kubernetes-ckad",
+  "description": "Deploy application workloads and expose them inside the cluster using Deployments, Pods, Services, Endpoints, and DNS.",
+  "questionBank": {
+    "mode": "discovered"
+  },
+  "displayName": "Workloads & Services",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "kubernetes-architecture-foundation-001",
+      "file": "lessons/kubernetes-architecture-foundation-001.js"
+    },
+    {
+      "id": "kubetasker-api-foundation-001",
+      "file": "lessons/kubetasker-api-foundation-001.js"
+    },
+    {
+      "id": "kubetasker-yaml-modify-001",
+      "file": "lessons/kubetasker-yaml-modify-001.js"
+    },
+    {
+      "id": "workloads-services-runtime-configuration-introduction-001",
+      "file": "lessons/workloads-services-runtime-configuration-introduction-001.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

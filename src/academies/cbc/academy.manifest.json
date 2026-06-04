@@ -1,5 +1,11 @@
 {
-    "id": "cbc",
-    "displayName": "CBC Academy",
-    "productName": "CBC Exam Practice"
+  "id": "cbc",
+  "displayName": "CBC Academy",
+  "productName": "CBC Exam Practice",
+  "description": "Competency Based Curriculum learning and exam practice.",
+  "subdomains": [
+    "cbc.academy.qubitel.net"
+  ],
+  "storageKey": "senior-dev-accelerator:v2:cbc",
+  "categories": []
 }

@@ -7,10 +7,10 @@ import {
 import type { AcademyConfig, AcademyId } from '../types/academy.ts';
 
 export function detectAcademyIdFromHostname(hostname = ''): AcademyId {
-  const normalized = String(hostname || '').toLowerCase();
-
-  if (normalized.startsWith('cbc.')) return 'cbc';
-  if (normalized.startsWith('cx.')) return 'customer-experience';
+  const normalized = String(hostname || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\.$/, '');
 
   const matchedAcademy = Object.values(academyRegistry).find((academy) =>
     (academy.subdomains || []).some((subdomain) => subdomain.toLowerCase() === normalized)

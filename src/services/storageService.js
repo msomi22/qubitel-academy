@@ -1,4 +1,4 @@
-import { siteConfig } from '../config/siteConfig.js';
+import { getAcademyStorageKey } from '../config/academyStorage.ts';
 
 const defaults = {
   theme: 'light',
@@ -12,10 +12,10 @@ const defaults = {
 
 export const storageService = {
   read() {
-    try { return { ...defaults, ...JSON.parse(localStorage.getItem(siteConfig.storageKey) || '{}') }; }
+    try { return { ...defaults, ...JSON.parse(localStorage.getItem(getAcademyStorageKey()) || '{}') }; }
     catch { return defaults; }
   },
-  write(next) { localStorage.setItem(siteConfig.storageKey, JSON.stringify({ ...this.read(), ...next })); },
+  write(next) { localStorage.setItem(getAcademyStorageKey(), JSON.stringify({ ...this.read(), ...next })); },
   toggleComplete(id) {
     const state = this.read();
     const completed = { ...state.completed, [id]: !state.completed[id] };

@@ -1,5 +1,10 @@
-import { categoryManifest, topicManifest, getTopicsByCategory } from '../data/topicManifest.js';
-import { applyQuestionOverrides } from '../data/banks/question-overrides.js';
+import {
+  categoryManifest,
+  getTopicsByCategory,
+  topicManifest
+} from '../academies/catalog.js';
+import { applyQuestionOverrides } from '../academies/tech/_legacy/banks/question-overrides.js';
+import { DEFAULT_ACADEMY_ID } from '../config/academyRegistry.ts';
 import {
   filterCategoriesForActiveProfile,
   filterQuestionsForActiveProfile,
@@ -13,7 +18,7 @@ import {
 import { normalizeProblem } from '../problems/normalizeProblem.js';
 
 const bankModules = import.meta.env
-  ? import.meta.glob('../data/banks/**/*.js')
+  ? import.meta.glob('../academies/*/_legacy/banks/**/*.js')
   : {};
 
 function getTopic(topicId, topics = topicManifest) {
@@ -52,8 +57,13 @@ function resolveCategory(categoryOrId, options = {}) {
 export function getOptionalBankPath(topic, modules = bankModules) {
   if (!topic?.category || !topic?.id) return null;
 
-  const path = `../data/banks/${topic.category}/${topic.id}.js`;
-  return modules[path] ? path : null;
+  const academyId = topic.academyId || topic.academy || DEFAULT_ACADEMY_ID;
+  const candidates = [
+    topic?.questionBank?.legacyPath,
+    `../academies/${academyId}/_legacy/banks/${topic.category}/${topic.id}.js`
+  ].filter(Boolean);
+
+  return candidates.find((path) => modules[path]) || null;
 }
 
 export function createVirtualBank(topic, questions = []) {
@@ -61,6 +71,7 @@ export function createVirtualBank(topic, questions = []) {
     id: topic.id,
     name: topic.name,
     category: topic.category,
+    academyId: topic.academyId || topic.academy,
     description: topic.description,
     questions
   };
@@ -78,8 +89,8 @@ export function assertCanUseVirtualBank(topic, discoveredQuestions = []) {
   if (canUseVirtualBank(topic, discoveredQuestions)) return;
 
   throw new Error(
-    `Missing quiz bank file for ${topic.id}. Expected: src/data/banks/${topic.category}/${topic.id}.js. `
-    + 'Add discovered problems for this topic or set questionBank.mode to "discovered" or "empty" in topicManifest.'
+    `Missing quiz bank file for ${topic.id}. Expected academy-scoped legacy bank or authored content. `
+    + 'Add content under src/academies/<academy>/<category>/<topic>/ or set questionBank.mode to "empty".'
   );
 }
 
@@ -88,7 +99,10 @@ export async function loadLegacyBankIfPresent(topic, modules = bankModules) {
   if (!path) return null;
 
   const module = await modules[path]();
-  return applyQuestionOverrides(module.default);
+  const academyId = topic.academyId || topic.academy || DEFAULT_ACADEMY_ID;
+  return academyId === DEFAULT_ACADEMY_ID
+    ? applyQuestionOverrides(module.default)
+    : module.default;
 }
 
 function normalizeSystemQuestion(question) {
@@ -197,7 +211,9 @@ export async function loadTopicBankFromSources(topicId, options = {}) {
   const modules = options.modules || bankModules;
   const getDiscoveredQuestions = options.getDiscoveredQuestions || getDiscoveredQuestionsForTopic;
 
-  const discoveredQuestions = await getDiscoveredQuestions(topicId);
+  const discoveredQuestions = await getDiscoveredQuestions(topicId, {
+    academyId: topic.academyId || topic.academy
+  });
   const legacyBank = await loadLegacyBankIfPresent(topic, modules);
 
   if (!legacyBank) {

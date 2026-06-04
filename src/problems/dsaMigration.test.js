@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 import { isQuestionApprovedForProfile } from '../config/contentProfile.js';
-import dynamicProgramming020 from '../data/problems/dsa/dynamic-programming/dynamic-programming-020.js';
-import slidingWindow001 from '../data/problems/dsa/sliding-window/sliding-window-001.js';
-import dynamicProgrammingLegacy from '../data/banks/dsa/minimum-sideway-jumps.js';
-import slidingWindowLegacyTopic from '../data/banks/dsa/sliding-window.js';
-import javaCoreProblem from '../data/problems/java/java-core/hashmap-behavior.js';
-import systemDesignProblem from '../data/problems/system/scalability/url-shortener-v2.js';
+import dynamicProgramming020 from '../academies/tech/dsa/dynamic-programming/practice/dynamic-programming-020.js';
+import slidingWindow001 from '../academies/tech/dsa/sliding-window/practice/sliding-window-001.js';
+import dynamicProgrammingLegacy from '../academies/tech/_legacy/banks/dsa/minimum-sideway-jumps.js';
+import slidingWindowLegacyTopic from '../academies/tech/_legacy/banks/dsa/sliding-window.js';
+import javaCoreProblem from '../academies/tech/java/java-core/lessons/hashmap-behavior.js';
+import systemDesignProblem from '../academies/tech/system/scalability/practice/url-shortener-v2.js';
 import { discoverProblems } from './problemDiscovery.js';
 import {
   getVisibleCategoriesForActiveProfile,
@@ -76,8 +76,8 @@ test('sliding-window-001 preserves legacy DSA content and external visual walkth
 test('production DSA migrated problems are discovered from problem files', async () => {
   const problems = await discoverProblems({
     modules: {
-      '../data/problems/dsa/sliding-window/sliding-window-001.js': moduleLoader(slidingWindow001),
-      '../data/problems/dsa/dynamic-programming/dynamic-programming-020.js': moduleLoader(dynamicProgramming020)
+      '../academies/tech/dsa/sliding-window/practice/sliding-window-001.js': moduleLoader(slidingWindow001),
+      '../academies/tech/dsa/dynamic-programming/practice/dynamic-programming-020.js': moduleLoader(dynamicProgramming020)
     },
     topics: dsaTopics
   });
@@ -93,7 +93,7 @@ test('migrated DSA problems load under correct topics and override duplicate leg
     profile: 'prod',
     topics: dsaTopics,
     modules: {
-      '../data/banks/dsa/sliding-window.js': moduleLoader(slidingWindowLegacyTopic)
+      '../academies/tech/_legacy/banks/dsa/sliding-window.js': moduleLoader(slidingWindowLegacyTopic)
     },
     getDiscoveredQuestions: async () => [slidingWindow001]
   });
@@ -102,7 +102,7 @@ test('migrated DSA problems load under correct topics and override duplicate leg
     profile: 'prod',
     topics: dsaTopics,
     modules: {
-      '../data/banks/dsa/dynamic-programming.js': moduleLoader({
+      '../academies/tech/_legacy/banks/dsa/dynamic-programming.js': moduleLoader({
         id: 'dynamic-programming',
         name: 'STATE — Dynamic Programming',
         category: 'dsa',
@@ -123,7 +123,7 @@ test('dummy local-only legacy DSA questions remain available outside prod profil
     profile: 'dev',
     topics: dsaTopics,
     modules: {
-      '../data/banks/dsa/sliding-window.js': moduleLoader(slidingWindowLegacyTopic)
+      '../academies/tech/_legacy/banks/dsa/sliding-window.js': moduleLoader(slidingWindowLegacyTopic)
     },
     getDiscoveredQuestions: async () => [slidingWindow001]
   });

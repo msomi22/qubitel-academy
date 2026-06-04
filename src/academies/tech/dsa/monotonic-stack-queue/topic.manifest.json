@@ -1,0 +1,15 @@
+{
+  "id": "monotonic-stack-queue",
+  "category": "dsa",
+  "description": "Maintain increasing or decreasing candidates for next greater/smaller and sliding max/min questions.",
+  "displayName": "STACK — Monotonic Stack / Queue",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "valid-parentheses-stack",
+      "file": "lessons/valid-parentheses-stack.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

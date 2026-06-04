@@ -1,5 +1,9 @@
 # Multi-Academy Platform RFC
 
+> Implementation status: the active tech catalog/content migration is complete. Use
+> `docs/architecture/PROJECT-STRUCTURE.md` as the canonical source for current runtime rules.
+> CBC and Customer Experience remain registered but expose no learner-facing categories.
+
 ## Academy Hierarchy Explained
 
 ### Canonical Learning Model

@@ -1,4 +1,4 @@
-// Copy this file into src/data/problems/system/<topicId>/<problem-id>.js
+// Copy this file into src/academies/tech/system/<topicId>/practice/<problem-id>.js
 // Required common fields: id, type, category, topicId, title, difficulty, prompt/question.
 // Complex system design may also use: scenario, requirements, constraints, hints,
 // expectedAnswerOutline, scoringRubric, scoringDictionary, modelAnswer,

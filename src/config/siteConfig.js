@@ -1,13 +1,18 @@
+import { getActiveAcademy } from './detectAcademy.ts';
+
 const defaultPaypalSupportLink = 'https://www.paypal.com/ncp/payment/X9PVPTEPKSGS8';
 const defaultPaystackSupportLink = 'https://paystack.shop/pay/1lrvz0bahb';
+const activeAcademy = getActiveAcademy();
 
 export const siteConfig = {
-  appName: import.meta.env.VITE_APP_NAME || 'Senior Dev Accelerator',
+  academyId: activeAcademy.id,
+  academyName: activeAcademy.displayName,
+  appName: import.meta.env.VITE_APP_NAME || activeAcademy.productName,
   tagline: import.meta.env.VITE_APP_TAGLINE || 'DSA + System Design mastery for junior and mid-level developers',
-  storageKey: import.meta.env.VITE_STORAGE_KEY || 'senior-dev-accelerator:v2',
+  storageKey: import.meta.env.VITE_STORAGE_KEY || activeAcademy.storageKey,
   support: {
     label: '🚀 Support from $1',
-    title: 'Support Senior Dev Accelerator',
+    title: `Support ${activeAcademy.productName}`,
     tooltip: 'Help create more learning content',
     intro:
       'Help us add more CKAD, Java, DSA, System Design, Backend Engineering, and interview-prep questions faster.',

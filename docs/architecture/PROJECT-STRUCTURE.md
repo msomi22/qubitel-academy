@@ -19,9 +19,9 @@ Current examples:
 | `cx.academy.qubitel.net` | `customer-experience` | Customer Experience Academy |
 | `localhost`, previews, unknown hosts | `tech` | Senior Dev Accelerator |
 
-The current production experience remains Senior Dev Accelerator. CBC and Customer Experience are registered as future academy boundaries only; they must not be exposed to learners until their content, loader, routing, and validation layers are ready.
+The current production experience remains Senior Dev Accelerator. CBC and Customer Experience are registered as future academy boundaries only; their active academy manifests intentionally expose no categories.
 
-Target architecture: adding a new academy should become mostly config + data after the registry, loader, routing, and manifest validation layers are implemented. Today, the active tech content still comes from the existing content system.
+The academy registry, manifest validation, catalog, content loader, storage isolation, and active tech content migration are implemented. Adding an academy is now primarily config + manifests + content, followed by validation and deliberate learner exposure.
 
 ---
 
@@ -51,42 +51,42 @@ A learner normally sees **categories** first. They do not need to know that acad
 
 ## Current Implementation State
 
-This branch keeps the multi-academy work intentionally small:
+Academy manifests and academy-scoped content are the active source of truth:
 
 ```text
 src/
+├── academies/
+│   ├── catalog.js                       # Builds validated academy/category/topic catalogs
+│   ├── manifestImports.generated.js     # Static imports for Vite and Node tests
+│   ├── tech/                            # Active learner-facing academy
+│   ├── cbc/                             # Registered skeleton; no active categories
+│   └── customer-experience/             # Registered skeleton; no active categories
+│
 ├── config/
 │   ├── academyRegistry.ts       # Academy ids, display names, subdomains, storage keys, safe category ids
 │   ├── detectAcademy.ts         # Hostname/subdomain to academy resolution
 │   ├── academyStorage.ts        # Returns the active academy storage key
 │   └── detectAcademy.test.ts    # Node test coverage for detection and default fallback
 │
-├── types/
-│   └── academy.ts               # TypeScript source of truth for academy config shape
+├── lib/
+│   ├── manifest.js              # Manifest shape and relationship validation
+│   └── content-loader.js        # Selects manifest-declared content for an academy
 │
-└── academies/                   # Future-target academy skeleton only
-    ├── tech/
-    ├── cbc/
-    └── customer-experience/
+├── types/
+│   ├── academy.ts               # Academy and manifest contracts
+│   └── content.ts               # Academy-scoped content location contracts
+│
+└── services/
+    └── questionBankService.js   # Loads active academy authored content and legacy bank fallbacks
 ```
 
-The `src/academies/*` folders are a future-target academy skeleton. They are not the active source of learner-facing content yet.
-
-The active Senior Dev Accelerator content still comes from the current system:
-
-```text
-src/data/problems/
-src/data/topicManifest.js
-src/services/questionBankService.js
-```
-
-Do not move existing tech content into `src/academies/*` in this stabilization task. Do not expose CBC or Customer Experience categories to learners yet.
+Bulk legacy banks remain under `src/academies/tech/_legacy/banks/` until they are converted to one-file authored content. New content must not be added there.
 
 ---
 
-## Folder Structure Target
+## Active Folder Structure
 
-The future target keeps academy content grouped by academy, then category, then topic:
+Academy content is grouped by academy, then category, then topic:
 
 ```text
 src/
@@ -122,7 +122,9 @@ src/
                 └── assessments/
 ```
 
-This target structure is documentation and migration scaffolding. The current learner experience must keep using the existing tech content system until a later migration introduces a stable loader.
+Each topic manifest declares the files that are active under `lessons`, `practice`, and `assessments`. Merely placing a file in a topic folder does not expose it.
+
+The tech academy also contains `_legacy/banks/` as a compatibility boundary. These banks are loaded only when a topic still needs unmigrated questions.
 
 ---
 
@@ -138,6 +140,8 @@ This target structure is documentation and migration scaffolding. The current le
 | TypeScript types | PascalCase | `AcademyConfig`, `AcademyId` |
 
 Safe ids must be lowercase kebab-case. Display names can contain spaces and normal punctuation because they are for humans, not routing or lookup.
+
+Current runtime invariant: topic ids must be unique within an academy because existing service APIs and saved category selections resolve topics by id. Manifest validation enforces this until topic routing becomes category-scoped.
 
 ---
 
@@ -166,23 +170,18 @@ Required behavior:
 
 ---
 
-## Adding a New Academy Later
-
-This is **not** part of the current stabilization task.
-
-Future academy onboarding should follow this direction after the registry, loader, routing, and manifest validation layers are implemented:
+## Adding a New Academy
 
 1. Add a safe academy id using lowercase kebab-case.
 2. Add registry metadata: display name, product name, subdomain, storage key, and allowed category ids.
 3. Add academy-scoped manifests/content under `src/academies/<academy-id>/`.
-4. Validate ids, manifests, routing, and visibility rules before exposing the academy.
-5. Keep unrelated existing routes and learner progress untouched.
-
-Avoid promising that a new academy requires no code change today. The safer target is: adding a new academy should become mostly config + data once the remaining platform layers are implemented.
+4. Run `npm run generate:academy-manifests`.
+5. Run tests and the production build.
+6. Keep the academy manifest and registry category arrays empty until learner exposure is approved.
 
 ---
 
-## Adding a New Category or Topic Later
+## Adding a New Category or Topic
 
 A category is the first major grouping visible to learners. A topic belongs to one category and may contain Lessons, Practice, and Assessments.
 
@@ -200,7 +199,7 @@ New Category
 New Topic
 ```
 
-Do not change existing category ids, topic ids, or question ids during architecture stabilization work.
+Add every new category/topic id to its parent manifest, then regenerate static manifest imports. Do not change existing category ids, topic ids, or question ids because routes and learner progress depend on them.
 
 ---
 
@@ -212,8 +211,11 @@ Do not change existing category ids, topic ids, or question ids during architect
 {
   "id": "tech",
   "displayName": "Technology Academy",
-  "subdomain": "academy.qubitel.net",
+  "productName": "Senior Dev Accelerator",
   "description": "Engineering and computer science learning for professionals.",
+  "subdomains": ["academy.qubitel.net"],
+  "storageKey": "senior-dev-accelerator:v2",
+  "default": true,
   "categories": ["dsa", "java", "kubernetes-ckad", "system", "aptitude", "ml-ai", "engineering-leadership"]
 }
 ```
@@ -257,18 +259,14 @@ Learners do not normally select this manually. The URL selects the academy, then
 
 ---
 
-## Migration Notes
+## Migration Status
 
-Migration must happen gradually:
-
-1. Keep existing Senior Dev Accelerator behavior unchanged.
-2. Stabilize academy registry, detection, and storage-key helpers.
-3. Keep `src/academies/*` as a future-target skeleton.
-4. Add validation before using academy manifests as learner-facing content.
-5. Wire a content loader only after the source model is stable.
-6. Move tech content only after the new loader is proven safe.
-
-Until that migration is complete, the existing tech content remains the active source of truth.
+- Active tech categories, topics, authored problems, and visuals have moved into `src/academies/tech/`.
+- Topic manifests are the source of truth for authored content discovery.
+- Existing question ids, topic ids, routes, and the tech storage key are preserved.
+- Legacy banks are isolated under `src/academies/tech/_legacy/banks/` and continue to merge behind the same service API.
+- CBC and Customer Experience manifests exist, but their active category arrays remain empty.
+- All active catalog imports resolve through `src/academies/catalog.js`.
 
 ---
 

@@ -8,13 +8,13 @@ import {
 } from './questionBankService.js';
 import { isLegacyQuestionApprovedForProduction } from '../config/contentProfile.js';
 
-import apiRateLimiting from '../data/problems/system/api-design/api-design-rate-limiting-001.js';
-import paymentIdempotency from '../data/problems/system/api-design/api-design-payment-idempotency-001.js';
-import productDetailsCaching from '../data/problems/system/caching/caching-product-details-001.js';
-import emailNotificationQueue from '../data/problems/system/messaging-queues/messaging-queues-email-notification-001.js';
-import liveOrderStatusUpdates from '../data/problems/system/scalability/scalability-realtime-updates-001.js';
-import multiRegionConsistency from '../data/problems/system/databases/databases-multi-region-consistency-001.js';
-import urlShortener from '../data/problems/system/scalability/scalability-url-shortener-001.js';
+import apiRateLimiting from '../academies/tech/system/api-design/practice/api-design-rate-limiting-001.js';
+import paymentIdempotency from '../academies/tech/system/api-design/practice/api-design-payment-idempotency-001.js';
+import productDetailsCaching from '../academies/tech/system/caching/practice/caching-product-details-001.js';
+import emailNotificationQueue from '../academies/tech/system/messaging-queues/practice/messaging-queues-email-notification-001.js';
+import liveOrderStatusUpdates from '../academies/tech/system/scalability/practice/scalability-realtime-updates-001.js';
+import multiRegionConsistency from '../academies/tech/system/databases/practice/databases-multi-region-consistency-001.js';
+import urlShortener from '../academies/tech/system/scalability/practice/scalability-url-shortener-001.js';
 
 const migratedSystemDesignProblems = [
   apiRateLimiting,
@@ -65,7 +65,7 @@ test('production profile shows approved discovered System Design problems', asyn
     profile: 'prod',
     topics: systemTopics,
     modules: {
-      '../data/banks/system/api-design.js': moduleLoader(createBank('api-design', []))
+      '../academies/tech/_legacy/banks/system/api-design.js': moduleLoader(createBank('api-design', []))
     },
     getDiscoveredQuestions: async () => [apiRateLimiting, paymentIdempotency]
   });
@@ -81,7 +81,7 @@ test('draft discovered System Design problems are hidden in prod', async () => {
     profile: 'prod',
     topics: systemTopics,
     modules: {
-      '../data/banks/system/caching.js': moduleLoader(createBank('caching', []))
+      '../academies/tech/_legacy/banks/system/caching.js': moduleLoader(createBank('caching', []))
     },
     getDiscoveredQuestions: async () => [
       {
@@ -99,7 +99,7 @@ test('migrated discovered problems override legacy bank items with the same ID',
   const bank = await loadTopicBankFromSources('scalability', {
     topics: systemTopics,
     modules: {
-      '../data/banks/system/scalability.js': moduleLoader(createBank('scalability', [
+      '../academies/tech/_legacy/banks/system/scalability.js': moduleLoader(createBank('scalability', [
         {
           id: 'scalability-realtime-updates-001',
           type: 'mcq',
@@ -130,7 +130,7 @@ test('existing legacy bank support remains intact for non-production profiles', 
     profile: 'dev',
     topics: systemTopics,
     modules: {
-      '../data/banks/system/api-design.js': moduleLoader(createBank('api-design', [legacyQuestion]))
+      '../academies/tech/_legacy/banks/system/api-design.js': moduleLoader(createBank('api-design', [legacyQuestion]))
     },
     getDiscoveredQuestions: async () => [apiRateLimiting, paymentIdempotency]
   });

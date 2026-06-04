@@ -1,0 +1,10 @@
+{
+  "id": "trie",
+  "category": "dsa",
+  "description": "Store words by shared prefixes for fast prefix lookup, autocomplete, and dictionary pruning.",
+  "displayName": "TRIE — Prefix Tree",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

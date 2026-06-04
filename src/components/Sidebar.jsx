@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import SupportButton from './SupportButton.jsx';
+import { siteConfig } from '../config/siteConfig.js';
 
 const ICON_PATHS = {
   dashboard: (
@@ -112,13 +113,13 @@ export default function Sidebar() {
         <Link
           to="/"
           className="sidebar-logo"
-          aria-label="Senior Dev Accelerator dashboard"
+          aria-label={`${siteConfig.appName} dashboard`}
           onClick={closeTabletSidebar}
         >
           <img
             className="brand-logo brand-logo-light"
             src="/brand-logo-light.svg"
-            alt="Senior Dev Accelerator"
+            alt={siteConfig.appName}
           />
           <img
             className="brand-logo brand-logo-dark"

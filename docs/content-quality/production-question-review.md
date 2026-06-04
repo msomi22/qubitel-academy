@@ -14,7 +14,7 @@ Review current production-visible discovered questions against the #95 quality b
 
 ## Review method
 
-Production-visible questions were identified under `src/data/problems/**` by looking for approved production metadata:
+Production-visible questions were identified in manifest-declared academy content by looking for approved production metadata:
 
 ```js
 metadata: {
@@ -63,31 +63,31 @@ Overall, the current production bank is technically safe and generally learner-f
 
 | ID | Title | Category | Topic | Type | File path | Rating | Priority |
 |---|---|---|---|---|---|---|---|
-| java-core-equals-vs-double-equals-001 | equals() vs == | java | java-core | mcq | `src/data/problems/java/java-core/equals-vs-double-equals.js` | Excellent | Low |
-| java-core-pass-by-value-object-references-001 | Java Pass-by-Value and Object References | java | java-core | mcq | `src/data/problems/java/java-core/pass-by-value-object-references.js` | Excellent | Low |
-| java-core-hashmap-behavior-001 | HashMap Behavior at a High Level | java | java-core | learning | `src/data/problems/java/java-core/hashmap-behavior.js` | Good | Medium |
-| java-core-checked-vs-unchecked-exceptions-001 | Checked vs Unchecked Exceptions | java | java-core | learning | `src/data/problems/java/java-core/checked-vs-unchecked-exceptions.js` | Good | Medium |
-| sliding-window-001 | Maximum Sum Subarray of Size K | dsa | sliding-window | coding | `src/data/problems/dsa/sliding-window/sliding-window-001.js` | Needs revision | High |
-| dynamic-programming-020 | Minimum Sideway Jumps | dsa | dynamic-programming | coding | `src/data/problems/dsa/dynamic-programming/dynamic-programming-020.js` | Good | Medium |
-| api-design-rate-limiting-001 | Choosing a Simple Rate Limiting Strategy | system | api-design | mcq | `src/data/problems/system/api-design/api-design-rate-limiting-001.js` | Good | Medium |
-| api-design-payment-idempotency-001 | Preventing Duplicate Payment Processing | system | api-design | mcq | `src/data/problems/system/api-design/api-design-payment-idempotency-001.js` | Good | Medium |
-| caching-product-details-001 | Reducing Database Load with Caching | system | caching | mcq | `src/data/problems/system/caching/caching-product-details-001.js` | Good | Medium |
-| messaging-queues-email-notification-001 | Handling Slow Email Notifications | system | messaging-queues | mcq | `src/data/problems/system/messaging-queues/messaging-queues-email-notification-001.js` | Good | Medium |
-| scalability-realtime-updates-001 | Scaling Live Order Status Updates | system | scalability | mcq | `src/data/problems/system/scalability/scalability-realtime-updates-001.js` | Good | Medium |
-| databases-multi-region-consistency-001 | Choosing a Multi-Region Consistency Strategy | system | databases | mcq | `src/data/problems/system/databases/databases-multi-region-consistency-001.js` | Good | Medium |
-| scalability-url-shortener-001 | Design a URL Shortener | system | scalability | complex-system-design | `src/data/problems/system/scalability/scalability-url-shortener-001.js` | Needs revision | High |
-| scalability-url-shortener-v2 | Design a URL Shortener | system | scalability | complex-system-design | `src/data/problems/system/scalability/url-shortener-v2.js` | Good | Medium |
+| java-core-equals-vs-double-equals-001 | equals() vs == | java | java-core | mcq | `src/academies/tech/java/java-core/practice/equals-vs-double-equals.js` | Excellent | Low |
+| java-core-pass-by-value-object-references-001 | Java Pass-by-Value and Object References | java | java-core | mcq | `src/academies/tech/java/java-core/practice/pass-by-value-object-references.js` | Excellent | Low |
+| java-core-hashmap-behavior-001 | HashMap Behavior at a High Level | java | java-core | learning | `src/academies/tech/java/java-core/lessons/hashmap-behavior.js` | Good | Medium |
+| java-core-checked-vs-unchecked-exceptions-001 | Checked vs Unchecked Exceptions | java | java-core | learning | `src/academies/tech/java/java-core/lessons/checked-vs-unchecked-exceptions.js` | Good | Medium |
+| sliding-window-001 | Maximum Sum Subarray of Size K | dsa | sliding-window | coding | `src/academies/tech/dsa/sliding-window/practice/sliding-window-001.js` | Needs revision | High |
+| dynamic-programming-020 | Minimum Sideway Jumps | dsa | dynamic-programming | coding | `src/academies/tech/dsa/dynamic-programming/practice/dynamic-programming-020.js` | Good | Medium |
+| api-design-rate-limiting-001 | Choosing a Simple Rate Limiting Strategy | system | api-design | mcq | `src/academies/tech/system/api-design/practice/api-design-rate-limiting-001.js` | Good | Medium |
+| api-design-payment-idempotency-001 | Preventing Duplicate Payment Processing | system | api-design | mcq | `src/academies/tech/system/api-design/practice/api-design-payment-idempotency-001.js` | Good | Medium |
+| caching-product-details-001 | Reducing Database Load with Caching | system | caching | mcq | `src/academies/tech/system/caching/practice/caching-product-details-001.js` | Good | Medium |
+| messaging-queues-email-notification-001 | Handling Slow Email Notifications | system | messaging-queues | mcq | `src/academies/tech/system/messaging-queues/practice/messaging-queues-email-notification-001.js` | Good | Medium |
+| scalability-realtime-updates-001 | Scaling Live Order Status Updates | system | scalability | mcq | `src/academies/tech/system/scalability/practice/scalability-realtime-updates-001.js` | Good | Medium |
+| databases-multi-region-consistency-001 | Choosing a Multi-Region Consistency Strategy | system | databases | mcq | `src/academies/tech/system/databases/practice/databases-multi-region-consistency-001.js` | Good | Medium |
+| scalability-url-shortener-001 | Design a URL Shortener | system | scalability | complex-system-design | `src/academies/tech/system/scalability/practice/scalability-url-shortener-001.js` | Needs revision | High |
+| scalability-url-shortener-v2 | Design a URL Shortener | system | scalability | complex-system-design | `src/academies/tech/system/scalability/practice/url-shortener-v2.js` | Good | Medium |
 
 ## Detailed per-question review
 
 ### Question ID: java-core-equals-vs-double-equals-001
 
-Title: equals() vs ==  
-Category: java  
-Topic: java-core  
-Type: mcq  
-File: `src/data/problems/java/java-core/equals-vs-double-equals.js`  
-Current rating: Excellent  
+Title: equals() vs ==
+Category: java
+Topic: java-core
+Type: mcq
+File: `src/academies/tech/java/java-core/practice/equals-vs-double-equals.js`
+Current rating: Excellent
 Priority: Low
 
 What works well:
@@ -105,20 +105,20 @@ Recommended improvements:
 
 - Add `distractorExplanations` later if the MCQ renderer supports displaying them consistently.
 
-Needs visual, animation, diagram, table, or step-frame support: No  
-Suggested visual support: Existing table and code block are enough.  
-MCQ distractor explanation needed: Optional  
+Needs visual, animation, diagram, table, or step-frame support: No
+Suggested visual support: Existing table and code block are enough.
+MCQ distractor explanation needed: Optional
 
 Review checklist: main idea yes; intuition before mechanics yes; jargon controlled yes; mental picture yes; cognitive load yes; attention guidance yes; predict-before-reveal could benefit; self-explanation could benefit; misconception yes; real software connection yes; common mistake yes; clear takeaway yes.
 
 ### Question ID: java-core-pass-by-value-object-references-001
 
-Title: Java Pass-by-Value and Object References  
-Category: java  
-Topic: java-core  
-Type: mcq  
-File: `src/data/problems/java/java-core/pass-by-value-object-references.js`  
-Current rating: Excellent  
+Title: Java Pass-by-Value and Object References
+Category: java
+Topic: java-core
+Type: mcq
+File: `src/academies/tech/java/java-core/practice/pass-by-value-object-references.js`
+Current rating: Excellent
 Priority: Low
 
 What works well:
@@ -136,20 +136,20 @@ Recommended improvements:
 
 - Add a short predict-before-reveal prompt before the answer if the product supports that interaction.
 
-Needs visual, animation, diagram, table, or step-frame support: No  
-Suggested visual support: Existing diagrams and flow steps are sufficient.  
-MCQ distractor explanation needed: Optional  
+Needs visual, animation, diagram, table, or step-frame support: No
+Suggested visual support: Existing diagrams and flow steps are sufficient.
+MCQ distractor explanation needed: Optional
 
 Review checklist: main idea yes; intuition before mechanics yes; jargon controlled yes; mental picture yes; cognitive load yes; attention guidance yes; predict-before-reveal could benefit; self-explanation could benefit; misconception yes; real software connection yes; common mistake yes; clear takeaway yes.
 
 ### Question ID: java-core-hashmap-behavior-001
 
-Title: HashMap Behavior at a High Level  
-Category: java  
-Topic: java-core  
-Type: learning  
-File: `src/data/problems/java/java-core/hashmap-behavior.js`  
-Current rating: Good  
+Title: HashMap Behavior at a High Level
+Category: java
+Topic: java-core
+Type: learning
+File: `src/academies/tech/java/java-core/lessons/hashmap-behavior.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -169,18 +169,18 @@ Recommended improvements:
 - Add a misconception-first callout: “same hash does not mean same key.”
 - Add one self-explanation prompt asking the learner to explain why a mutated key becomes hard to find.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: bucket diagram and collision step frames.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: bucket diagram and collision step frames.
 MCQ distractor explanation needed: Not applicable
 
 ### Question ID: java-core-checked-vs-unchecked-exceptions-001
 
-Title: Checked vs Unchecked Exceptions  
-Category: java  
-Topic: java-core  
-Type: learning  
-File: `src/data/problems/java/java-core/checked-vs-unchecked-exceptions.js`  
-Current rating: Good  
+Title: Checked vs Unchecked Exceptions
+Category: java
+Topic: java-core
+Type: learning
+File: `src/academies/tech/java/java-core/lessons/checked-vs-unchecked-exceptions.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -199,18 +199,18 @@ Recommended improvements:
 - Add a small hierarchy diagram: `Throwable -> Exception -> RuntimeException` and `Error`.
 - Add a scenario table where the learner predicts checked or unchecked before revealing the recommendation.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: exception hierarchy diagram and predict-before-reveal scenario table.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: exception hierarchy diagram and predict-before-reveal scenario table.
 MCQ distractor explanation needed: Not applicable
 
 ### Question ID: sliding-window-001
 
-Title: Maximum Sum Subarray of Size K  
-Category: dsa  
-Topic: sliding-window  
-Type: coding  
-File: `src/data/problems/dsa/sliding-window/sliding-window-001.js`  
-Current rating: Needs revision  
+Title: Maximum Sum Subarray of Size K
+Category: dsa
+Topic: sliding-window
+Type: coding
+File: `src/academies/tech/dsa/sliding-window/practice/sliding-window-001.js`
+Current rating: Needs revision
 Priority: High
 
 What works well:
@@ -233,18 +233,18 @@ Recommended improvements:
 - Explain the exact reuse: subtract outgoing value, add incoming value.
 - Add final complexity: `O(n)` time and `O(1)` extra space.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: array trace, rolling-sum table, window movement animation.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: array trace, rolling-sum table, window movement animation.
 MCQ distractor explanation needed: Not applicable
 
 ### Question ID: dynamic-programming-020
 
-Title: Minimum Sideway Jumps  
-Category: dsa  
-Topic: dynamic-programming  
-Type: coding  
-File: `src/data/problems/dsa/dynamic-programming/dynamic-programming-020.js`  
-Current rating: Good  
+Title: Minimum Sideway Jumps
+Category: dsa
+Topic: dynamic-programming
+Type: coding
+File: `src/academies/tech/dsa/dynamic-programming/practice/dynamic-programming-020.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -264,18 +264,18 @@ Recommended improvements:
 - Add a predict-before-reveal prompt: “Which lane becomes impossible at this position?”
 - Add a compact table summarizing each obstacle, blocked lane, and resulting DP state.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: Existing visual walkthrough is strong; add compact DP-state table.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: Existing visual walkthrough is strong; add compact DP-state table.
 MCQ distractor explanation needed: Not applicable
 
 ### Question ID: api-design-rate-limiting-001
 
-Title: Choosing a Simple Rate Limiting Strategy  
-Category: system  
-Topic: api-design  
-Type: mcq  
-File: `src/data/problems/system/api-design/api-design-rate-limiting-001.js`  
-Current rating: Good  
+Title: Choosing a Simple Rate Limiting Strategy
+Category: system
+Topic: api-design
+Type: mcq
+File: `src/academies/tech/system/api-design/practice/api-design-rate-limiting-001.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -294,18 +294,18 @@ Recommended improvements:
 - Add `distractorExplanations` for storing all requests, adding servers, and disabling authentication.
 - Add a 60-second counter timeline diagram.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: fixed-window timeline or token bucket comparison table.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: fixed-window timeline or token bucket comparison table.
 MCQ distractor explanation needed: Yes
 
 ### Question ID: api-design-payment-idempotency-001
 
-Title: Preventing Duplicate Payment Processing  
-Category: system  
-Topic: api-design  
-Type: mcq  
-File: `src/data/problems/system/api-design/api-design-payment-idempotency-001.js`  
-Current rating: Good  
+Title: Preventing Duplicate Payment Processing
+Category: system
+Topic: api-design
+Type: mcq
+File: `src/academies/tech/system/api-design/practice/api-design-payment-idempotency-001.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -325,18 +325,18 @@ Recommended improvements:
 - Add distractor explanations for rejecting retries, processing every retry, and logging only after provider success.
 - Add a self-explanation prompt around reusing the same idempotency key with a different amount.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: idempotency sequence diagram.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: idempotency sequence diagram.
 MCQ distractor explanation needed: Yes
 
 ### Question ID: caching-product-details-001
 
-Title: Reducing Database Load with Caching  
-Category: system  
-Topic: caching  
-Type: mcq  
-File: `src/data/problems/system/caching/caching-product-details-001.js`  
-Current rating: Good  
+Title: Reducing Database Load with Caching
+Category: system
+Topic: caching
+Type: mcq
+File: `src/academies/tech/system/caching/practice/caching-product-details-001.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -355,18 +355,18 @@ Recommended improvements:
 - Add a cache-aside flow diagram with hit, miss, and invalidation paths.
 - Add distractor explanations for write-on-view, removing descriptions, and duplicate rows.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: cache-aside flow diagram and freshness trade-off table.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: cache-aside flow diagram and freshness trade-off table.
 MCQ distractor explanation needed: Yes
 
 ### Question ID: messaging-queues-email-notification-001
 
-Title: Handling Slow Email Notifications  
-Category: system  
-Topic: messaging-queues  
-Type: mcq  
-File: `src/data/problems/system/messaging-queues/messaging-queues-email-notification-001.js`  
-Current rating: Good  
+Title: Handling Slow Email Notifications
+Category: system
+Topic: messaging-queues
+Type: mcq
+File: `src/academies/tech/system/messaging-queues/practice/messaging-queues-email-notification-001.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -386,18 +386,18 @@ Recommended improvements:
 - Add retry/dead-letter branch to the visual.
 - Add distractor explanations for browser retry, blocking orders, and localStorage.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: async queue sequence diagram with retry branch.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: async queue sequence diagram with retry branch.
 MCQ distractor explanation needed: Yes
 
 ### Question ID: scalability-realtime-updates-001
 
-Title: Scaling Live Order Status Updates  
-Category: system  
-Topic: scalability  
-Type: mcq  
-File: `src/data/problems/system/scalability/scalability-realtime-updates-001.js`  
-Current rating: Good  
+Title: Scaling Live Order Status Updates
+Category: system
+Topic: scalability
+Type: mcq
+File: `src/academies/tech/system/scalability/practice/scalability-realtime-updates-001.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -416,18 +416,18 @@ Recommended improvements:
 - Add architecture flow diagram for multi-server WebSocket fan-out.
 - Add distractor explanations for frontend-only storage, one server forever, and disabling live updates.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: pub/sub fan-out architecture diagram.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: pub/sub fan-out architecture diagram.
 MCQ distractor explanation needed: Yes
 
 ### Question ID: databases-multi-region-consistency-001
 
-Title: Choosing a Multi-Region Consistency Strategy  
-Category: system  
-Topic: databases  
-Type: mcq  
-File: `src/data/problems/system/databases/databases-multi-region-consistency-001.js`  
-Current rating: Good  
+Title: Choosing a Multi-Region Consistency Strategy
+Category: system
+Topic: databases
+Type: mcq
+File: `src/academies/tech/system/databases/practice/databases-multi-region-consistency-001.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -446,18 +446,18 @@ Recommended improvements:
 - Add a trade-off table for eventual versus strong consistency by workflow.
 - Add distractor explanations for same model everywhere, browser cache, and disabling regions.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: two-path multi-region architecture diagram.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: two-path multi-region architecture diagram.
 MCQ distractor explanation needed: Yes
 
 ### Question ID: scalability-url-shortener-001
 
-Title: Design a URL Shortener  
-Category: system  
-Topic: scalability  
-Type: complex-system-design  
-File: `src/data/problems/system/scalability/scalability-url-shortener-001.js`  
-Current rating: Needs revision  
+Title: Design a URL Shortener
+Category: system
+Topic: scalability
+Type: complex-system-design
+File: `src/academies/tech/system/scalability/practice/scalability-url-shortener-001.js`
+Current rating: Needs revision
 Priority: High
 
 What works well:
@@ -478,18 +478,18 @@ Recommended improvements:
 - Either retire this older variant from production in a separate issue, or rewrite it into a distinct angle such as “URL shortener scoring drill.”
 - Add architecture flow, read/write flows, cache-miss path, and analytics pipeline if kept.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: architecture flow, create/redirect flow, analytics async flow, bottleneck table.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: architecture flow, create/redirect flow, analytics async flow, bottleneck table.
 MCQ distractor explanation needed: Not applicable
 
 ### Question ID: scalability-url-shortener-v2
 
-Title: Design a URL Shortener  
-Category: system  
-Topic: scalability  
-Type: complex-system-design  
-File: `src/data/problems/system/scalability/url-shortener-v2.js`  
-Current rating: Good  
+Title: Design a URL Shortener
+Category: system
+Topic: scalability
+Type: complex-system-design
+File: `src/academies/tech/system/scalability/practice/url-shortener-v2.js`
+Current rating: Good
 Priority: Medium
 
 What works well:
@@ -509,8 +509,8 @@ Recommended improvements:
 - Add one bottleneck/failure-mode table.
 - Add predict-before-reveal prompts around 301 vs 302 and synchronous versus async analytics.
 
-Needs visual, animation, diagram, table, or step-frame support: Yes  
-Suggested visual support: full architecture diagram and bottleneck/failure-mode table.  
+Needs visual, animation, diagram, table, or step-frame support: Yes
+Suggested visual support: full architecture diagram and bottleneck/failure-mode table.
 MCQ distractor explanation needed: Not applicable
 
 ## Common gaps found

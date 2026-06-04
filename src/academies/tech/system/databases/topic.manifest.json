@@ -1,0 +1,15 @@
+{
+  "id": "databases",
+  "category": "system",
+  "description": "Choose storage models, indexes, transactions, partitioning, and consistency trade-offs.",
+  "displayName": "Databases",
+  "academy": "tech",
+  "lessons": [],
+  "practice": [
+    {
+      "id": "databases-multi-region-consistency-001",
+      "file": "practice/databases-multi-region-consistency-001.js"
+    }
+  ],
+  "assessments": []
+}

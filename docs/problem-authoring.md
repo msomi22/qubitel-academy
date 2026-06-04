@@ -2,20 +2,20 @@
 
 ## Goal
 
-New problems should normally be added as one file under:
+New problems should normally be added as one manifest-declared file under:
 
 ```text
-src/data/problems/{category}/{topicId}/{problem-id}.js
+src/academies/{academy}/{category}/{topicId}/{lessons|practice|assessments}/{problem-id}.js
 ```
 
-This keeps authoring simple: one problem file owns its prompt, answer fields, metadata, rich body blocks, and production visibility. Existing legacy banks under `src/data/banks` are still supported for compatibility, but new content should use discovered one-file problems.
+This keeps authoring simple: one problem file owns its prompt, answer fields, metadata, rich body blocks, and production visibility. Existing banks under `src/academies/{academy}/_legacy/banks` remain supported for compatibility, but new content must use academy topic folders.
 
 ## Quick start: add one problem to an existing topic
 
 For an existing topic, create one file in the matching category/topic folder and export the helper result as the default export.
 
 ```js
-import { defineLearningProblem } from '../../../../problems/problemAuthoring.js';
+import { defineLearningProblem } from '../../../../../problems/problemAuthoring.js';
 
 const problem = defineLearningProblem({
   id: 'caching-cache-aside-basics-001',
@@ -34,7 +34,7 @@ const problem = defineLearningProblem({
 export default problem;
 ```
 
-If `topicId` exists in `src/data/topicManifest.js`, the helper can infer the category from the topic. Add `category` manually only when that improves readability or when a migration needs to preserve old shape.
+If `topicId` exists in the active academy catalog, the helper can infer the category from the topic. Add `category` manually only when that improves readability or when a migration needs to preserve old shape.
 
 ## Authoring helpers
 
@@ -64,7 +64,7 @@ Use these types for new authored content:
 Use `defineMcqProblem` for multiple-choice items.
 
 ```js
-import { defineMcqProblem } from '../../../../problems/problemAuthoring.js';
+import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
 
 const problem = defineMcqProblem({
   id: 'java-core-equals-vs-double-equals-001',
@@ -105,7 +105,7 @@ Use `defineLearningProblem` for non-MCQ learning content. Common fields are:
 - optional rich `body` blocks
 
 ```js
-import { defineLearningProblem } from '../../../../problems/problemAuthoring.js';
+import { defineLearningProblem } from '../../../../../problems/problemAuthoring.js';
 
 const problem = defineLearningProblem({
   id: 'java-core-pass-by-value-001',
@@ -134,7 +134,7 @@ Use `simple-system-design` when the answer should be compact and focused. Use `c
 ### One-file simple system design problem
 
 ```js
-import { defineSimpleSystemDesignProblem } from '../../../../problems/problemAuthoring.js';
+import { defineSimpleSystemDesignProblem } from '../../../../../problems/problemAuthoring.js';
 
 const problem = defineSimpleSystemDesignProblem({
   id: 'caching-product-details-002',
@@ -157,7 +157,7 @@ export default problem;
 ### One-file complex system design problem
 
 ```js
-import { defineComplexSystemDesignProblem } from '../../../../problems/problemAuthoring.js';
+import { defineComplexSystemDesignProblem } from '../../../../../problems/problemAuthoring.js';
 
 const problem = defineComplexSystemDesignProblem({
   id: 'scalability-news-feed-001',
@@ -320,7 +320,7 @@ Topic and category manifest entries:
 A Java problem then lives at:
 
 ```text
-src/data/problems/java/java-core/equals-vs-double-equals.js
+src/academies/tech/java/java-core/practice/equals-vs-double-equals.js
 ```
 
 ## URL Shortener v2 example
@@ -328,7 +328,7 @@ src/data/problems/java/java-core/equals-vs-double-equals.js
 URL Shortener v2 is the final one-file proof for a rich, production-visible complex system design problem. It lives at:
 
 ```text
-src/data/problems/system/scalability/url-shortener-v2.js
+src/academies/tech/system/scalability/practice/url-shortener-v2.js
 ```
 
 It uses `defineComplexSystemDesignProblem`, rich body blocks, rendering metadata, scoring dictionary/rubric fields, hints, follow-up questions, references, and:
@@ -346,36 +346,30 @@ Do not add URL Shortener v2 again. Use it as a reference when creating future ri
 
 Add a topic when the category already exists but the concept does not fit an existing topic.
 
-1. Add a topic entry to `src/data/topicManifest.js`.
-2. Set `id`, `name`, `category`, and `description`.
-3. Use `questionBank: { mode: 'discovered' }` when the topic should rely on discovered one-file problems only.
-4. Add one or more files under `src/data/problems/{category}/{topicId}/`.
-5. Run validation/build commands.
-
-`topicManifest.js` must be edited for new topics because topics are still manifest-driven. It is not needed when adding a problem under an existing topic.
+1. Create `src/academies/{academy}/{category}/{topicId}/topic.manifest.json`.
+2. Set `id`, `displayName`, `academy`, `category`, and the three content arrays.
+3. Add the topic id to its parent `category.manifest.json`.
+4. Add one or more files under the topic's `lessons`, `practice`, or `assessments` folder and declare them in the topic manifest.
+5. Run `npm run generate:academy-manifests`, tests, and the production build.
 
 ## Adding a new category
 
-Add a category when the learning area is broader than a topic, such as Java. Update `categoryManifest` in `src/data/topicManifest.js`, then add at least one topic in `topicManifest` for that category.
+Add a category when the learning area is broader than a topic, such as Java. Create its `category.manifest.json`, add it to the academy manifest, then add at least one topic manifest.
 
 A new category should include route metadata, user-facing names, description, domain, tags, and featured status. The category becomes useful only when it has visible topics and problems.
 
-## When `topicManifest.js` must be edited
+## When manifests must be edited
 
-Edit `src/data/topicManifest.js` when:
+Edit academy manifests when:
 
 - adding a new topic;
 - adding a new category;
 - changing topic/category names, descriptions, routes, or featured behavior;
-- explicitly setting a topic to discovered-only mode.
-
-## When `topicManifest.js` is not needed
-
-Do not edit `topicManifest.js` when adding a problem to an existing topic. Put the file under the existing `category/topicId` folder and ensure the problem's `topicId` matches the manifest.
+- adding or removing a content file from a topic.
 
 ## Legacy banks
 
-Legacy banks under `src/data/banks` remain supported so older content continues to load. They should not be used for new content unless there is a strong compatibility reason.
+Legacy banks under `src/academies/{academy}/_legacy/banks` remain supported so older content continues to load. They must not be used for new content.
 
 New content should use discovered one-file problems because it avoids editing central loader files, makes review smaller, and keeps problem metadata next to the prompt.
 
@@ -403,7 +397,7 @@ Before opening a PR, check:
 - `metadata.reviewStatus` is set correctly.
 - `metadata.visibility` is set correctly.
 - `rendering` uses controlled values only.
-- `topicManifest.js` is changed only for new topics/categories or topic metadata changes.
+- The topic manifest declares every new authored file.
 - `npm run test:unit` was run where possible.
 - `npm run build` was run where possible.
 - PR issue references are correct.

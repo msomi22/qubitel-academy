@@ -1,4 +1,4 @@
-// Copy this file into src/data/problems/dsa/<topicId>/<problem-id>.js
+// Copy this file into src/academies/tech/dsa/<topicId>/practice/<problem-id>.js
 // Required fields: id, type, category, topicId, title, difficulty, prompt/question.
 // Use type "coding" to match existing quiz behavior. "code" is also registered for future use.
 

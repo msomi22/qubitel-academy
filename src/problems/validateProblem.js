@@ -1,4 +1,4 @@
-import { topicManifest } from '../data/topicManifest.js';
+import { topicManifest } from '../academies/catalog.js';
 import { isSupportedProblemType, problemTypeRegistry } from './problemTypeRegistry.js';
 
 const SUPPORTED_RICH_BODY_BLOCK_TYPES = new Set(['section', 'callout', 'table', 'image', 'diagram', 'flow', 'code', 'checklist', 'comparison', 'architectureDecision', 'tabs', 'divider']);

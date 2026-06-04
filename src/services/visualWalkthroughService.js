@@ -1,6 +1,10 @@
-const visualModules = import.meta.glob('../data/visuals/**/*.js');
+import { getActiveAcademy } from '../config/detectAcademy.ts';
 
-function buildCandidatePaths(questionId) {
+const visualModules = import.meta.env
+  ? import.meta.glob('../academies/*/*/*/practice/visuals/*.js')
+  : {};
+
+export function buildCandidatePaths(questionId, academyId = getActiveAcademy().id) {
   const segments = questionId.split('-');
 
   if (segments.length < 2) {
@@ -8,10 +12,9 @@ function buildCandidatePaths(questionId) {
   }
 
   const topicFolder = segments.slice(0, -1).join('-');
-
   return [
-    `../data/visuals/dsa/${topicFolder}/${questionId}.js`,
-    `../data/visuals/system/${topicFolder}/${questionId}.js`
+    `../academies/${academyId}/dsa/${topicFolder}/practice/visuals/${questionId}.js`,
+    `../academies/${academyId}/system/${topicFolder}/practice/visuals/${questionId}.js`
   ];
 }
 

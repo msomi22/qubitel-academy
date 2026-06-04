@@ -1,0 +1,20 @@
+{
+  "id": "dynamic-programming",
+  "category": "dsa",
+  "description": "Define states, transitions, base cases, and computation order for overlapping subproblems.",
+  "displayName": "STATE — Dynamic Programming",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "coin-change-dp-state-transition",
+      "file": "lessons/coin-change-dp-state-transition.js"
+    }
+  ],
+  "practice": [
+    {
+      "id": "dynamic-programming-020",
+      "file": "practice/dynamic-programming-020.js"
+    }
+  ],
+  "assessments": []
+}

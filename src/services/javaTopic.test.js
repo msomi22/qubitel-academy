@@ -10,10 +10,10 @@ import {
   loadTopicBankFromSources
 } from './questionBankService.js';
 
-import passByValueProblem from '../data/problems/java/java-core/pass-by-value-object-references.js';
-import equalsProblem from '../data/problems/java/java-core/equals-vs-double-equals.js';
-import hashMapProblem from '../data/problems/java/java-core/hashmap-behavior.js';
-import exceptionsProblem from '../data/problems/java/java-core/checked-vs-unchecked-exceptions.js';
+import passByValueProblem from '../academies/tech/java/java-core/practice/pass-by-value-object-references.js';
+import equalsProblem from '../academies/tech/java/java-core/practice/equals-vs-double-equals.js';
+import hashMapProblem from '../academies/tech/java/java-core/lessons/hashmap-behavior.js';
+import exceptionsProblem from '../academies/tech/java/java-core/lessons/checked-vs-unchecked-exceptions.js';
 
 const javaProblems = [
   passByValueProblem,

@@ -1,0 +1,30 @@
+{
+  "id": "recursion",
+  "category": "dsa",
+  "description": "Practice recursive thinking, base cases, call stack tracing, return unwinding, and the foundations behind DFS, backtracking, divide-and-conquer, trees, and dynamic programming.",
+  "questionBank": {
+    "mode": "discovered"
+  },
+  "displayName": "RECUR — Recursion",
+  "academy": "tech",
+  "lessons": [
+    {
+      "id": "recursion-factorial-simple-recursion-002",
+      "file": "lessons/recursion-factorial-simple-recursion-002.js"
+    },
+    {
+      "id": "recursion-fibonacci-branching-recursion-003",
+      "file": "lessons/recursion-fibonacci-branching-recursion-003.js"
+    },
+    {
+      "id": "recursion-foundation-call-stack-001",
+      "file": "lessons/recursion-foundation-call-stack-001.js"
+    },
+    {
+      "id": "recursion-tower-of-hanoi-001",
+      "file": "lessons/recursion-tower-of-hanoi-001.js"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

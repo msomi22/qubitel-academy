@@ -1,4 +1,33 @@
 {
-    "id": "dsa",
-    "displayName": "Data Structures and Algorithms"
+  "id": "dsa",
+  "shortName": "DSA",
+  "description": "Pattern-based coding interview mastery with invariants, intuition, and optimized reasoning.",
+  "domain": "Core Engineering",
+  "tags": [
+    "coding",
+    "interviews",
+    "algorithms"
+  ],
+  "route": "/category/dsa",
+  "featured": true,
+  "displayName": "Data Structures & Algorithms",
+  "academy": "tech",
+  "topics": [
+    "sliding-window",
+    "recursion",
+    "dynamic-programming",
+    "graphs",
+    "trees",
+    "two-pointers",
+    "binary-search",
+    "prefix-sum-hashing",
+    "greedy",
+    "heap-priority-queue",
+    "backtracking",
+    "union-find",
+    "trie",
+    "bit-manipulation",
+    "divide-conquer",
+    "monotonic-stack-queue"
+  ]
 }

@@ -1,6 +1,14 @@
 import { findQuestionById } from './questionBankService.js';
+import { getActiveAcademy } from '../config/detectAcademy.ts';
 
-export const RECENT_QUESTIONS_STORAGE_KEY = 'senior-dev-accelerator:recent-questions';
+function getRecentQuestionsStorageKey() {
+  const academy = getActiveAcademy();
+  return academy.id === 'tech'
+    ? 'senior-dev-accelerator:recent-questions'
+    : `${academy.storageKey}:recent-questions`;
+}
+
+export const RECENT_QUESTIONS_STORAGE_KEY = getRecentQuestionsStorageKey();
 const RECENT_LIMIT = 5;
 
 function canUseLocalStorage() {
