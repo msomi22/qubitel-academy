@@ -88,6 +88,7 @@ export function buildExamAttempt({
     answerReview[question.id] = {
       question: question.question,
       title: question.title,
+      options: [...(question.options || [])],
       selectedAnswerIndex,
       selectedAnswer: optionLabel(question, selectedAnswerIndex),
       correctAnswerIndex: question.correctAnswer,
