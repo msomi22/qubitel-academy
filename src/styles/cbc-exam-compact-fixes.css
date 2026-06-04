@@ -1,3 +1,5 @@
+@import './cbc-read-aloud.css';
+
 .app-shell.exam-route-shell .exam-route-layout .page-wrap {
   padding: clamp(10px, 2vw, 24px) !important;
 }
