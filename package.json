@@ -11,10 +11,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "npm run build",
-    "test": "node --test",
-    "test:unit": "node --test src/config/*.test.js src/config/*.test.ts src/problems/*.test.js src/services/*.test.js src/utils/*.test.js src/utils/**/*.test.js",
-    "test:integration": "node --test src/config/*.test.js src/config/*.test.ts src/services/*.test.js src/utils/*.test.js",
-    "test:ci": "node --test"
+    "test": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test",
+    "test:unit": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test src/config/*.test.js src/config/*.test.ts src/problems/*.test.js src/services/*.test.js src/utils/*.test.js src/utils/**/*.test.js",
+    "test:integration": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test src/config/*.test.js src/config/*.test.ts src/services/*.test.js src/utils/*.test.js",
+    "test:ci": "node --disable-warning=ExperimentalWarning --experimental-strip-types --test"
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
@@ -26,6 +26,7 @@
     "react-router-dom": "latest"
   },
   "devDependencies": {
+    "@types/node": "latest",
     "typescript": "latest"
   }
 }
