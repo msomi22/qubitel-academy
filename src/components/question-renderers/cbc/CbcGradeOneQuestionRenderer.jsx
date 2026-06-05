@@ -22,7 +22,10 @@ function friendlyPrompt(question) {
 }
 
 function navigationState(navigation) {
-  return navigation?.returnToCategory ? { returnToCategory: navigation.returnToCategory } : undefined;
+  return {
+    ...(navigation?.returnToCategory ? { returnToCategory: navigation.returnToCategory } : {}),
+    preserveProblemScroll: true
+  };
 }
 
 function CbcGradeOneNavigation({ navigation, placement = 'bottom' }) {
@@ -39,6 +42,7 @@ function CbcGradeOneNavigation({ navigation, placement = 'bottom' }) {
           className="cbc-grade-one-nav-button previous"
           to={`/problem/${encodeURIComponent(navigation.previousQuestion.id)}`}
           state={navigationState(navigation)}
+          preventScrollReset
           aria-label={`Previous question: ${navigation.previousQuestion.title}`}
         >
           <span aria-hidden="true">←</span>
@@ -57,6 +61,7 @@ function CbcGradeOneNavigation({ navigation, placement = 'bottom' }) {
           className="cbc-grade-one-nav-button next"
           to={`/problem/${encodeURIComponent(navigation.nextQuestion.id)}`}
           state={navigationState(navigation)}
+          preventScrollReset
           aria-label={`Next question: ${navigation.nextQuestion.title}`}
         >
           <strong>Next</strong>
@@ -136,18 +141,18 @@ export default function CbcGradeOneQuestionRenderer({
         })}
       </section>
 
-      {answered ? (
-        <section className={`cbc-grade-one-feedback ${isCorrect ? 'correct' : 'wrong'}`} role="status">
-          <strong>{isCorrect ? 'Great job!' : 'Good try!'}</strong>
-          <p>{isCorrect ? 'That answer is correct.' : question.explanation || 'Try the correct answer next time.'}</p>
-        </section>
-      ) : null}
+      <section className={`cbc-grade-one-feedback ${answered ? (isCorrect ? 'correct' : 'wrong') : 'empty'}`} role="status" aria-live="polite">
+        {answered ? (
+          <>
+            <strong>{isCorrect ? 'Great job!' : 'Good try!'}</strong>
+            <p>{isCorrect ? 'That answer is correct.' : question.explanation || 'Try the correct answer next time.'}</p>
+          </>
+        ) : <span aria-hidden="true">&nbsp;</span>}
+      </section>
 
-      {completed || answered ? (
-        <div className="cbc-grade-one-actions">
-          <button type="button" onClick={handleReset}>Try again</button>
-        </div>
-      ) : null}
+      <div className={`cbc-grade-one-actions ${completed || answered ? '' : 'empty'}`.trim()}>
+        {completed || answered ? <button type="button" onClick={handleReset}>Try again</button> : <span aria-hidden="true">&nbsp;</span>}
+      </div>
 
       <CbcGradeOneNavigation navigation={navigation} placement="bottom" />
     </article>
