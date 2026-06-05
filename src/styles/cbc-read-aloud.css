@@ -38,6 +38,11 @@
   box-shadow: 0 10px 24px rgb(47 125 87 / 0.22);
 }
 
+.cbc-read-aloud-icon,
+.cbc-read-aloud-label {
+  line-height: 1;
+}
+
 .cbc-read-aloud-button:disabled {
   cursor: not-allowed;
   opacity: 0.55;

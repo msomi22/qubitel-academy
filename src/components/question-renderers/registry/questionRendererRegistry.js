@@ -6,6 +6,8 @@ export const DEFAULT_RENDERER_KEY = 'default';
 const rendererRegistry = {
   cbc: {
     'grade-1': {
+      [DEFAULT_RENDERER_KEY]: CbcGradeOneQuestionRenderer,
+      mcq: CbcGradeOneQuestionRenderer,
       'visual-mcq': CbcGradeOneQuestionRenderer
     }
   }

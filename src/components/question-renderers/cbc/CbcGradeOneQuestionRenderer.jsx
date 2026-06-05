@@ -1,25 +1,16 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
-import ReadAloudButton from '../../cbc/ReadAloudButton.jsx';
 import { storageService } from '../../../services/storageService.js';
 import CbcVisualAid from './CbcVisualAid.jsx';
-
-function optionLetter(index) {
-  return String.fromCharCode(65 + index);
-}
-
-function optionVisualFor(question, index) {
-  return question?.optionVisuals?.[index] || question?.metadata?.optionVisuals?.[index] || null;
-}
-
-function promptVisualFor(question) {
-  return question?.promptVisual || question?.metadata?.promptVisual || null;
-}
-
-function friendlyPrompt(question) {
-  return question?.question || question?.prompt || question?.readAloudText || question?.title || 'Choose the correct answer.';
-}
+import {
+  CbcKidsEncouragement,
+  CbcKidsPromptRow,
+  CbcKidsQuizTopBar,
+  optionLetter,
+  optionVisualFor,
+  promptVisualFor
+} from './CbcGradeOneKidsQuizShell.jsx';
 
 function navigationState(navigation) {
   return navigation?.returnToCategory ? { returnToCategory: navigation.returnToCategory } : undefined;
@@ -78,6 +69,13 @@ export default function CbcGradeOneQuestionRenderer({
   const answered = selected !== null;
   const isCorrect = answered && selected === question.correctAnswer;
   const promptVisual = promptVisualFor(question);
+  const currentQuestion = Number.isInteger(navigation?.currentIndex) && navigation.currentIndex >= 0
+    ? navigation.currentIndex + 1
+    : 1;
+  const totalQuestions = Number.isInteger(navigation?.total) && navigation.total > 0
+    ? navigation.total
+    : 1;
+  const timeLimit = Number(question?.estimatedTimeSeconds ?? question?.metadata?.estimatedTimeSeconds) || null;
 
   function handleSelect(index) {
     setSelected(index);
@@ -93,14 +91,15 @@ export default function CbcGradeOneQuestionRenderer({
 
   return (
     <article className="cbc-grade-one-card" aria-labelledby="grade-one-question-title">
-      <CbcGradeOneNavigation navigation={navigation} placement="top" />
+      <CbcKidsQuizTopBar current={currentQuestion} total={totalQuestions} timeLimit={timeLimit} />
 
-      <header className="cbc-grade-one-header">
-        <p>Grade 1 Practice</p>
-        <h1 id="grade-one-question-title">{friendlyPrompt(question)}</h1>
-      </header>
-
-      <ReadAloudButton question={{ ...question, autoReadAloud: false }} className="cbc-grade-one-read-aloud" />
+      <CbcKidsPromptRow
+        question={question}
+        headingId="grade-one-question-title"
+        headingTag="h1"
+        className="cbc-grade-one-prompt"
+        readAloudClassName="cbc-grade-one-read-aloud"
+      />
 
       {promptVisual ? (
         <section className="cbc-grade-one-prompt-visual" aria-label="Question visual">
@@ -150,6 +149,8 @@ export default function CbcGradeOneQuestionRenderer({
       ) : null}
 
       <CbcGradeOneNavigation navigation={navigation} placement="bottom" />
+
+      <CbcKidsEncouragement />
     </article>
   );
 }

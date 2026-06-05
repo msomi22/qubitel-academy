@@ -184,6 +184,9 @@ export default function ProblemPage() {
     questionType: entry.question.type,
     interactionType: entry.question.interactionType || entry.question.metadata?.interactionType
   });
+  const isCbcGradeOneKidsQuiz = activeAcademy.id === 'cbc'
+    && categoryId === 'grade-1'
+    && (entry.question.interactionType === 'visual-mcq' || entry.question.metadata?.interactionType === 'visual-mcq');
 
   const problemTags = uniqueItems([
     { label: entry.question.difficulty, type: 'difficulty' },
@@ -194,52 +197,56 @@ export default function ProblemPage() {
   ]);
 
   return (
-    <main className="page problem-detail-shell focused-problem-page premium-problem-page">
-      <div className="problem-breadcrumb compact-problem-breadcrumb">
-        <NavLink to="/">Dashboard</NavLink>
-        <span>/</span>
-        <NavLink to={categoryBackPath}>{topicName}</NavLink>
-        <span>/</span>
-        <span>{entry.question.title}</span>
-      </div>
-
-      <section className="reference-problem-intro premium-problem-intro">
-        <div className="premium-problem-title-area">
-          <div className="premium-problem-context-row">
-            <NavLink to={categoryBackPath}>Back to topic</NavLink>
-            <span>{categoryName}</span>
-            <span>{topicName}</span>
+    <main className={`page problem-detail-shell focused-problem-page premium-problem-page ${isCbcGradeOneKidsQuiz ? 'cbc-grade-one-problem-page' : ''}`.trim()}>
+      {!isCbcGradeOneKidsQuiz ? (
+        <>
+          <div className="problem-breadcrumb compact-problem-breadcrumb">
+            <NavLink to="/">Dashboard</NavLink>
+            <span>/</span>
+            <NavLink to={categoryBackPath}>{topicName}</NavLink>
+            <span>/</span>
+            <span>{entry.question.title}</span>
           </div>
 
-          <h1>{entry.question.title}</h1>
+          <section className="reference-problem-intro premium-problem-intro">
+            <div className="premium-problem-title-area">
+              <div className="premium-problem-context-row">
+                <NavLink to={categoryBackPath}>Back to topic</NavLink>
+                <span>{categoryName}</span>
+                <span>{topicName}</span>
+              </div>
 
-          <div className="problem-meta-pills" aria-label="Problem metadata">
-            {problemTags.map(({ label, type }) => (
-              <span key={label} className={pillClass(type, label, entry.question.difficulty)}>
-                {label}
-              </span>
-            ))}
-          </div>
+              <h1>{entry.question.title}</h1>
 
-          {introText ? <p className="premium-problem-summary">{introText}</p> : null}
-        </div>
+              <div className="problem-meta-pills" aria-label="Problem metadata">
+                {problemTags.map(({ label, type }) => (
+                  <span key={label} className={pillClass(type, label, entry.question.difficulty)}>
+                    {label}
+                  </span>
+                ))}
+              </div>
 
-        <aside className="premium-problem-progress-card" aria-label="Focused problem actions">
-          <span className="mini-label">Current state</span>
-          <strong>{isComplete ? 'Completed' : 'Ready to solve'}</strong>
-          <small>{isMcq ? 'Select an answer, then review the explanation.' : 'Read, draft mentally, then compare with the solution.'}</small>
+              {introText ? <p className="premium-problem-summary">{introText}</p> : null}
+            </div>
 
-          <div className="reference-action-group premium-problem-actions">
-            <NavLink className="btn ghost" to={categoryBackPath}>Back to topic</NavLink>
+            <aside className="premium-problem-progress-card" aria-label="Focused problem actions">
+              <span className="mini-label">Current state</span>
+              <strong>{isComplete ? 'Completed' : 'Ready to solve'}</strong>
+              <small>{isMcq ? 'Select an answer, then review the explanation.' : 'Read, draft mentally, then compare with the solution.'}</small>
 
-            {!isComplexSystemDesign ? (
-              <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
-                {isComplete ? 'Reset' : 'Done'}
-              </button>
-            ) : null}
-          </div>
-        </aside>
-      </section>
+              <div className="reference-action-group premium-problem-actions">
+                <NavLink className="btn ghost" to={categoryBackPath}>Back to topic</NavLink>
+
+                {!isComplexSystemDesign ? (
+                  <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
+                    {isComplete ? 'Reset' : 'Done'}
+                  </button>
+                ) : null}
+              </div>
+            </aside>
+          </section>
+        </>
+      ) : null}
 
       {isComplexSystemDesign ? (
         <ComplexSystemDesignProblem

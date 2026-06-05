@@ -82,8 +82,8 @@ export default function ReadAloudButton({ question, className = '' }) {
           disabled={!supported || !readText}
           title={supported ? 'Read question aloud again' : 'Read aloud is not supported in this browser'}
         >
-          <span aria-hidden="true">🔊</span>
-          Read again
+          <span className="cbc-read-aloud-icon" aria-hidden="true">🔊</span>
+          <span className="cbc-read-aloud-label">Read Again</span>
         </button>
         {!supported ? <p>Read aloud is not supported in this browser.</p> : null}
       </div>

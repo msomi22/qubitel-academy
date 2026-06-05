@@ -4,6 +4,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import LoadingCard from '../components/LoadingCard.jsx';
 import ReadAloudButton from '../components/cbc/ReadAloudButton.jsx';
 import CbcVisualAid from '../components/question-renderers/cbc/CbcVisualAid.jsx';
+import {
+  CbcKidsEncouragement,
+  CbcKidsPromptRow,
+  CbcKidsQuizTopBar,
+  optionLetter,
+  optionVisualFor,
+  promptVisualFor
+} from '../components/question-renderers/cbc/CbcGradeOneKidsQuizShell.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { buildCategoryReturnPath } from '../services/categoryNavigationService.js';
 import { buildExamAttempt } from '../services/examAttemptService.js';
@@ -13,10 +21,6 @@ import { storageService } from '../services/storageService.js';
 
 const LEAVE_WARNING = 'You are still taking this exam. Leaving now may end this attempt.';
 
-function optionLetter(index) {
-  return String.fromCharCode(65 + index);
-}
-
 function formattedDate(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
@@ -25,14 +29,6 @@ function formattedDate(value) {
 function questionTimeLimit(question) {
   const seconds = Number(question?.estimatedTimeSeconds ?? question?.metadata?.estimatedTimeSeconds);
   return Number.isFinite(seconds) && seconds > 0 ? seconds : 30;
-}
-
-function promptVisualFor(question) {
-  return question?.promptVisual || question?.metadata?.promptVisual || null;
-}
-
-function optionVisualFor(question, index) {
-  return question?.optionVisuals?.[index] || question?.metadata?.optionVisuals?.[index] || null;
 }
 
 function hasVisualMcq(question) {
@@ -78,11 +74,11 @@ function startInstructions(exam) {
   return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }
 
-function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext }) {
+function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext, className = '' }) {
   if (totalQuestions <= 1) return null;
 
   return (
-    <nav className="cbc-exam-navigation" aria-label="Exam question navigation">
+    <nav className={`cbc-exam-navigation ${className}`.trim()} aria-label="Exam question navigation">
       <button type="button" className="cbc-exam-button secondary" onClick={onPrevious} disabled={currentIndex === 0}>
         Previous
       </button>
@@ -537,6 +533,81 @@ export default function ExamSessionPage() {
   const questionTimedOut = Boolean(currentAnswer?.timedOut);
   const promptVisual = promptVisualFor(currentQuestion);
   const visualQuestion = hasVisualMcq(currentQuestion);
+  const gradeOneKidsExam = currentQuestion?.category === 'grade-1' && visualQuestion;
+
+  if (gradeOneKidsExam) {
+    return (
+      <main className="page cbc-exam-page cbc-exam-active-page cbc-grade-one-exam-page">
+        <section className="cbc-grade-one-card cbc-grade-one-exam-card" aria-labelledby="grade-one-exam-question-title">
+          <CbcKidsQuizTopBar
+            current={currentIndex + 1}
+            total={exam.questions.length}
+            timeLeft={remainingSeconds}
+            timerEnding={remainingSeconds <= 10}
+          />
+
+          <button type="button" className="cbc-grade-one-exam-leave" onClick={leaveExam}>Leave exam</button>
+
+          <CbcKidsPromptRow
+            question={currentQuestion}
+            headingId="grade-one-exam-question-title"
+            headingTag="h1"
+            className="cbc-grade-one-prompt cbc-grade-one-exam-prompt"
+            readAloudClassName="cbc-grade-one-read-aloud cbc-grade-one-exam-read-aloud"
+          />
+
+          {promptVisual ? (
+            <section className="cbc-grade-one-prompt-visual cbc-grade-one-exam-prompt-visual" aria-label="Question visual">
+              <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+            </section>
+          ) : null}
+
+          <div className="cbc-grade-one-options cbc-grade-one-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
+            {currentQuestion.options.map((option, index) => {
+              const selected = currentAnswer?.selectedAnswer === index;
+              const optionVisual = optionVisualFor(currentQuestion, index);
+              const optionClass = [
+                'cbc-grade-one-option',
+                selected ? 'selected' : '',
+                questionTimedOut ? 'timed-out' : ''
+              ].filter(Boolean).join(' ');
+
+              return (
+                <button
+                  type="button"
+                  key={`${option}-${index}`}
+                  className={optionClass}
+                  aria-pressed={selected}
+                  disabled={questionTimedOut}
+                  onClick={() => selectAnswer(index)}
+                >
+                  <span className="cbc-grade-one-option-letter">{optionLetter(index)}</span>
+                  {optionVisual ? <CbcVisualAid visual={optionVisual} label={option} /> : null}
+                  <span className="cbc-grade-one-option-text">{option}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {currentAnswer ? (
+            <p className="cbc-exam-answer-status cbc-grade-one-exam-answer-status" role="status">
+              {currentAnswer.timedOut ? 'Time is up. Moving to the next question.' : 'Answer saved. You can still change it before you finish.'}
+            </p>
+          ) : null}
+
+          <ExamNavigation
+            currentIndex={currentIndex}
+            totalQuestions={exam.questions.length}
+            onPrevious={previousQuestion}
+            onNext={nextQuestion}
+            className="cbc-grade-one-exam-nav"
+          />
+
+          <CbcKidsEncouragement />
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="page cbc-exam-page cbc-exam-active-page">
