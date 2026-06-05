@@ -12,5 +12,14 @@
       "file": "practice/foundation-practice-001.js"
     }
   ],
-  "assessments": []
+  "assessments": [
+    {
+      "id": "counting-exam-001",
+      "file": "assessments/counting-exam-001.js"
+    },
+    {
+      "id": "object-matching-exam-001",
+      "file": "assessments/object-matching-exam-001.js"
+    }
+  ]
 }

@@ -267,6 +267,16 @@
   font-size: clamp(1.55rem, 5vw, 2.35rem);
 }
 
+.cbc-exam-prompt-visual {
+  display: grid;
+  min-height: 120px;
+  place-items: center;
+  padding: 16px;
+  border: 2px dashed color-mix(in srgb, var(--cbc-exam-accent) 42%, var(--cbc-exam-border));
+  border-radius: 20px;
+  background: var(--cbc-exam-accent-soft);
+}
+
 .cbc-exam-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -289,6 +299,35 @@
   font-weight: 850;
   text-align: left;
   cursor: pointer;
+}
+
+.cbc-exam-question-card.visual-mcq .cbc-exam-options button {
+  grid-template-columns: 34px minmax(64px, auto) minmax(0, 1fr);
+  min-height: 108px;
+}
+
+.cbc-exam-option-visual {
+  display: grid;
+  min-width: 64px;
+  min-height: 64px;
+  place-items: center;
+}
+
+.cbc-exam-option-visual .cbc-visual-emoji,
+.cbc-exam-prompt-visual .cbc-visual-emoji {
+  font-size: clamp(3rem, 10vw, 5.5rem);
+}
+
+.cbc-exam-option-visual .cbc-visual-objects,
+.cbc-exam-prompt-visual .cbc-visual-objects {
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
+}
+
+.cbc-exam-option-visual .cbc-visual-text,
+.cbc-exam-prompt-visual .cbc-visual-text {
+  min-width: 58px;
+  min-height: 58px;
+  font-size: clamp(2rem, 6vw, 3.6rem);
 }
 
 .cbc-exam-options button strong {
@@ -481,6 +520,27 @@
   .cbc-exam-navigation .cbc-exam-button {
     flex: 1 1 0;
     min-width: 0;
+  }
+
+  .cbc-exam-question-card {
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
+    grid-template-columns: 34px 76px minmax(0, 1fr);
+    min-height: 86px;
+    padding: 10px;
+  }
+
+  .cbc-exam-prompt-visual {
+    min-height: 92px;
+    padding: 10px;
+  }
+
+  .cbc-exam-option-visual {
+    min-width: 58px;
+    min-height: 58px;
   }
 
   .cbc-exam-history-list article,

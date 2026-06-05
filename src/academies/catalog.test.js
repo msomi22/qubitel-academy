@@ -55,11 +55,12 @@ test('CBC exposes Grade 1 and Grade 3 while Customer Experience stays registered
   assert.deepEqual(academyCatalogs['customer-experience'].topics, []);
 });
 
-test('CBC Grade 1 declares the foundation practice pilot', () => {
+test('CBC Grade 1 declares the foundation practice pilot and visual exams', () => {
   const foundation = academyCatalogs.cbc.topics.find((topic) => topic.id === 'foundation-practice');
 
   assert.equal(foundation.category, 'grade-1');
   assert.deepEqual(foundation.practice.map((item) => item.id), ['foundation-practice-001']);
+  assert.deepEqual(foundation.assessments.map((item) => item.id), ['counting-exam-001', 'object-matching-exam-001']);
 });
 
 test('CBC English declares the spelling lesson, practice sets, and exams', () => {

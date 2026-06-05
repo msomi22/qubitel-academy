@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import gradeOneFoundation from './cbc/grade-1/foundation-practice/practice/foundation-practice-001.js';
+import gradeOneCountingExam from './cbc/grade-1/foundation-practice/assessments/counting-exam-001.js';
+import gradeOneObjectMatchingExam from './cbc/grade-1/foundation-practice/assessments/object-matching-exam-001.js';
 import lesson from './cbc/grade-3/english/lessons/spelling-lesson-001.js';
 import practiceOne from './cbc/grade-3/english/practice/spelling-practice-001.js';
 import practiceTwo from './cbc/grade-3/english/practice/spelling-practice-002.js';
@@ -11,8 +13,10 @@ import { getAcademyCatalog } from './catalog.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
 
 const cbcTopics = getAcademyCatalog('cbc').topics;
+const gradeOneExamQuestions = [...gradeOneCountingExam, ...gradeOneObjectMatchingExam];
+const gradeOneQuestions = [...gradeOneFoundation, ...gradeOneExamQuestions];
 const gradeThreeQuestions = [lesson, ...practiceOne, ...practiceTwo, ...examOne, ...examTwo];
-const allQuestions = [...gradeOneFoundation, ...gradeThreeQuestions];
+const allQuestions = [...gradeOneQuestions, ...gradeThreeQuestions];
 
 test('CBC Grade 1 foundation practice has two questions per pilot learning area', () => {
   const expectedSkills = [
@@ -54,8 +58,31 @@ test('CBC Grade 1 foundation practice is read-aloud enabled, manual by default, 
   }
 });
 
+test('CBC Grade 1 visual exams have 15 questions each and required metadata', () => {
+  assert.equal(gradeOneCountingExam.length, 15);
+  assert.equal(gradeOneObjectMatchingExam.length, 15);
+
+  for (const question of gradeOneExamQuestions) {
+    assert.equal(question.category, 'grade-1', question.id);
+    assert.equal(question.topicId, 'foundation-practice', question.id);
+    assert.equal(question.estimatedTimeSeconds, 60, question.id);
+    assert.equal(question.interactionType, 'visual-mcq', question.id);
+    assert.equal(question.metadata.assessmentType, 'exam', question.id);
+    assert.ok(['counting-exam-001', 'object-matching-exam-001'].includes(question.metadata.examId), question.id);
+    assert.ok(question.metadata.examTitle, question.id);
+    assert.equal(question.metadata.points, 1, question.id);
+    assert.equal(question.readAloud, true, question.id);
+    assert.equal(question.autoReadAloud, false, question.id);
+    assert.equal(question.readOptionsAloud, true, question.id);
+    assert.equal(question.options.length, 3, question.id);
+    assert.equal(question.optionVisuals.length, question.options.length, question.id);
+    assert.ok(question.promptVisual, question.id);
+    assert.ok(Number.isInteger(question.correctAnswer), question.id);
+  }
+});
+
 test('CBC Grade 1 wording avoids unclear blank instructions', () => {
-  for (const question of gradeOneFoundation) {
+  for (const question of gradeOneQuestions) {
     assert.doesNotMatch(question.question, /blank/i, question.id);
     assert.doesNotMatch(question.readAloudText, /blank/i, question.id);
   }
