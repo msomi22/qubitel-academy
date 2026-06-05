@@ -64,9 +64,10 @@ function isExamEntry(question) {
   return question?.metadata?.assessmentType === 'exam-entry';
 }
 
-function isEntryComplete(question, completed) {
-  if (!isExamEntry(question)) return Boolean(completed[question.id]);
-  return question.examQuestions.every((examQuestion) => completed[examQuestion.id]);
+function isEntryComplete(question, completed = {}) {
+  if (!isExamEntry(question)) return Boolean(completed[question?.id]);
+  const examQuestions = Array.isArray(question?.examQuestions) ? question.examQuestions : [];
+  return examQuestions.length > 0 && examQuestions.every((examQuestion) => completed[examQuestion.id]);
 }
 
 function examQuestionCount(entry) {
@@ -153,7 +154,7 @@ function TopicAssessments({ assessments, completed, onOpen }) {
 function TopicSection({
   topic,
   questions,
-  completed,
+  completed = {},
   activeDifficulty = 'all',
   currentPage,
   onPageChange,
