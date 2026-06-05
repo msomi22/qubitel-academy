@@ -3,10 +3,12 @@ import { NavLink, useLocation, useParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
 import ComplexSystemDesignProblem from '../components/problems/ComplexSystemDesignProblem.jsx';
+import QuestionNavigationControls from '../components/question-renderers/shared/QuestionNavigationControls.jsx';
 import { getQuestionRenderer } from '../components/question-renderers/registry/questionRendererRegistry.js';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
 
 import { findQuestionById } from '../services/questionBankService.js';
+import { getAdjacentQuestions } from '../services/questionNavigationService.js';
 import { recordQuestionOpen } from '../services/recentQuestionService.js';
 import { storageService } from '../services/storageService.js';
 import {
@@ -82,6 +84,7 @@ export default function ProblemPage() {
               description: searchEntry.topicDescription,
               category: searchEntry.category
             },
+            bank: searchEntry.bank,
             categoryName: searchEntry.category
           };
 
@@ -171,6 +174,10 @@ export default function ProblemPage() {
   const isMcq = isMcqType(entry.question.type);
   const isComplete = !!completed[entry.question.id];
   const introText = isMcq ? '' : entry.question.question || entry.topic?.description || entry.question.scenario;
+  const questionNavigation = {
+    ...getAdjacentQuestions(entry.bank?.questions || [], entry.question.id),
+    returnToCategory: location.state?.returnToCategory || null
+  };
   const QuestionRenderer = getQuestionRenderer({
     academyId: activeAcademy.id,
     categoryId,
@@ -243,13 +250,18 @@ export default function ProblemPage() {
           onMarkComplete={handleMarkComplete}
         />
       ) : (
-        <QuestionRenderer
-          question={entry.question}
-          completed={isComplete}
-          onToggle={handleCompletionClick}
-          onMarkComplete={handleMarkComplete}
-          hideTopline
-        />
+        <>
+          <QuestionNavigationControls navigation={questionNavigation} className="question-navigation-top" />
+          <QuestionRenderer
+            question={entry.question}
+            completed={isComplete}
+            onToggle={handleCompletionClick}
+            onMarkComplete={handleMarkComplete}
+            navigation={questionNavigation}
+            hideTopline
+          />
+          <QuestionNavigationControls navigation={questionNavigation} className="question-navigation-bottom" />
+        </>
       )}
     </main>
   );
