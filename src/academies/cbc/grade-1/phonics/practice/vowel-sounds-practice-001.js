@@ -1,5 +1,13 @@
 import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
-import { emoji, optionVisualsFromEmoji, phonicsMetadata, shortVowels, textVisual } from '../phonicsData.js';
+import {
+  completePhonicsOptions,
+  emoji,
+  optionVisualsFromEmoji,
+  phonicsMetadata,
+  readAloudWithOptions,
+  shortVowels,
+  textVisual
+} from '../phonicsData.js';
 
 const byLetter = Object.fromEntries(shortVowels.map((item) => [item.letter, item]));
 
@@ -15,6 +23,14 @@ function vowelMcq({
   explanation,
   sequence
 }) {
+  const expanded = completePhonicsOptions({
+    options,
+    optionVisuals,
+    item,
+    soundItems: shortVowels
+  });
+  const readAloudText = readAloudWithOptions(question, expanded.options);
+
   return defineMcqProblem({
     id,
     category: 'grade-1',
@@ -26,10 +42,10 @@ function vowelMcq({
     interactionType: 'visual-mcq',
     question,
     promptVisual,
-    optionVisuals,
+    optionVisuals: expanded.optionVisuals,
     readAloud: true,
     autoReadAloud: false,
-    readAloudText: `${question} Option A: ${options[0]}. Option B: ${options[1]}. Option C: ${options[2]}.`,
+    readAloudText,
     readOptionsAloud: true,
     body: [
       {
@@ -38,7 +54,7 @@ function vowelMcq({
         content: 'I can listen for short vowel sounds and choose the correct answer.'
       }
     ],
-    options,
+    options: expanded.options,
     correctAnswer,
     explanation,
     finalTakeaway: 'Listen for the vowel sound inside the word.',
@@ -51,10 +67,10 @@ function vowelMcq({
       skill: 'short-vowels',
       interactionType: 'visual-mcq',
       promptVisual,
-      optionVisuals,
+      optionVisuals: expanded.optionVisuals,
       readAloud: true,
       autoReadAloud: false,
-      readAloudText: `${question} Option A: ${options[0]}. Option B: ${options[1]}. Option C: ${options[2]}.`,
+      readAloudText,
       readOptionsAloud: true,
       phonics: phonicsMetadata(item, { soundType: 'short-vowel' }),
       sequence

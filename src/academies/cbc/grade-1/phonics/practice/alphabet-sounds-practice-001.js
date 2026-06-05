@@ -1,5 +1,12 @@
 import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
-import { alphabetSounds, emoji, optionVisualsFromEmoji, phonicsMetadata, textVisual } from '../phonicsData.js';
+import {
+  alphabetSounds,
+  completePhonicsOptions,
+  emoji,
+  optionVisualsFromEmoji,
+  phonicsMetadata,
+  textVisual
+} from '../phonicsData.js';
 
 const byLetter = Object.fromEntries(alphabetSounds.map((item) => [item.letter, item]));
 
@@ -15,6 +22,13 @@ function phonicsMcq({
   explanation,
   sequence
 }) {
+  const expanded = completePhonicsOptions({
+    options,
+    optionVisuals,
+    item,
+    soundItems: alphabetSounds
+  });
+
   return defineMcqProblem({
     id,
     category: 'grade-1',
@@ -26,7 +40,7 @@ function phonicsMcq({
     interactionType: 'visual-mcq',
     question,
     promptVisual,
-    optionVisuals,
+    optionVisuals: expanded.optionVisuals,
     readAloud: true,
     autoReadAloud: false,
     readAloudText: question,
@@ -38,7 +52,7 @@ function phonicsMcq({
         content: 'I can listen for alphabet sounds and choose the correct answer.'
       }
     ],
-    options,
+    options: expanded.options,
     correctAnswer,
     explanation,
     finalTakeaway: 'Listen for the first sound before you choose.',
@@ -51,7 +65,7 @@ function phonicsMcq({
       skill: 'alphabet-sounds',
       interactionType: 'visual-mcq',
       promptVisual,
-      optionVisuals,
+      optionVisuals: expanded.optionVisuals,
       readAloud: true,
       autoReadAloud: false,
       readAloudText: question,

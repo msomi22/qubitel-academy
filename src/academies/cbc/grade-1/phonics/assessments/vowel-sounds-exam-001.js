@@ -1,5 +1,13 @@
 import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
-import { emoji, optionVisualsFromEmoji, phonicsMetadata, shortVowels, textVisual } from '../phonicsData.js';
+import {
+  completePhonicsOptions,
+  emoji,
+  optionVisualsFromEmoji,
+  phonicsMetadata,
+  readAloudWithOptions,
+  shortVowels,
+  textVisual
+} from '../phonicsData.js';
 
 const byLetter = Object.fromEntries(shortVowels.map((item) => [item.letter, item]));
 
@@ -15,7 +23,13 @@ function vowelExamMcq({
   explanation,
   sequence
 }) {
-  const readAloudText = `${question} Option A: ${options[0]}. Option B: ${options[1]}. Option C: ${options[2]}.`;
+  const expanded = completePhonicsOptions({
+    options,
+    optionVisuals,
+    item,
+    soundItems: shortVowels
+  });
+  const readAloudText = readAloudWithOptions(question, expanded.options);
 
   return defineMcqProblem({
     id,
@@ -28,7 +42,7 @@ function vowelExamMcq({
     interactionType: 'visual-mcq',
     question,
     promptVisual,
-    optionVisuals,
+    optionVisuals: expanded.optionVisuals,
     readAloud: true,
     autoReadAloud: false,
     readAloudText,
@@ -40,7 +54,7 @@ function vowelExamMcq({
         content: 'I can listen for short vowel sounds and match them to words and pictures.'
       }
     ],
-    options,
+    options: expanded.options,
     correctAnswer,
     explanation,
     finalTakeaway: 'Short vowel sounds help you read simple words.',
@@ -53,7 +67,7 @@ function vowelExamMcq({
       skill: 'short-vowels',
       interactionType: 'visual-mcq',
       promptVisual,
-      optionVisuals,
+      optionVisuals: expanded.optionVisuals,
       readAloud: true,
       autoReadAloud: false,
       readAloudText,

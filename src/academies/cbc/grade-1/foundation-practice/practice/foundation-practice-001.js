@@ -25,6 +25,70 @@ function textVisual(value) {
   return { type: 'text', value };
 }
 
+function extraOptionFor(options = []) {
+  const values = new Set(options.map((option) => String(option).toLowerCase()));
+
+  if (options.every((option) => /^\d+$/.test(String(option)))) {
+    for (let number = 1; number <= 12; number += 1) {
+      const value = String(number);
+      if (!values.has(value)) {
+        return [value, textVisual(value)];
+      }
+    }
+  }
+
+  if (options.every((option) => /^[A-Z]$/.test(String(option)))) {
+    for (const letter of ['A', 'B', 'C', 'D', 'E', 'F', 'T']) {
+      if (!values.has(letter.toLowerCase())) {
+        return [letter, textVisual(letter)];
+      }
+    }
+  }
+
+  if (options.every((option) => /^[a-z]$/.test(String(option)))) {
+    for (const letter of ['a', 'b', 'c', 'd', 'e', 'f']) {
+      if (!values.has(letter)) {
+        return [letter, textVisual(letter)];
+      }
+    }
+  }
+
+  if (values.has('triangle') || values.has('circle') || values.has('square')) {
+    return ['Rectangle', shape('rectangle')];
+  }
+
+  if (values.has('thank you') || values.has('go away')) {
+    return ['Please', emoji('🙂')];
+  }
+
+  if (values.has('run fast') || values.has('look left and right')) {
+    return ['Wait', emoji('✋')];
+  }
+
+  const candidates = [
+    ['ball', emoji('⚽')],
+    ['book', emoji('📚')],
+    ['fish', emoji('🐟')],
+    ['cat', emoji('🐱')],
+    ['sun', emoji('☀️')]
+  ];
+
+  return candidates.find(([option]) => !values.has(option)) || ['star', emoji('⭐')];
+}
+
+function completeOptions(options = [], optionVisuals = []) {
+  const nextOptions = [...options];
+  const nextVisuals = [...optionVisuals];
+
+  while (nextOptions.length < 4) {
+    const [option, visual] = extraOptionFor(nextOptions);
+    nextOptions.push(option);
+    nextVisuals.push(visual);
+  }
+
+  return { options: nextOptions, optionVisuals: nextVisuals };
+}
+
 function gradeOneMcq({
   id,
   title,
@@ -40,6 +104,8 @@ function gradeOneMcq({
   optionVisuals = [],
   body = []
 }) {
+  const expanded = completeOptions(options, optionVisuals);
+
   return defineMcqProblem({
     id,
     category: 'grade-1',
@@ -51,7 +117,7 @@ function gradeOneMcq({
     interactionType: 'visual-mcq',
     question,
     promptVisual,
-    optionVisuals,
+    optionVisuals: expanded.optionVisuals,
     readAloud: true,
     autoReadAloud: false,
     readAloudText,
@@ -64,7 +130,7 @@ function gradeOneMcq({
       },
       ...body
     ],
-    options,
+    options: expanded.options,
     correctAnswer,
     explanation,
     finalTakeaway,
@@ -75,7 +141,7 @@ function gradeOneMcq({
       sequence,
       interactionType: 'visual-mcq',
       promptVisual,
-      optionVisuals,
+      optionVisuals: expanded.optionVisuals,
       readAloud: true,
       autoReadAloud: false,
       readAloudText,

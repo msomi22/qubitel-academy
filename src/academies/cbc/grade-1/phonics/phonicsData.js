@@ -47,6 +47,68 @@ export function optionVisualsFromEmoji(values = []) {
   return values.map((value) => emoji(value));
 }
 
+export function completePhonicsOptions({
+  options = [],
+  optionVisuals = [],
+  item = null,
+  soundItems = []
+} = {}) {
+  const nextOptions = [...options];
+  const nextVisuals = [...optionVisuals];
+  const used = new Set(nextOptions.map((option) => String(option).toLowerCase()));
+  const itemExamples = new Set((item?.examples || []).map((example) => example.toLowerCase()));
+  const visualByExample = new Map(
+    soundItems.flatMap((soundItem) => (
+      soundItem.examples.map((example, index) => [
+        example.toLowerCase(),
+        soundItem.visuals[index]
+      ])
+    ))
+  );
+
+  if (nextOptions.every((option) => /^[A-Z]$/.test(String(option)))) {
+    for (const letter of soundItems.map((soundItem) => soundItem.letter)) {
+      if (!used.has(letter.toLowerCase()) && letter !== item?.letter) {
+        nextOptions.push(letter);
+        nextVisuals.push(textVisual(letter));
+        break;
+      }
+    }
+  }
+
+  for (const soundItem of soundItems) {
+    for (const example of soundItem.examples) {
+      if (nextOptions.length >= 4) {
+        break;
+      }
+
+      const key = example.toLowerCase();
+      if (!used.has(key) && !itemExamples.has(key)) {
+        nextOptions.push(example);
+        nextVisuals.push(emoji(visualByExample.get(key) || '⭐'));
+        used.add(key);
+      }
+    }
+  }
+
+  while (nextOptions.length < 4) {
+    const fallback = `Option ${nextOptions.length + 1}`;
+    nextOptions.push(fallback);
+    nextVisuals.push(textVisual(fallback));
+  }
+
+  return {
+    options: nextOptions,
+    optionVisuals: nextVisuals
+  };
+}
+
+export function readAloudWithOptions(question, options = []) {
+  return `${question} ${options.map((option, index) => (
+    `Option ${String.fromCharCode(65 + index)}: ${option}.`
+  )).join(' ')}`;
+}
+
 export function phonicsMetadata(item, extra = {}) {
   return {
     letter: item.letter,

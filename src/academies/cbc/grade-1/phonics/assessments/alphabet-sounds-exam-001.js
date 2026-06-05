@@ -1,5 +1,13 @@
 import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
-import { alphabetSounds, emoji, optionVisualsFromEmoji, phonicsMetadata, textVisual } from '../phonicsData.js';
+import {
+  alphabetSounds,
+  completePhonicsOptions,
+  emoji,
+  optionVisualsFromEmoji,
+  phonicsMetadata,
+  readAloudWithOptions,
+  textVisual
+} from '../phonicsData.js';
 
 const byLetter = Object.fromEntries(alphabetSounds.map((item) => [item.letter, item]));
 
@@ -15,7 +23,13 @@ function soundExamMcq({
   explanation,
   sequence
 }) {
-  const readAloudText = `${question} Option A: ${options[0]}. Option B: ${options[1]}. Option C: ${options[2]}.`;
+  const expanded = completePhonicsOptions({
+    options,
+    optionVisuals,
+    item,
+    soundItems: alphabetSounds
+  });
+  const readAloudText = readAloudWithOptions(question, expanded.options);
 
   return defineMcqProblem({
     id,
@@ -28,7 +42,7 @@ function soundExamMcq({
     interactionType: 'visual-mcq',
     question,
     promptVisual,
-    optionVisuals,
+    optionVisuals: expanded.optionVisuals,
     readAloud: true,
     autoReadAloud: false,
     readAloudText,
@@ -40,7 +54,7 @@ function soundExamMcq({
         content: 'I can listen for alphabet sounds and match them to letters, words, and pictures.'
       }
     ],
-    options,
+    options: expanded.options,
     correctAnswer,
     explanation,
     finalTakeaway: 'The sound helps you find the letter, word, or picture.',
@@ -53,7 +67,7 @@ function soundExamMcq({
       skill: 'alphabet-sounds',
       interactionType: 'visual-mcq',
       promptVisual,
-      optionVisuals,
+      optionVisuals: expanded.optionVisuals,
       readAloud: true,
       autoReadAloud: false,
       readAloudText,

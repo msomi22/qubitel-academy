@@ -59,7 +59,8 @@ test('CBC Grade 1 foundation practice is read-aloud enabled, manual by default, 
     assert.equal(question.autoReadAloud, false, question.id);
     assert.equal(question.readOptionsAloud, true, question.id);
     assert.ok(question.readAloudText, question.id);
-    assert.equal(question.options.length, 3, question.id);
+    assert.equal(question.options.length, 4, question.id);
+    assert.equal(new Set(question.options).size, 4, question.id);
     assert.equal(question.optionVisuals.length, question.options.length, question.id);
     assert.ok(question.promptVisual || question.optionVisuals.length, question.id);
     assert.ok(Number.isInteger(question.correctAnswer), question.id);
@@ -83,7 +84,8 @@ test('CBC Grade 1 visual exams have 15 questions each and required metadata', ()
     assert.equal(question.readAloud, true, question.id);
     assert.equal(question.autoReadAloud, false, question.id);
     assert.equal(question.readOptionsAloud, true, question.id);
-    assert.equal(question.options.length, 3, question.id);
+    assert.equal(question.options.length, 4, question.id);
+    assert.equal(new Set(question.options).size, 4, question.id);
     assert.equal(question.optionVisuals.length, question.options.length, question.id);
     assert.ok(question.promptVisual, question.id);
     assert.ok(Number.isInteger(question.correctAnswer), question.id);
@@ -117,7 +119,8 @@ test('CBC Grade 1 phonics practice and exams have visual read-aloud questions', 
     assert.equal(question.readAloud, true, question.id);
     assert.equal(question.autoReadAloud, false, question.id);
     assert.equal(question.readOptionsAloud, true, question.id);
-    assert.equal(question.options.length, 3, question.id);
+    assert.equal(question.options.length, 4, question.id);
+    assert.equal(new Set(question.options).size, 4, question.id);
     assert.equal(question.optionVisuals.length, question.options.length, question.id);
     assert.ok(question.promptVisual, question.id);
     assert.ok(question.metadata.phonics?.sound, question.id);
