@@ -4,6 +4,12 @@ import test from 'node:test';
 import gradeOneFoundation from './cbc/grade-1/foundation-practice/practice/foundation-practice-001.js';
 import gradeOneCountingExam from './cbc/grade-1/foundation-practice/assessments/counting-exam-001.js';
 import gradeOneObjectMatchingExam from './cbc/grade-1/foundation-practice/assessments/object-matching-exam-001.js';
+import alphabetLesson from './cbc/grade-1/phonics/lessons/alphabet-sounds-lesson-001.js';
+import vowelLesson from './cbc/grade-1/phonics/lessons/vowel-sounds-lesson-001.js';
+import alphabetPractice from './cbc/grade-1/phonics/practice/alphabet-sounds-practice-001.js';
+import vowelPractice from './cbc/grade-1/phonics/practice/vowel-sounds-practice-001.js';
+import alphabetExam from './cbc/grade-1/phonics/assessments/alphabet-sounds-exam-001.js';
+import vowelExam from './cbc/grade-1/phonics/assessments/vowel-sounds-exam-001.js';
 import lesson from './cbc/grade-3/english/lessons/spelling-lesson-001.js';
 import practiceOne from './cbc/grade-3/english/practice/spelling-practice-001.js';
 import practiceTwo from './cbc/grade-3/english/practice/spelling-practice-002.js';
@@ -13,8 +19,11 @@ import { getAcademyCatalog } from './catalog.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
 
 const cbcTopics = getAcademyCatalog('cbc').topics;
-const gradeOneExamQuestions = [...gradeOneCountingExam, ...gradeOneObjectMatchingExam];
-const gradeOneQuestions = [...gradeOneFoundation, ...gradeOneExamQuestions];
+const gradeOneFoundationExamQuestions = [...gradeOneCountingExam, ...gradeOneObjectMatchingExam];
+const gradeOnePhonicsPractice = [...alphabetPractice, ...vowelPractice];
+const gradeOnePhonicsExams = [...alphabetExam, ...vowelExam];
+const gradeOnePhonicsQuestions = [alphabetLesson, vowelLesson, ...gradeOnePhonicsPractice, ...gradeOnePhonicsExams];
+const gradeOneQuestions = [...gradeOneFoundation, ...gradeOneFoundationExamQuestions, ...gradeOnePhonicsQuestions];
 const gradeThreeQuestions = [lesson, ...practiceOne, ...practiceTwo, ...examOne, ...examTwo];
 const allQuestions = [...gradeOneQuestions, ...gradeThreeQuestions];
 
@@ -62,7 +71,7 @@ test('CBC Grade 1 visual exams have 15 questions each and required metadata', ()
   assert.equal(gradeOneCountingExam.length, 15);
   assert.equal(gradeOneObjectMatchingExam.length, 15);
 
-  for (const question of gradeOneExamQuestions) {
+  for (const question of gradeOneFoundationExamQuestions) {
     assert.equal(question.category, 'grade-1', question.id);
     assert.equal(question.topicId, 'foundation-practice', question.id);
     assert.equal(question.estimatedTimeSeconds, 60, question.id);
@@ -78,6 +87,50 @@ test('CBC Grade 1 visual exams have 15 questions each and required metadata', ()
     assert.equal(question.optionVisuals.length, question.options.length, question.id);
     assert.ok(question.promptVisual, question.id);
     assert.ok(Number.isInteger(question.correctAnswer), question.id);
+  }
+});
+
+test('CBC Grade 1 phonics lessons include alphabet and vowel sound metadata', () => {
+  assert.equal(alphabetLesson.topicId, 'phonics');
+  assert.equal(vowelLesson.topicId, 'phonics');
+  assert.equal(alphabetLesson.readAloud, true);
+  assert.equal(vowelLesson.readAloud, true);
+  assert.equal(alphabetLesson.autoReadAloud, false);
+  assert.equal(vowelLesson.autoReadAloud, false);
+  assert.equal(alphabetLesson.metadata.alphabetSounds.length, 26);
+  assert.equal(vowelLesson.metadata.vowelSounds.length, 5);
+  assert.ok(alphabetLesson.metadata.alphabetSounds.every((item) => item.examples.length === 5));
+  assert.ok(vowelLesson.metadata.vowelSounds.every((item) => item.examples.length === 5));
+});
+
+test('CBC Grade 1 phonics practice and exams have visual read-aloud questions', () => {
+  assert.equal(alphabetPractice.length, 10);
+  assert.equal(vowelPractice.length, 10);
+  assert.equal(alphabetExam.length, 15);
+  assert.equal(vowelExam.length, 15);
+
+  for (const question of [...gradeOnePhonicsPractice, ...gradeOnePhonicsExams]) {
+    assert.equal(question.category, 'grade-1', question.id);
+    assert.equal(question.topicId, 'phonics', question.id);
+    assert.equal(question.estimatedTimeSeconds, 60, question.id);
+    assert.equal(question.interactionType, 'visual-mcq', question.id);
+    assert.equal(question.readAloud, true, question.id);
+    assert.equal(question.autoReadAloud, false, question.id);
+    assert.equal(question.readOptionsAloud, true, question.id);
+    assert.equal(question.options.length, 3, question.id);
+    assert.equal(question.optionVisuals.length, question.options.length, question.id);
+    assert.ok(question.promptVisual, question.id);
+    assert.ok(question.metadata.phonics?.sound, question.id);
+    assert.ok(Number.isInteger(question.correctAnswer), question.id);
+  }
+});
+
+test('CBC Grade 1 phonics exams carry assessment metadata', () => {
+  for (const question of gradeOnePhonicsExams) {
+    assert.equal(question.metadata.assessmentType, 'exam', question.id);
+    assert.ok(['alphabet-sounds-exam-001', 'vowel-sounds-exam-001'].includes(question.metadata.examId), question.id);
+    assert.ok(question.metadata.examTitle, question.id);
+    assert.equal(question.metadata.points, 1, question.id);
   }
 });
 

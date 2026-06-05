@@ -1,0 +1,38 @@
+{
+  "id": "phonics",
+  "displayName": "Alphabet Sounds and Vowels",
+  "academy": "cbc",
+  "category": "grade-1",
+  "description": "Grade 1 phonics lessons, practice, and exams for alphabet sounds, short vowels, and child-friendly read-aloud learning.",
+  "status": "active",
+  "lessons": [
+    {
+      "id": "alphabet-sounds-lesson-001",
+      "file": "lessons/alphabet-sounds-lesson-001.js"
+    },
+    {
+      "id": "vowel-sounds-lesson-001",
+      "file": "lessons/vowel-sounds-lesson-001.js"
+    }
+  ],
+  "practice": [
+    {
+      "id": "alphabet-sounds-practice-001",
+      "file": "practice/alphabet-sounds-practice-001.js"
+    },
+    {
+      "id": "vowel-sounds-practice-001",
+      "file": "practice/vowel-sounds-practice-001.js"
+    }
+  ],
+  "assessments": [
+    {
+      "id": "alphabet-sounds-exam-001",
+      "file": "assessments/alphabet-sounds-exam-001.js"
+    },
+    {
+      "id": "vowel-sounds-exam-001",
+      "file": "assessments/vowel-sounds-exam-001.js"
+    }
+  ]
+}

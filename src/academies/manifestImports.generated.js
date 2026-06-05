@@ -2,6 +2,7 @@
 import cbc_academy from './cbc/academy.manifest.json' with { type: 'json' };
 import cbc_grade_1_category from './cbc/grade-1/category.manifest.json' with { type: 'json' };
 import cbc_grade_1_foundation_practice_topic from './cbc/grade-1/foundation-practice/topic.manifest.json' with { type: 'json' };
+import cbc_grade_1_phonics_topic from './cbc/grade-1/phonics/topic.manifest.json' with { type: 'json' };
 import cbc_grade_3_category from './cbc/grade-3/category.manifest.json' with { type: 'json' };
 import cbc_grade_3_english_topic from './cbc/grade-3/english/topic.manifest.json' with { type: 'json' };
 import customer_experience_academy from './customer-experience/academy.manifest.json' with { type: 'json' };
@@ -64,6 +65,7 @@ export const categoryManifestRecords = [
 
 export const topicManifestRecords = [
   { path: './cbc/grade-1/foundation-practice/topic.manifest.json', manifest: cbc_grade_1_foundation_practice_topic },
+  { path: './cbc/grade-1/phonics/topic.manifest.json', manifest: cbc_grade_1_phonics_topic },
   { path: './cbc/grade-3/english/topic.manifest.json', manifest: cbc_grade_3_english_topic },
   { path: './customer-experience/customer-support/complaint-handling/topic.manifest.json', manifest: customer_experience_customer_support_complaint_handling_topic },
   { path: './tech/aptitude/numerical-reasoning/topic.manifest.json', manifest: tech_aptitude_numerical_reasoning_topic },

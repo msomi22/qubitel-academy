@@ -50,17 +50,23 @@ test('generated manifest imports include every academy manifest on disk', () => 
 
 test('CBC exposes Grade 1 and Grade 3 while Customer Experience stays registered without learner-facing categories', () => {
   assert.deepEqual(academyCatalogs.cbc.categories.map((category) => category.id), ['grade-1', 'grade-3']);
-  assert.deepEqual(academyCatalogs.cbc.topics.map((topic) => topic.id), ['foundation-practice', 'english']);
+  assert.deepEqual(academyCatalogs.cbc.topics.map((topic) => topic.id), ['foundation-practice', 'phonics', 'english']);
   assert.deepEqual(academyCatalogs['customer-experience'].categories, []);
   assert.deepEqual(academyCatalogs['customer-experience'].topics, []);
 });
 
-test('CBC Grade 1 declares the foundation practice pilot and visual exams', () => {
+test('CBC Grade 1 declares the foundation practice pilot, visual exams, and phonics topic', () => {
   const foundation = academyCatalogs.cbc.topics.find((topic) => topic.id === 'foundation-practice');
+  const phonics = academyCatalogs.cbc.topics.find((topic) => topic.id === 'phonics');
 
   assert.equal(foundation.category, 'grade-1');
   assert.deepEqual(foundation.practice.map((item) => item.id), ['foundation-practice-001']);
   assert.deepEqual(foundation.assessments.map((item) => item.id), ['counting-exam-001', 'object-matching-exam-001']);
+
+  assert.equal(phonics.category, 'grade-1');
+  assert.deepEqual(phonics.lessons.map((item) => item.id), ['alphabet-sounds-lesson-001', 'vowel-sounds-lesson-001']);
+  assert.deepEqual(phonics.practice.map((item) => item.id), ['alphabet-sounds-practice-001', 'vowel-sounds-practice-001']);
+  assert.deepEqual(phonics.assessments.map((item) => item.id), ['alphabet-sounds-exam-001', 'vowel-sounds-exam-001']);
 });
 
 test('CBC English declares the spelling lesson, practice sets, and exams', () => {

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
+import ReadAloudButton from '../components/cbc/ReadAloudButton.jsx';
 import CbcVisualAid from '../components/question-renderers/cbc/CbcVisualAid.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { buildCategoryReturnPath } from '../services/categoryNavigationService.js';
@@ -57,12 +58,20 @@ function skillDisplayName(exam) {
   const skill = firstQuestion?.metadata?.skill;
   if (skill === 'counting') return 'Counting';
   if (skill === 'object-matching') return 'Object Matching';
+  if (skill === 'alphabet-sounds') return 'Alphabet Sounds';
+  if (skill === 'short-vowels') return 'Vowel Sounds';
   if (firstQuestion?.metadata?.examId?.includes('spelling')) return 'Spelling';
   return exam?.examTitle?.replace(/^Grade \d+\s+/i, '').replace(/\s+Exam$/i, '') || 'Exam';
 }
 
 function startInstructions(exam) {
   const firstQuestion = exam?.questions?.[0];
+  if (firstQuestion?.metadata?.skill === 'alphabet-sounds') {
+    return `Listen to each alphabet sound, then choose the matching letter, word, or picture. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  }
+  if (firstQuestion?.metadata?.skill === 'short-vowels') {
+    return `Listen to each short vowel sound, then choose the matching word, letter, or picture. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  }
   if (hasVisualMcq(firstQuestion)) {
     return `Look at the pictures carefully and choose the correct answer. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
   }
@@ -233,9 +242,9 @@ export default function ExamSessionPage() {
         }
 
         const savedSession = storageService.getActiveExamSession(foundExam.examId);
-
         setExam(foundExam);
         setHistory(storageService.getExamAttempts(foundExam.examId));
+
         if (savedSession) {
           setRecoverySession(savedSession);
           setView('recover');
@@ -370,7 +379,6 @@ export default function ExamSessionPage() {
 
   function startExam() {
     const attempts = storageService.getExamAttempts(exam.examId);
-
     storageService.clearActiveExamSession(exam.examId);
     exitSavedRef.current = false;
     setAnswers({});
@@ -557,6 +565,7 @@ export default function ExamSessionPage() {
       <section className={`cbc-exam-question-card ${visualQuestion ? 'visual-mcq' : ''}`.trim()}>
         <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
         <h2>{currentQuestion.question}</h2>
+        <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
         {promptVisual ? (
           <div className="cbc-exam-prompt-visual" aria-label="Question visual">
             <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />

@@ -23,6 +23,7 @@ export default function ReadAloudButton({ question, className = '' }) {
   const [voiceType, setVoiceType] = useState(() => storageService.getGradeOneVoiceType());
   const [supported, setSupported] = useState(() => readAloudService.isSupported());
 
+  const questionId = question?.id || '';
   const enabled = isReadAloudEnabled(question);
   const readText = useMemo(() => readAloudTextFor(question), [question]);
 
@@ -31,9 +32,15 @@ export default function ReadAloudButton({ question, className = '' }) {
   }, []);
 
   useEffect(() => {
+    readAloudService.stop();
+    return () => readAloudService.stop();
+  }, [questionId]);
+
+  useEffect(() => {
     if (!enabled || !supported || !shouldAutoRead(question)) return undefined;
 
     const timer = window.setTimeout(() => {
+      readAloudService.stop();
       readAloudService.speak(readText, {
         voiceType,
         readOptionsAloud: shouldReadOptions(question),
@@ -47,11 +54,10 @@ export default function ReadAloudButton({ question, className = '' }) {
     };
   }, [enabled, question, readText, supported, voiceType]);
 
-  useEffect(() => () => readAloudService.stop(), []);
-
   if (!enabled) return null;
 
   function handleReadAgain() {
+    readAloudService.stop();
     readAloudService.speak(readText, {
       voiceType,
       readOptionsAloud: shouldReadOptions(question),
