@@ -67,7 +67,9 @@ export default function ProblemPage() {
     let active = true;
 
     async function loadProblem() {
-      setLoading(true);
+      const preserveCurrentProblem = Boolean(location.state?.preserveProblemScroll && entry);
+
+      if (!preserveCurrentProblem) setLoading(true);
       setError('');
 
       const decodedQuestionId = decodeURIComponent(questionId || '');
@@ -117,7 +119,7 @@ export default function ProblemPage() {
     return () => {
       active = false;
     };
-  }, [questionId, location.state]);
+  }, [questionId, location.state, entry]);
 
   useEffect(() => {
     const currentQuestionId = entry?.question?.id;
@@ -143,7 +145,7 @@ export default function ProblemPage() {
     setCompleted(updated);
   }
 
-  if (loading) return <LoadingCard label="Loading problem workspace..." />;
+  if (loading && !entry) return <LoadingCard label="Loading problem workspace..." />;
 
   if (error || !entry) {
     return (
@@ -194,7 +196,7 @@ export default function ProblemPage() {
   ]);
 
   return (
-    <main className="page problem-detail-shell focused-problem-page premium-problem-page">
+    <main className="page problem-detail-shell focused-problem-page premium-problem-page stable-problem-page">
       <div className="problem-breadcrumb compact-problem-breadcrumb">
         <NavLink to="/">Dashboard</NavLink>
         <span>/</span>
@@ -241,23 +243,25 @@ export default function ProblemPage() {
         </aside>
       </section>
 
-      {isComplexSystemDesign ? (
-        <ComplexSystemDesignProblem
-          question={entry.question}
-          completed={isComplete}
-          onToggle={handleCompletionClick}
-          onMarkComplete={handleMarkComplete}
-        />
-      ) : (
-        <QuestionRenderer
-          question={entry.question}
-          completed={isComplete}
-          onToggle={handleCompletionClick}
-          onMarkComplete={handleMarkComplete}
-          navigation={questionNavigation}
-          hideTopline
-        />
-      )}
+      <section className="stable-question-shell" aria-busy={loading ? 'true' : 'false'}>
+        {isComplexSystemDesign ? (
+          <ComplexSystemDesignProblem
+            question={entry.question}
+            completed={isComplete}
+            onToggle={handleCompletionClick}
+            onMarkComplete={handleMarkComplete}
+          />
+        ) : (
+          <QuestionRenderer
+            question={entry.question}
+            completed={isComplete}
+            onToggle={handleCompletionClick}
+            onMarkComplete={handleMarkComplete}
+            navigation={questionNavigation}
+            hideTopline
+          />
+        )}
+      </section>
     </main>
   );
 }
