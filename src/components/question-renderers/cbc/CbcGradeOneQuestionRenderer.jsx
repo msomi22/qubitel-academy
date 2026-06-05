@@ -25,7 +25,7 @@ function navigationState(navigation) {
   return navigation?.returnToCategory ? { returnToCategory: navigation.returnToCategory } : undefined;
 }
 
-function CbcGradeOneNavigation({ navigation }) {
+function CbcGradeOneNavigation({ navigation, placement = 'bottom' }) {
   if (!navigation?.previousQuestion && !navigation?.nextQuestion) return null;
 
   const currentNumber = Number.isInteger(navigation.currentIndex) && navigation.currentIndex >= 0
@@ -33,7 +33,7 @@ function CbcGradeOneNavigation({ navigation }) {
     : null;
 
   return (
-    <nav className="cbc-grade-one-nav" aria-label="Grade 1 question navigation">
+    <nav className={`cbc-grade-one-nav ${placement}`} aria-label={`Grade 1 ${placement} question navigation`}>
       {navigation.previousQuestion ? (
         <NavLink
           className="cbc-grade-one-nav-button previous"
@@ -93,6 +93,8 @@ export default function CbcGradeOneQuestionRenderer({
 
   return (
     <article className="cbc-grade-one-card" aria-labelledby="grade-one-question-title">
+      <CbcGradeOneNavigation navigation={navigation} placement="top" />
+
       <header className="cbc-grade-one-header">
         <p>Grade 1 Practice</p>
         <h1 id="grade-one-question-title">{friendlyPrompt(question)}</h1>
@@ -147,7 +149,7 @@ export default function CbcGradeOneQuestionRenderer({
         </div>
       ) : null}
 
-      <CbcGradeOneNavigation navigation={navigation} />
+      <CbcGradeOneNavigation navigation={navigation} placement="bottom" />
     </article>
   );
 }
