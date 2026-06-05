@@ -18,12 +18,12 @@ function QuestionNavLink({ question, direction, navigation }) {
       state={navStateFor(navigation)}
       aria-label={`${label}: ${shortTitle}`}
     >
-      {direction === 'previous' ? <span aria-hidden="true">{arrow}</span> : null}
-      <span>
+      {direction === 'previous' ? <span className="question-nav-arrow" aria-hidden="true">{arrow}</span> : null}
+      <span className="question-nav-copy">
         <strong>{label}</strong>
         <small>{shortTitle}</small>
       </span>
-      {direction === 'next' ? <span aria-hidden="true">{arrow}</span> : null}
+      {direction === 'next' ? <span className="question-nav-arrow" aria-hidden="true">{arrow}</span> : null}
     </NavLink>
   );
 }
