@@ -10,31 +10,6 @@ When asked to create coding or implementation instructions, deliver the final in
 
 The one-block format is important because it gives the user a single copy button at the top right of the generated instruction.
 
-The **first generated line in the assistant response** must be the required ChatGPT chat name.
-
-The **first section inside the Markdown instruction block** must also be chat naming.
-
-Use this response shape:
-
-    Required ChatGPT chat name: #123 — Short Title
-
-    Here is the copy-ready coding instruction:
-
-    ```md
-    # Coding Implementation Instruction: Issue #123 — Short Title
-
-    ## 1. Chat Naming
-
-    Required ChatGPT chat name: #123 — Short Title
-
-    Before doing any implementation work, rename this ChatGPT conversation/thread to the exact name above.
-
-    If the assistant or coding agent cannot rename the conversation directly, it must first surface this name to the user and ask the user to rename the conversation manually before continuing.
-
-    ## 2. Task Summary
-    ...
-    ```
-
 Do **not** split the final instruction across many small code blocks, because that forces the user to copy many fragments.
 
 Do **not** push an instruction file to the repository unless the user explicitly asks for a file or asks you to update the Markdown guide.
@@ -47,78 +22,11 @@ When an implementer, coding agent, or assistant is asked to execute coding imple
 
 This means the first assistant response after receiving the implementation request must:
 
-1. Repeat the exact required ChatGPT chat name.
-2. State that this is the required ChatGPT chat/thread name.
-3. Ask the user to rename the ChatGPT conversation manually if the assistant cannot directly rename it.
-4. Do this before reading issues, searching files, calling GitHub tools, checking branches, inspecting code, or starting implementation work.
-
-Do not treat chat naming as background context.
-Do not skip it because it looks like a simple title.
-Do not begin repository work until the chat name has been surfaced first.
-
-Required first response shape when executing instructions:
-
-    Chat name: #<issue-number> — <short description>
-
-    Please rename this ChatGPT conversation to the chat name above before continuing. I will use this as the working thread name for the implementation.
-
-Only after this first response should the implementer proceed to references, branch setup, file inspection, coding, validation, and PR work.
-
-## Chat naming convention
-
-Every coding implementation instruction must begin with a required ChatGPT chat name.
-
-Use this format:
-
-    #<issue-number> — <short issue description>
-
-Examples:
-
-    #135 — Minimum Size Subarray Sum
-    #133 — DSA Explanation Review
-    #131 — Explanation-First Authoring Standard
-
-Important: the chat name is not only documentation. It is the first execution step.
-
-When an assistant or coding agent is asked to execute the instruction, it must handle chat naming before any other action. It must not inspect GitHub issues, search files, check branches, read docs, or start implementation until the chat name has been surfaced first.
-
-Because assistants may not be able to directly rename the ChatGPT conversation, the required behavior is:
-
-1. First response: show the exact required chat name.
-2. Ask the user to rename the ChatGPT conversation manually if needed.
-3. Only then continue to implementation work.
-
-The desired chat name must appear twice when generating instructions:
-
-1. As the first visible/generated line before the copy-ready Markdown block.
-2. As the first instruction/section inside the Markdown block.
-
-If the issue title is long, shorten it while keeping the intent clear. Prefer the issue number first so the chat is easy to find later.
-
 ## Required structure
 
 Every implementation instruction should include these sections in this order.
 
-### 1. Chat naming
-
-This must be the first instruction inside the Markdown block and the first execution step for any assistant or coding agent using the instruction.
-
-Include:
-
-- required ChatGPT chat name using `#<issue-number> — <short description>`
-- a brief instruction to use that exact name for the ChatGPT chat/thread
-- a reminder that no repository, GitHub, branch, file, or coding work should start before chat naming is surfaced
-- a fallback instruction that, if the assistant cannot rename ChatGPT directly, it must ask the user to rename the conversation manually before continuing
-
-Example:
-
-    Required ChatGPT chat name: #135 — Minimum Size Subarray Sum
-
-    Before doing any implementation work, rename this ChatGPT conversation/thread to the exact name above.
-
-    If the assistant or coding agent cannot rename the conversation directly, it must first surface this name to the user and ask the user to rename the conversation manually before continuing.
-
-### 2. Task summary
+### 1. Task summary
 
 Explain the goal in one or two short paragraphs.
 
@@ -134,7 +42,7 @@ Example:
     Implement #135 on branch feature/add-min-size-subarray-sum-sliding-window.
     Add one new explanation-first Sliding Window DSA problem for Minimum Size Subarray Sum.
 
-### 3. Required references
+### 2. Required references
 
 List the documents and issues the implementer must read before coding.
 
@@ -148,7 +56,7 @@ For Senior Dev Accelerator problem-authoring tasks, include:
 - at least one existing problem file to use as a style reference
 - at least one existing problem with a `visualWalkthrough` when the task involves DSA, state transitions, pointers/windows, or visual learning
 
-### 4. Branch instructions
+### 3. Branch instructions
 
 State whether the branch already exists.
 
@@ -160,7 +68,7 @@ If the branch exists, say:
 
 Do not tell the implementer to create a new branch when one already exists.
 
-### 5. Files to create or edit
+### 4. Files to create or edit
 
 Be explicit.
 
@@ -172,7 +80,7 @@ Use three groups:
 
 This avoids accidental legacy-bank changes, renderer hacks, or unrelated refactors.
 
-### 6. Implementation requirements
+### 5. Implementation requirements
 
 Describe the required behavior and content.
 
@@ -223,7 +131,7 @@ Use this wording unless the task has a clear reason not to include one:
 
 For Sliding Window, Two Pointers, DP, graph traversal, heap/stack/queue, prefix-sum, and other stateful DSA coding problems, treat the visual walkthrough as expected by default.
 
-### 7. Content quality requirements
+### 6. Content quality requirements
 
 Reference #131 and convert it into task-specific checks.
 
@@ -251,7 +159,7 @@ For quiz/problem content, prefer this learner-facing order where supported:
 7. Common mistakes
 8. Cleanup, if applicable
 
-### 8. Testing and validation
+### 7. Testing and validation
 
 List exact commands.
 
@@ -270,7 +178,7 @@ When a `visualWalkthrough` is added, manual verification must include:
 - the walkthrough remains mobile-readable;
 - the browser console has no visual/rendering errors.
 
-### 9. Pull request requirements
+### 8. Pull request requirements
 
 Tell the implementer what the PR must include.
 
@@ -283,7 +191,7 @@ Usually:
 - visual walkthrough notes when a problem includes one, or a clear reason if it was intentionally omitted
 - `Closes #<issue-number>` when the PR fully completes the issue
 
-### 10. Non-goals
+### 9. Non-goals
 
 Call out what should not be done.
 
