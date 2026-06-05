@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
@@ -78,15 +78,63 @@ function startInstructions(exam) {
   return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }
 
+function captureScrollSnapshot() {
+  if (typeof window === 'undefined') return null;
+
+  const pageWrap = document.querySelector('.page-wrap');
+  const mainContent = document.querySelector('.main-content');
+  const questionScroll = document.querySelector('.cbc-exam-question-scroll');
+
+  return {
+    windowX: window.scrollX,
+    windowY: window.scrollY,
+    pageWrapTop: pageWrap?.scrollTop ?? null,
+    pageWrapLeft: pageWrap?.scrollLeft ?? null,
+    mainContentTop: mainContent?.scrollTop ?? null,
+    mainContentLeft: mainContent?.scrollLeft ?? null,
+    questionScrollTop: questionScroll?.scrollTop ?? null,
+    questionScrollLeft: questionScroll?.scrollLeft ?? null
+  };
+}
+
+function restoreScrollSnapshot(snapshot) {
+  if (!snapshot || typeof window === 'undefined') return;
+
+  const pageWrap = document.querySelector('.page-wrap');
+  const mainContent = document.querySelector('.main-content');
+  const questionScroll = document.querySelector('.cbc-exam-question-scroll');
+
+  if (pageWrap && snapshot.pageWrapTop !== null) {
+    pageWrap.scrollTo({ top: snapshot.pageWrapTop, left: snapshot.pageWrapLeft || 0, behavior: 'auto' });
+  }
+  if (mainContent && snapshot.mainContentTop !== null) {
+    mainContent.scrollTo({ top: snapshot.mainContentTop, left: snapshot.mainContentLeft || 0, behavior: 'auto' });
+  }
+  if (questionScroll && snapshot.questionScrollTop !== null) {
+    questionScroll.scrollTo({ top: snapshot.questionScrollTop, left: snapshot.questionScrollLeft || 0, behavior: 'auto' });
+  }
+  window.scrollTo({ top: snapshot.windowY, left: snapshot.windowX, behavior: 'auto' });
+}
+
 function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext }) {
   if (totalQuestions <= 1) return null;
 
+  function handlePreviousClick(event) {
+    event.currentTarget.blur();
+    onPrevious();
+  }
+
+  function handleNextClick(event) {
+    event.currentTarget.blur();
+    onNext();
+  }
+
   return (
     <nav className="cbc-exam-navigation" aria-label="Exam question navigation">
-      <button type="button" className="cbc-exam-button secondary" onClick={onPrevious} disabled={currentIndex === 0}>
+      <button type="button" className="cbc-exam-button secondary" onClick={handlePreviousClick} disabled={currentIndex === 0}>
         Previous
       </button>
-      <button type="button" className="cbc-exam-button primary" onClick={onNext}>
+      <button type="button" className="cbc-exam-button primary" onClick={handleNextClick}>
         {currentIndex === totalQuestions - 1 ? 'Finish exam' : 'Next'}
       </button>
     </nav>
@@ -220,6 +268,7 @@ export default function ExamSessionPage() {
   const activeRef = useRef(false);
   const exitSavedRef = useRef(false);
   const sessionRef = useRef({});
+  const pendingScrollSnapshotRef = useRef(null);
 
   activeRef.current = view === 'exam';
   sessionRef.current = { answers, currentIndex, startedAt, attemptNumber, timeLeftByQuestion };
@@ -291,6 +340,22 @@ export default function ExamSessionPage() {
     exitSavedRef.current = true;
     return attempt;
   }, [exam]);
+
+  useLayoutEffect(() => {
+    if (view !== 'exam' || !pendingScrollSnapshotRef.current) return undefined;
+
+    const snapshot = pendingScrollSnapshotRef.current;
+    pendingScrollSnapshotRef.current = null;
+    restoreScrollSnapshot(snapshot);
+
+    const frameId = window.requestAnimationFrame(() => restoreScrollSnapshot(snapshot));
+    const timeoutId = window.setTimeout(() => restoreScrollSnapshot(snapshot), 80);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [currentIndex, view]);
 
   useEffect(() => {
     if (view !== 'exam') return undefined;
@@ -368,7 +433,10 @@ export default function ExamSessionPage() {
 
     if (!currentAnswer) setAnswers(nextAnswers);
     if (currentIndex === exam.questions.length - 1) completeExam(nextAnswers);
-    else setCurrentIndex((index) => index + 1);
+    else {
+      pendingScrollSnapshotRef.current = captureScrollSnapshot();
+      setCurrentIndex((index) => index + 1);
+    }
   }, [answers, currentAnswer, currentIndex, currentQuestion, exam?.questions?.length, remainingSeconds, view]);
 
   function initialQuestionTimes() {
@@ -441,6 +509,7 @@ export default function ExamSessionPage() {
   }
 
   function nextQuestion() {
+    pendingScrollSnapshotRef.current = captureScrollSnapshot();
     if (currentIndex === exam.questions.length - 1) {
       completeExam(answers);
       return;
@@ -449,6 +518,7 @@ export default function ExamSessionPage() {
   }
 
   function previousQuestion() {
+    pendingScrollSnapshotRef.current = captureScrollSnapshot();
     setCurrentIndex((index) => Math.max(0, index - 1));
   }
 
@@ -537,9 +607,14 @@ export default function ExamSessionPage() {
   const questionTimedOut = Boolean(currentAnswer?.timedOut);
   const promptVisual = promptVisualFor(currentQuestion);
   const visualQuestion = hasVisualMcq(currentQuestion);
+  const questionCardClass = [
+    'cbc-exam-question-card',
+    visualQuestion ? 'visual-mcq' : '',
+    promptVisual ? '' : 'no-prompt-visual'
+  ].filter(Boolean).join(' ');
 
   return (
-    <main className="page cbc-exam-page cbc-exam-active-page">
+    <main className="page cbc-exam-page cbc-exam-active-page stable-exam-page">
       <section className="cbc-exam-session-head">
         <div>
           <p className="cbc-exam-kicker">{exam.examTitle}</p>
@@ -562,44 +637,48 @@ export default function ExamSessionPage() {
         onNext={nextQuestion}
       />
 
-      <section className={`cbc-exam-question-card ${visualQuestion ? 'visual-mcq' : ''}`.trim()}>
-        <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
-        <h2>{currentQuestion.question}</h2>
-        <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
-        {promptVisual ? (
-          <div className="cbc-exam-prompt-visual" aria-label="Question visual">
-            <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+      <section className={questionCardClass}>
+        <div className="cbc-exam-question-scroll">
+          <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
+          <h2>{currentQuestion.question}</h2>
+          <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
+          {promptVisual ? (
+            <div className="cbc-exam-prompt-visual" aria-label="Question visual">
+              <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+            </div>
+          ) : null}
+          <div className="cbc-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
+            {currentQuestion.options.map((option, index) => {
+              const selected = currentAnswer?.selectedAnswer === index;
+              const optionVisual = optionVisualFor(currentQuestion, index);
+              return (
+                <button
+                  type="button"
+                  key={`${option}-${index}`}
+                  className={`${selected ? 'selected' : ''} ${questionTimedOut ? 'timed-out' : ''}`.trim()}
+                  aria-pressed={selected}
+                  disabled={questionTimedOut}
+                  onClick={() => selectAnswer(index)}
+                >
+                  <strong>{optionLetter(index)}</strong>
+                  {optionVisual ? (
+                    <span className="cbc-exam-option-visual" aria-hidden="true">
+                      <CbcVisualAid visual={optionVisual} label={option} />
+                    </span>
+                  ) : null}
+                  <span>{option}</span>
+                </button>
+              );
+            })}
           </div>
-        ) : null}
-        <div className="cbc-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
-          {currentQuestion.options.map((option, index) => {
-            const selected = currentAnswer?.selectedAnswer === index;
-            const optionVisual = optionVisualFor(currentQuestion, index);
-            return (
-              <button
-                type="button"
-                key={`${option}-${index}`}
-                className={`${selected ? 'selected' : ''} ${questionTimedOut ? 'timed-out' : ''}`.trim()}
-                aria-pressed={selected}
-                disabled={questionTimedOut}
-                onClick={() => selectAnswer(index)}
-              >
-                <strong>{optionLetter(index)}</strong>
-                {optionVisual ? (
-                  <span className="cbc-exam-option-visual" aria-hidden="true">
-                    <CbcVisualAid visual={optionVisual} label={option} />
-                  </span>
-                ) : null}
-                <span>{option}</span>
-              </button>
-            );
-          })}
         </div>
-        {currentAnswer ? (
-          <p className="cbc-exam-answer-status" role="status">
-            {currentAnswer.timedOut ? 'Time is up. Moving to the next question.' : 'Answer saved. You can still change it before you finish.'}
-          </p>
-        ) : null}
+        <p className={`cbc-exam-answer-status ${currentAnswer ? '' : 'empty'}`.trim()} role="status" aria-live="polite">
+          {currentAnswer
+            ? currentAnswer.timedOut
+              ? 'Time is up. Moving to the next question.'
+              : 'Answer saved. You can still change it before you finish.'
+            : 'Choose an answer to continue.'}
+        </p>
       </section>
 
       <ExamNavigation

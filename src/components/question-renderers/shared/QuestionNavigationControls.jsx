@@ -1,7 +1,10 @@
 import { NavLink } from 'react-router-dom';
 
 function navStateFor(navigation = {}) {
-  return navigation.returnToCategory ? { returnToCategory: navigation.returnToCategory } : undefined;
+  return {
+    ...(navigation.returnToCategory ? { returnToCategory: navigation.returnToCategory } : {}),
+    preserveProblemScroll: true
+  };
 }
 
 function QuestionNavLink({ question, direction, navigation }) {
@@ -16,6 +19,7 @@ function QuestionNavLink({ question, direction, navigation }) {
       className={`question-nav-button ${direction}`}
       to={`/problem/${encodeURIComponent(question.id)}`}
       state={navStateFor(navigation)}
+      preventScrollReset
       aria-label={`${label}: ${shortTitle}`}
     >
       {direction === 'previous' ? <span className="question-nav-arrow" aria-hidden="true">{arrow}</span> : null}

@@ -41,7 +41,7 @@ const questions = items.map(([name, icon, count, options], index) => defineMcqPr
   readAloud: true,
   autoReadAloud: false,
   readAloudText: `How many ${name} are there?`,
-  readOptionsAloud: true,
+  readOptionsAloud: false,
   body: [
     {
       type: 'section',
@@ -66,7 +66,7 @@ const questions = items.map(([name, icon, count, options], index) => defineMcqPr
     readAloud: true,
     autoReadAloud: false,
     readAloudText: `How many ${name} are there?`,
-    readOptionsAloud: true,
+    readOptionsAloud: false,
     examId: 'counting-exam-001',
     examTitle: 'Grade 1 Counting Exam',
     assessmentType: 'exam',

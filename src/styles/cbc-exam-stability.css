@@ -1,0 +1,234 @@
+.stable-exam-page {
+  height: calc(100vh - clamp(12px, 2vw, 28px));
+  min-height: 0;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.stable-exam-page .cbc-exam-session-head,
+.stable-exam-page > .cbc-exam-navigation {
+  flex: 0 0 auto;
+}
+
+.stable-exam-page > .cbc-exam-navigation {
+  min-height: 42px;
+  align-content: center;
+}
+
+.stable-exam-page .cbc-exam-question-card {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(36px, auto);
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  gap: 8px !important;
+  overflow: hidden;
+}
+
+.stable-exam-page .cbc-exam-question-scroll {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+}
+
+.stable-exam-page .cbc-exam-objective {
+  padding: 5px 8px !important;
+  font-size: 0.78rem !important;
+  line-height: 1.25 !important;
+}
+
+.stable-exam-page .cbc-exam-question-card h2 {
+  font-size: clamp(0.98rem, 2.4vw, 1.38rem) !important;
+  line-height: 1.12 !important;
+}
+
+.stable-exam-page .cbc-read-aloud-panel.cbc-exam-read-aloud,
+.stable-exam-page .cbc-exam-read-aloud .cbc-read-aloud-panel {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  padding: 5px !important;
+  gap: 6px !important;
+  border-radius: 12px !important;
+}
+
+.stable-exam-page .cbc-read-aloud-panel.cbc-exam-read-aloud .cbc-read-aloud-button,
+.stable-exam-page .cbc-exam-read-aloud .cbc-read-aloud-button {
+  min-height: 30px !important;
+  padding-inline: 9px !important;
+  font-size: 0.82rem !important;
+}
+
+.stable-exam-page .cbc-read-aloud-panel.cbc-exam-read-aloud .cbc-read-aloud-voice-select,
+.stable-exam-page .cbc-exam-read-aloud .cbc-read-aloud-voice-select {
+  font-size: 0.78rem !important;
+}
+
+.stable-exam-page .cbc-read-aloud-panel.cbc-exam-read-aloud .cbc-read-aloud-voice-select select,
+.stable-exam-page .cbc-exam-read-aloud .cbc-read-aloud-voice-select select {
+  min-height: 30px !important;
+  max-width: 96px !important;
+  padding-left: 8px !important;
+}
+
+.stable-exam-page .cbc-exam-prompt-visual {
+  min-height: 54px !important;
+  padding: 5px !important;
+  border-radius: 13px !important;
+}
+
+.stable-exam-page .cbc-exam-question-card.no-prompt-visual .cbc-exam-prompt-visual {
+  display: none;
+}
+
+.stable-exam-page .cbc-exam-options {
+  gap: 5px !important;
+  min-height: 0;
+}
+
+.stable-exam-page .cbc-exam-options button {
+  min-height: 42px !important;
+  padding: 5px 7px !important;
+  gap: 6px !important;
+  border-radius: 11px !important;
+  font-size: clamp(0.84rem, 1.9vw, 0.98rem) !important;
+}
+
+.stable-exam-page .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
+  grid-template-columns: 24px 40px minmax(0, 1fr) !important;
+  min-height: 50px !important;
+}
+
+.stable-exam-page .cbc-exam-options button strong {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 0.76rem !important;
+}
+
+.stable-exam-page .cbc-exam-option-visual {
+  min-width: 38px !important;
+  min-height: 38px !important;
+}
+
+.stable-exam-page .cbc-exam-option-visual .cbc-visual-emoji,
+.stable-exam-page .cbc-exam-prompt-visual .cbc-visual-emoji {
+  font-size: clamp(1.8rem, 5vw, 3rem) !important;
+}
+
+.stable-exam-page .cbc-exam-option-visual .cbc-visual-objects,
+.stable-exam-page .cbc-exam-prompt-visual .cbc-visual-objects {
+  font-size: clamp(1.45rem, 4.5vw, 2.5rem) !important;
+}
+
+.stable-exam-page .cbc-exam-option-visual .cbc-visual-text,
+.stable-exam-page .cbc-exam-prompt-visual .cbc-visual-text {
+  min-width: 36px !important;
+  min-height: 36px !important;
+  font-size: clamp(1.35rem, 4vw, 2.2rem) !important;
+}
+
+.stable-exam-page .cbc-exam-option-visual .cbc-visual-shape,
+.stable-exam-page .cbc-exam-prompt-visual .cbc-visual-shape {
+  width: clamp(34px, 8vw, 52px) !important;
+  height: clamp(34px, 8vw, 52px) !important;
+}
+
+.stable-exam-page .cbc-exam-option-visual .cbc-visual-shape.triangle,
+.stable-exam-page .cbc-exam-prompt-visual .cbc-visual-shape.triangle {
+  width: 0 !important;
+  height: 0 !important;
+  border-left-width: clamp(20px, 5vw, 30px) !important;
+  border-right-width: clamp(20px, 5vw, 30px) !important;
+  border-bottom-width: clamp(36px, 9vw, 54px) !important;
+}
+
+.stable-exam-page .cbc-exam-answer-status {
+  min-height: 34px;
+  display: grid;
+  align-content: center;
+  padding: 6px 9px !important;
+  font-size: 0.8rem !important;
+  line-height: 1.2 !important;
+}
+
+.stable-exam-page .cbc-exam-answer-status.empty {
+  visibility: hidden;
+}
+
+@media (min-width: 780px) {
+  .stable-exam-page .cbc-exam-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .stable-exam-page {
+    height: calc(100vh - 12px);
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+  }
+
+  .stable-exam-page > .cbc-exam-navigation {
+    min-height: 38px;
+  }
+
+  .stable-exam-page .cbc-exam-question-card {
+    grid-template-rows: minmax(0, 1fr) minmax(30px, auto);
+  }
+
+  .stable-exam-page .cbc-exam-question-scroll {
+    gap: 5px;
+  }
+
+  .stable-exam-page .cbc-exam-objective {
+    padding: 4px 7px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .stable-exam-page .cbc-exam-question-card h2 {
+    font-size: 0.95rem !important;
+  }
+
+  .stable-exam-page .cbc-read-aloud-panel.cbc-exam-read-aloud .cbc-read-aloud-voice-select > span,
+  .stable-exam-page .cbc-exam-read-aloud .cbc-read-aloud-voice-select > span {
+    display: none !important;
+  }
+
+  .stable-exam-page .cbc-exam-prompt-visual {
+    min-height: 46px !important;
+  }
+
+  .stable-exam-page .cbc-exam-options {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 4px !important;
+  }
+
+  .stable-exam-page .cbc-exam-options button {
+    min-height: 38px !important;
+    padding: 4px 6px !important;
+    font-size: 0.82rem !important;
+  }
+
+  .stable-exam-page .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
+    grid-template-columns: 22px 34px minmax(0, 1fr) !important;
+    min-height: 45px !important;
+  }
+
+  .stable-exam-page .cbc-exam-answer-status {
+    min-height: 30px;
+    padding: 5px 7px !important;
+    font-size: 0.72rem !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .stable-exam-page .cbc-exam-question-card h2 {
+    font-size: 0.9rem !important;
+  }
+
+  .stable-exam-page .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
+    grid-template-columns: 21px 32px minmax(0, 1fr) !important;
+    min-height: 43px !important;
+  }
+}

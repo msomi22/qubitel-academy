@@ -1,0 +1,49 @@
+/*
+  Final exam scroll safety layer.
+  The active exam page previously used a fixed 100vh grid with an internal
+  scrollable quiz card. That made bottom navigation clicks vulnerable to
+  browser focus and scroll anchoring jumps. Keep the compact spacing, but let
+  the page itself scroll naturally.
+*/
+.app-shell.exam-route-shell .exam-route-layout .page-wrap {
+  overflow-y: auto !important;
+}
+
+.stable-exam-page {
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  grid-template-rows: auto auto auto auto !important;
+  overflow: visible !important;
+}
+
+.stable-exam-page .cbc-exam-question-card {
+  height: auto !important;
+  max-height: none !important;
+  min-height: clamp(360px, 56vh, 620px) !important;
+  grid-template-rows: auto auto !important;
+  overflow: visible !important;
+}
+
+.stable-exam-page .cbc-exam-question-scroll {
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  overscroll-behavior: auto !important;
+}
+
+.stable-exam-page .cbc-exam-navigation,
+.stable-exam-page .cbc-exam-navigation .cbc-exam-button {
+  scroll-margin: 0 !important;
+  scroll-margin-block: 0 !important;
+}
+
+.stable-exam-page .cbc-exam-navigation .cbc-exam-button:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+@media (max-width: 700px) {
+  .stable-exam-page .cbc-exam-question-card {
+    min-height: clamp(330px, 54vh, 560px) !important;
+  }
+}

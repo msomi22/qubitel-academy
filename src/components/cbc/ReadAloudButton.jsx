@@ -11,10 +11,6 @@ function readAloudTextFor(question) {
   return question?.readAloudText || question?.metadata?.readAloudText || question?.question || question?.title || '';
 }
 
-function shouldReadOptions(question) {
-  return Boolean(question?.readOptionsAloud || question?.metadata?.readOptionsAloud);
-}
-
 function shouldAutoRead(question) {
   return Boolean(question?.autoReadAloud || question?.metadata?.autoReadAloud);
 }
@@ -41,11 +37,7 @@ export default function ReadAloudButton({ question, className = '' }) {
 
     const timer = window.setTimeout(() => {
       readAloudService.stop();
-      readAloudService.speak(readText, {
-        voiceType,
-        readOptionsAloud: shouldReadOptions(question),
-        answerOptions: question?.options || []
-      });
+      readAloudService.speak(readText, { voiceType });
     }, 350);
 
     return () => {
@@ -58,11 +50,7 @@ export default function ReadAloudButton({ question, className = '' }) {
 
   function handleReadAgain() {
     readAloudService.stop();
-    readAloudService.speak(readText, {
-      voiceType,
-      readOptionsAloud: shouldReadOptions(question),
-      answerOptions: question?.options || []
-    });
+    readAloudService.speak(readText, { voiceType });
   }
 
   function handleVoiceChange(event) {

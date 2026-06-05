@@ -1,7 +1,7 @@
 /*
 DECISION: Vite + React + React Router remains the best fit for this version because the product is a fast, static, highly interactive learning platform. This refactor uses route-level lazy loading and topic-level lazy quiz banks, so the dashboard no longer downloads or parses every question upfront. Next.js would be useful later for SSR, auth, payments, or a database-backed CMS; Angular would be stronger for a large enterprise team but heavier for this content-first product.
 */
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useRef } from 'react';
 import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Sidebar from './components/Sidebar.jsx';
@@ -25,13 +25,29 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
 const ProblemPage = lazy(() => import('./pages/ProblemPage.jsx'));
 const ExamSessionPage = lazy(() => import('./pages/ExamSessionPage.jsx'));
 
+function isProblemRoute(pathname = '') {
+  return pathname.startsWith('/problem/');
+}
+
 function RouteScrollReset() {
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const previousPathnameRef = useRef(location.pathname);
 
   useEffect(() => {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
     }
+
+    const previousPathname = previousPathnameRef.current;
+    previousPathnameRef.current = location.pathname;
+
+    const preserveProblemScroll = Boolean(
+      location.state?.preserveProblemScroll
+      && isProblemRoute(previousPathname)
+      && isProblemRoute(location.pathname)
+    );
+
+    if (preserveProblemScroll) return undefined;
 
     const reset = () => {
       const pageWrap = document.querySelector('.page-wrap');
@@ -50,7 +66,7 @@ function RouteScrollReset() {
       window.cancelAnimationFrame(frameId);
       window.clearTimeout(timeoutId);
     };
-  }, [pathname]);
+  }, [location.pathname, location.state]);
 
   return null;
 }

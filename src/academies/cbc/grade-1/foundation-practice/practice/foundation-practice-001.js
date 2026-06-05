@@ -55,7 +55,7 @@ function gradeOneMcq({
     readAloud: true,
     autoReadAloud: false,
     readAloudText,
-    readOptionsAloud: true,
+    readOptionsAloud: false,
     body: [
       {
         type: 'section',
@@ -79,7 +79,7 @@ function gradeOneMcq({
       readAloud: true,
       autoReadAloud: false,
       readAloudText,
-      readOptionsAloud: true
+      readOptionsAloud: false
     }
   });
 }

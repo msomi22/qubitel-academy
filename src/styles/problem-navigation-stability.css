@@ -1,0 +1,107 @@
+.stable-problem-page {
+  scroll-margin-top: 0;
+}
+
+.stable-question-shell {
+  display: block;
+  min-height: clamp(520px, 72vh, 760px);
+}
+
+.stable-question-shell > * {
+  min-width: 0;
+}
+
+.stable-question-shell[aria-busy="true"] {
+  cursor: progress;
+}
+
+.stable-question-shell .focused-problem-workspace,
+.stable-question-shell .cbc-grade-one-card {
+  min-height: clamp(520px, 72vh, 760px);
+}
+
+/*
+  Keep normal document/page scrolling for default focused problems.
+  Do not turn the problem workspace into a trapped internal scroll area.
+  The previous overflow:hidden + nested overflow:auto caused the card to get stuck
+  and prevented users from scrolling naturally from top to bottom.
+*/
+.stable-question-shell .focused-problem-workspace,
+.stable-question-shell .focused-workspace-layout,
+.stable-question-shell .focused-tab-content,
+.stable-question-shell .problem-support-panel {
+  overflow: visible;
+  min-height: auto;
+}
+
+.stable-question-shell .question-navigation-controls {
+  flex: 0 0 auto;
+}
+
+.stable-question-shell .question-navigation-top,
+.stable-question-shell .question-navigation-bottom {
+  min-height: 58px;
+}
+
+.stable-question-shell .cbc-grade-one-card {
+  grid-template-rows: auto auto auto minmax(56px, auto) auto minmax(40px, auto) minmax(32px, auto) auto;
+  overflow: visible;
+}
+
+.stable-question-shell .cbc-grade-one-options {
+  min-height: auto;
+  overflow: visible;
+}
+
+.stable-question-shell .cbc-grade-one-feedback {
+  min-height: 40px;
+  align-content: center;
+}
+
+.stable-question-shell .cbc-grade-one-feedback.empty {
+  visibility: hidden;
+}
+
+.stable-question-shell .cbc-grade-one-actions {
+  min-height: 32px;
+  align-items: center;
+}
+
+.stable-question-shell .cbc-grade-one-actions.empty {
+  visibility: hidden;
+}
+
+@media (max-width: 700px) {
+  .stable-question-shell {
+    min-height: clamp(500px, 78vh, 680px);
+  }
+
+  .stable-question-shell .focused-problem-workspace,
+  .stable-question-shell .cbc-grade-one-card {
+    min-height: clamp(500px, 78vh, 680px);
+  }
+
+  .stable-question-shell .question-navigation-top,
+  .stable-question-shell .question-navigation-bottom {
+    min-height: 48px;
+  }
+
+  .stable-question-shell .cbc-grade-one-feedback {
+    min-height: 34px;
+  }
+
+  .stable-question-shell .cbc-grade-one-actions {
+    min-height: 30px;
+  }
+}
+
+@media (max-width: 390px) {
+  .stable-question-shell {
+    min-height: clamp(480px, 80vh, 640px);
+  }
+
+  .stable-question-shell .focused-problem-workspace,
+  .stable-question-shell .cbc-grade-one-card {
+    min-height: clamp(480px, 80vh, 640px);
+  }
+}

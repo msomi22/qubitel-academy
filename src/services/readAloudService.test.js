@@ -7,7 +7,16 @@ import {
   readAloudService
 } from './readAloudService.js';
 
-test('buildReadAloudText uses explicit prompt and can include answer choices', () => {
+test('buildReadAloudText reads only the question prompt by default', () => {
+  const text = buildReadAloudText({
+    readAloudText: 'Choose the circle.',
+    options: ['triangle', 'circle', 'square']
+  });
+
+  assert.equal(text, 'Choose the circle.');
+});
+
+test('buildReadAloudText can still include answer choices when explicitly requested', () => {
   const text = buildReadAloudText({
     readAloudText: 'Choose the circle.',
     readOptionsAloud: true,

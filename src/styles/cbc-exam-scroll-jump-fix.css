@@ -1,0 +1,15 @@
+.stable-exam-page,
+.stable-exam-page *,
+.stable-exam-page *::before,
+.stable-exam-page *::after {
+  overflow-anchor: none;
+}
+
+.stable-exam-page .cbc-exam-question-scroll {
+  overscroll-behavior: auto;
+  scroll-behavior: auto;
+}
+
+.stable-exam-page .cbc-exam-navigation .cbc-exam-button {
+  scroll-margin: 0;
+}

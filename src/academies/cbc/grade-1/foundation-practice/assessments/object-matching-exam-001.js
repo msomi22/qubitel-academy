@@ -37,7 +37,7 @@ const questions = items.map(([answer, promptIcon, options, optionIcons, question
   readAloud: true,
   autoReadAloud: false,
   readAloudText: questionText,
-  readOptionsAloud: true,
+  readOptionsAloud: false,
   body: [
     {
       type: 'section',
@@ -62,7 +62,7 @@ const questions = items.map(([answer, promptIcon, options, optionIcons, question
     readAloud: true,
     autoReadAloud: false,
     readAloudText: questionText,
-    readOptionsAloud: true,
+    readOptionsAloud: false,
     examId: 'object-matching-exam-001',
     examTitle: 'Grade 1 Object Matching Exam',
     assessmentType: 'exam',
