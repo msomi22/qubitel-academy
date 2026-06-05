@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
+import CbcVisualAid from '../components/question-renderers/cbc/CbcVisualAid.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { buildCategoryReturnPath } from '../services/categoryNavigationService.js';
 import { buildExamAttempt } from '../services/examAttemptService.js';
@@ -23,6 +24,49 @@ function formattedDate(value) {
 function questionTimeLimit(question) {
   const seconds = Number(question?.estimatedTimeSeconds ?? question?.metadata?.estimatedTimeSeconds);
   return Number.isFinite(seconds) && seconds > 0 ? seconds : 30;
+}
+
+function promptVisualFor(question) {
+  return question?.promptVisual || question?.metadata?.promptVisual || null;
+}
+
+function optionVisualFor(question, index) {
+  return question?.optionVisuals?.[index] || question?.metadata?.optionVisuals?.[index] || null;
+}
+
+function hasVisualMcq(question) {
+  return Boolean(
+    question?.interactionType === 'visual-mcq'
+    || question?.metadata?.interactionType === 'visual-mcq'
+    || promptVisualFor(question)
+    || question?.optionVisuals?.length
+    || question?.metadata?.optionVisuals?.length
+  );
+}
+
+function categoryDisplayName(exam) {
+  return exam?.categoryName || exam?.category?.name || 'Grade 3';
+}
+
+function topicDisplayName(exam) {
+  return exam?.topic?.name || 'English';
+}
+
+function skillDisplayName(exam) {
+  const firstQuestion = exam?.questions?.[0];
+  const skill = firstQuestion?.metadata?.skill;
+  if (skill === 'counting') return 'Counting';
+  if (skill === 'object-matching') return 'Object Matching';
+  if (firstQuestion?.metadata?.examId?.includes('spelling')) return 'Spelling';
+  return exam?.examTitle?.replace(/^Grade \d+\s+/i, '').replace(/\s+Exam$/i, '') || 'Exam';
+}
+
+function startInstructions(exam) {
+  const firstQuestion = exam?.questions?.[0];
+  if (hasVisualMcq(firstQuestion)) {
+    return `Look at the pictures carefully and choose the correct answer. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  }
+  return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }
 
 function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext }) {
@@ -83,7 +127,7 @@ function RecoveryView({ exam, session, onContinue, onStartAgain, onBack }) {
         <div className="cbc-exam-result-actions">
           <button type="button" className="cbc-exam-button primary" onClick={onContinue}>Continue exam</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onStartAgain}>Start again</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to English</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {topicDisplayName(exam)}</button>
         </div>
       </section>
     </main>
@@ -98,9 +142,9 @@ function ResultView({ attempt, exam, onRetake, onHistory, onBack }) {
       platformName: 'Qubitel Academy Platform',
       productName: siteConfig.appName,
       academyName: 'CBC Academy',
-      categoryName: exam.categoryName || 'Grade 3',
-      topicName: exam.topic?.name || 'English',
-      skillName: 'Spelling'
+      categoryName: categoryDisplayName(exam),
+      topicName: topicDisplayName(exam),
+      skillName: skillDisplayName(exam)
     });
   }
 
@@ -123,7 +167,7 @@ function ResultView({ attempt, exam, onRetake, onHistory, onBack }) {
           <button type="button" className="cbc-exam-button primary" onClick={downloadPdf}>Download PDF</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onRetake}>Retake exam</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onHistory}>Attempt history</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to English</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {topicDisplayName(exam)}</button>
         </div>
       </section>
 
@@ -419,7 +463,7 @@ export default function ExamSessionPage() {
     setView('result');
   }
 
-  if (view === 'loading') return <LoadingCard label="Loading spelling exam..." />;
+  if (view === 'loading') return <LoadingCard label="Loading exam..." />;
 
   if (view === 'error' || !exam) {
     return (
@@ -457,20 +501,23 @@ export default function ExamSessionPage() {
   }
 
   if (view === 'start') {
+    const firstQuestion = exam.questions[0];
+    const secondsPerQuestion = questionTimeLimit(firstQuestion);
+
     return (
       <main className="page cbc-exam-page">
         <section className="cbc-exam-start-card">
-          <p className="cbc-exam-kicker">Grade 3 English | Spelling</p>
+          <p className="cbc-exam-kicker">{categoryDisplayName(exam)} | {topicDisplayName(exam)}</p>
           <h1>{exam.examTitle}</h1>
-          <p>Choose the correctly spelt word. You have 30 seconds for each question.</p>
+          <p>{startInstructions(exam)}</p>
           <div className="cbc-exam-start-stats">
             <span><strong>{exam.questions.length}</strong> questions</span>
-            <span><strong>30</strong> seconds each</span>
+            <span><strong>{secondsPerQuestion}</strong> seconds each</span>
             <span><strong>{history.length + 1}</strong> next attempt</span>
           </div>
           <div className="cbc-exam-result-actions">
             <button type="button" className="cbc-exam-button primary" onClick={startExam}>Start exam</button>
-            <button type="button" className="cbc-exam-button quiet" onClick={() => navigate(topicReturnPath)}>Back to English</button>
+            <button type="button" className="cbc-exam-button quiet" onClick={() => navigate(topicReturnPath)}>Back to {topicDisplayName(exam)}</button>
           </div>
         </section>
         <AttemptHistory attempts={history} onViewResult={showResult} />
@@ -480,6 +527,8 @@ export default function ExamSessionPage() {
 
   const progress = Math.round(((currentIndex + 1) / exam.questions.length) * 100);
   const questionTimedOut = Boolean(currentAnswer?.timedOut);
+  const promptVisual = promptVisualFor(currentQuestion);
+  const visualQuestion = hasVisualMcq(currentQuestion);
 
   return (
     <main className="page cbc-exam-page cbc-exam-active-page">
@@ -505,12 +554,18 @@ export default function ExamSessionPage() {
         onNext={nextQuestion}
       />
 
-      <section className="cbc-exam-question-card">
-        <p className="cbc-exam-objective">I can choose the correctly spelt word.</p>
+      <section className={`cbc-exam-question-card ${visualQuestion ? 'visual-mcq' : ''}`.trim()}>
+        <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
         <h2>{currentQuestion.question}</h2>
+        {promptVisual ? (
+          <div className="cbc-exam-prompt-visual" aria-label="Question visual">
+            <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+          </div>
+        ) : null}
         <div className="cbc-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
           {currentQuestion.options.map((option, index) => {
             const selected = currentAnswer?.selectedAnswer === index;
+            const optionVisual = optionVisualFor(currentQuestion, index);
             return (
               <button
                 type="button"
@@ -521,6 +576,11 @@ export default function ExamSessionPage() {
                 onClick={() => selectAnswer(index)}
               >
                 <strong>{optionLetter(index)}</strong>
+                {optionVisual ? (
+                  <span className="cbc-exam-option-visual" aria-hidden="true">
+                    <CbcVisualAid visual={optionVisual} label={option} />
+                  </span>
+                ) : null}
                 <span>{option}</span>
               </button>
             );
