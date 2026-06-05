@@ -36,18 +36,28 @@ test('CBC Grade 1 foundation practice has two questions per pilot learning area'
   }
 });
 
-test('CBC Grade 1 foundation practice is read-aloud enabled and timed for 60 seconds', () => {
+test('CBC Grade 1 foundation practice is read-aloud enabled, manual by default, and timed for 60 seconds', () => {
   for (const question of gradeOneFoundation) {
     assert.equal(question.category, 'grade-1', question.id);
     assert.equal(question.topicId, 'foundation-practice', question.id);
     assert.equal(question.estimatedTimeSeconds, 60, question.id);
+    assert.equal(question.interactionType, 'visual-mcq', question.id);
     assert.equal(question.readAloud, true, question.id);
-    assert.equal(question.autoReadAloud, true, question.id);
+    assert.equal(question.autoReadAloud, false, question.id);
     assert.equal(question.readOptionsAloud, true, question.id);
     assert.ok(question.readAloudText, question.id);
     assert.equal(question.options.length, 3, question.id);
+    assert.equal(question.optionVisuals.length, question.options.length, question.id);
+    assert.ok(question.promptVisual || question.optionVisuals.length, question.id);
     assert.ok(Number.isInteger(question.correctAnswer), question.id);
     assert.ok(question.body?.some((block) => block.type === 'section' && block.title === 'Objective'), question.id);
+  }
+});
+
+test('CBC Grade 1 wording avoids unclear blank instructions', () => {
+  for (const question of gradeOneFoundation) {
+    assert.doesNotMatch(question.question, /blank/i, question.id);
+    assert.doesNotMatch(question.readAloudText, /blank/i, question.id);
   }
 });
 
