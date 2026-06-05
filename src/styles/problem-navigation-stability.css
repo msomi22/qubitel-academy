@@ -3,10 +3,8 @@
 }
 
 .stable-question-shell {
-  display: grid;
-  align-items: stretch;
+  display: block;
   min-height: clamp(520px, 72vh, 760px);
-  contain: layout;
 }
 
 .stable-question-shell > * {
@@ -22,27 +20,18 @@
   min-height: clamp(520px, 72vh, 760px);
 }
 
-.stable-question-shell .focused-problem-workspace {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  overflow: hidden;
-}
-
-.stable-question-shell .focused-workspace-layout {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.stable-question-shell .focused-tab-content {
-  min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
-}
-
+/*
+  Keep normal document/page scrolling for default focused problems.
+  Do not turn the problem workspace into a trapped internal scroll area.
+  The previous overflow:hidden + nested overflow:auto caused the card to get stuck
+  and prevented users from scrolling naturally from top to bottom.
+*/
+.stable-question-shell .focused-problem-workspace,
+.stable-question-shell .focused-workspace-layout,
+.stable-question-shell .focused-tab-content,
 .stable-question-shell .problem-support-panel {
-  min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+  overflow: visible;
+  min-height: auto;
 }
 
 .stable-question-shell .question-navigation-controls {
@@ -55,14 +44,13 @@
 }
 
 .stable-question-shell .cbc-grade-one-card {
-  grid-template-rows: auto auto auto minmax(56px, auto) minmax(0, 1fr) minmax(40px, auto) minmax(32px, auto) auto;
-  overflow: hidden;
+  grid-template-rows: auto auto auto minmax(56px, auto) auto minmax(40px, auto) minmax(32px, auto) auto;
+  overflow: visible;
 }
 
 .stable-question-shell .cbc-grade-one-options {
-  min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+  min-height: auto;
+  overflow: visible;
 }
 
 .stable-question-shell .cbc-grade-one-feedback {
