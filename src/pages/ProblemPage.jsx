@@ -57,6 +57,7 @@ export default function ProblemPage() {
   const { questionId } = useParams();
   const location = useLocation();
   const lastRecordedQuestionId = useRef('');
+  const hasEntryRef = useRef(false);
 
   const [entry, setEntry] = useState(null);
   const [completed, setCompleted] = useState({});
@@ -64,10 +65,14 @@ export default function ProblemPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    hasEntryRef.current = Boolean(entry);
+  }, [entry]);
+
+  useEffect(() => {
     let active = true;
 
     async function loadProblem() {
-      const preserveCurrentProblem = Boolean(location.state?.preserveProblemScroll && entry);
+      const preserveCurrentProblem = Boolean(location.state?.preserveProblemScroll && hasEntryRef.current);
 
       if (!preserveCurrentProblem) setLoading(true);
       setError('');
@@ -119,7 +124,7 @@ export default function ProblemPage() {
     return () => {
       active = false;
     };
-  }, [questionId, location.state, entry]);
+  }, [questionId, location.state]);
 
   useEffect(() => {
     const currentQuestionId = entry?.question?.id;
