@@ -54,6 +54,7 @@ import './styles/random-page-premium-polish.css';
 import './styles/cbc-exam.css';
 import './styles/cbc-exam-compact-fixes.css';
 import './styles/cbc-grade-one-renderer.css';
+import './styles/question-navigation-controls.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
