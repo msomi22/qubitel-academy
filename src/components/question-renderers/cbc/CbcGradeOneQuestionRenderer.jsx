@@ -96,7 +96,7 @@ export default function CbcGradeOneQuestionRenderer({
       <CbcKidsPromptRow
         question={question}
         headingId="grade-one-question-title"
-        headingTag="h1"
+        headingTag="h2"
         className="cbc-grade-one-prompt"
         readAloudClassName="cbc-grade-one-read-aloud"
       />
