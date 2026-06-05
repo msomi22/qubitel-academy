@@ -56,6 +56,7 @@ import './styles/cbc-exam-compact-fixes.css';
 import './styles/cbc-grade-one-renderer.css';
 import './styles/question-navigation-controls.css';
 import './styles/problem-navigation-stability.css';
+import './styles/cbc-exam-stability.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
