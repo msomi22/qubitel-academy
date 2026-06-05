@@ -537,9 +537,14 @@ export default function ExamSessionPage() {
   const questionTimedOut = Boolean(currentAnswer?.timedOut);
   const promptVisual = promptVisualFor(currentQuestion);
   const visualQuestion = hasVisualMcq(currentQuestion);
+  const questionCardClass = [
+    'cbc-exam-question-card',
+    visualQuestion ? 'visual-mcq' : '',
+    promptVisual ? '' : 'no-prompt-visual'
+  ].filter(Boolean).join(' ');
 
   return (
-    <main className="page cbc-exam-page cbc-exam-active-page">
+    <main className="page cbc-exam-page cbc-exam-active-page stable-exam-page">
       <section className="cbc-exam-session-head">
         <div>
           <p className="cbc-exam-kicker">{exam.examTitle}</p>
@@ -562,44 +567,48 @@ export default function ExamSessionPage() {
         onNext={nextQuestion}
       />
 
-      <section className={`cbc-exam-question-card ${visualQuestion ? 'visual-mcq' : ''}`.trim()}>
-        <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
-        <h2>{currentQuestion.question}</h2>
-        <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
-        {promptVisual ? (
-          <div className="cbc-exam-prompt-visual" aria-label="Question visual">
-            <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+      <section className={questionCardClass}>
+        <div className="cbc-exam-question-scroll">
+          <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
+          <h2>{currentQuestion.question}</h2>
+          <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
+          {promptVisual ? (
+            <div className="cbc-exam-prompt-visual" aria-label="Question visual">
+              <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+            </div>
+          ) : null}
+          <div className="cbc-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
+            {currentQuestion.options.map((option, index) => {
+              const selected = currentAnswer?.selectedAnswer === index;
+              const optionVisual = optionVisualFor(currentQuestion, index);
+              return (
+                <button
+                  type="button"
+                  key={`${option}-${index}`}
+                  className={`${selected ? 'selected' : ''} ${questionTimedOut ? 'timed-out' : ''}`.trim()}
+                  aria-pressed={selected}
+                  disabled={questionTimedOut}
+                  onClick={() => selectAnswer(index)}
+                >
+                  <strong>{optionLetter(index)}</strong>
+                  {optionVisual ? (
+                    <span className="cbc-exam-option-visual" aria-hidden="true">
+                      <CbcVisualAid visual={optionVisual} label={option} />
+                    </span>
+                  ) : null}
+                  <span>{option}</span>
+                </button>
+              );
+            })}
           </div>
-        ) : null}
-        <div className="cbc-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
-          {currentQuestion.options.map((option, index) => {
-            const selected = currentAnswer?.selectedAnswer === index;
-            const optionVisual = optionVisualFor(currentQuestion, index);
-            return (
-              <button
-                type="button"
-                key={`${option}-${index}`}
-                className={`${selected ? 'selected' : ''} ${questionTimedOut ? 'timed-out' : ''}`.trim()}
-                aria-pressed={selected}
-                disabled={questionTimedOut}
-                onClick={() => selectAnswer(index)}
-              >
-                <strong>{optionLetter(index)}</strong>
-                {optionVisual ? (
-                  <span className="cbc-exam-option-visual" aria-hidden="true">
-                    <CbcVisualAid visual={optionVisual} label={option} />
-                  </span>
-                ) : null}
-                <span>{option}</span>
-              </button>
-            );
-          })}
         </div>
-        {currentAnswer ? (
-          <p className="cbc-exam-answer-status" role="status">
-            {currentAnswer.timedOut ? 'Time is up. Moving to the next question.' : 'Answer saved. You can still change it before you finish.'}
-          </p>
-        ) : null}
+        <p className={`cbc-exam-answer-status ${currentAnswer ? '' : 'empty'}`.trim()} role="status" aria-live="polite">
+          {currentAnswer
+            ? currentAnswer.timedOut
+              ? 'Time is up. Moving to the next question.'
+              : 'Answer saved. You can still change it before you finish.'
+            : 'Choose an answer to continue.'}
+        </p>
       </section>
 
       <ExamNavigation
