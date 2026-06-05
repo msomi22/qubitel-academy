@@ -3,7 +3,6 @@ import { NavLink, useLocation, useParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
 import ComplexSystemDesignProblem from '../components/problems/ComplexSystemDesignProblem.jsx';
-import QuestionNavigationControls from '../components/question-renderers/shared/QuestionNavigationControls.jsx';
 import { getQuestionRenderer } from '../components/question-renderers/registry/questionRendererRegistry.js';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
 
@@ -185,7 +184,6 @@ export default function ProblemPage() {
     questionType: entry.question.type,
     interactionType: entry.question.interactionType || entry.question.metadata?.interactionType
   });
-  const rendererOwnsQuestionNavigation = activeAcademy.id === 'cbc' && categoryId === 'grade-1';
 
   const problemTags = uniqueItems([
     { label: entry.question.difficulty, type: 'difficulty' },
@@ -251,18 +249,14 @@ export default function ProblemPage() {
           onMarkComplete={handleMarkComplete}
         />
       ) : (
-        <>
-          {!rendererOwnsQuestionNavigation ? <QuestionNavigationControls navigation={questionNavigation} className="question-navigation-top" /> : null}
-          <QuestionRenderer
-            question={entry.question}
-            completed={isComplete}
-            onToggle={handleCompletionClick}
-            onMarkComplete={handleMarkComplete}
-            navigation={questionNavigation}
-            hideTopline
-          />
-          {!rendererOwnsQuestionNavigation ? <QuestionNavigationControls navigation={questionNavigation} className="question-navigation-bottom" /> : null}
-        </>
+        <QuestionRenderer
+          question={entry.question}
+          completed={isComplete}
+          onToggle={handleCompletionClick}
+          onMarkComplete={handleMarkComplete}
+          navigation={questionNavigation}
+          hideTopline
+        />
       )}
     </main>
   );
