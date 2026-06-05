@@ -80,10 +80,6 @@
   gap: 7px;
 }
 
-.cbc-grade-one-options:has(.cbc-grade-one-option:nth-child(3):last-child) {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .cbc-grade-one-option {
   display: grid;
   grid-template-columns: 26px minmax(42px, auto) minmax(0, 1fr);
@@ -353,10 +349,6 @@
   .cbc-grade-one-options {
     grid-template-columns: minmax(0, 1fr);
     gap: 5px;
-  }
-
-  .cbc-grade-one-options:has(.cbc-grade-one-option:nth-child(3):last-child) {
-    grid-template-columns: minmax(0, 1fr);
   }
 
   .cbc-grade-one-option {
