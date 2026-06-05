@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useParams } from 'react-router-dom';
 
-import FocusedProblemWorkspace from '../components/FocusedProblemWorkspace.jsx';
 import LoadingCard from '../components/LoadingCard.jsx';
 import ComplexSystemDesignProblem from '../components/problems/ComplexSystemDesignProblem.jsx';
+import { getQuestionRenderer } from '../components/question-renderers/registry/questionRendererRegistry.js';
+import { getActiveAcademy } from '../config/detectAcademy.ts';
 
 import { findQuestionById } from '../services/questionBankService.js';
 import { recordQuestionOpen } from '../services/recentQuestionService.js';
@@ -155,7 +156,8 @@ export default function ProblemPage() {
     );
   }
 
-  const categoryId = entry.topic?.category || entry.category?.id;
+  const activeAcademy = getActiveAcademy();
+  const categoryId = entry.question.category || entry.topic?.category || entry.category?.id;
   const categoryBackPath = location.state?.returnToCategory
     ? buildCategoryReturnPath({
         categoryId,
@@ -169,6 +171,13 @@ export default function ProblemPage() {
   const isMcq = isMcqType(entry.question.type);
   const isComplete = !!completed[entry.question.id];
   const introText = isMcq ? '' : entry.question.question || entry.topic?.description || entry.question.scenario;
+  const QuestionRenderer = getQuestionRenderer({
+    academyId: activeAcademy.id,
+    categoryId,
+    topicId: entry.question.topicId || entry.topic?.id,
+    questionType: entry.question.type,
+    interactionType: entry.question.interactionType || entry.question.metadata?.interactionType
+  });
 
   const problemTags = uniqueItems([
     { label: entry.question.difficulty, type: 'difficulty' },
@@ -234,7 +243,7 @@ export default function ProblemPage() {
           onMarkComplete={handleMarkComplete}
         />
       ) : (
-        <FocusedProblemWorkspace
+        <QuestionRenderer
           question={entry.question}
           completed={isComplete}
           onToggle={handleCompletionClick}

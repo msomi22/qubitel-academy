@@ -53,6 +53,7 @@ import './styles/workspace-secondary-pages-polish.css';
 import './styles/random-page-premium-polish.css';
 import './styles/cbc-exam.css';
 import './styles/cbc-exam-compact-fixes.css';
+import './styles/cbc-grade-one-renderer.css';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

@@ -1,0 +1,236 @@
+.cbc-grade-one-card {
+  display: grid;
+  gap: clamp(14px, 3vw, 22px);
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: clamp(16px, 4vw, 30px);
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 60%, #2f7d57 28%);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, #facc15 18%, transparent), transparent 32%),
+    radial-gradient(circle at 95% 12%, color-mix(in srgb, #60a5fa 14%, transparent), transparent 34%),
+    color-mix(in srgb, var(--card, var(--bg-card)) 95%, #fff 5%);
+  box-shadow: 0 18px 42px rgb(0 0 0 / 0.12);
+}
+
+.cbc-grade-one-header {
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.cbc-grade-one-header p {
+  margin: 0;
+  color: #2f7d57;
+  font-size: 0.82rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cbc-grade-one-header h1 {
+  margin: 0;
+  color: var(--text, var(--text-primary));
+  font-size: clamp(1.65rem, 6vw, 3rem);
+  line-height: 1.08;
+}
+
+.cbc-grade-one-read-aloud {
+  justify-self: center;
+  width: min(520px, 100%);
+}
+
+.cbc-grade-one-prompt-visual {
+  display: grid;
+  min-height: 110px;
+  place-items: center;
+  padding: 18px;
+  border: 2px dashed color-mix(in srgb, #2f7d57 42%, var(--line, var(--border)));
+  border-radius: 24px;
+  background: color-mix(in srgb, #2f7d57 8%, transparent);
+}
+
+.cbc-grade-one-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.cbc-grade-one-option {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  min-height: 150px;
+  padding: 16px 12px;
+  border: 3px solid color-mix(in srgb, var(--line, var(--border)) 76%, #2f7d57 18%);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 92%, #fff 8%);
+  color: var(--text, var(--text-primary));
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.cbc-grade-one-option:hover,
+.cbc-grade-one-option:focus-visible,
+.cbc-grade-one-option.selected {
+  border-color: #2f7d57;
+  background: color-mix(in srgb, #2f7d57 11%, var(--card, var(--bg-card)));
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.cbc-grade-one-option.correct {
+  border-color: #16a34a;
+  background: color-mix(in srgb, #16a34a 12%, var(--card, var(--bg-card)));
+}
+
+.cbc-grade-one-option.wrong {
+  border-color: #dc2626;
+  background: color-mix(in srgb, #dc2626 9%, var(--card, var(--bg-card)));
+}
+
+.cbc-grade-one-option-letter {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 999px;
+  background: #2f7d57;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.cbc-grade-one-option-text {
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
+}
+
+.cbc-visual-shape {
+  display: inline-block;
+  width: clamp(68px, 16vw, 100px);
+  height: clamp(68px, 16vw, 100px);
+  background: #60a5fa;
+  box-shadow: inset 0 0 0 4px rgb(255 255 255 / 0.58), 0 12px 26px rgb(0 0 0 / 0.14);
+}
+
+.cbc-visual-shape.circle {
+  border-radius: 999px;
+  background: #f97316;
+}
+
+.cbc-visual-shape.square {
+  border-radius: 18px;
+  background: #22c55e;
+}
+
+.cbc-visual-shape.rectangle {
+  width: clamp(96px, 22vw, 140px);
+  height: clamp(56px, 12vw, 82px);
+  border-radius: 16px;
+  background: #a855f7;
+}
+
+.cbc-visual-shape.triangle {
+  width: 0;
+  height: 0;
+  border-left: clamp(44px, 10vw, 62px) solid transparent;
+  border-right: clamp(44px, 10vw, 62px) solid transparent;
+  border-bottom: clamp(82px, 18vw, 116px) solid #ef4444;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cbc-visual-emoji {
+  font-size: clamp(3.5rem, 14vw, 6rem);
+  line-height: 1;
+}
+
+.cbc-visual-objects {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  font-size: clamp(2.4rem, 10vw, 4.6rem);
+  line-height: 1;
+}
+
+.cbc-visual-text {
+  display: grid;
+  min-width: 80px;
+  min-height: 80px;
+  place-items: center;
+  border-radius: 22px;
+  background: color-mix(in srgb, #60a5fa 18%, var(--card, var(--bg-card)));
+  color: var(--text, var(--text-primary));
+  font-size: clamp(2.4rem, 10vw, 5rem);
+  font-weight: 950;
+}
+
+.cbc-grade-one-feedback {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.cbc-grade-one-feedback strong {
+  font-size: 1.25rem;
+}
+
+.cbc-grade-one-feedback p {
+  margin: 0;
+}
+
+.cbc-grade-one-feedback.correct {
+  background: color-mix(in srgb, #16a34a 12%, transparent);
+  color: #15803d;
+}
+
+.cbc-grade-one-feedback.wrong {
+  background: color-mix(in srgb, #dc2626 10%, transparent);
+  color: #b91c1c;
+}
+
+.cbc-grade-one-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.cbc-grade-one-actions button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 70%, #2f7d57 20%);
+  border-radius: 999px;
+  background: var(--card, var(--bg-card));
+  color: var(--text, var(--text-primary));
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .cbc-grade-one-card {
+    border-radius: 22px;
+    padding: 14px;
+  }
+
+  .cbc-grade-one-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cbc-grade-one-option {
+    grid-template-columns: 38px auto minmax(0, 1fr);
+    justify-items: start;
+    min-height: 92px;
+    text-align: left;
+  }
+
+  .cbc-grade-one-option .cbc-visual-shape,
+  .cbc-grade-one-option .cbc-visual-emoji,
+  .cbc-grade-one-option .cbc-visual-objects,
+  .cbc-grade-one-option .cbc-visual-text {
+    justify-self: center;
+  }
+}
