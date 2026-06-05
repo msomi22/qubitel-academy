@@ -1,8 +1,9 @@
 .cbc-grade-one-card {
   display: grid;
   gap: clamp(12px, 2.4vw, 18px);
-  width: min(760px, 100%);
-  margin: 0 auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
   padding: clamp(14px, 3vw, 24px);
   border: 1px solid color-mix(in srgb, var(--line, var(--border)) 60%, #2f7d57 28%);
   border-radius: 28px;
@@ -260,6 +261,28 @@
   background: color-mix(in srgb, #2f7d57 14%, var(--card, var(--bg-card)));
   color: #2f7d57;
   font-weight: 950;
+}
+
+@media (min-width: 1024px) {
+  .cbc-grade-one-card {
+    gap: clamp(16px, 2vw, 24px);
+    padding: clamp(18px, 2.2vw, 32px);
+  }
+
+  .cbc-grade-one-options {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: clamp(12px, 1.4vw, 18px);
+  }
+
+  .cbc-grade-one-option {
+    min-height: 160px;
+    padding: clamp(14px, 1.6vw, 20px);
+  }
+
+  .cbc-grade-one-nav-button,
+  .cbc-grade-one-nav-placeholder {
+    min-height: 52px;
+  }
 }
 
 @media (max-width: 640px) {

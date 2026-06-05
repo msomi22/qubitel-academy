@@ -29,7 +29,7 @@ function phonicsMcq({
     optionVisuals,
     readAloud: true,
     autoReadAloud: false,
-    readAloudText: `${question} Option A: ${options[0]}. Option B: ${options[1]}. Option C: ${options[2]}.`,
+    readAloudText: question,
     readOptionsAloud: true,
     body: [
       {
@@ -54,7 +54,7 @@ function phonicsMcq({
       optionVisuals,
       readAloud: true,
       autoReadAloud: false,
-      readAloudText: `${question} Option A: ${options[0]}. Option B: ${options[1]}. Option C: ${options[2]}.`,
+      readAloudText: question,
       readOptionsAloud: true,
       phonics: phonicsMetadata(item),
       sequence
