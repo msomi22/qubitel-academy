@@ -45,8 +45,9 @@ const lesson = defineLearningProblem({
   finalTakeaway: 'A letter has a name and a sound. In phonics, listen for the sound.',
   tags: ['cbc', 'grade-1', 'phonics', 'alphabet-sounds', 'lesson', 'read-aloud'],
   metadata: {
-    reviewStatus: 'approved',
-    visibility: ['dev', 'prod'],
+    reviewStatus: 'draft',
+    visibility: [],
+    hiddenReason: 'Hidden until read-aloud can produce accurate phonics sounds.',
     source: 'original',
     audience: 'grade-1',
     skill: 'alphabet-sounds',

@@ -40,8 +40,9 @@ const lesson = defineLearningProblem({
   finalTakeaway: 'The vowels are A, E, I, O, and U. Each vowel has a short sound to practise.',
   tags: ['cbc', 'grade-1', 'phonics', 'vowels', 'short-vowels', 'lesson', 'read-aloud'],
   metadata: {
-    reviewStatus: 'approved',
-    visibility: ['dev', 'prod'],
+    reviewStatus: 'draft',
+    visibility: [],
+    hiddenReason: 'Hidden until read-aloud can produce accurate phonics sounds.',
     source: 'original',
     audience: 'grade-1',
     skill: 'short-vowels',
