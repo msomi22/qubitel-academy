@@ -15,8 +15,7 @@
   cursor: progress;
 }
 
-.stable-question-shell .focused-problem-workspace,
-.stable-question-shell .cbc-grade-one-card {
+.stable-question-shell .focused-problem-workspace {
   min-height: clamp(520px, 72vh, 760px);
 }
 
@@ -69,6 +68,81 @@
 
 .stable-question-shell .cbc-grade-one-actions.empty {
   visibility: hidden;
+}
+
+@media (min-width: 900px) {
+  .stable-question-shell:has(.cbc-grade-one-card) {
+    min-height: auto;
+  }
+
+  .stable-question-shell .cbc-grade-one-card {
+    width: min(100%, 1120px);
+    max-width: 1120px;
+    min-height: auto !important;
+    margin: 0 auto;
+    gap: 10px;
+    padding: 14px 16px 16px;
+    align-self: start;
+  }
+
+  .stable-question-shell .cbc-grade-one-header {
+    gap: 2px;
+  }
+
+  .stable-question-shell .cbc-grade-one-header h1 {
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+  }
+
+  .stable-question-shell .cbc-read-aloud-panel.cbc-grade-one-read-aloud {
+    width: min(420px, 100%);
+    padding: 6px;
+  }
+
+  .stable-question-shell .cbc-grade-one-prompt-visual {
+    min-height: 62px;
+    padding: 6px;
+  }
+
+  .stable-question-shell .cbc-grade-one-options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .stable-question-shell .cbc-grade-one-options:has(.cbc-grade-one-option:nth-child(3):last-child) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stable-question-shell .cbc-grade-one-option {
+    grid-template-columns: 26px minmax(40px, auto) minmax(0, 1fr);
+    min-height: 54px;
+    padding: 7px 8px;
+  }
+
+  .stable-question-shell .cbc-grade-one-option-letter {
+    width: 25px;
+    height: 25px;
+    font-size: 0.78rem;
+  }
+
+  .stable-question-shell .cbc-grade-one-option-text {
+    font-size: 0.96rem;
+  }
+
+  .stable-question-shell .cbc-grade-one-feedback {
+    min-height: 34px;
+    padding: 6px 9px;
+  }
+
+  .stable-question-shell .cbc-grade-one-actions {
+    min-height: 30px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .stable-question-shell .cbc-grade-one-card {
+    width: min(100%, 1180px);
+    max-width: 1180px;
+  }
 }
 
 @media (max-width: 700px) {
