@@ -11,6 +11,7 @@ import gradeOneMathShapesPractice from './cbc/grade-1/mathematics/practice/shape
 import gradeOneReadingExam from './cbc/grade-1/english/assessments/object-matching-exam-001.js';
 import readingLesson from './cbc/grade-3/english/lessons/reading-comprehension-school-garden-lesson-001.js';
 import spellingLesson from './cbc/grade-3/english/lessons/spelling-lesson-001.js';
+import partsOfSpeechLesson from './cbc/grade-3/english/lessons/grade-3-english-parts-of-speech-lesson-001.js';
 import readingPractice from './cbc/grade-3/english/practice/reading-comprehension-school-garden-practice-001.js';
 import practiceOne from './cbc/grade-3/english/practice/spelling-practice-001.js';
 import practiceTwo from './cbc/grade-3/english/practice/spelling-practice-002.js';
@@ -29,6 +30,8 @@ import examTwelve from './cbc/grade-3/english/assessments/spelling-random-super-
 import examThirteen from './cbc/grade-3/english/assessments/spelling-domestic-animals-exam-013.js';
 import examFourteen from './cbc/grade-3/english/assessments/spelling-wild-animals-exam-014.js';
 import examFifteen from './cbc/grade-3/english/assessments/spelling-aquatic-animals-exam-015.js';
+import partsOfSpeechExamOne from './cbc/grade-3/english/assessments/grade-3-parts-of-speech-spelling-exam-001.js';
+import partsOfSpeechExamTwo from './cbc/grade-3/english/assessments/grade-3-parts-of-speech-spelling-exam-002.js';
 import timedComprehensionExam from './cbc/grade-3/english/assessments/reading-comprehension-class-library-exam-001.js';
 import kiswahiliHadithiExam from './cbc/grade-3/kiswahili/assessments/kiswahili-hadithi-exam-001.js';
 import { getAcademyCatalog } from './catalog.js';
@@ -96,7 +99,9 @@ const gradeThreeSpellingExamsSevenToFifteen = [
 ];
 const gradeThreeSpellingQuestions = [spellingLesson, ...gradeThreeSpellingPractice, ...gradeThreeSpellingExams];
 const gradeThreeReadingQuestions = [readingLesson, ...readingPractice, ...timedComprehensionExam];
-const gradeThreeEnglishQuestions = [...gradeThreeSpellingQuestions, ...gradeThreeReadingQuestions];
+const gradeThreePartsOfSpeechExams = [...partsOfSpeechExamOne, ...partsOfSpeechExamTwo];
+const gradeThreePartsOfSpeechQuestions = [partsOfSpeechLesson, ...gradeThreePartsOfSpeechExams];
+const gradeThreeEnglishQuestions = [...gradeThreeSpellingQuestions, ...gradeThreeReadingQuestions, ...gradeThreePartsOfSpeechQuestions];
 const gradeThreeKiswahiliQuestions = [...kiswahiliHadithiExam];
 const gradeThreeQuestions = [...gradeThreeEnglishQuestions, ...gradeThreeKiswahiliQuestions];
 const allQuestions = [...gradeOneQuestions, ...gradeThreeQuestions];
@@ -200,6 +205,7 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
   assert.deepEqual(cre.practice.map((item) => item.id), ['christian-values-practice-001']);
   assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-001']);
   assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001']);
+  assert.equal(english.learningAreas.some((area) => area.id === 'parts-of-speech'), false);
   assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);
   assert.deepEqual(mathematics.practice.map((item) => item.id), ['numbers-practice-001', 'shapes-practice-001']);
   assert.deepEqual(mathematics.assessments.map((item) => item.id), ['counting-exam-001']);
@@ -213,7 +219,7 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
 test('CBC Grade 3 English declares manifest-driven learning areas', () => {
   assert.deepEqual(
     gradeThreeEnglishTopic.learningAreas.map((area) => area.id),
-    ['spelling', 'reading-comprehension', 'grammar', 'composition']
+    ['spelling', 'reading-comprehension', 'parts-of-speech', 'grammar', 'composition']
   );
 
   const contentReferences = [
@@ -225,7 +231,11 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
   assert.ok(contentReferences.length > 0);
   assert.deepEqual(
     gradeThreeEnglishTopic.lessons.map((reference) => reference.id),
-    ['spelling-lesson-001', 'reading-comprehension-school-garden-lesson-001']
+    [
+      'spelling-lesson-001',
+      'reading-comprehension-school-garden-lesson-001',
+      'grade-3-english-parts-of-speech-lesson-001'
+    ]
   );
   assert.deepEqual(
     gradeThreeEnglishTopic.practice.map((reference) => reference.id),
@@ -253,6 +263,8 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
       'spelling-domestic-animals-exam-013',
       'spelling-wild-animals-exam-014',
       'spelling-aquatic-animals-exam-015',
+      'grade-3-parts-of-speech-spelling-exam-001',
+      'grade-3-parts-of-speech-spelling-exam-002',
       'reading-comprehension-class-library-exam-001'
     ]
   );
@@ -265,6 +277,16 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
     contentReferences
       .filter((reference) => reference.id.startsWith('reading-comprehension'))
       .every((reference) => reference.learningAreaId === 'reading-comprehension')
+  );
+  assert.deepEqual(
+    contentReferences
+      .filter((reference) => reference.learningAreaId === 'parts-of-speech')
+      .map((reference) => reference.id),
+    [
+      'grade-3-english-parts-of-speech-lesson-001',
+      'grade-3-parts-of-speech-spelling-exam-001',
+      'grade-3-parts-of-speech-spelling-exam-002'
+    ]
   );
 });
 
@@ -382,6 +404,81 @@ test('CBC reading comprehension school garden content exposes the passage and te
       && block.content.includes('Grade Three learners visited the school garden')
     )), question.id);
     assert.ok(expectedSkills.has(question.metadata.skill), question.id);
+  }
+});
+
+test('CBC Grade 3 English Parts of Speech lesson covers all nine word jobs with child-friendly wording', () => {
+  const bodyText = JSON.stringify(partsOfSpeechLesson.body).toLowerCase();
+  const expectedParts = [
+    'noun',
+    'pronoun',
+    'verb',
+    'adjective',
+    'adverb',
+    'preposition',
+    'conjunction',
+    'interjection',
+    'article'
+  ];
+
+  assert.equal(partsOfSpeechLesson.category, 'grade-3');
+  assert.equal(partsOfSpeechLesson.topicId, 'english');
+  assert.equal(partsOfSpeechLesson.type, 'learning');
+  assert.equal(partsOfSpeechLesson.metadata.learningAreaId, 'parts-of-speech');
+  assert.ok(partsOfSpeechLesson.body.some((block) => block.type === 'table' && block.title === 'Recap Table'));
+  assert.ok(partsOfSpeechLesson.body.some((block) => block.type === 'checklist' && block.title === 'Final Practice'));
+
+  for (const part of expectedParts) {
+    assert.match(bodyText, new RegExp(part), part);
+  }
+
+  for (const phrase of ['naming word', 'action word', 'tells us more about', 'joining word', 'used instead of a noun', 'tells us where something is', 'shows strong feeling']) {
+    assert.ok(bodyText.includes(phrase), phrase);
+  }
+});
+
+test('CBC Grade 3 English Parts of Speech exams are scoped timed grammar-and-spelling assessments', () => {
+  assert.equal(partsOfSpeechExamOne.length, 30);
+  assert.equal(partsOfSpeechExamTwo.length, 30);
+
+  const examGroups = [
+    {
+      questions: partsOfSpeechExamOne,
+      examId: 'grade-3-parts-of-speech-spelling-exam-001',
+      examTitle: 'Parts of Speech Exam 1: Naming and Action Words',
+      expectedTerms: ['noun', 'pronoun', 'verb']
+    },
+    {
+      questions: partsOfSpeechExamTwo,
+      examId: 'grade-3-parts-of-speech-spelling-exam-002',
+      examTitle: 'Parts of Speech Exam 2: Telling More and Joining Words',
+      expectedTerms: ['adjective', 'adverb', 'preposition', 'conjunction', 'interjection', 'article']
+    }
+  ];
+
+  for (const group of examGroups) {
+    const groupText = JSON.stringify(group.questions).toLowerCase();
+    for (const term of group.expectedTerms) assert.ok(groupText.includes(term), `${group.examId} includes ${term}`);
+
+    for (const question of group.questions) {
+      assert.equal(question.category, 'grade-3', question.id);
+      assert.equal(question.topicId, 'english', question.id);
+      assert.equal(question.estimatedTimeSeconds, 30, question.id);
+      assert.equal(question.metadata.gradeId, 'grade-3', question.id);
+      assert.equal(question.metadata.subjectId, 'english', question.id);
+      assert.equal(question.metadata.learningAreaId, 'parts-of-speech', question.id);
+      assert.equal(question.metadata.examId, group.examId, question.id);
+      assert.equal(question.metadata.examTitle, group.examTitle, question.id);
+      assert.equal(question.metadata.assessmentType, 'exam', question.id);
+      assert.equal(question.metadata.questionTimeSeconds, 30, question.id);
+      assert.equal(question.metadata.totalTimeSeconds, 900, question.id);
+      assert.equal(question.options.length, 4, question.id);
+      assert.equal(new Set(question.options).size, 4, question.id);
+      assert.ok(Number.isInteger(question.correctAnswer), question.id);
+      assert.ok(question.correctAnswer >= 0 && question.correctAnswer < 4, question.id);
+      assert.ok(question.explanation, question.id);
+      assert.ok(question.body.some((block) => block.type === 'section' && block.title === 'Objective'), question.id);
+    }
   }
 });
 

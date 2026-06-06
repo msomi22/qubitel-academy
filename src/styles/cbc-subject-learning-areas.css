@@ -313,7 +313,8 @@
   white-space: nowrap;
 }
 
-.cbc-lesson-note-card summary {
+.cbc-lesson-note-card summary,
+.cbc-lesson-note-card-summary {
   display: grid;
   gap: 5px;
   min-height: 76px;
@@ -322,7 +323,12 @@
   list-style: revert;
 }
 
+.cbc-lesson-note-card-summary {
+  cursor: default;
+}
+
 .cbc-lesson-note-card summary span,
+.cbc-lesson-note-card-summary span,
 .cbc-lesson-note-block strong {
   color: var(--text, var(--text-primary));
   font-size: 0.9rem;
@@ -330,7 +336,8 @@
   line-height: 1.18;
 }
 
-.cbc-lesson-note-card summary small {
+.cbc-lesson-note-card summary small,
+.cbc-lesson-note-card-summary small {
   color: var(--muted, var(--text-secondary));
   font-size: 0.74rem;
   font-weight: 720;
@@ -369,6 +376,25 @@
 .cbc-lesson-note-block.note-takeaway {
   border-color: color-mix(in srgb, var(--accent) 34%, var(--line, var(--border)) 66%);
   background: color-mix(in srgb, var(--accent) 9%, var(--card, var(--bg-card)));
+}
+
+.cbc-lesson-start-button {
+  min-height: 38px;
+  border: 1px solid color-mix(in srgb, var(--accent) 60%, var(--line, var(--border)) 40%);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 18%, var(--card, var(--bg-card)));
+  color: var(--text, var(--text-primary));
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.cbc-lesson-start-button:hover,
+.cbc-lesson-start-button:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  background: color-mix(in srgb, var(--accent) 28%, var(--card, var(--bg-card)));
 }
 
 .cbc-learning-area-practice-footer {
@@ -536,17 +562,20 @@
     flex-basis: min(330px, calc(100vw - 48px));
   }
 
-  .cbc-lesson-note-card summary {
+  .cbc-lesson-note-card summary,
+  .cbc-lesson-note-card-summary {
     min-height: 64px;
     padding: 10px;
   }
 
   .cbc-lesson-note-card summary span,
+  .cbc-lesson-note-card-summary span,
   .cbc-lesson-note-block strong {
     font-size: 0.8rem;
   }
 
   .cbc-lesson-note-card summary small,
+  .cbc-lesson-note-card-summary small,
   .cbc-lesson-note-block p,
   .cbc-lesson-note-block ul {
     font-size: 0.68rem;

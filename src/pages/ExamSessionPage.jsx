@@ -65,6 +65,7 @@ function skillDisplayName(exam) {
   if (skill === 'object-matching') return 'Object Matching';
   if (skill === 'alphabet-sounds') return 'Alphabet Sounds';
   if (skill === 'short-vowels') return 'Vowel Sounds';
+  if (firstQuestion?.metadata?.learningAreaId === 'parts-of-speech') return 'Parts of Speech';
   if (firstQuestion?.metadata?.examId?.includes('spelling')) return 'Spelling';
   return exam?.examTitle?.replace(/^Grade \d+\s+/i, '').replace(/\s+Exam$/i, '') || 'Exam';
 }
@@ -94,6 +95,9 @@ function startInstructions(exam) {
   }
   if (hasVisualMcq(firstQuestion)) {
     return `Look at the pictures carefully and choose the correct answer. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  }
+  if (firstQuestion?.metadata?.learningAreaId === 'parts-of-speech') {
+    return `Read each sentence carefully. Choose the answer that matches the part of speech and spelling clue. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
   }
   return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }

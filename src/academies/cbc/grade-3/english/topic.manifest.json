@@ -19,16 +19,22 @@
       "sequence": 20
     },
     {
+      "id": "parts-of-speech",
+      "title": "Parts of Speech",
+      "description": "Learn naming words, action words, describing words, joining words, and other word groups using simple examples and pictures.",
+      "sequence": 30
+    },
+    {
       "id": "grammar",
       "title": "Grammar",
       "description": "Build clear sentences with nouns, verbs, punctuation, and simple sentence patterns.",
-      "sequence": 30
+      "sequence": 40
     },
     {
       "id": "composition",
       "title": "Composition",
       "description": "Plan and write short Grade 3 stories, descriptions, and friendly messages.",
-      "sequence": 40
+      "sequence": 50
     }
   ],
   "lessons": [
@@ -41,6 +47,11 @@
       "id": "reading-comprehension-school-garden-lesson-001",
       "file": "lessons/reading-comprehension-school-garden-lesson-001.js",
       "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-parts-of-speech-lesson-001",
+      "file": "lessons/grade-3-english-parts-of-speech-lesson-001.js",
+      "learningAreaId": "parts-of-speech"
     }
   ],
   "practice": [
@@ -135,6 +146,16 @@
       "id": "spelling-aquatic-animals-exam-015",
       "file": "assessments/spelling-aquatic-animals-exam-015.js",
       "learningAreaId": "spelling"
+    },
+    {
+      "id": "grade-3-parts-of-speech-spelling-exam-001",
+      "file": "assessments/grade-3-parts-of-speech-spelling-exam-001.js",
+      "learningAreaId": "parts-of-speech"
+    },
+    {
+      "id": "grade-3-parts-of-speech-spelling-exam-002",
+      "file": "assessments/grade-3-parts-of-speech-spelling-exam-002.js",
+      "learningAreaId": "parts-of-speech"
     },
     {
       "id": "reading-comprehension-class-library-exam-001",

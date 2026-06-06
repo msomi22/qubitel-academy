@@ -189,6 +189,14 @@ function getLessonBlocks(lesson) {
   ));
 }
 
+function getLessonPreviewBlocks(lesson) {
+  const blocks = getLessonBlocks(lesson);
+  const objective = blocks.find((block) => block?.type === 'section' && block?.title === 'Objective');
+  const checklist = blocks.find((block) => block?.type === 'checklist');
+
+  return [objective, checklist].filter(Boolean);
+}
+
 function renderLessonBlock(block, index) {
   const title = block.title || (block.type === 'section' ? `Note ${index + 1}` : 'Tip');
   const content = block.content || block.text || '';
@@ -210,7 +218,7 @@ function renderLessonBlock(block, index) {
   );
 }
 
-function LearningAreaLessons({ lessons }) {
+function LearningAreaLessons({ lessons, onOpen }) {
   return (
     <section className="cbc-learning-area-content-group cbc-learning-area-panel cbc-learning-area-lessons-panel" aria-labelledby="learning-area-lessons">
       <div className="cbc-learning-area-content-head">
@@ -221,13 +229,13 @@ function LearningAreaLessons({ lessons }) {
       {lessons.length ? (
         <div className="cbc-lesson-note-strip" aria-label="Lesson notes">
           {lessons.map((lesson) => {
-            const blocks = getLessonBlocks(lesson);
+            const blocks = getLessonPreviewBlocks(lesson);
             return (
-              <details key={lesson.id} className="cbc-lesson-note-card" open={lessons.length === 1}>
-                <summary>
+              <article key={lesson.id} className="cbc-lesson-note-card cbc-lesson-entry-card">
+                <div className="cbc-lesson-note-card-summary">
                   <span>{lesson.title}</span>
                   <small>{lesson.question || 'Simple notes and guidelines'}</small>
-                </summary>
+                </div>
                 <div className="cbc-lesson-note-card-body">
                   {blocks.length ? blocks.map(renderLessonBlock) : (
                     <div className="cbc-lesson-note-block">
@@ -235,14 +243,11 @@ function LearningAreaLessons({ lessons }) {
                       <p>{lesson.explanation || lesson.finalTakeaway || 'Helpful lesson notes will appear here.'}</p>
                     </div>
                   )}
-                  {lesson.finalTakeaway ? (
-                    <div className="cbc-lesson-note-block note-takeaway">
-                      <strong>Remember</strong>
-                      <p>{lesson.finalTakeaway}</p>
-                    </div>
-                  ) : null}
+                  <button type="button" className="cbc-lesson-start-button" onClick={() => onOpen?.(lesson)}>
+                    Start lesson
+                  </button>
                 </div>
-              </details>
+              </article>
             );
           })}
         </div>
@@ -417,7 +422,7 @@ function TopicSection({
           <div className="cbc-learning-area-content-stack">
             <TopicAssessments assessments={assessments} completed={completed} onOpen={openFocusedProblem} eyebrow="Learning area" heading="Exams" showEmpty />
             <div className="cbc-learning-area-lower-grid">
-              <LearningAreaLessons lessons={lessonItems} />
+              <LearningAreaLessons lessons={lessonItems} onOpen={openFocusedProblem} />
               <LearningAreaPracticeGroup items={visiblePracticeItems} emptyTitle="No practice yet" emptyMessage="Practice questions have not been added for this learning area yet." completed={completed} onOpen={openFocusedProblem} pageStart={practicePageStart} pageEnd={practicePageEnd} totalItems={totalPracticeQuestions} totalPages={practiceTotalPages} safePage={practiceSafePage} pageNumbers={practicePageNumbers} onPageChange={(page) => goToPage(page, practiceTotalPages)} />
             </div>
           </div>

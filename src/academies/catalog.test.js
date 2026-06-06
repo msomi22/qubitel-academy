@@ -101,7 +101,8 @@ test('CBC English declares the spelling and reading comprehension content', () =
 
   assert.deepEqual(english.lessons.map((item) => item.id), [
     'spelling-lesson-001',
-    'reading-comprehension-school-garden-lesson-001'
+    'reading-comprehension-school-garden-lesson-001',
+    'grade-3-english-parts-of-speech-lesson-001'
   ]);
   assert.deepEqual(english.practice.map((item) => item.id), [
     'spelling-practice-001',
@@ -124,6 +125,8 @@ test('CBC English declares the spelling and reading comprehension content', () =
     'spelling-domestic-animals-exam-013',
     'spelling-wild-animals-exam-014',
     'spelling-aquatic-animals-exam-015',
+    'grade-3-parts-of-speech-spelling-exam-001',
+    'grade-3-parts-of-speech-spelling-exam-002',
     'reading-comprehension-class-library-exam-001'
   ]);
 });
