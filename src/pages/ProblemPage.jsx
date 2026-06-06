@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation, useParams } from 'react-router-dom';
+import { NavLink, useLocation, useParams, useSearchParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
 import ComplexSystemDesignProblem from '../components/problems/ComplexSystemDesignProblem.jsx';
@@ -7,7 +7,11 @@ import { getQuestionRenderer } from '../components/question-renderers/registry/q
 import { getActiveAcademy } from '../config/detectAcademy.ts';
 
 import { findQuestionById } from '../services/questionBankService.js';
-import { getAdjacentQuestions } from '../services/questionNavigationService.js';
+import {
+  getAdjacentQuestions,
+  getQuestionsForNavigationScope,
+  resolveQuestionNavigationScope
+} from '../services/questionNavigationService.js';
 import { recordQuestionOpen } from '../services/recentQuestionService.js';
 import { storageService } from '../services/storageService.js';
 import {
@@ -56,6 +60,7 @@ function problemTypeLabel(type) {
 export default function ProblemPage() {
   const { questionId } = useParams();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const lastRecordedQuestionId = useRef('');
   const hasEntryRef = useRef(false);
 
@@ -180,10 +185,28 @@ export default function ProblemPage() {
   const isMcq = isMcqType(entry.question.type);
   const isComplete = !!completed[entry.question.id];
   const introText = isMcq ? '' : entry.question.question || entry.topic?.description || entry.question.scenario;
+  const navigationScope = resolveQuestionNavigationScope({
+    requestedLearningAreaId: searchParams.get('scope') || '',
+    question: entry.question,
+    topic: entry.topic,
+    category: entry.category
+  });
+  const scopedNavigationQuestions = getQuestionsForNavigationScope(entry.bank?.questions || [], navigationScope);
   const questionNavigation = {
-    ...getAdjacentQuestions(entry.bank?.questions || [], entry.question.id),
+    ...getAdjacentQuestions(scopedNavigationQuestions, entry.question.id),
+    scope: navigationScope,
     returnToCategory: location.state?.returnToCategory || null
   };
+  const scopedQuestionNumber = questionNavigation.currentIndex >= 0 && questionNavigation.total
+    ? `Question ${questionNavigation.currentIndex + 1} of ${questionNavigation.total}`
+    : '';
+  const scopeLabel = navigationScope
+    ? [
+        categoryName,
+        topicName,
+        navigationScope.learningAreaTitle
+      ].filter(Boolean).join(' / ')
+    : '';
   const QuestionRenderer = getQuestionRenderer({
     academyId: activeAcademy.id,
     categoryId,
@@ -217,6 +240,13 @@ export default function ProblemPage() {
             <span>{categoryName}</span>
             <span>{topicName}</span>
           </div>
+
+          {scopeLabel ? (
+            <div className="premium-problem-context-row" aria-label="Learning area scope">
+              <span>{scopeLabel}</span>
+              {scopedQuestionNumber ? <span>{scopedQuestionNumber}</span> : null}
+            </div>
+          ) : null}
 
           <h1>{entry.question.title}</h1>
 

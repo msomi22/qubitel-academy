@@ -5,6 +5,10 @@ import Button from './Button.jsx';
 
 import { performanceConfig } from '../config/performanceConfig.js';
 import { createExamEntries } from '../services/examAttemptService.js';
+import {
+  buildProblemPath,
+  getQuestionLearningAreaId
+} from '../services/questionNavigationService.js';
 
 function clampPage(page, totalPages) {
   return Math.min(Math.max(page, 1), Math.max(totalPages, 1));
@@ -385,7 +389,11 @@ function TopicSection({
       navigate(`/exam/${question.id}`);
       return;
     }
-    navigate(`/problem/${question.id}`, { state: { returnToCategory: { ...returnContext, questionId: question.id } } });
+
+    const learningAreaId = returnContext?.learningAreaId || getQuestionLearningAreaId(question);
+    navigate(buildProblemPath(question.id, { learningAreaId }), {
+      state: { returnToCategory: { ...returnContext, questionId: question.id } }
+    });
   }
 
   function goToPage(page, pageLimit = totalPages) {

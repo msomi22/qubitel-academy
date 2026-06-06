@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import ReadAloudButton from '../../cbc/ReadAloudButton.jsx';
+import { buildProblemPath } from '../../../services/questionNavigationService.js';
 import { storageService } from '../../../services/storageService.js';
 import CbcVisualAid from './CbcVisualAid.jsx';
 
@@ -40,7 +41,7 @@ function CbcGradeOneNavigation({ navigation, placement = 'bottom' }) {
       {navigation.previousQuestion ? (
         <NavLink
           className="cbc-grade-one-nav-button previous"
-          to={`/problem/${encodeURIComponent(navigation.previousQuestion.id)}`}
+          to={buildProblemPath(navigation.previousQuestion.id, navigation?.scope)}
           state={navigationState(navigation)}
           preventScrollReset
           aria-label={`Previous question: ${navigation.previousQuestion.title}`}
@@ -59,7 +60,7 @@ function CbcGradeOneNavigation({ navigation, placement = 'bottom' }) {
       {navigation.nextQuestion ? (
         <NavLink
           className="cbc-grade-one-nav-button next"
-          to={`/problem/${encodeURIComponent(navigation.nextQuestion.id)}`}
+          to={buildProblemPath(navigation.nextQuestion.id, navigation?.scope)}
           state={navigationState(navigation)}
           preventScrollReset
           aria-label={`Next question: ${navigation.nextQuestion.title}`}
