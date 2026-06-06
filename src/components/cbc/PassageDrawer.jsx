@@ -1,4 +1,3 @@
-import { useLayoutEffect, useRef } from 'react';
 import PassageReadAloudControls from './PassageReadAloudControls.jsx';
 
 export function formatPassageTime(totalSeconds = 0) {
@@ -16,30 +15,13 @@ function sentenceMapFor(passage = {}) {
 }
 
 export function ReadingPassage({ passage = {}, activeSentenceId = '', className = '' }) {
-  const bodyRef = useRef(null);
-
-  useLayoutEffect(() => {
-    const node = bodyRef.current;
-    if (!node) return;
-  
-    node.scrollTop = 0;
-  
-    requestAnimationFrame(() => {
-      node.scrollTop = 0;
-    });
-  }, [passage?.title]);
-
   const sentencesById = sentenceMapFor(passage);
   const paragraphs = Array.isArray(passage.paragraphs) ? passage.paragraphs : [];
-
-  useEffect(() => {
-    bodyRef.current?.scrollTo({ top: 0, behavior: 'auto' });
-  }, [passage?.title]);
 
   return (
     <article className={`cbc-reading-passage ${className}`.trim()} aria-label={passage.title || 'Reading passage'}>
       <h2>{passage.title || 'Reading Passage'}</h2>
-      <div key={passage?.title} ref={bodyRef} className="cbc-reading-passage-body">
+      <div className="cbc-reading-passage-body">
         {paragraphs.map((paragraph, paragraphIndex) => (
           <p key={paragraph.id || paragraphIndex}>
             {(paragraph.sentenceIds || []).map((sentenceId) => {
@@ -90,7 +72,7 @@ export default function PassageDrawer({
         <PassageReadAloudControls
           sentences={passage?.sentences || []}
           lang={lang}
-          preferredVoiceNames={passage?.readAloud?.preferredVoiceNames || []}
+          preferredVoiceNames={preferredVoiceNames}
           onActiveSentenceChange={onActiveSentenceChange}
           className="cbc-passage-drawer-read-aloud"
         />
