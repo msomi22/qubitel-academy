@@ -228,8 +228,10 @@ learningAreaId: spelling
 Suggested file names:
 
 ```text
-spelling-classroom-items-exam-007.js
-spelling-furniture-exam-008.js
-spelling-body-parts-exam-009.js
-spelling-random-hard-exam-010.js
+src/academies/cbc/grade-3/english/assessments/spelling-classroom-items-exam-007.js
+src/academies/cbc/grade-3/english/assessments/spelling-furniture-exam-008.js
+src/academies/cbc/grade-3/english/assessments/spelling-body-parts-exam-009.js
+src/academies/cbc/grade-3/english/assessments/spelling-random-hard-exam-010.js
+src/academies/cbc/grade-3/english/assessments/spelling-random-super-hard-exam-011.js
+src/academies/cbc/grade-3/english/assessments/spelling-random-super-hard-genius-exam-012.js
 ```
