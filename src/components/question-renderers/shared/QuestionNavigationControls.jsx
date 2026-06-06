@@ -1,5 +1,7 @@
 import { NavLink } from 'react-router-dom';
 
+import { buildProblemPath } from '../../../services/questionNavigationService.js';
+
 function navStateFor(navigation = {}) {
   return {
     ...(navigation.returnToCategory ? { returnToCategory: navigation.returnToCategory } : {}),
@@ -17,7 +19,7 @@ function QuestionNavLink({ question, direction, navigation }) {
   return (
     <NavLink
       className={`question-nav-button ${direction}`}
-      to={`/problem/${encodeURIComponent(question.id)}`}
+      to={buildProblemPath(question.id, navigation?.scope)}
       state={navStateFor(navigation)}
       preventScrollReset
       aria-label={`${label}: ${shortTitle}`}

@@ -36,6 +36,11 @@
       "id": "spelling-lesson-001",
       "file": "lessons/spelling-lesson-001.js",
       "learningAreaId": "spelling"
+    },
+    {
+      "id": "reading-comprehension-school-garden-lesson-001",
+      "file": "lessons/reading-comprehension-school-garden-lesson-001.js",
+      "learningAreaId": "reading-comprehension"
     }
   ],
   "practice": [
@@ -48,6 +53,11 @@
       "id": "spelling-practice-002",
       "file": "practice/spelling-practice-002.js",
       "learningAreaId": "spelling"
+    },
+    {
+      "id": "reading-comprehension-school-garden-practice-001",
+      "file": "practice/reading-comprehension-school-garden-practice-001.js",
+      "learningAreaId": "reading-comprehension"
     }
   ],
   "assessments": [
@@ -60,6 +70,31 @@
       "id": "spelling-exam-002",
       "file": "assessments/spelling-exam-002.js",
       "learningAreaId": "spelling"
+    },
+    {
+      "id": "spelling-exam-003",
+      "file": "assessments/spelling-exam-003.js",
+      "learningAreaId": "spelling"
+    },
+    {
+      "id": "spelling-exam-004",
+      "file": "assessments/spelling-exam-004.js",
+      "learningAreaId": "spelling"
+    },
+    {
+      "id": "spelling-exam-005",
+      "file": "assessments/spelling-exam-005.js",
+      "learningAreaId": "spelling"
+    },
+    {
+      "id": "spelling-exam-006",
+      "file": "assessments/spelling-exam-006.js",
+      "learningAreaId": "spelling"
+    },
+    {
+      "id": "reading-comprehension-class-library-exam-001",
+      "file": "assessments/reading-comprehension-class-library-exam-001.js",
+      "learningAreaId": "reading-comprehension"
     }
   ]
 }
