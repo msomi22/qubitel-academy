@@ -248,8 +248,9 @@ function TimedComprehensionReadingView({
       </section>
 
       <PassageReadAloudControls
-        sentences={config.passage?.sentences || []}
-        onActiveSentenceChange={onActiveSentenceChange}
+      sentences={config.passage?.sentences || []}
+      lang={config.readAloud?.lang || 'en-US'}
+      onActiveSentenceChange={onActiveSentenceChange}
       />
 
       <ReadingPassage
@@ -851,6 +852,7 @@ export default function ExamSessionPage() {
           activeSentenceId={activePassageSentenceId}
           onActiveSentenceChange={setActivePassageSentenceId}
           onClose={() => setPassageOpen(false)}
+          lang={comprehensionConfig?.readAloud?.lang || 'en-US'}
         />
       ) : null}
     </main>

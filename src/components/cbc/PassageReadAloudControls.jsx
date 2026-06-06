@@ -16,6 +16,8 @@ function rateForSpeed(speed) {
 
 export default function PassageReadAloudControls({
   sentences = [],
+  lang = 'en-US',
+  voiceType = 'female',
   onActiveSentenceChange,
   className = ''
 }) {
@@ -50,20 +52,23 @@ export default function PassageReadAloudControls({
       return;
     }
 
+    const activeLang = sentence.lang || lang;
+
     onActiveSentenceChange?.(sentence.id);
 
     const utterance = new Utterance(sentence.text);
-    utterance.lang = 'en-US';
+    utterance.lang = activeLang;
     utterance.rate = rateForSpeed(speedRef.current);
     utterance.pitch = 1.05;
 
-    const voice = pickPreferredVoice(synth.getVoices?.() || [], 'female', 'en-US');
+    const voice = pickPreferredVoice(synth.getVoices?.() || [], voiceType, activeLang);
     if (voice) utterance.voice = voice;
 
     utterance.onend = () => {
       if (stoppedRef.current) return;
       speakSentence(index + 1);
     };
+
     utterance.onerror = () => {
       if (stoppedRef.current) return;
       setStatus('idle');

@@ -48,6 +48,7 @@ export default function PassageDrawer({
   open,
   passage,
   timeLeft,
+  lang = 'en-US',
   activeSentenceId,
   onActiveSentenceChange,
   onClose
@@ -70,6 +71,7 @@ export default function PassageDrawer({
 
         <PassageReadAloudControls
           sentences={passage?.sentences || []}
+          lang={lang}
           onActiveSentenceChange={onActiveSentenceChange}
           className="cbc-passage-drawer-read-aloud"
         />

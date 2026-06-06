@@ -92,7 +92,8 @@ const timedComprehensionExam = {
   allowPassageDuringQuestions: true,
   readAloud: {
     enabled: true,
-    highlightCurrentSentence: true
+    highlightCurrentSentence: true,
+    lang: 'sw-KE'
   },
   passage: safariYaAminaPassage
 };

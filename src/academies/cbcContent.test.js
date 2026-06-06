@@ -394,6 +394,7 @@ test('CBC Grade 3 Kiswahili hadithi exam is a scoped timed passage assessment', 
   assert.equal(config.allowPassageDuringQuestions, true);
   assert.equal(config.readAloud.enabled, true);
   assert.equal(config.readAloud.highlightCurrentSentence, true);
+  assert.equal(config.readAloud.lang, 'sw-KE');
   assert.equal(config.passage.sentences.length, 12);
   assert.ok(config.passage.sentences.some((sentence) => sentence.text.includes('Amina alikuwa msichana mwenye bidii')));
 
