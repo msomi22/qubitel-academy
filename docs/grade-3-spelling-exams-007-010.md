@@ -114,32 +114,33 @@ Each exam has:
 
 **Exam ID:** `grade-3-spelling-random-hard-exam-010`
 **Title:** `Grade 3 Spelling Exam 10: Random Very Hard`
-**Theme:** Mixed hard spelling words
+**Theme:** Mixed very hard spelling words
 **Questions:** 20
 **Time per question:** 30 seconds
 
-| #  | Question                                                      | A           | B          | C           | D            | Answer |
-| -- | ------------------------------------------------------------- | ----------- | ---------- | ----------- | ------------ | ------ |
-| 1  | Complete: I stayed home ____ it was raining.                  | becuase     | because    | becouse     | becaus       | B      |
-| 2  | Which word means “as much as needed”?                         | enough      | enogh      | enouph      | enuf         | A      |
-| 3  | Which word means very pretty or lovely?                       | beautiful   | beutiful   | beatiful    | beautifull   | A      |
-| 4  | Which day of the week is spelled correctly?                   | Wensday     | Wednesday  | Wendsday    | Wednsday     | B      |
-| 5  | Which word means the child of your aunt or uncle?             | cousin      | couzin     | cosin       | cuosin       | A      |
-| 6  | Which word means a living creature like a goat, lion, or dog? | animal      | animol     | aminal      | animale      | A      |
-| 7  | Which word means “not the same”?                              | diffrent    | different  | diferent    | differnt     | B      |
-| 8  | Which word means something that matters a lot?                | important   | importent  | impotant    | importand    | A      |
-| 9  | Which word means something unexpected?                        | surprise    | suprise    | surprize    | surpriese    | A      |
-| 10 | Complete: The baby slept ____.                                | quietly     | quitely    | quietely    | quietley     | A      |
-| 11 | Which word means to listen carefully and do what is asked?    | obey        | obay       | obei        | obeye        | A      |
-| 12 | Complete: We must ____ our teeth every day.                   | brush       | brash      | brushe      | bruch        | A      |
-| 13 | Which word means to tell the truth and not cheat?             | honest      | onest      | honnest     | honist       | A      |
-| 14 | Which word means not easy?                                    | difficult   | dificulty  | difficalt   | dificult     | A      |
-| 15 | Complete: I received a birthday ____.                         | present     | preasent   | presant     | prezant      | A      |
-| 16 | Which word means to move fast on your feet?                   | running     | runing     | runnin      | runnung      | A      |
-| 17 | Which word means a person who teaches learners?               | teacher     | techer     | teachar     | teecher      | A      |
-| 18 | Complete: The lesson was very ____.                           | interesting | intresting | interasting | interestinge | A      |
-| 19 | Which word means to keep something safe from harm?            | protect     | protekt    | proctect    | protecte     | A      |
-| 20 | Which word means to begin something?                          | start       | stat       | starte      | staart       | A      |
+| #  | Question                                                     | A            | B            | C             | D           | Answer |
+| -- | ------------------------------------------------------------ | ------------ | ------------ | ------------- | ----------- | ------ |
+| 1  | Which word means what you learn and know?                    | knowledge    | knowlege     | knoledge      | knowladge   | A      |
+| 2  | Complete: Draw a ____ line with your ruler.                  | straight     | strait       | streight      | straigt     | A      |
+| 3  | Which word means a reply to a question?                      | answer       | anser        | answar        | anwser      | A      |
+| 4  | Which word means land surrounded by water?                   | island       | iland        | islend        | islund      | A      |
+| 5  | Which word means telling the truth?                          | honest       | onest        | honnest       | honist      | A      |
+| 6  | Complete: The doctor gave me ____.                           | medicine     | medisine     | medicin       | medecine    | A      |
+| 7  | Which word means body activity to stay healthy?              | exercise     | excercise    | exersize      | exercize    | A      |
+| 8  | Complete: We walked home ____.                               | together     | togather     | toogether     | togethar    | A      |
+| 9  | Which word means the day after today?                        | tomorrow     | tomorow      | tommorrow     | tommorow    | A      |
+| 10 | Which word means not ordinary or extra nice?                 | special      | spesial      | specail       | speacial    | A      |
+| 11 | Complete: The teacher gave clear ____.                       | instructions | instractions | instructiones | instrutions | A      |
+| 12 | Which word means something that happens by chance?           | accident     | acident      | accedent      | aksident    | A      |
+| 13 | Which word means a person who lives near you?                | neighbour    | neigbour     | nieghbour     | neighbar    | A      |
+| 14 | Complete: I made a good ____ today.                          | decision     | desicion     | decission     | desision    | A      |
+| 15 | Which word means a place where people are treated when sick? | hospital     | hospitol     | hostipal      | hospitle    | A      |
+| 16 | Which word means to remember and say words aloud?            | recite       | resite       | recit         | recheat     | A      |
+| 17 | Complete: We must keep our environment ____.                 | healthy      | helthy       | heathy        | healthly    | A      |
+| 18 | Which word means to speak very softly?                       | whisper      | wisper       | whispar       | whispper    | A      |
+| 19 | Which word means a thing that is very useful?                | valuable     | valueable    | valuabel      | valuble     | A      |
+| 20 | Complete: The pupils showed good ____.                       | behaviour    | behavour     | behaveour     | bihaviour   | A      |
+
 
 ---
 
