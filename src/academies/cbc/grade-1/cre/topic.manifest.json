@@ -1,0 +1,43 @@
+{
+  "id": "cre",
+  "displayName": "CRE",
+  "academy": "cbc",
+  "category": "grade-1",
+  "description": "Grade 1 Christian Religious Education learning areas for simple Bible stories, values, and prayer.",
+  "status": "active",
+  "learningAreas": [
+    {
+      "id": "bible-stories",
+      "title": "Bible Stories",
+      "description": "Listen to simple Bible stories and talk about what they teach.",
+      "sequence": 10
+    },
+    {
+      "id": "christian-values",
+      "title": "Christian Values",
+      "description": "Learn kindness, sharing, honesty, and respect.",
+      "sequence": 20
+    },
+    {
+      "id": "prayer",
+      "title": "Prayer",
+      "description": "Learn simple prayers and respectful moments of worship.",
+      "sequence": 30
+    },
+    {
+      "id": "caring-for-others",
+      "title": "Caring for Others",
+      "description": "Practise helping family, friends, and people at school.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [
+    {
+      "id": "christian-values-practice-001",
+      "file": "practice/christian-values-practice-001.js",
+      "learningAreaId": "christian-values"
+    }
+  ],
+  "assessments": []
+}

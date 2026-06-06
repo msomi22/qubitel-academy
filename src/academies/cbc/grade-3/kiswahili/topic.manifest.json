@@ -1,0 +1,34 @@
+{
+  "id": "kiswahili",
+  "displayName": "Kiswahili",
+  "academy": "cbc",
+  "category": "grade-3",
+  "description": "Mazoezi ya Kiswahili ya Darasa la 3 kwa kusoma, sarufi, na kuandika.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "learningAreas": [
+    {
+      "id": "ufahamu",
+      "title": "Ufahamu",
+      "description": "Soma vifungu vifupi kisha ujibu maswali kwa kutumia maelezo yaliyomo.",
+      "sequence": 10
+    },
+    {
+      "id": "sarufi",
+      "title": "Sarufi",
+      "description": "Jifunze majina, vitenzi, sentensi, na matumizi sahihi ya lugha.",
+      "sequence": 20
+    },
+    {
+      "id": "insha",
+      "title": "Insha",
+      "description": "Panga na andika sentensi na vifungu vifupi kwa ufasaha.",
+      "sequence": 30
+    }
+  ],
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

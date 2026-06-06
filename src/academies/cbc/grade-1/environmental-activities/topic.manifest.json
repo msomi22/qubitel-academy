@@ -1,0 +1,43 @@
+{
+  "id": "environmental-activities",
+  "displayName": "Environmental Activities",
+  "academy": "cbc",
+  "category": "grade-1",
+  "description": "Grade 1 Environmental Activities learning areas about self, home, school, and nature.",
+  "status": "active",
+  "learningAreas": [
+    {
+      "id": "self-and-family",
+      "title": "Self and Family",
+      "description": "Learn about body parts, family members, and caring for self.",
+      "sequence": 10
+    },
+    {
+      "id": "home-and-school",
+      "title": "Home and School",
+      "description": "Know safe places, helpers, and responsibilities at home and school.",
+      "sequence": 20
+    },
+    {
+      "id": "plants-and-animals",
+      "title": "Plants and Animals",
+      "description": "Observe common plants and animals in the local environment.",
+      "sequence": 30
+    },
+    {
+      "id": "weather",
+      "title": "Weather",
+      "description": "Notice simple weather changes and choose safe clothing.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [
+    {
+      "id": "home-and-school-practice-001",
+      "file": "practice/home-and-school-practice-001.js",
+      "learningAreaId": "home-and-school"
+    }
+  ],
+  "assessments": []
+}

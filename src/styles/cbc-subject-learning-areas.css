@@ -1,0 +1,562 @@
+.cbc-subject-landing,
+.cbc-learning-area-detail-shell,
+.cbc-learning-area-detail-card {
+  min-width: 0;
+}
+
+.cbc-subject-landing {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  width: 100%;
+}
+
+.cbc-subject-landing-head {
+  display: grid;
+  gap: 7px;
+  padding: 4px 4px 0;
+}
+
+.cbc-subject-landing-head .eyebrow,
+.cbc-subject-landing-head h2,
+.cbc-subject-landing-head p {
+  margin: 0;
+}
+
+.cbc-subject-landing-head h2 {
+  color: var(--text, var(--text-primary));
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.cbc-subject-landing-head p {
+  max-width: 560px;
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.cbc-learning-area-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 12px;
+}
+
+.cbc-learning-area-card {
+  appearance: none;
+  position: relative;
+  display: grid;
+  gap: 9px;
+  min-height: 178px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, var(--accent) 18%);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 10% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34%),
+    color-mix(in srgb, var(--card, var(--bg-card)) 88%, transparent);
+  color: var(--text, var(--text-primary));
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 7%, transparent),
+    0 14px 30px rgb(0 0 0 / 0.13);
+}
+
+.cbc-learning-area-card:hover,
+.cbc-learning-area-card:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 78%, var(--line, var(--border)) 22%);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.cbc-learning-area-card:disabled {
+  cursor: default;
+  opacity: 0.72;
+  transform: none;
+}
+
+.cbc-learning-area-card-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cbc-learning-area-card-topline strong {
+  flex: 0 0 auto;
+  color: var(--accent);
+  font-size: 0.7rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.cbc-learning-area-card-title {
+  color: var(--text, var(--text-primary));
+  font-size: 1.08rem;
+  font-weight: 900;
+  line-height: 1.16;
+}
+
+.cbc-learning-area-card-description,
+.cbc-learning-area-card-meta {
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.83rem;
+  font-weight: 720;
+  line-height: 1.38;
+}
+
+.cbc-learning-area-card-meta {
+  align-self: end;
+  color: color-mix(in srgb, var(--text, var(--text-primary)) 84%, var(--accent) 16%);
+  font-weight: 850;
+}
+
+.cbc-learning-area-card-arrow {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  color: var(--accent);
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.cbc-learning-area-detail-shell {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.cbc-learning-area-back {
+  appearance: none;
+  justify-self: start;
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, var(--accent) 14%);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 82%, transparent);
+  color: var(--text, var(--text-primary));
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.cbc-learning-area-back:hover,
+.cbc-learning-area-back:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 76%, var(--line, var(--border)) 24%);
+  color: var(--accent);
+  outline: none;
+}
+
+.cbc-learning-area-detail-card {
+  display: grid;
+  gap: 10px;
+}
+
+.cbc-learning-area-detail-card .premium-question-table-head {
+  padding: 0 2px 4px !important;
+}
+
+.cbc-learning-area-content-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.cbc-learning-area-content-stack > .topic-assessment-panel {
+  margin-bottom: 0;
+}
+
+.cbc-learning-area-lower-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.85fr) minmax(420px, 1.15fr);
+  align-items: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.cbc-learning-area-content-group {
+  display: grid;
+  gap: 8px;
+}
+
+.cbc-learning-area-panel {
+  align-content: start;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, var(--accent) 14%);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 32%),
+    color-mix(in srgb, var(--card, var(--bg-card)) 84%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 7%, transparent),
+    0 12px 26px rgb(0 0 0 / 0.1);
+}
+
+.cbc-learning-area-content-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cbc-learning-area-content-head h3 {
+  margin: 0;
+  color: var(--text, var(--text-primary));
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.cbc-learning-area-content-head span {
+  flex: 0 0 auto;
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-question-table {
+  gap: 6px !important;
+  padding: 0 !important;
+  overflow-x: auto;
+}
+
+.cbc-lesson-note-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 2px 2px 8px;
+  scroll-padding-inline: 2px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cbc-lesson-note-strip::-webkit-scrollbar {
+  height: 8px;
+}
+
+.cbc-lesson-note-strip::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 40%, var(--line, var(--border)) 60%);
+}
+
+.cbc-lesson-note-strip::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 70%, transparent);
+}
+
+.cbc-lesson-note-card {
+  flex: 0 0 min(420px, calc(100vw - 54px));
+  min-width: 0;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, var(--accent) 16%);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--card, var(--bg-card)) 94%, #fff 4%), color-mix(in srgb, var(--card, var(--bg-card)) 84%, var(--accent) 7%));
+  color: var(--text, var(--text-primary));
+  scroll-snap-align: start;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 7%, transparent);
+}
+
+.cbc-learning-area-lessons-panel .cbc-lesson-note-card {
+  flex-basis: min(100%, 420px);
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-row {
+  grid-template-columns: 28px minmax(140px, 1fr) 84px 44px 66px 18px !important;
+  gap: 8px !important;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-row--header {
+  min-height: 36px;
+  padding: 0 10px !important;
+  font-size: 0.66rem !important;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-row--item {
+  min-height: 64px;
+  padding: 0 10px !important;
+  border-radius: 12px !important;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-number {
+  font-size: 0.86rem;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-title {
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-row .pill {
+  min-width: 66px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-status {
+  width: 26px;
+  height: 26px;
+}
+
+.premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-time {
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.cbc-lesson-note-card summary {
+  display: grid;
+  gap: 5px;
+  min-height: 76px;
+  padding: 12px;
+  cursor: pointer;
+  list-style: revert;
+}
+
+.cbc-lesson-note-card summary span,
+.cbc-lesson-note-block strong {
+  color: var(--text, var(--text-primary));
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1.18;
+}
+
+.cbc-lesson-note-card summary small {
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.74rem;
+  font-weight: 720;
+  line-height: 1.3;
+}
+
+.cbc-lesson-note-card-body {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px 12px;
+}
+
+.cbc-lesson-note-block {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 68%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 72%, transparent);
+}
+
+.cbc-lesson-note-block p,
+.cbc-lesson-note-block ul {
+  margin: 0;
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.42;
+}
+
+.cbc-lesson-note-block ul {
+  padding-left: 18px;
+}
+
+.cbc-lesson-note-block.note-callout,
+.cbc-lesson-note-block.note-takeaway {
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--line, var(--border)) 66%);
+  background: color-mix(in srgb, var(--accent) 9%, var(--card, var(--bg-card)));
+}
+
+.cbc-learning-area-practice-footer {
+  margin-top: 0 !important;
+  padding: 10px 0 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, transparent) !important;
+  background: transparent !important;
+}
+
+.cbc-learning-area-empty.empty-state {
+  margin: 0;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.cbc-learning-area-empty h3,
+.cbc-learning-area-empty p {
+  margin: 0;
+}
+
+@media (max-width: 1120px) {
+  .cbc-learning-area-lower-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .cbc-subject-landing {
+    gap: 10px;
+  }
+
+  .cbc-subject-landing-head {
+    padding: 0;
+  }
+
+  .cbc-subject-landing-head h2 {
+    font-size: clamp(1.18rem, 5.4vw, 1.42rem);
+  }
+
+  .cbc-subject-landing-head p {
+    font-size: 0.76rem;
+  }
+
+  .cbc-learning-area-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .cbc-learning-area-card {
+    min-height: 132px;
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .cbc-learning-area-card-title {
+    font-size: 0.94rem;
+  }
+
+  .cbc-learning-area-card-description,
+  .cbc-learning-area-card-meta {
+    font-size: 0.72rem;
+  }
+
+  .cbc-learning-area-detail-shell {
+    gap: 8px;
+  }
+
+  .cbc-learning-area-back {
+    min-height: 34px;
+    font-size: 0.74rem;
+  }
+
+  .cbc-learning-area-content-stack {
+    gap: 9px;
+  }
+
+  .cbc-learning-area-lower-grid {
+    gap: 9px;
+  }
+
+  .cbc-learning-area-panel {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .cbc-learning-area-question-table {
+    overflow: visible !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-row--header {
+    display: none !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-row--item {
+    grid-template-columns: 30px minmax(0, 1fr) 20px !important;
+    grid-template-areas:
+      "num title chev"
+      "num meta meta" !important;
+    gap: 6px 9px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 72px !important;
+    padding: 10px !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-number {
+    grid-area: num !important;
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 0.74rem !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-title {
+    grid-area: title !important;
+    display: -webkit-box !important;
+    overflow: hidden !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    font-size: 0.8rem !important;
+    white-space: normal !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-row .pill {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    min-width: 0 !important;
+    padding: 4px 7px !important;
+    font-size: 0.58rem !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-status {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: center !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin-left: 78px !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-time {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    justify-self: end !important;
+    font-size: 0.62rem !important;
+  }
+
+  .premium-topic-dashboard-shell .cbc-learning-area-practice-panel .premium-question-chevron {
+    grid-area: chev !important;
+  }
+
+  .cbc-learning-area-content-head h3 {
+    font-size: 0.86rem;
+  }
+
+  .cbc-learning-area-content-head span {
+    font-size: 0.66rem;
+  }
+
+  .cbc-lesson-note-strip {
+    gap: 8px;
+    padding-bottom: 7px;
+  }
+
+  .cbc-lesson-note-card {
+    flex-basis: min(330px, calc(100vw - 48px));
+  }
+
+  .cbc-lesson-note-card summary {
+    min-height: 64px;
+    padding: 10px;
+  }
+
+  .cbc-lesson-note-card summary span,
+  .cbc-lesson-note-block strong {
+    font-size: 0.8rem;
+  }
+
+  .cbc-lesson-note-card summary small,
+  .cbc-lesson-note-block p,
+  .cbc-lesson-note-block ul {
+    font-size: 0.68rem;
+  }
+
+  .cbc-lesson-note-card-body {
+    padding: 0 10px 10px;
+  }
+
+  .cbc-learning-area-practice-footer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

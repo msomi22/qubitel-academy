@@ -137,7 +137,9 @@ export function validateProblem(problem, options = {}) {
   if (!problem?.difficulty) errors.push(error(problemId, 'difficulty', 'Problem difficulty is required.'));
   if (!problem?.prompt && !problem?.question) errors.push(error(problemId, 'prompt', 'Problem prompt or question is required.'));
 
-  const topic = topics.find((item) => item.id === problem?.topicId);
+  const topic = topics.find((item) => (
+    item.id === problem?.topicId && (!problem?.category || item.category === problem.category)
+  )) || topics.find((item) => item.id === problem?.topicId);
   if (problem?.topicId && !topic) errors.push(error(problemId, 'topicId', `Unknown topicId: ${problem.topicId}.`));
   if (topic && problem?.category && topic.category !== problem.category) errors.push(error(problemId, 'category', `Category must match topicManifest category: ${topic.category}.`));
 

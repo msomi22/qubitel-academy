@@ -1,0 +1,54 @@
+{
+  "id": "english",
+  "displayName": "English",
+  "academy": "cbc",
+  "category": "grade-1",
+  "description": "Grade 1 English learning areas for listening, speaking, reading, and early writing.",
+  "status": "active",
+  "learningAreas": [
+    {
+      "id": "listening-speaking",
+      "title": "Listening and Speaking",
+      "description": "Listen carefully, answer simple questions, and speak clearly.",
+      "sequence": 10
+    },
+    {
+      "id": "reading-readiness",
+      "title": "Reading Readiness",
+      "description": "Recognise sounds, letters, words, and simple sentences.",
+      "sequence": 20
+    },
+    {
+      "id": "writing-readiness",
+      "title": "Writing Readiness",
+      "description": "Trace, copy, and write simple letters and words.",
+      "sequence": 30
+    },
+    {
+      "id": "language-use",
+      "title": "Language Use",
+      "description": "Use simple words and sentence patterns in everyday communication.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [
+    {
+      "id": "listening-speaking-practice-001",
+      "file": "practice/listening-speaking-practice-001.js",
+      "learningAreaId": "listening-speaking"
+    },
+    {
+      "id": "reading-readiness-practice-001",
+      "file": "practice/reading-readiness-practice-001.js",
+      "learningAreaId": "reading-readiness"
+    }
+  ],
+  "assessments": [
+    {
+      "id": "object-matching-exam-001",
+      "file": "assessments/object-matching-exam-001.js",
+      "learningAreaId": "reading-readiness"
+    }
+  ]
+}

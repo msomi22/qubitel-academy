@@ -70,6 +70,10 @@ function isEntryComplete(question, completed = {}) {
   return examQuestions.length > 0 && examQuestions.every((examQuestion) => completed[examQuestion.id]);
 }
 
+function shouldIgnoreCardNavigation(event) {
+  return event.target.closest('button, a, input, select, summary, details, [data-no-card-nav]');
+}
+
 function examQuestionCount(entry) {
   return entry?.examQuestions?.length || 0;
 }
@@ -118,35 +122,190 @@ function TopicLearningGuide({ topic }) {
   );
 }
 
-function TopicAssessments({ assessments, completed, onOpen }) {
-  if (!assessments.length) return null;
+function idFragment(value = '') {
+  return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'section';
+}
+
+function countLabel(count, singular, pluralLabel = `${singular}s`) {
+  return `${count} ${count === 1 ? singular : pluralLabel}`;
+}
+
+function TopicAssessments({
+  assessments,
+  completed,
+  onOpen,
+  eyebrow = 'Assessments',
+  heading = 'Available quizzes',
+  showEmpty = false
+}) {
+  if (!assessments.length && !showEmpty) return null;
+
+  const headingId = `topic-assessments-${idFragment(heading)}`;
 
   return (
-    <section className="topic-assessment-panel" aria-labelledby="topic-assessments-heading">
+    <section className="topic-assessment-panel" aria-labelledby={headingId}>
       <div className="topic-assessment-head">
         <div>
-          <p className="eyebrow">Assessments</p>
-          <h3 id="topic-assessments-heading">Available quizzes</h3>
+          <p className="eyebrow">{eyebrow}</p>
+          <h3 id={headingId}>{heading}</h3>
         </div>
-        <span>{assessments.length} available</span>
+        {assessments.length ? <span>{assessments.length} available</span> : null}
       </div>
-      <div className="topic-assessment-grid">
-        {assessments.map((assessment) => (
-          <button
-            key={assessment.id}
-            type="button"
-            className={`topic-assessment-card ${isEntryComplete(assessment, completed) ? 'is-complete' : ''}`}
-            onClick={() => onOpen(assessment)}
-          >
-            <span className="topic-assessment-icon" aria-hidden="true">📝</span>
-            <span className="topic-assessment-copy">
-              <strong>{assessment.title}</strong>
-              <small>{examQuestionCount(assessment)} questions • {assessment.estimatedTime}</small>
-            </span>
-            <span className="topic-assessment-status">{examStatusLabel(assessment, completed)}</span>
-          </button>
-        ))}
+      {assessments.length ? (
+        <div className="topic-assessment-grid">
+          {assessments.map((assessment) => (
+            <button
+              key={assessment.id}
+              type="button"
+              className={`topic-assessment-card ${isEntryComplete(assessment, completed) ? 'is-complete' : ''}`}
+              onClick={() => onOpen(assessment)}
+            >
+              <span className="topic-assessment-icon" aria-hidden="true">📝</span>
+              <span className="topic-assessment-copy">
+                <strong>{assessment.title}</strong>
+                <small>{examQuestionCount(assessment)} questions • {assessment.estimatedTime}</small>
+              </span>
+              <span className="topic-assessment-status">{examStatusLabel(assessment, completed)}</span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="empty-state glass-lite cbc-learning-area-empty"><h3>No exams yet</h3><p>Check back when an exam is added for this learning area.</p></div>
+      )}
+    </section>
+  );
+}
+
+function getLessonBlocks(lesson) {
+  const body = Array.isArray(lesson?.body) ? lesson.body : [];
+  return body.filter((block) => (
+    block?.type === 'section'
+    || block?.type === 'callout'
+    || block?.type === 'checklist'
+  ));
+}
+
+function renderLessonBlock(block, index) {
+  const title = block.title || (block.type === 'section' ? `Note ${index + 1}` : 'Tip');
+  const content = block.content || block.text || '';
+
+  if (block.type === 'checklist') {
+    return (
+      <div key={`${title}-${index}`} className="cbc-lesson-note-block">
+        <strong>{title}</strong>
+        <ul>{(block.items || []).map((item) => <li key={item}>{item}</li>)}</ul>
       </div>
+    );
+  }
+
+  return (
+    <div key={`${title}-${index}`} className={`cbc-lesson-note-block note-${block.type || 'section'}`}>
+      <strong>{title}</strong>
+      {content ? <p>{content}</p> : null}
+    </div>
+  );
+}
+
+function LearningAreaLessons({ lessons }) {
+  return (
+    <section className="cbc-learning-area-content-group cbc-learning-area-panel cbc-learning-area-lessons-panel" aria-labelledby="learning-area-lessons">
+      <div className="cbc-learning-area-content-head">
+        <h3 id="learning-area-lessons">Lessons</h3>
+        <span>{countLabel(lessons.length, 'lesson')}</span>
+      </div>
+
+      {lessons.length ? (
+        <div className="cbc-lesson-note-strip" aria-label="Lesson notes">
+          {lessons.map((lesson) => {
+            const blocks = getLessonBlocks(lesson);
+            return (
+              <details key={lesson.id} className="cbc-lesson-note-card" open={lessons.length === 1}>
+                <summary>
+                  <span>{lesson.title}</span>
+                  <small>{lesson.question || 'Simple notes and guidelines'}</small>
+                </summary>
+                <div className="cbc-lesson-note-card-body">
+                  {blocks.length ? blocks.map(renderLessonBlock) : (
+                    <div className="cbc-lesson-note-block">
+                      <strong>Guideline</strong>
+                      <p>{lesson.explanation || lesson.finalTakeaway || 'Helpful lesson notes will appear here.'}</p>
+                    </div>
+                  )}
+                  {lesson.finalTakeaway ? (
+                    <div className="cbc-lesson-note-block note-takeaway">
+                      <strong>Remember</strong>
+                      <p>{lesson.finalTakeaway}</p>
+                    </div>
+                  ) : null}
+                </div>
+              </details>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="empty-state glass-lite cbc-learning-area-empty"><h3>No lessons yet</h3><p>A lesson has not been added for this learning area yet.</p></div>
+      )}
+    </section>
+  );
+}
+
+function LearningAreaPracticeGroup({
+  items,
+  emptyTitle,
+  emptyMessage,
+  completed,
+  onOpen,
+  pageStart,
+  pageEnd,
+  totalItems,
+  totalPages,
+  safePage,
+  pageNumbers,
+  onPageChange
+}) {
+  return (
+    <section className="cbc-learning-area-content-group cbc-learning-area-panel cbc-learning-area-practice-panel" aria-labelledby="learning-area-practice">
+      <div className="cbc-learning-area-content-head">
+        <h3 id="learning-area-practice">Practice</h3>
+        <span>{countLabel(totalItems, 'practice question')}</span>
+      </div>
+
+      {items.length ? (
+        <div className="premium-question-table cbc-learning-area-question-table" role="table" aria-label="Practice list">
+          <div className="premium-question-row premium-question-row--header" role="row"><span role="columnheader">#</span><span role="columnheader">Question</span><span role="columnheader">Difficulty</span><span role="columnheader">Status</span><span role="columnheader">Est. Time</span><span role="columnheader" className="sr-only">Open</span></div>
+          {items.map((question, index) => {
+            const isCompleted = isEntryComplete(question, completed);
+            const actionLabel = `Open ${question.title} in focused workspace`;
+            return (
+              <div key={question.id} role="button" tabIndex={0} className={`premium-question-row premium-question-row--item ${isCompleted ? 'is-complete' : ''}`} aria-label={actionLabel} onClick={(event) => { if (shouldIgnoreCardNavigation(event)) return; onOpen(question); }} onKeyDown={(event) => { if (event.key !== 'Enter' && event.key !== ' ') return; if (shouldIgnoreCardNavigation(event)) return; event.preventDefault(); onOpen(question); }}>
+                <span className="premium-question-number">{pageStart + index + 1}</span>
+                <span className="premium-question-title">{question.title}</span>
+                <span className={`pill ${difficultyClassName(question.difficulty)}`}>{question.difficulty || 'Practice'}</span>
+                <span className="premium-question-status" role="img" aria-label={isCompleted ? 'Completed' : 'Not completed'}>{isCompleted ? '✓' : ''}</span>
+                <span className="premium-question-time">{getEstimatedTime(question)}</span>
+                <span className="premium-question-chevron" aria-hidden="true">›</span>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="empty-state glass-lite cbc-learning-area-empty"><h3>{emptyTitle}</h3><p>{emptyMessage}</p></div>
+      )}
+
+      {totalItems ? (
+        <div className="premium-question-footer cbc-learning-area-practice-footer">
+          <p>Showing {pageStart + 1}-{pageEnd} of {totalItems}</p>
+          {totalPages > 1 ? (
+            <nav className="pagination glass-lite premium-question-pagination" aria-label="Practice question pages">
+              <div className="pagination-controls">
+                <Button className="ghost premium-pagination-arrow" onClick={() => onPageChange(safePage - 1)} disabled={safePage === 1} aria-label="Previous page">←</Button>
+                {pageNumbers.map((page) => <button key={page} type="button" className={`page-btn ${page === safePage ? 'active' : ''}`} onClick={() => onPageChange(page)} aria-current={page === safePage ? 'page' : undefined}>{page}</button>)}
+                <Button className="ghost premium-pagination-arrow" onClick={() => onPageChange(safePage + 1)} disabled={safePage === totalPages} aria-label="Next page">→</Button>
+              </div>
+            </nav>
+          ) : null}
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -158,7 +317,8 @@ function TopicSection({
   activeDifficulty = 'all',
   currentPage,
   onPageChange,
-  returnContext
+  returnContext,
+  showLearningAreaGroups = false
 }) {
   const [internalPage, setInternalPage] = useState(1);
   const navigate = useNavigate();
@@ -170,6 +330,8 @@ function TopicSection({
   const allTopicItems = useMemo(() => createExamEntries(safeQuestions).sort(compareProblemsBySequence), [safeQuestions]);
   const assessments = useMemo(() => allTopicItems.filter(isExamEntry), [allTopicItems]);
   const orderedQuestions = useMemo(() => allTopicItems.filter((item) => !isExamEntry(item)), [allTopicItems]);
+  const lessonItems = useMemo(() => orderedQuestions.filter((item) => item.type === 'learning'), [orderedQuestions]);
+  const practiceItems = useMemo(() => orderedQuestions.filter((item) => item.type !== 'learning'), [orderedQuestions]);
   const itemLabel = 'questions';
 
   const pageSize = Math.max(1, performanceConfig.questionsPerPage);
@@ -199,6 +361,23 @@ function TopicSection({
   const pageEnd = Math.min(pageStart + pageSize, totalQuestions);
   const visibleQuestions = useMemo(() => orderedQuestions.slice(pageStart, pageEnd), [orderedQuestions, pageStart, pageEnd]);
   const pageNumbers = useMemo(() => buildPageNumbers(safePage, totalPages, performanceConfig.paginationWindow), [safePage, totalPages]);
+  const practicePageSize = Math.min(8, Math.max(1, performanceConfig.questionsPerPage));
+  const totalPracticeQuestions = practiceItems.length;
+  const practiceTotalPages = Math.max(1, Math.ceil(totalPracticeQuestions / practicePageSize));
+  const practiceSafePage = clampPage(rawPage, practiceTotalPages);
+  const practicePageStart = (practiceSafePage - 1) * practicePageSize;
+  const practicePageEnd = Math.min(practicePageStart + practicePageSize, totalPracticeQuestions);
+  const visiblePracticeItems = useMemo(() => practiceItems.slice(practicePageStart, practicePageEnd), [practiceItems, practicePageEnd, practicePageStart]);
+  const practicePageNumbers = useMemo(() => buildPageNumbers(practiceSafePage, practiceTotalPages, performanceConfig.paginationWindow), [practiceSafePage, practiceTotalPages]);
+
+  useEffect(() => {
+    if (!showLearningAreaGroups || practiceSafePage === rawPage) return;
+    if (isControlled) {
+      onPageChange?.(practiceSafePage);
+      return;
+    }
+    setInternalPage(practiceSafePage);
+  }, [isControlled, onPageChange, practiceSafePage, rawPage, showLearningAreaGroups]);
 
   function openFocusedProblem(question) {
     if (!question?.id) return;
@@ -209,15 +388,35 @@ function TopicSection({
     navigate(`/problem/${question.id}`, { state: { returnToCategory: { ...returnContext, questionId: question.id } } });
   }
 
-  function shouldIgnoreCardNavigation(event) {
-    return event.target.closest('button, a, input, select, summary, details, [data-no-card-nav]');
-  }
-
-  function goToPage(page) {
-    const nextPage = clampPage(page, totalPages);
+  function goToPage(page, pageLimit = totalPages) {
+    const nextPage = clampPage(page, pageLimit);
     if (isControlled) onPageChange?.(nextPage);
     else setInternalPage(nextPage);
     requestAnimationFrame(() => sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
+
+  if (showLearningAreaGroups) {
+    const summaryLabel = [
+      countLabel(lessonItems.length, 'lesson'),
+      countLabel(practiceItems.length, 'practice question'),
+      countLabel(assessments.length, 'exam')
+    ].join(' • ');
+
+    return (
+      <section className="topic-section premium-question-section premium-topic-detail" ref={sectionRef}>
+        <div className="cbc-learning-area-detail-card" aria-label={`${topic.name} content`}>
+          <div className="premium-question-table-head"><div><h2>{topic.name}</h2><p>{topic.description}</p></div><span className="premium-topic-question-count">{summaryLabel}</span></div>
+          <div className="cbc-learning-area-content-stack">
+            <TopicAssessments assessments={assessments} completed={completed} onOpen={openFocusedProblem} eyebrow="Learning area" heading="Exams" showEmpty />
+            <div className="cbc-learning-area-lower-grid">
+              <LearningAreaLessons lessons={lessonItems} />
+              <LearningAreaPracticeGroup items={visiblePracticeItems} emptyTitle="No practice yet" emptyMessage="Practice questions have not been added for this learning area yet." completed={completed} onOpen={openFocusedProblem} pageStart={practicePageStart} pageEnd={practicePageEnd} totalItems={totalPracticeQuestions} totalPages={practiceTotalPages} safePage={practiceSafePage} pageNumbers={practicePageNumbers} onPageChange={(page) => goToPage(page, practiceTotalPages)} />
+            </div>
+          </div>
+        </div>
+        <TopicLearningGuide topic={topic} />
+      </section>
+    );
   }
 
   return (

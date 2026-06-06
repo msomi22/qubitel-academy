@@ -49,7 +49,7 @@ function compareByProgress(a, b) {
     return b.progress.percent - a.progress.percent;
   }
 
-  return a.name.localeCompare(b.name);
+  return a.name.localeCompare(b.name) || a.category.localeCompare(b.category);
 }
 
 export default function ProgressPage() {
@@ -110,7 +110,7 @@ export default function ProgressPage() {
     });
 
     return [...nextRows].sort((a, b) => {
-      if (sort === 'az') return a.name.localeCompare(b.name);
+      if (sort === 'az') return a.name.localeCompare(b.name) || a.category.localeCompare(b.category);
 
       if (sort === 'completed-first') {
         const aDone = a.progress.total > 0 && a.progress.done === a.progress.total;
@@ -128,7 +128,7 @@ export default function ProgressPage() {
           return Number(bNotStarted) - Number(aNotStarted);
         }
 
-        return a.name.localeCompare(b.name);
+        return a.name.localeCompare(b.name) || a.category.localeCompare(b.category);
       }
 
       return compareByProgress(a, b);
@@ -224,7 +224,7 @@ export default function ProgressPage() {
               </thead>
               <tbody>
                 {visibleRows.map((topic) => (
-                  <tr key={topic.id}>
+                  <tr key={`${topic.category}/${topic.id}`}>
                     <td>
                       <div className="progress-topic-name">
                         <strong>{topic.name}</strong>

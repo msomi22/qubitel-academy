@@ -16,6 +16,7 @@ export function parseCategoryPage(value) {
 export function readCategorySearchState(searchParams = new URLSearchParams()) {
   return {
     topicId: searchParams.get('topic') || '',
+    learningAreaId: searchParams.get('area') || searchParams.get('strand') || '',
     page: parseCategoryPage(searchParams.get('page')),
     difficulty: searchParams.get('difficulty') || ALL_FILTER,
     completionFilter: searchParams.get('completion') || DEFAULT_COMPLETION_FILTER
@@ -24,6 +25,7 @@ export function readCategorySearchState(searchParams = new URLSearchParams()) {
 
 export function buildCategorySearchParams({
   topicId,
+  learningAreaId,
   page,
   difficulty = ALL_FILTER,
   completionFilter = DEFAULT_COMPLETION_FILTER,
@@ -32,6 +34,7 @@ export function buildCategorySearchParams({
   const params = new URLSearchParams();
 
   if (topicId) params.set('topic', topicId);
+  if (learningAreaId) params.set('area', learningAreaId);
   if (page) params.set('page', String(parseCategoryPage(page)));
   if (difficulty && difficulty !== ALL_FILTER) params.set('difficulty', difficulty);
   if (completionFilter && completionFilter !== DEFAULT_COMPLETION_FILTER) {

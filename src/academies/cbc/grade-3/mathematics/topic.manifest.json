@@ -1,0 +1,40 @@
+{
+  "id": "mathematics",
+  "displayName": "Mathematics",
+  "academy": "cbc",
+  "category": "grade-3",
+  "description": "Grade 3 Mathematics learning areas for number work and problem solving.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "learningAreas": [
+    {
+      "id": "addition",
+      "title": "Addition",
+      "description": "Build confidence adding numbers using place value and everyday examples.",
+      "sequence": 10
+    },
+    {
+      "id": "subtraction",
+      "title": "Subtraction",
+      "description": "Practise taking away, comparing numbers, and checking answers.",
+      "sequence": 20
+    },
+    {
+      "id": "multiplication",
+      "title": "Multiplication",
+      "description": "Explore equal groups, repeated addition, and simple times tables.",
+      "sequence": 30
+    },
+    {
+      "id": "division",
+      "title": "Division",
+      "description": "Share items equally and solve simple division problems.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

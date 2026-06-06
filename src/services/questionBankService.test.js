@@ -442,6 +442,50 @@ test('topic with no questions returns an empty bank safely after discovered look
   assert.deepEqual(bank.questions, []);
 });
 
+test('category-scoped topic loading keeps duplicate subject ids isolated', async () => {
+  const duplicateSubjectTopics = [
+    {
+      id: 'english',
+      name: 'Grade 1 English',
+      category: 'grade-1',
+      academyId: 'cbc',
+      questionBank: { mode: 'empty' }
+    },
+    {
+      id: 'english',
+      name: 'Grade 3 English',
+      category: 'grade-3',
+      academyId: 'cbc',
+      questionBank: { mode: 'empty' }
+    }
+  ];
+  const lookupCategories = [];
+  const getDiscoveredQuestions = async (topicId, options = {}) => {
+    lookupCategories.push(options.categoryId);
+    if (topicId !== 'english' || options.categoryId !== 'grade-3') return [];
+    return [{ id: 'spelling-practice-001', type: 'mcq', topicId: 'english', category: 'grade-3', title: 'Spelling' }];
+  };
+
+  const gradeOneBank = await loadTopicBankFromSources('english', {
+    topics: duplicateSubjectTopics,
+    modules: {},
+    categoryId: 'grade-1',
+    getDiscoveredQuestions
+  });
+  const gradeThreeBank = await loadTopicBankFromSources('english', {
+    topics: duplicateSubjectTopics,
+    modules: {},
+    categoryId: 'grade-3',
+    getDiscoveredQuestions
+  });
+
+  assert.equal(gradeOneBank.category, 'grade-1');
+  assert.equal(gradeThreeBank.category, 'grade-3');
+  assert.deepEqual(gradeOneBank.questions, []);
+  assert.deepEqual(gradeThreeBank.questions.map((question) => question.id), ['spelling-practice-001']);
+  assert.deepEqual(lookupCategories, ['grade-1', 'grade-3']);
+});
+
 test('missing legacy bank without discovered questions or explicit opt-in errors clearly', async () => {
   await assert.rejects(
     () => loadTopicBankFromSources('missing-bank-topic', {
@@ -510,4 +554,24 @@ test('topicProgress keeps existing ID-prefix completed status behavior', () => {
   );
 
   assert.deepEqual(progress, { done: 2, total: 3, percent: 67 });
+});
+
+test('topicProgress uses exact question ids when migrated content has old prefixes', () => {
+  const progress = topicProgress(
+    {
+      id: 'mathematics',
+      count: 2,
+      questionIds: [
+        'foundation-practice-counting-three-stars-007',
+        'foundation-practice-counting-after-five-008'
+      ]
+    },
+    {
+      'foundation-practice-counting-three-stars-007': true,
+      'foundation-practice-counting-after-five-008': false,
+      'mathematics-unrelated-001': true
+    }
+  );
+
+  assert.deepEqual(progress, { done: 1, total: 2, percent: 50 });
 });

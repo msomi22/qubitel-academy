@@ -1,0 +1,40 @@
+{
+  "id": "cre",
+  "displayName": "CRE",
+  "academy": "cbc",
+  "category": "grade-3",
+  "description": "Grade 3 Christian Religious Education learning areas for values, Bible stories, and service.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "learningAreas": [
+    {
+      "id": "bible-stories",
+      "title": "Bible Stories",
+      "description": "Listen to and retell simple Bible stories with clear lessons.",
+      "sequence": 10
+    },
+    {
+      "id": "christian-values",
+      "title": "Christian Values",
+      "description": "Learn kindness, honesty, respect, forgiveness, and responsibility.",
+      "sequence": 20
+    },
+    {
+      "id": "prayer",
+      "title": "Prayer",
+      "description": "Understand simple prayers and moments of worship.",
+      "sequence": 30
+    },
+    {
+      "id": "service",
+      "title": "Service",
+      "description": "Explore caring for family, school, neighbours, and the community.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

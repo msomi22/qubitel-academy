@@ -9,7 +9,7 @@ async function loadInventoryForTopics(topics = []) {
   const seenIds = new Set();
 
   for (const topic of topics) {
-    const bank = await loadTopicBank(topic.id);
+    const bank = await loadTopicBank(topic.id, { categoryId: topic.category });
 
     for (const question of bank.questions || []) {
       if (!question?.id || seenIds.has(question.id)) continue;
@@ -50,8 +50,8 @@ export async function getDashboardQuestionSummary(completed = {}) {
 export async function getTopicQuestionIdsById() {
   const topics = await getVisibleTopicsForActiveProfile();
   const entries = await Promise.all(topics.map(async (topic) => {
-    const bank = await loadTopicBank(topic.id);
-    return [topic.id, (bank.questions || []).map((question) => question.id).filter(Boolean)];
+    const bank = await loadTopicBank(topic.id, { categoryId: topic.category });
+    return [`${topic.category}/${topic.id}`, (bank.questions || []).map((question) => question.id).filter(Boolean)];
   }));
 
   return Object.fromEntries(entries);

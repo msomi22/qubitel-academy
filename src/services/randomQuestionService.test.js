@@ -76,6 +76,10 @@ test('random filter normalization treats All categories and Any subtopic as no f
     category: 'dsa',
     topicId: 'arrays'
   });
+  assert.deepEqual(normalizeRandomQuestionFilters({ category: 'all', topicId: 'grade-3/mathematics' }), {
+    category: 'grade-3',
+    topicId: 'mathematics'
+  });
 });
 
 test('getRandomQuestion supports All categories with Any subtopic', async () => {
@@ -115,6 +119,56 @@ test('getRandomQuestion preserves topic-specific selection', async () => {
 
   assert.equal(question.id, 'api-design-001');
   assert.equal(question.parentTopic, 'API Design');
+});
+
+test('getRandomQuestion supports scoped topic ids when subjects repeat across grades', async () => {
+  const duplicateSubjectTopics = [
+    {
+      id: 'mathematics',
+      name: 'Mathematics',
+      category: 'grade-1',
+      description: 'Grade 1 Mathematics.',
+      questionBank: { mode: 'discovered' }
+    },
+    {
+      id: 'mathematics',
+      name: 'Mathematics',
+      category: 'grade-3',
+      description: 'Grade 3 Mathematics.',
+      questionBank: { mode: 'discovered' }
+    }
+  ];
+  const duplicateSubjectQuestions = [
+    {
+      id: 'grade-1-math-001',
+      type: 'multiple-choice',
+      category: 'grade-1',
+      topicId: 'mathematics',
+      title: 'Grade 1 count',
+      metadata: { reviewStatus: 'approved', visibility: ['dev', 'prod'], authoringVersion: 2 }
+    },
+    {
+      id: 'grade-3-math-001',
+      type: 'multiple-choice',
+      category: 'grade-3',
+      topicId: 'mathematics',
+      title: 'Grade 3 multiply',
+      metadata: { reviewStatus: 'approved', visibility: ['dev', 'prod'], authoringVersion: 2 }
+    }
+  ];
+
+  const question = await getRandomQuestion(
+    { category: 'all', topicId: 'grade-3/mathematics' },
+    randomOptions(duplicateSubjectQuestions, {
+      topics: duplicateSubjectTopics,
+      getDiscoveredQuestions: async (topicId, { categoryId } = {}) => duplicateSubjectQuestions.filter((item) => (
+        item.topicId === topicId && item.category === categoryId
+      ))
+    })
+  );
+
+  assert.equal(question.id, 'grade-3-math-001');
+  assert.equal(question.category, 'grade-3');
 });
 
 test('getRandomQuestion rejects clearly when no visible question matches', async () => {

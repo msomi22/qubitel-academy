@@ -42,6 +42,9 @@ function validateContentReferences(value, path, field, errors) {
 
     validateSafeId(reference.id, path, `${referenceField}.id`, errors);
     validateString(reference.file, path, `${referenceField}.file`, errors);
+    if (reference.learningAreaId !== undefined) {
+      validateSafeId(reference.learningAreaId, path, `${referenceField}.learningAreaId`, errors);
+    }
     if (typeof reference.file === 'string') {
       const expectedFile = `${field}/${reference.id}.js`;
       if (reference.file !== expectedFile) {
@@ -52,6 +55,36 @@ function validateContentReferences(value, path, field, errors) {
         ));
       }
     }
+  }
+}
+
+function validateLearningAreas(value, path, errors) {
+  if (value === undefined) return;
+  if (!Array.isArray(value)) {
+    errors.push(issue(path, 'learningAreas', 'learningAreas must be an array when provided.'));
+    return;
+  }
+
+  const seen = new Set();
+  for (const [index, area] of value.entries()) {
+    const field = `learningAreas[${index}]`;
+    if (!area || typeof area !== 'object' || Array.isArray(area)) {
+      errors.push(issue(path, field, 'Learning area must be an object.'));
+      continue;
+    }
+
+    validateSafeId(area.id, path, `${field}.id`, errors);
+    validateString(area.title, path, `${field}.title`, errors);
+    if (area.description !== undefined) validateString(area.description, path, `${field}.description`, errors);
+    if (area.sequence !== undefined && !Number.isFinite(Number(area.sequence))) {
+      errors.push(issue(path, `${field}.sequence`, 'sequence must be a finite number when provided.'));
+    }
+
+    if (!area.id || !seen.has(area.id)) {
+      if (area.id) seen.add(area.id);
+      continue;
+    }
+    errors.push(issue(path, `${field}.id`, `Duplicate learning area id: ${area.id}.`));
   }
 }
 
@@ -81,9 +114,11 @@ export function validateTopicManifest(manifest, path = 'topic.manifest.json') {
   validateSafeId(manifest?.academy, path, 'academy', errors);
   validateSafeId(manifest?.category, path, 'category', errors);
   validateString(manifest?.displayName, path, 'displayName', errors);
+  validateLearningAreas(manifest?.learningAreas, path, errors);
   for (const key of CONTENT_KEYS) validateContentReferences(manifest?.[key], path, key, errors);
 
   const references = CONTENT_KEYS.flatMap((key) => manifest?.[key] || []);
+  const learningAreaIds = new Set((manifest?.learningAreas || []).map((area) => area?.id).filter(Boolean));
   for (const field of ['id', 'file']) {
     const seen = new Set();
     for (const reference of references) {
@@ -92,6 +127,17 @@ export function validateTopicManifest(manifest, path = 'topic.manifest.json') {
         continue;
       }
       errors.push(issue(path, field, `Duplicate content ${field}: ${reference[field]}.`));
+    }
+  }
+
+  if (references.some((reference) => reference?.learningAreaId)) {
+    for (const [index, reference] of references.entries()) {
+      if (!reference?.learningAreaId || learningAreaIds.has(reference.learningAreaId)) continue;
+      errors.push(issue(
+        path,
+        `content[${index}].learningAreaId`,
+        `Unknown learning area: ${reference.learningAreaId}.`
+      ));
     }
   }
 
@@ -126,8 +172,7 @@ export function validateManifestRecords({
     ...topicRecords.flatMap(({ path, manifest }) => validateTopicManifest(manifest, path)),
     ...duplicateErrors(academyRecords, (manifest) => manifest.id, 'academy'),
     ...duplicateErrors(categoryRecords, (manifest) => `${manifest.academy}/${manifest.id}`, 'category'),
-    ...duplicateErrors(topicRecords, (manifest) => `${manifest.academy}/${manifest.category}/${manifest.id}`, 'topic'),
-    ...duplicateErrors(topicRecords, (manifest) => `${manifest.academy}/${manifest.id}`, 'academy topic')
+    ...duplicateErrors(topicRecords, (manifest) => `${manifest.academy}/${manifest.category}/${manifest.id}`, 'topic')
   ];
 
   const academies = new Map(academyRecords.map((record) => [record.manifest.id, record]));

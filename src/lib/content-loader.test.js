@@ -15,7 +15,7 @@ const catalog = {
       academy: 'tech',
       category: 'dsa',
       lessons: [{ id: 'window-lesson', file: 'lessons/window-lesson.js' }],
-      practice: [{ id: 'window-practice', file: 'practice/window-practice.js' }],
+      practice: [{ id: 'window-practice', file: 'practice/window-practice.js', learningAreaId: 'fixed-window' }],
       assessments: []
     }
   ]
@@ -39,6 +39,7 @@ test('builds academy-scoped content references from topic manifests', () => {
       categoryId: 'dsa',
       topicId: 'sliding-window',
       kind: 'practice',
+      learningAreaId: 'fixed-window',
       path: '../academies/tech/dsa/sliding-window/practice/window-practice.js'
     }
   ]);

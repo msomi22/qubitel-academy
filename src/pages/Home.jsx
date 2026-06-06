@@ -306,7 +306,7 @@ export default function Home() {
         <CommandCard eyebrow="Focus areas" title="Weak topics" className="dashboard-action-card">
           <div className="dashboard-topic-list">
             {weakAreas.length ? weakAreas.map((topic) => (
-              <TopicProgressRow key={topic.id} topic={topic} />
+              <TopicProgressRow key={`${topic.category}/${topic.id}`} topic={topic} />
             )) : <p className="dashboard-empty-note">Start solving questions to unlock focus signals.</p>}
           </div>
           <Link className="dashboard-card-link" to="/categories">View all focus areas</Link>

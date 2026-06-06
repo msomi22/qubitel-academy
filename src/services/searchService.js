@@ -105,11 +105,11 @@ function scoreEntry(entry, tokens, rawQuery) {
 }
 
 export async function buildSearchIndex(topics) {
-  const key = topics.map((topic) => topic.id).join('|');
+  const key = topics.map((topic) => `${topic.category}/${topic.id}`).join('|');
   if (indexCache.has(key)) return indexCache.get(key);
 
   const indexPromise = Promise.all(topics.map(async (topicMeta) => {
-    const bank = await loadTopicBank(topicMeta.id);
+    const bank = await loadTopicBank(topicMeta.id, { categoryId: topicMeta.category });
     return bank.questions.map((question) => ({
       id: question.id,
       topicId: bank.id,

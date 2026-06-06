@@ -22,9 +22,11 @@ const bankModules = import.meta.env
   ? import.meta.glob('../academies/*/_legacy/banks/**/*.js')
   : {};
 
-function getTopic(topicId, topics = topicManifest) {
-  const topic = topics.find((item) => item.id === topicId);
-  if (!topic) throw new Error(`Unknown topic bank: ${topicId}`);
+function getTopic(topicId, topics = topicManifest, categoryId = '') {
+  const topic = topics.find((item) => (
+    item.id === topicId && (!categoryId || item.category === categoryId)
+  ));
+  if (!topic) throw new Error(`Unknown topic bank: ${categoryId ? `${categoryId}/` : ''}${topicId}`);
   return topic;
 }
 
@@ -208,12 +210,13 @@ function applyContentProfileToBank(bank, options = {}) {
 }
 
 export async function loadTopicBankFromSources(topicId, options = {}) {
-  const topic = getTopic(topicId, options.topics || topicManifest);
+  const topic = getTopic(topicId, options.topics || topicManifest, options.categoryId);
   const modules = options.modules || bankModules;
   const getDiscoveredQuestions = options.getDiscoveredQuestions || getDiscoveredQuestionsForTopic;
 
   const discoveredQuestions = await getDiscoveredQuestions(topicId, {
-    academyId: topic.academyId || topic.academy
+    academyId: topic.academyId || topic.academy,
+    categoryId: topic.category
   });
   const legacyBank = await loadLegacyBankIfPresent(topic, modules);
 
@@ -328,11 +331,12 @@ export async function loadTopicBank(topicId, options = {}) {
     return loadTopicBankFromSources(topicId, options);
   }
 
-  if (!bankCache.has(topicId)) {
-    bankCache.set(topicId, loadTopicBankFromSources(topicId));
+  const cacheKey = `${options.categoryId || ''}:${topicId}`;
+  if (!bankCache.has(cacheKey)) {
+    bankCache.set(cacheKey, loadTopicBankFromSources(topicId, { categoryId: options.categoryId }));
   }
 
-  return bankCache.get(topicId);
+  return bankCache.get(cacheKey);
 }
 
 export async function getTopicCount(topicId, options = {}) {
@@ -341,8 +345,12 @@ export async function getTopicCount(topicId, options = {}) {
 }
 
 export async function getTopicWithCount(topic, options = {}) {
-  const count = await getTopicCount(topic.id, options);
-  return { ...topic, count };
+  const bank = await loadTopicBank(topic.id, { ...options, categoryId: topic.category });
+  return {
+    ...topic,
+    count: bank.questions.length,
+    questionIds: bank.questions.map((question) => question.id)
+  };
 }
 
 export async function getTopicsWithCounts(categoryId, options = {}) {
@@ -396,10 +404,24 @@ export async function loadTopicBanks(topicIds, options = {}) {
   return Promise.all(topicIds.map((topicId) => loadTopicBank(topicId, options)));
 }
 
-export function normalizeRandomQuestionFilters(filters = {}) {
+function parseScopedTopicId(topicId) {
+  if (!topicId || typeof topicId !== 'string') return null;
+
+  const separatorIndex = topicId.indexOf('/');
+  if (separatorIndex <= 0 || separatorIndex === topicId.length - 1) return null;
+
   return {
-    category: filters.category && filters.category !== 'all' ? filters.category : null,
-    topicId: filters.topicId || null
+    category: topicId.slice(0, separatorIndex),
+    topicId: topicId.slice(separatorIndex + 1)
+  };
+}
+
+export function normalizeRandomQuestionFilters(filters = {}) {
+  const scopedTopic = parseScopedTopicId(filters.topicId);
+
+  return {
+    category: scopedTopic?.category || (filters.category && filters.category !== 'all' ? filters.category : null),
+    topicId: scopedTopic?.topicId || filters.topicId || null
   };
 }
 
@@ -413,7 +435,7 @@ export async function getRandomQuestion(filters = {}, options = {}) {
   });
 
   for (const pickedTopic of candidates.sort(() => Math.random() - 0.5)) {
-    const bank = await loadTopicBank(pickedTopic.id, options);
+    const bank = await loadTopicBank(pickedTopic.id, { ...options, categoryId: pickedTopic.category });
     if (!bank.questions.length) continue;
 
     const question = bank.questions[Math.floor(Math.random() * bank.questions.length)];
@@ -427,7 +449,7 @@ export async function findQuestionById(questionId) {
   const topics = await getVisibleTopics();
 
   for (const topic of topics) {
-    const bank = await loadTopicBank(topic.id);
+    const bank = await loadTopicBank(topic.id, { categoryId: topic.category });
     const question = bank.questions.find((item) => item.id === questionId);
 
     if (question) {
@@ -449,7 +471,7 @@ export async function findExamById(examId) {
   const topics = await getVisibleTopics();
 
   for (const topic of topics) {
-    const bank = await loadTopicBank(topic.id);
+    const bank = await loadTopicBank(topic.id, { categoryId: topic.category });
     const questions = bank.questions
       .filter((question) => isExamQuestion(question) && question.metadata.examId === examId)
       .sort((a, b) => Number(a.metadata.sequence || 0) - Number(b.metadata.sequence || 0));
@@ -476,7 +498,7 @@ export async function progressSummary(completed = {}, options = {}) {
   const visibleQuestionIds = new Set();
 
   for (const topic of topicsWithCounts) {
-    const bank = await loadTopicBank(topic.id, options);
+    const bank = await loadTopicBank(topic.id, { ...options, categoryId: topic.category });
     for (const question of bank.questions || []) {
       visibleQuestionIds.add(question.id);
     }
@@ -487,9 +509,11 @@ export async function progressSummary(completed = {}, options = {}) {
 }
 
 export function topicProgress(topic, completed = {}) {
-  const total = Number(topic.count ?? 0);
-  const prefix = `${topic.id}-`;
-  const done = Object.keys(completed).filter((id) => completed[id] && id.startsWith(prefix)).length;
+  const questionIds = Array.isArray(topic.questionIds) ? topic.questionIds : null;
+  const total = Number(topic.count ?? questionIds?.length ?? 0);
+  const done = questionIds
+    ? questionIds.filter((id) => completed[id]).length
+    : Object.keys(completed).filter((id) => completed[id] && id.startsWith(`${topic.id}-`)).length;
 
   return { done, total, percent: total ? Math.round((done / total) * 100) : 0 };
 }

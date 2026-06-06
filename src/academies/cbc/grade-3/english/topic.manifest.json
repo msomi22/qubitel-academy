@@ -3,32 +3,63 @@
   "displayName": "English",
   "academy": "cbc",
   "category": "grade-3",
-  "description": "Grade 3 English practice with spelling lessons, practice, and exams.",
+  "description": "Grade 3 English lessons, practice, and exams.",
   "status": "active",
+  "learningAreas": [
+    {
+      "id": "spelling",
+      "title": "Spelling",
+      "description": "Build strong word skills with Grade 3 spelling lessons, practice, and exams.",
+      "sequence": 10
+    },
+    {
+      "id": "reading-comprehension",
+      "title": "Reading Comprehension",
+      "description": "Read short passages and answer questions using details from the text.",
+      "sequence": 20
+    },
+    {
+      "id": "grammar",
+      "title": "Grammar",
+      "description": "Build clear sentences with nouns, verbs, punctuation, and simple sentence patterns.",
+      "sequence": 30
+    },
+    {
+      "id": "composition",
+      "title": "Composition",
+      "description": "Plan and write short Grade 3 stories, descriptions, and friendly messages.",
+      "sequence": 40
+    }
+  ],
   "lessons": [
     {
       "id": "spelling-lesson-001",
-      "file": "lessons/spelling-lesson-001.js"
+      "file": "lessons/spelling-lesson-001.js",
+      "learningAreaId": "spelling"
     }
   ],
   "practice": [
     {
       "id": "spelling-practice-001",
-      "file": "practice/spelling-practice-001.js"
+      "file": "practice/spelling-practice-001.js",
+      "learningAreaId": "spelling"
     },
     {
       "id": "spelling-practice-002",
-      "file": "practice/spelling-practice-002.js"
+      "file": "practice/spelling-practice-002.js",
+      "learningAreaId": "spelling"
     }
   ],
   "assessments": [
     {
       "id": "spelling-exam-001",
-      "file": "assessments/spelling-exam-001.js"
+      "file": "assessments/spelling-exam-001.js",
+      "learningAreaId": "spelling"
     },
     {
       "id": "spelling-exam-002",
-      "file": "assessments/spelling-exam-002.js"
+      "file": "assessments/spelling-exam-002.js",
+      "learningAreaId": "spelling"
     }
   ]
 }

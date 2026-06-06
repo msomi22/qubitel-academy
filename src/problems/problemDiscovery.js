@@ -2,7 +2,10 @@ import {
   getAcademyCatalog,
   getActiveAcademyCatalog
 } from '../academies/catalog.js';
-import { selectCatalogContentModules } from '../lib/content-loader.js';
+import {
+  getCatalogContentReferences,
+  selectCatalogContentModules
+} from '../lib/content-loader.js';
 import { problemTypeRegistry } from './problemTypeRegistry.js';
 import { normalizeProblem } from './normalizeProblem.js';
 import { validateProblemCollection } from './validateProblem.js';
@@ -24,12 +27,25 @@ function inferAcademyId(path) {
   return path.match(/\/academies\/([^/]+)\//)?.[1] || null;
 }
 
-function normalizeDiscoveredProblem(problem, path, index, academyId) {
+function manifestEntryMetadata(reference) {
+  if (!reference) return null;
+
+  return {
+    id: reference.id,
+    kind: reference.kind,
+    ...(reference.learningAreaId ? { learningAreaId: reference.learningAreaId } : {})
+  };
+}
+
+function normalizeDiscoveredProblem(problem, path, index, academyId, reference) {
+  const manifestEntry = manifestEntryMetadata(reference);
+
   return normalizeProblem({
     ...problem,
     academyId: problem.academyId || academyId || inferAcademyId(path),
     metadata: {
       ...(problem.metadata || {}),
+      ...(manifestEntry ? { manifestEntry } : {}),
       sourcePath: path,
       sourceIndex: index
     }
@@ -51,6 +67,9 @@ export async function discoverProblems(options = {}) {
   const modules = options.modules || selectCatalogContentModules(catalog, academyContentModules);
   const topics = options.topics || catalog.topics;
   const registry = options.registry || problemTypeRegistry;
+  const contentReferenceByPath = new Map(
+    getCatalogContentReferences({ ...catalog, topics }).map((reference) => [reference.path, reference])
+  );
   const shouldUseCache = !options.modules && !options.topics && !options.registry && !options.catalog;
 
   if (shouldUseCache && discoveryCache.has(academyId)) return discoveryCache.get(academyId);
@@ -59,7 +78,7 @@ export async function discoverProblems(options = {}) {
     Object.entries(modules).map(async ([path, loader]) => {
       const module = typeof loader === 'function' ? await loader() : loader;
       return readProblemExports(module).map((problem, index) => (
-        normalizeDiscoveredProblem(problem, path, index, academyId)
+        normalizeDiscoveredProblem(problem, path, index, academyId, contentReferenceByPath.get(path))
       ));
     })
   );
@@ -78,7 +97,10 @@ export async function discoverProblems(options = {}) {
 
 export async function getDiscoveredQuestionsForTopic(topicId, options = {}) {
   const problems = await discoverProblems(options);
-  return problems.filter((problem) => problem.topicId === topicId);
+  return problems.filter((problem) => (
+    problem.topicId === topicId
+    && (!options.categoryId || problem.category === options.categoryId)
+  ));
 }
 
 export async function getProblemValidationResult(options = {}) {

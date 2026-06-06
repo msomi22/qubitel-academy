@@ -1,0 +1,40 @@
+{
+  "id": "kiswahili",
+  "displayName": "Kiswahili",
+  "academy": "cbc",
+  "category": "grade-1",
+  "description": "Maeneo ya kujifunza Kiswahili Darasa la 1 kwa kusikiliza, kuzungumza, kusoma, na kuandika.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "learningAreas": [
+    {
+      "id": "kusikiliza-na-kuzungumza",
+      "title": "Kusikiliza na Kuzungumza",
+      "description": "Sikiliza kwa makini na ujibu maswali mepesi kwa Kiswahili.",
+      "sequence": 10
+    },
+    {
+      "id": "kusoma",
+      "title": "Kusoma",
+      "description": "Tambua sauti, herufi, maneno, na sentensi fupi.",
+      "sequence": 20
+    },
+    {
+      "id": "kuandika",
+      "title": "Kuandika",
+      "description": "Andika herufi, maneno, na sentensi fupi kwa usahihi.",
+      "sequence": 30
+    },
+    {
+      "id": "msamiati",
+      "title": "Msamiati",
+      "description": "Jifunze maneno mapya yanayotumika nyumbani na shuleni.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

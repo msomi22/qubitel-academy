@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { detectAcademyIdFromHostname } from './detectAcademy.ts';
+import {
+  detectAcademyIdFromHostname,
+  detectAcademyIdFromLocation
+} from './detectAcademy.ts';
 import { getAcademyStorageKey } from './academyStorage.ts';
 import { getAcademyById } from './academyRegistry.ts';
 
@@ -24,6 +27,21 @@ test('detects CBC academy from subdomain', () => {
 
 test('detects Customer Experience academy from cx subdomain', () => {
   assert.equal(detectAcademyIdFromHostname('cx.academy.qubitel.net'), 'customer-experience');
+});
+
+test('allows local academy override for manual testing', () => {
+  assert.equal(
+    detectAcademyIdFromLocation({ hostname: 'localhost', search: '?academy=cbc' } as Location),
+    'cbc'
+  );
+  assert.equal(
+    detectAcademyIdFromLocation({ hostname: '127.0.0.1', search: '?academy=customer-experience' } as Location),
+    'customer-experience'
+  );
+  assert.equal(
+    detectAcademyIdFromLocation({ hostname: 'preview.pages.dev', search: '?academy=cbc' } as Location),
+    'tech'
+  );
 });
 
 test('returns default academy for unknown id', () => {

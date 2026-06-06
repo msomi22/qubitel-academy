@@ -1,0 +1,40 @@
+{
+  "id": "environmental-activities",
+  "displayName": "Environmental Activities",
+  "academy": "cbc",
+  "category": "grade-3",
+  "description": "Grade 3 Environmental Activities learning areas about learners, home, school, and nature.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "learningAreas": [
+    {
+      "id": "plants",
+      "title": "Plants",
+      "description": "Observe parts of plants, how they grow, and how to care for them.",
+      "sequence": 10
+    },
+    {
+      "id": "weather",
+      "title": "Weather",
+      "description": "Notice daily weather changes and choose safe clothing and activities.",
+      "sequence": 20
+    },
+    {
+      "id": "hygiene",
+      "title": "Hygiene",
+      "description": "Practise simple habits that keep the body, home, and school clean.",
+      "sequence": 30
+    },
+    {
+      "id": "community",
+      "title": "Community",
+      "description": "Learn about people, places, and responsibilities in the local community.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

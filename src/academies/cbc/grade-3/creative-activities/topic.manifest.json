@@ -1,0 +1,40 @@
+{
+  "id": "creative-activities",
+  "displayName": "Creative Activities",
+  "academy": "cbc",
+  "category": "grade-3",
+  "description": "Grade 3 Creative Activities learning areas for art, music, movement, and performance.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "learningAreas": [
+    {
+      "id": "art-and-craft",
+      "title": "Art and Craft",
+      "description": "Create simple drawings, patterns, models, and crafts using available materials.",
+      "sequence": 10
+    },
+    {
+      "id": "music",
+      "title": "Music",
+      "description": "Sing songs, keep rhythm, and listen for simple musical patterns.",
+      "sequence": 20
+    },
+    {
+      "id": "movement",
+      "title": "Movement",
+      "description": "Practise safe movement, coordination, balance, and simple games.",
+      "sequence": 30
+    },
+    {
+      "id": "drama",
+      "title": "Drama",
+      "description": "Use voice, movement, and role play to express ideas and stories.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

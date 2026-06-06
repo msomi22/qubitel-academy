@@ -1,0 +1,54 @@
+{
+  "id": "mathematics",
+  "displayName": "Mathematics",
+  "academy": "cbc",
+  "category": "grade-1",
+  "description": "Grade 1 Mathematics learning areas for numbers, shapes, and simple operations.",
+  "status": "active",
+  "learningAreas": [
+    {
+      "id": "numbers",
+      "title": "Numbers",
+      "description": "Count, read, write, and compare numbers using familiar objects.",
+      "sequence": 10
+    },
+    {
+      "id": "addition",
+      "title": "Addition",
+      "description": "Join small groups and count how many altogether.",
+      "sequence": 20
+    },
+    {
+      "id": "subtraction",
+      "title": "Subtraction",
+      "description": "Take away objects and find how many are left.",
+      "sequence": 30
+    },
+    {
+      "id": "shapes",
+      "title": "Shapes",
+      "description": "Recognise and name simple shapes around home and school.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [
+    {
+      "id": "numbers-practice-001",
+      "file": "practice/numbers-practice-001.js",
+      "learningAreaId": "numbers"
+    },
+    {
+      "id": "shapes-practice-001",
+      "file": "practice/shapes-practice-001.js",
+      "learningAreaId": "shapes"
+    }
+  ],
+  "assessments": [
+    {
+      "id": "counting-exam-001",
+      "file": "assessments/counting-exam-001.js",
+      "learningAreaId": "numbers"
+    }
+  ]
+}

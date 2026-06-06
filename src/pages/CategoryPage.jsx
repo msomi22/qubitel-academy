@@ -14,6 +14,11 @@ import {
   buildCategorySearchParams,
   readCategorySearchState
 } from '../services/categoryNavigationService.js';
+import {
+  buildLearningAreaSummaries,
+  filterContentByLearningArea,
+  shouldUseLearningAreaNavigation
+} from '../services/contentLearningAreaService.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 
 import {
@@ -33,6 +38,58 @@ function CategoryIcon() {
   );
 }
 
+function plural(count, singular, pluralLabel = `${singular}s`) {
+  return `${count} ${count === 1 ? singular : pluralLabel}`;
+}
+
+function learningAreaCountLabel(area) {
+  return [
+    plural(area.lessonCount, 'lesson'),
+    plural(area.practiceCount, 'practice question'),
+    plural(area.assessmentCount, 'exam')
+  ].join(' • ');
+}
+
+function LearningAreaCard({ area, onSelect }) {
+  const hasContent = area.totalCount > 0;
+  const progressLabel = hasContent ? `${area.completedCount}/${area.totalCount} complete` : 'Coming soon';
+
+  return (
+    <button
+      type="button"
+      className={`cbc-learning-area-card ${hasContent ? '' : 'is-empty'}`}
+      disabled={!hasContent}
+      onClick={() => onSelect(area.id)}
+      aria-label={`${area.title}. ${hasContent ? learningAreaCountLabel(area) : 'Coming soon'}`}
+    >
+      <span className="cbc-learning-area-card-topline"><span>Learning area</span><strong>{progressLabel}</strong></span>
+      <span className="cbc-learning-area-card-title">{area.title}</span>
+      <span className="cbc-learning-area-card-description">{area.description || 'Lessons and practice will appear here.'}</span>
+      <span className="cbc-learning-area-card-meta">
+        {hasContent ? learningAreaCountLabel(area) : 'Coming soon'}
+      </span>
+      {hasContent ? <span className="cbc-learning-area-card-arrow" aria-hidden="true">›</span> : null}
+    </button>
+  );
+}
+
+function SubjectLearningAreaLanding({ topic, learningAreas, onSelect }) {
+  return (
+    <section className="cbc-subject-landing" aria-labelledby={`${topic.id}-learning-areas-heading`}>
+      <div className="cbc-subject-landing-head">
+        <p className="eyebrow">Learning areas</p>
+        <h2 id={`${topic.id}-learning-areas-heading`}>{topic.name}</h2>
+        <p>Choose a learning area to start learning.</p>
+      </div>
+      <div className="cbc-learning-area-grid">
+        {learningAreas.map((area) => (
+          <LearningAreaCard key={area.id} area={area} onSelect={onSelect} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function CategoryPage({ fixedCategoryId }) {
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -45,6 +102,7 @@ export default function CategoryPage({ fixedCategoryId }) {
   const [topicBanks, setTopicBanks] = useState({});
   const [completed, setCompleted] = useState(pref.completed);
   const [selectedId, setSelectedId] = useState(searchState.topicId || pref.selectedTopics?.[categoryId] || '');
+  const [selectedLearningAreaId, setSelectedLearningAreaId] = useState(searchState.learningAreaId || '');
   const [topicDifficulty, setTopicDifficulty] = useState(searchState.difficulty || ALL_FILTER);
   const [completionFilter, setCompletionFilter] = useState(searchState.completionFilter || 'all');
   const [currentPage, setCurrentPage] = useState(searchState.page || 1);
@@ -76,7 +134,8 @@ export default function CategoryPage({ fixedCategoryId }) {
     setCompletionFilter(searchState.completionFilter || 'all');
     setCurrentPage(searchState.page || 1);
     if (searchState.topicId) setSelectedId(searchState.topicId);
-  }, [searchState.topicId, searchState.page, searchState.difficulty, searchState.completionFilter]);
+    setSelectedLearningAreaId(searchState.learningAreaId || '');
+  }, [searchState.topicId, searchState.learningAreaId, searchState.page, searchState.difficulty, searchState.completionFilter]);
 
   useEffect(() => {
     let alive = true;
@@ -92,7 +151,7 @@ export default function CategoryPage({ fixedCategoryId }) {
         setSelectedId(validSelectedId);
 
         const loadedBanks = await Promise.all(nextTopics.map(async (topic) => {
-          const bank = await loadTopicBank(topic.id);
+          const bank = await loadTopicBank(topic.id, { categoryId });
           return [topic.id, bank];
         }));
 
@@ -114,9 +173,9 @@ export default function CategoryPage({ fixedCategoryId }) {
 
   useEffect(() => {
     if (loadingTopics || loadingBanks || !selectedId) return;
-    const nextParams = buildCategorySearchParams({ topicId: selectedId, page: currentPage, difficulty: topicDifficulty, completionFilter });
+    const nextParams = buildCategorySearchParams({ topicId: selectedId, learningAreaId: selectedLearningAreaId, page: currentPage, difficulty: topicDifficulty, completionFilter });
     if (nextParams.toString() !== searchParams.toString()) setSearchParams(nextParams, { replace: true });
-  }, [completionFilter, currentPage, loadingBanks, loadingTopics, searchParams, selectedId, setSearchParams, topicDifficulty]);
+  }, [completionFilter, currentPage, loadingBanks, loadingTopics, searchParams, selectedId, selectedLearningAreaId, setSearchParams, topicDifficulty]);
 
   const topicsWithBanks = useMemo(() => topics.map((topic) => {
     const bank = topicBanks[topic.id];
@@ -133,13 +192,40 @@ export default function CategoryPage({ fixedCategoryId }) {
   const filteredTopics = useMemo(() => topicsWithBanks.map((topic) => {
     const filteredQuestions = getFilteredTopicQuestions(topic, completed, topicDifficulty, completionFilter);
     return { ...topic, filteredQuestions, filteredCount: filteredQuestions.length };
-  }).filter((topic) => topic.filteredCount > 0), [topicsWithBanks, topicDifficulty, completionFilter, completed]);
+  }).filter((topic) => topic.filteredCount > 0 || shouldUseLearningAreaNavigation(topic)), [topicsWithBanks, topicDifficulty, completionFilter, completed]);
 
   const selectedTopic = useMemo(() => filteredTopics.find((topic) => topic.id === selectedId), [filteredTopics, selectedId]);
+  const selectedTopicUsesLearningAreas = Boolean(selectedTopic && shouldUseLearningAreaNavigation(selectedTopic));
+  const selectedLearningAreaSummaries = useMemo(() => (
+    selectedTopicUsesLearningAreas ? buildLearningAreaSummaries(selectedTopic, selectedTopic.questions || [], completed) : []
+  ), [completed, selectedTopic, selectedTopicUsesLearningAreas]);
+  const selectedLearningArea = useMemo(() => (
+    selectedLearningAreaSummaries.find((area) => area.id === selectedLearningAreaId) || null
+  ), [selectedLearningAreaId, selectedLearningAreaSummaries]);
+  const selectedLearningAreaQuestions = useMemo(() => {
+    if (!selectedTopic || !selectedLearningArea) return [];
+    return filterContentByLearningArea(selectedTopic.filteredQuestions || [], selectedTopic, selectedLearningArea.id);
+  }, [selectedLearningArea, selectedTopic]);
+  const selectedLearningAreaTopic = useMemo(() => {
+    if (!selectedTopic || !selectedLearningArea) return null;
+    return {
+      ...selectedTopic,
+      id: `${selectedTopic.id}-${selectedLearningArea.id}`,
+      name: `${selectedTopic.name} / ${selectedLearningArea.title}`,
+      description: selectedLearningArea.description || selectedTopic.description,
+      questions: selectedLearningAreaQuestions,
+      filteredQuestions: selectedLearningAreaQuestions,
+      count: selectedLearningAreaQuestions.length,
+      filteredCount: selectedLearningAreaQuestions.length
+    };
+  }, [selectedLearningArea, selectedLearningAreaQuestions, selectedTopic]);
   const visibleLibraryTopics = useMemo(() => {
     if (completionFilter === 'all') return filteredTopics;
     return selectedTopic ? [selectedTopic] : filteredTopics.slice(0, 1);
   }, [completionFilter, filteredTopics, selectedTopic]);
+  const topicLibraryLabel = useMemo(() => (
+    topicsWithBanks.some((topic) => shouldUseLearningAreaNavigation(topic)) ? 'Subjects' : 'Topics'
+  ), [topicsWithBanks]);
 
   const categoryStats = useMemo(() => {
     const totalTopics = topicsWithBanks.length;
@@ -158,8 +244,24 @@ export default function CategoryPage({ fixedCategoryId }) {
     }
   }, [filteredTopics, selectedId]);
 
+  useEffect(() => {
+    if (!selectedLearningAreaId || !selectedTopicUsesLearningAreas) return;
+    if (selectedLearningArea) return;
+    setSelectedLearningAreaId('');
+    setCurrentPage(1);
+  }, [selectedLearningArea, selectedLearningAreaId, selectedTopicUsesLearningAreas]);
+
   const handleTopicSelect = (id) => {
     setSelectedId(id);
+    setSelectedLearningAreaId('');
+    setCurrentPage(1);
+  };
+  const handleLearningAreaSelect = (id) => {
+    setSelectedLearningAreaId(id);
+    setCurrentPage(1);
+  };
+  const handleLearningAreaBack = () => {
+    setSelectedLearningAreaId('');
     setCurrentPage(1);
   };
   const handleDifficultyChange = (difficulty) => {
@@ -175,7 +277,7 @@ export default function CategoryPage({ fixedCategoryId }) {
     setCurrentPage(1);
   };
 
-  const returnContext = useMemo(() => ({ categoryId, topicId: selectedId, page: currentPage, difficulty: topicDifficulty, completionFilter }), [categoryId, completionFilter, currentPage, selectedId, topicDifficulty]);
+  const returnContext = useMemo(() => ({ categoryId, topicId: selectedId, learningAreaId: selectedLearningAreaId, page: currentPage, difficulty: topicDifficulty, completionFilter }), [categoryId, completionFilter, currentPage, selectedId, selectedLearningAreaId, topicDifficulty]);
 
   if (!category) {
     return (
@@ -227,8 +329,17 @@ export default function CategoryPage({ fixedCategoryId }) {
         <LoadingCard label="Loading category topics…" />
       ) : (
         <div className={`premium-topic-dashboard-shell view-${viewMode}`}>
-          <TopicLibrary topics={visibleLibraryTopics} allTopicsCount={topics.length} selectedId={selectedId} completed={completed} onSelect={handleTopicSelect} difficulty={topicDifficulty} onDifficultyChange={handleDifficultyChange} difficultyOptions={topicDifficultyOptions} completionFilter={completionFilter} onCompletionFilterChange={handleCompletionFilterChange} sortBy={sortBy} onSortChange={handleSortChange} />
-          {selectedTopic ? <TopicSection topic={selectedTopic} questions={selectedTopic.filteredQuestions} completed={completed} activeDifficulty={topicDifficulty} currentPage={currentPage} onPageChange={setCurrentPage} returnContext={returnContext} /> : null}
+          <TopicLibrary label={topicLibraryLabel} topics={visibleLibraryTopics} allTopicsCount={topics.length} selectedId={selectedId} completed={completed} onSelect={handleTopicSelect} difficulty={topicDifficulty} onDifficultyChange={handleDifficultyChange} difficultyOptions={topicDifficultyOptions} completionFilter={completionFilter} onCompletionFilterChange={handleCompletionFilterChange} sortBy={sortBy} onSortChange={handleSortChange} />
+          {selectedTopic && selectedTopicUsesLearningAreas && !selectedLearningArea ? (
+            <SubjectLearningAreaLanding topic={selectedTopic} learningAreas={selectedLearningAreaSummaries} onSelect={handleLearningAreaSelect} />
+          ) : null}
+          {selectedTopic && selectedTopicUsesLearningAreas && selectedLearningArea && selectedLearningAreaTopic ? (
+            <div className="cbc-learning-area-detail-shell">
+              <button type="button" className="cbc-learning-area-back" onClick={handleLearningAreaBack}>← Back to {selectedTopic.name}</button>
+              <TopicSection topic={selectedLearningAreaTopic} questions={selectedLearningAreaQuestions} completed={completed} activeDifficulty={topicDifficulty} currentPage={currentPage} onPageChange={setCurrentPage} returnContext={returnContext} showLearningAreaGroups />
+            </div>
+          ) : null}
+          {selectedTopic && !selectedTopicUsesLearningAreas ? <TopicSection topic={selectedTopic} questions={selectedTopic.filteredQuestions} completed={completed} activeDifficulty={topicDifficulty} currentPage={currentPage} onPageChange={setCurrentPage} returnContext={returnContext} /> : null}
         </div>
       )}
     </main>

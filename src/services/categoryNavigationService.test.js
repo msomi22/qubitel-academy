@@ -11,6 +11,7 @@ test('buildCategoryReturnPath preserves system category return state', () => {
   const path = buildCategoryReturnPath({
     categoryId: 'system',
     topicId: 'scalability',
+    learningAreaId: 'caching',
     page: 3,
     difficulty: 'Medium',
     completionFilter: 'incomplete',
@@ -19,7 +20,7 @@ test('buildCategoryReturnPath preserves system category return state', () => {
 
   assert.equal(
     path,
-    '/system-design?topic=scalability&page=3&difficulty=Medium&completion=incomplete&question=scalability-realtime-updates-001'
+    '/system-design?topic=scalability&area=caching&page=3&difficulty=Medium&completion=incomplete&question=scalability-realtime-updates-001'
   );
 });
 
@@ -36,15 +37,22 @@ test('buildCategoryReturnPath falls back to the normal category route', () => {
 
 test('readCategorySearchState restores selected topic, page, difficulty, and completion filter', () => {
   const state = readCategorySearchState(
-    new URLSearchParams('topic=scalability&page=4&difficulty=Hard&completion=completed')
+    new URLSearchParams('topic=scalability&area=eviction&page=4&difficulty=Hard&completion=completed')
   );
 
   assert.deepEqual(state, {
     topicId: 'scalability',
+    learningAreaId: 'eviction',
     page: 4,
     difficulty: 'Hard',
     completionFilter: 'completed'
   });
+});
+
+test('readCategorySearchState accepts legacy strand route values', () => {
+  const state = readCategorySearchState(new URLSearchParams('topic=english&strand=spelling'));
+
+  assert.equal(state.learningAreaId, 'spelling');
 });
 
 test('parseCategoryPage clamps invalid route values to page one', () => {

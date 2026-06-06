@@ -60,8 +60,22 @@ import './styles/cbc-exam-stability.css';
 import './styles/cbc-exam-scroll-jump-fix.css';
 import './styles/cbc-exam-natural-scroll-fix.css';
 import './styles/topic-assessments.css';
+import './styles/cbc-subject-learning-areas.css';
 import './styles/cbc-grade-one-wide-screen-fix.css';
 import './styles/cbc-exam-start-button-fix.css';
+
+function loadCloudflareAnalytics() {
+  const { hostname, protocol } = window.location;
+  if (protocol !== 'https:' || !hostname.endsWith('qubitel.net')) return;
+
+  const script = document.createElement('script');
+  script.defer = true;
+  script.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+  script.dataset.cfBeacon = JSON.stringify({ token: '9999826788fd4feb8268344e28e04a0d' });
+  document.head.append(script);
+}
+
+loadCloudflareAnalytics();
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>

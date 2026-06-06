@@ -1,0 +1,40 @@
+{
+  "id": "creative-activities",
+  "displayName": "Creative Activities",
+  "academy": "cbc",
+  "category": "grade-1",
+  "description": "Grade 1 Creative Activities learning areas for art, music, movement, and play.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "learningAreas": [
+    {
+      "id": "art-and-craft",
+      "title": "Art and Craft",
+      "description": "Draw, colour, model, and make simple patterns with safe materials.",
+      "sequence": 10
+    },
+    {
+      "id": "music",
+      "title": "Music",
+      "description": "Sing simple songs, clap rhythms, and listen to sounds.",
+      "sequence": 20
+    },
+    {
+      "id": "movement",
+      "title": "Movement",
+      "description": "Move safely, balance, stretch, and play simple movement games.",
+      "sequence": 30
+    },
+    {
+      "id": "imaginative-play",
+      "title": "Imaginative Play",
+      "description": "Use role play, stories, and actions to express ideas.",
+      "sequence": 40
+    }
+  ],
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

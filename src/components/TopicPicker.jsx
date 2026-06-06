@@ -7,7 +7,7 @@ export default function TopicPicker({ topics, selectedId, completed, onSelect })
         const p = topicProgress(topic, completed);
         return (
           <button
-            key={topic.id}
+            key={`${topic.category || 'topic'}/${topic.id}`}
             className={`topic-tab glass ${selectedId === topic.id ? 'active' : ''}`}
             onClick={() => onSelect(topic.id)}
           >

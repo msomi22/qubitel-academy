@@ -19,6 +19,14 @@ import {
 } from './manifestImports.generated.js';
 
 const academiesRoot = fileURLToPath(new URL('.', import.meta.url));
+const subjectTopicIds = [
+  'cre',
+  'creative-activities',
+  'english',
+  'environmental-activities',
+  'kiswahili',
+  'mathematics'
+];
 
 function walk(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -50,26 +58,64 @@ test('generated manifest imports include every academy manifest on disk', () => 
 
 test('CBC exposes Grade 1 and Grade 3 while Customer Experience stays registered without learner-facing categories', () => {
   assert.deepEqual(academyCatalogs.cbc.categories.map((category) => category.id), ['grade-1', 'grade-3']);
-  assert.deepEqual(academyCatalogs.cbc.topics.map((topic) => topic.id), ['foundation-practice', 'english']);
+  assert.deepEqual(academyCatalogs.cbc.topics.map((topic) => `${topic.category}/${topic.id}`), [
+    ...subjectTopicIds.map((topicId) => `grade-1/${topicId}`),
+    ...subjectTopicIds.map((topicId) => `grade-3/${topicId}`)
+  ]);
   assert.equal(academyCatalogs.cbc.topics.some((topic) => topic.id === 'phonics'), false);
   assert.deepEqual(academyCatalogs['customer-experience'].categories, []);
   assert.deepEqual(academyCatalogs['customer-experience'].topics, []);
 });
 
-test('CBC Grade 1 declares only the foundation practice pilot and visual exams', () => {
-  const foundation = academyCatalogs.cbc.topics.find((topic) => topic.id === 'foundation-practice');
+test('CBC Grade 1 declares the shared subject structure with content under learning areas', () => {
+  const gradeOneTopics = academyCatalogs.cbc.topics.filter((topic) => topic.category === 'grade-1');
 
-  assert.equal(foundation.category, 'grade-1');
-  assert.deepEqual(foundation.practice.map((item) => item.id), ['foundation-practice-001']);
-  assert.deepEqual(foundation.assessments.map((item) => item.id), ['counting-exam-001', 'object-matching-exam-001']);
+  assert.deepEqual(gradeOneTopics.map((topic) => topic.id), subjectTopicIds);
+  assert.equal(academyCatalogs.cbc.topics.some((topic) => topic.id === 'foundation-practice'), false);
+
+  const cre = gradeOneTopics.find((topic) => topic.id === 'cre');
+  const english = gradeOneTopics.find((topic) => topic.id === 'english');
+  const environmentalActivities = gradeOneTopics.find((topic) => topic.id === 'environmental-activities');
+  const mathematics = gradeOneTopics.find((topic) => topic.id === 'mathematics');
+  const emptySubjects = gradeOneTopics.filter((topic) => ['creative-activities', 'kiswahili'].includes(topic.id));
+
+  assert.deepEqual(cre.practice.map((item) => item.id), ['christian-values-practice-001']);
+  assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-001']);
+  assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001']);
+  assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);
+  assert.deepEqual(mathematics.practice.map((item) => item.id), ['numbers-practice-001', 'shapes-practice-001']);
+  assert.deepEqual(mathematics.assessments.map((item) => item.id), ['counting-exam-001']);
+
+  for (const subject of gradeOneTopics) {
+    assert.ok(subject.learningAreas.length > 0, subject.id);
+  }
+
+  for (const subject of emptySubjects) {
+    assert.equal(subject.questionBank.mode, 'empty');
+    assert.deepEqual([...subject.lessons, ...subject.practice, ...subject.assessments], []);
+  }
 });
 
 test('CBC English declares the spelling lesson, practice sets, and exams', () => {
-  const english = academyCatalogs.cbc.topics.find((topic) => topic.id === 'english');
+  const english = academyCatalogs.cbc.topics.find((topic) => topic.category === 'grade-3' && topic.id === 'english');
 
   assert.deepEqual(english.lessons.map((item) => item.id), ['spelling-lesson-001']);
   assert.deepEqual(english.practice.map((item) => item.id), ['spelling-practice-001', 'spelling-practice-002']);
   assert.deepEqual(english.assessments.map((item) => item.id), ['spelling-exam-001', 'spelling-exam-002']);
+});
+
+test('CBC Grade 3 coming-soon subjects declare learning areas without content yet', () => {
+  const subjects = academyCatalogs.cbc.topics.filter((topic) => topic.category === 'grade-3');
+
+  assert.deepEqual(subjects.map((topic) => topic.id), [
+    ...subjectTopicIds
+  ]);
+
+  for (const subject of subjects.filter((topic) => topic.id !== 'english')) {
+    assert.equal(subject.questionBank.mode, 'empty');
+    assert.ok(subject.learningAreas.length > 0, subject.id);
+    assert.deepEqual([...subject.lessons, ...subject.practice, ...subject.assessments], []);
+  }
 });
 
 test('academy manifests stay consistent with routing registry boundaries', () => {

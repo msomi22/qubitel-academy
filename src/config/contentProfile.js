@@ -76,22 +76,30 @@ export function filterQuestionsForActiveProfile(questions = [], options = {}) {
   return questions.filter((question) => isQuestionApprovedForProfile(question, options));
 }
 
-export function hasVisibleQuestionForTopic(topicId, questions = [], options = {}) {
+function questionMatchesTopic(topicOrId, question) {
+  if (typeof topicOrId === 'string') return question?.topicId === topicOrId;
+
+  return question?.topicId === topicOrId?.id
+    && (!topicOrId?.category || !question?.category || question.category === topicOrId.category);
+}
+
+export function hasVisibleQuestionForTopic(topicOrId, questions = [], options = {}) {
   return questions.some((question) => (
-    question?.topicId === topicId && isQuestionApprovedForProfile(question, options)
+    questionMatchesTopic(topicOrId, question) && isQuestionApprovedForProfile(question, options)
   ));
 }
 
-export function isTopicVisibleForActiveProfile(topicId, questions = [], options = {}) {
+export function isTopicVisibleForActiveProfile(topicOrId, questions = [], options = {}) {
+  const topicId = typeof topicOrId === 'string' ? topicOrId : topicOrId?.id;
   if (!isProductionProfile(options)) return true;
 
-  if (hasVisibleQuestionForTopic(topicId, questions, options)) return true;
+  if (hasVisibleQuestionForTopic(topicOrId, questions, options)) return true;
 
   return APPROVED_PROD_TOPIC_IDS.has(topicId);
 }
 
 export function filterTopicsForActiveProfile(topics = [], questions = [], options = {}) {
-  return topics.filter((topic) => isTopicVisibleForActiveProfile(topic.id, questions, options));
+  return topics.filter((topic) => isTopicVisibleForActiveProfile(topic, questions, options));
 }
 
 export function filterCategoriesForActiveProfile(categories = [], topics = [], questions = [], options = {}) {

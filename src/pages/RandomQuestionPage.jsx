@@ -9,6 +9,10 @@ import { confettiBurst } from '../utils/confetti.js';
 
 const EMPTY_RANDOM_MESSAGE = 'No questions are available for the selected filters. Try All categories or choose another topic.';
 
+function topicFilterValue(topic) {
+  return `${topic.category}/${topic.id}`;
+}
+
 export default function RandomQuestionPage() {
   const pref = usePreferences();
   const [filters, setFilters] = useState({ category: 'all', topicId: '' });
@@ -21,6 +25,10 @@ export default function RandomQuestionPage() {
   const topics = useMemo(
     () => allTopics.filter((topic) => filters.category === 'all' || topic.category === filters.category),
     [filters.category]
+  );
+  const categoryNameById = useMemo(
+    () => new Map(categories.map((category) => [category.id, category.name])),
+    []
   );
 
   async function pickQuestion(nextFilters = filters, increment = false) {
@@ -108,8 +116,10 @@ export default function RandomQuestionPage() {
           <option value="">Any subtopic</option>
   
           {topics.map((topic) => (
-            <option key={topic.id} value={topic.id}>
-              {topic.name}
+            <option key={topicFilterValue(topic)} value={topicFilterValue(topic)}>
+              {filters.category === 'all'
+                ? `${topic.name} (${categoryNameById.get(topic.category) || topic.category})`
+                : topic.name}
             </option>
           ))}
         </select>

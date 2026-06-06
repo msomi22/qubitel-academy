@@ -102,6 +102,7 @@ function TopicIcon({ topic }) {
 
 export default function TopicLibrary({
   topics,
+  label = 'Topics',
   selectedId,
   completed,
   onSelect,
@@ -144,7 +145,7 @@ export default function TopicLibrary({
 
   return (
     <section className="topic-library glass-lite premium-topic-rail" ref={libraryRef}>
-      <div className="library-head premium-topic-rail-head"><p className="eyebrow">Topics</p></div>
+      <div className="library-head premium-topic-rail-head"><p className="eyebrow">{label}</p></div>
 
       <div className="topic-library-controls premium-topic-rail-controls" aria-label="Question filters">
         <label><span>Difficulty</span><select value={difficulty} onChange={(event) => onDifficultyChange(event.target.value)}><option value={ALL}>All levels</option>{difficultyOptions.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
