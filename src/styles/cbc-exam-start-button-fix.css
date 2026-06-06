@@ -1,0 +1,34 @@
+/* Make the exam start-screen back action feel like a proper button. */
+.cbc-exam-start-card .cbc-exam-result-actions .cbc-exam-button.quiet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid var(--cbc-exam-border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 88%, var(--cbc-exam-accent) 7%);
+  color: var(--text, var(--text-primary));
+  font-weight: 850;
+  text-align: center;
+}
+
+.cbc-exam-start-card .cbc-exam-result-actions .cbc-exam-button.quiet:hover,
+.cbc-exam-start-card .cbc-exam-result-actions .cbc-exam-button.quiet:focus-visible {
+  border-color: color-mix(in srgb, var(--cbc-exam-accent) 75%, var(--cbc-exam-border) 25%);
+  background: color-mix(in srgb, var(--cbc-exam-accent) 12%, var(--card, var(--bg-card)) 88%);
+  outline: none;
+}
+
+@media (max-width: 700px) {
+  .cbc-exam-start-card .cbc-exam-result-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .cbc-exam-start-card .cbc-exam-result-actions .cbc-exam-button {
+    width: 100%;
+    min-height: 48px;
+  }
+}
