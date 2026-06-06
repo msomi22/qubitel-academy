@@ -96,11 +96,22 @@ test('CBC Grade 1 declares the shared subject structure with content under learn
   }
 });
 
-test('CBC English declares the spelling lesson, practice sets, and exams', () => {
+test('CBC English declares the spelling and reading comprehension content', () => {
   const english = academyCatalogs.cbc.topics.find((topic) => topic.category === 'grade-3' && topic.id === 'english');
 
-  assert.deepEqual(english.lessons.map((item) => item.id), ['spelling-lesson-001']);
-  assert.deepEqual(english.practice.map((item) => item.id), ['spelling-practice-001', 'spelling-practice-002']);
+  assert.deepEqual(english.lessons.map((item) => item.id), [
+    'spelling-lesson-001',
+    'reading-comprehension-school-garden-lesson-001'
+  ]);
+  assert.deepEqual(english.practice.map((item) => item.id), [
+    'spelling-practice-001',
+    'spelling-practice-002',
+    'spelling-practice-003',
+    'spelling-practice-004',
+    'spelling-practice-005',
+    'spelling-practice-006',
+    'reading-comprehension-school-garden-practice-001'
+  ]);
   assert.deepEqual(english.assessments.map((item) => item.id), ['spelling-exam-001', 'spelling-exam-002']);
 });
 
