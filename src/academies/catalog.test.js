@@ -119,14 +119,18 @@ test('CBC English declares the spelling and reading comprehension content', () =
   ]);
 });
 
-test('CBC Grade 3 coming-soon subjects declare learning areas without content yet', () => {
+test('CBC Grade 3 subjects declare learning areas and current content state', () => {
   const subjects = academyCatalogs.cbc.topics.filter((topic) => topic.category === 'grade-3');
+  const kiswahili = subjects.find((topic) => topic.id === 'kiswahili');
 
   assert.deepEqual(subjects.map((topic) => topic.id), [
     ...subjectTopicIds
   ]);
 
-  for (const subject of subjects.filter((topic) => topic.id !== 'english')) {
+  assert.deepEqual(kiswahili.assessments.map((item) => item.id), ['kiswahili-hadithi-exam-001']);
+  assert.equal(kiswahili.assessments[0].learningAreaId, 'ufahamu');
+
+  for (const subject of subjects.filter((topic) => !['english', 'kiswahili'].includes(topic.id))) {
     assert.equal(subject.questionBank.mode, 'empty');
     assert.ok(subject.learningAreas.length > 0, subject.id);
     assert.deepEqual([...subject.lessons, ...subject.practice, ...subject.assessments], []);

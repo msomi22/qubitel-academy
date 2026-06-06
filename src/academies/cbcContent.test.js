@@ -21,6 +21,7 @@ import examFour from './cbc/grade-3/english/assessments/spelling-exam-004.js';
 import examFive from './cbc/grade-3/english/assessments/spelling-exam-005.js';
 import examSix from './cbc/grade-3/english/assessments/spelling-exam-006.js';
 import timedComprehensionExam from './cbc/grade-3/english/assessments/reading-comprehension-class-library-exam-001.js';
+import kiswahiliHadithiExam from './cbc/grade-3/kiswahili/assessments/kiswahili-hadithi-exam-001.js';
 import { getAcademyCatalog } from './catalog.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
 
@@ -66,7 +67,9 @@ const newGradeThreeSpellingExams = [
 ];
 const gradeThreeSpellingQuestions = [spellingLesson, ...gradeThreeSpellingPractice, ...gradeThreeSpellingExams];
 const gradeThreeReadingQuestions = [readingLesson, ...readingPractice, ...timedComprehensionExam];
-const gradeThreeQuestions = [...gradeThreeSpellingQuestions, ...gradeThreeReadingQuestions];
+const gradeThreeEnglishQuestions = [...gradeThreeSpellingQuestions, ...gradeThreeReadingQuestions];
+const gradeThreeKiswahiliQuestions = [...kiswahiliHadithiExam];
+const gradeThreeQuestions = [...gradeThreeEnglishQuestions, ...gradeThreeKiswahiliQuestions];
 const allQuestions = [...gradeOneQuestions, ...gradeThreeQuestions];
 
 test('CBC Grade 1 subject practice keeps the pilot learning-area coverage', () => {
@@ -227,7 +230,7 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
   );
 });
 
-test('CBC Grade 3 exposes coming-soon subjects for learner navigation testing', () => {
+test('CBC Grade 3 exposes subject learning areas and current content state', () => {
   assert.deepEqual(
     gradeThreeTopics.map((topic) => topic.id),
     subjectTopicIds
@@ -241,6 +244,8 @@ test('CBC Grade 3 exposes coming-soon subjects for learner navigation testing', 
 
   assert.deepEqual(mathematics.learningAreas.map((area) => area.id), ['addition', 'subtraction', 'multiplication', 'division']);
   assert.deepEqual(kiswahili.learningAreas.map((area) => area.id), ['ufahamu', 'sarufi', 'insha']);
+  assert.deepEqual(kiswahili.assessments.map((reference) => reference.id), ['kiswahili-hadithi-exam-001']);
+  assert.equal(kiswahili.assessments[0].learningAreaId, 'ufahamu');
   assert.deepEqual(environmentalActivities.learningAreas.map((area) => area.id), ['plants', 'weather', 'hygiene', 'community']);
   assert.deepEqual(creativeActivities.learningAreas.map((area) => area.id), ['art-and-craft', 'music', 'movement', 'drama']);
   assert.deepEqual(cre.learningAreas.map((area) => area.id), ['bible-stories', 'christian-values', 'prayer', 'service']);
@@ -274,10 +279,10 @@ test('CBC spelling collections have the required sizes and unique ids', () => {
 });
 
 test('CBC Grade 3 English content is valid and includes a learner-facing Objective', () => {
-  const validation = validateProblemCollection(gradeThreeQuestions, { topics: cbcTopics });
+  const validation = validateProblemCollection(gradeThreeEnglishQuestions, { topics: cbcTopics });
 
   assert.deepEqual(validation.errors, []);
-  assert.ok(gradeThreeQuestions.every((question) => (
+  assert.ok(gradeThreeEnglishQuestions.every((question) => (
     question.body?.some((block) => block.type === 'section' && block.title === 'Objective')
   )));
 });
@@ -365,6 +370,43 @@ test('CBC Grade 3 timed comprehension class library exam is a separate timed ass
     assert.equal(new Set(question.options).size, 4, question.id);
     assert.ok(Number.isInteger(question.correctAnswer), question.id);
     assert.ok(question.correctAnswer >= 0 && question.correctAnswer < 4, question.id);
+    assert.ok(question.explanation, question.id);
+    assert.ok(question.body.some((block) => block.type === 'section' && block.title === 'Objective'), question.id);
+  }
+});
+
+test('CBC Grade 3 Kiswahili hadithi exam is a scoped timed passage assessment', () => {
+  assert.equal(kiswahiliHadithiExam.length, 10);
+
+  const firstQuestion = kiswahiliHadithiExam[0];
+  const config = firstQuestion.metadata.timedComprehensionExam;
+
+  assert.equal(firstQuestion.metadata.examId, 'grade-3-kiswahili-hadithi-exam-001');
+  assert.equal(firstQuestion.metadata.examTitle, 'Grade 3 Kiswahili Hadithi Exam 1');
+  assert.equal(firstQuestion.metadata.examMode, 'timed-comprehension');
+  assert.equal(firstQuestion.metadata.assessmentType, 'exam');
+  assert.equal(firstQuestion.metadata.learningAreaId, 'ufahamu');
+  assert.equal(config.passageTitle, 'Safari ya Amina Shuleni');
+  assert.equal(config.readingGuideSeconds, 600);
+  assert.equal(config.questionTimeSeconds, 60);
+  assert.equal(config.autoAdvanceAfterReading, false);
+  assert.equal(config.allowStartQuestionsAnytime, true);
+  assert.equal(config.allowPassageDuringQuestions, true);
+  assert.equal(config.readAloud.enabled, true);
+  assert.equal(config.readAloud.highlightCurrentSentence, true);
+  assert.equal(config.passage.sentences.length, 12);
+  assert.ok(config.passage.sentences.some((sentence) => sentence.text.includes('Amina alikuwa msichana mwenye bidii')));
+
+  for (const question of kiswahiliHadithiExam) {
+    assert.equal(question.category, 'grade-3', question.id);
+    assert.equal(question.topicId, 'kiswahili', question.id);
+    assert.equal(question.estimatedTimeSeconds, 60, question.id);
+    assert.equal(question.metadata.examId, firstQuestion.metadata.examId, question.id);
+    assert.equal(question.metadata.examMode, 'timed-comprehension', question.id);
+    assert.equal(question.metadata.learningAreaId, 'ufahamu', question.id);
+    assert.equal(question.options.length, 4, question.id);
+    assert.equal(new Set(question.options).size, 4, question.id);
+    assert.equal(question.correctAnswer, 0, question.id);
     assert.ok(question.explanation, question.id);
     assert.ok(question.body.some((block) => block.type === 'section' && block.title === 'Objective'), question.id);
   }

@@ -5,9 +5,6 @@
   "category": "grade-3",
   "description": "Mazoezi ya Kiswahili ya Darasa la 3 kwa kusoma, sarufi, na kuandika.",
   "status": "active",
-  "questionBank": {
-    "mode": "empty"
-  },
   "learningAreas": [
     {
       "id": "ufahamu",
@@ -30,5 +27,11 @@
   ],
   "lessons": [],
   "practice": [],
-  "assessments": []
+  "assessments": [
+    {
+      "id": "kiswahili-hadithi-exam-001",
+      "file": "assessments/kiswahili-hadithi-exam-001.js",
+      "learningAreaId": "ufahamu"
+    }
+  ]
 }
