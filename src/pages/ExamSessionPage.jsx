@@ -2,6 +2,11 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import { useNavigate, useParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
+import PassageDrawer, {
+  formatPassageTime,
+  ReadingPassage
+} from '../components/cbc/PassageDrawer.jsx';
+import PassageReadAloudControls from '../components/cbc/PassageReadAloudControls.jsx';
 import ReadAloudButton from '../components/cbc/ReadAloudButton.jsx';
 import CbcVisualAid from '../components/question-renderers/cbc/CbcVisualAid.jsx';
 import { siteConfig } from '../config/siteConfig.js';
@@ -64,7 +69,22 @@ function skillDisplayName(exam) {
   return exam?.examTitle?.replace(/^Grade \d+\s+/i, '').replace(/\s+Exam$/i, '') || 'Exam';
 }
 
+function timedComprehensionConfig(exam) {
+  const firstQuestion = exam?.questions?.[0];
+  const config = firstQuestion?.metadata?.timedComprehensionExam || null;
+  return firstQuestion?.metadata?.examMode === 'timed-comprehension' ? config : null;
+}
+
+function isTimedComprehensionExam(exam) {
+  return Boolean(timedComprehensionConfig(exam));
+}
+
 function startInstructions(exam) {
+  const timedConfig = timedComprehensionConfig(exam);
+  if (timedConfig) {
+    return 'Read the passage carefully. Start the questions when you are ready.';
+  }
+
   const firstQuestion = exam?.questions?.[0];
   if (firstQuestion?.metadata?.skill === 'alphabet-sounds') {
     return `Listen to each alphabet sound, then choose the matching letter, word, or picture. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
@@ -76,6 +96,10 @@ function startInstructions(exam) {
     return `Look at the pictures carefully and choose the correct answer. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
   }
   return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+}
+
+function passageForExam(exam) {
+  return timedComprehensionConfig(exam)?.passage || null;
 }
 
 function captureScrollSnapshot() {
@@ -191,6 +215,52 @@ function RecoveryView({ exam, session, onContinue, onStartAgain, onBack }) {
   );
 }
 
+function TimedComprehensionReadingView({
+  exam,
+  config,
+  guideSecondsLeft,
+  activeSentenceId,
+  onActiveSentenceChange,
+  onStartQuestions,
+  onBack
+}) {
+  const guideReached = guideSecondsLeft <= 0;
+
+  return (
+    <main className="page cbc-exam-page cbc-comprehension-reading-page">
+      <section className="cbc-comprehension-reading-head">
+        <div>
+          <p className="cbc-exam-kicker">{exam.examTitle}</p>
+          <h1>{config.passageTitle}</h1>
+          <p>Reading guide: {formatPassageTime(config.readingGuideSeconds)}</p>
+          {guideReached ? (
+            <strong className="cbc-reading-guide-message">
+              Reading guide reached. You may start the questions when ready.
+            </strong>
+          ) : (
+            <span>Guide time left: {formatPassageTime(guideSecondsLeft)}</span>
+          )}
+        </div>
+        <div className="cbc-exam-result-actions">
+          <button type="button" className="cbc-exam-button primary" onClick={onStartQuestions}>Start Questions</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {topicDisplayName(exam)}</button>
+        </div>
+      </section>
+
+      <PassageReadAloudControls
+        sentences={config.passage?.sentences || []}
+        onActiveSentenceChange={onActiveSentenceChange}
+      />
+
+      <ReadingPassage
+        passage={config.passage}
+        activeSentenceId={activeSentenceId}
+        className="cbc-comprehension-reading-passage"
+      />
+    </main>
+  );
+}
+
 function ResultView({ attempt, exam, onRetake, onHistory, onBack }) {
   const answerReview = Object.entries(attempt.answers || {});
 
@@ -265,6 +335,9 @@ export default function ExamSessionPage() {
   const [attemptNumber, setAttemptNumber] = useState(1);
   const [result, setResult] = useState(null);
   const [recoverySession, setRecoverySession] = useState(null);
+  const [readingGuideLeft, setReadingGuideLeft] = useState(0);
+  const [activePassageSentenceId, setActivePassageSentenceId] = useState('');
+  const [passageOpen, setPassageOpen] = useState(false);
   const activeRef = useRef(false);
   const exitSavedRef = useRef(false);
   const sessionRef = useRef({});
@@ -277,6 +350,8 @@ export default function ExamSessionPage() {
     categoryId: exam?.category?.id,
     topicId: exam?.topic?.id
   }), [exam?.category?.id, exam?.topic?.id]);
+  const comprehensionConfig = timedComprehensionConfig(exam);
+  const hasTimedComprehension = Boolean(comprehensionConfig);
 
   useEffect(() => {
     let alive = true;
@@ -406,6 +481,16 @@ export default function ExamSessionPage() {
   }, [saveAbandonedAttempt, view]);
 
   useEffect(() => {
+    if (view !== 'reading' || readingGuideLeft <= 0) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setReadingGuideLeft((seconds) => Math.max(0, seconds - 1));
+    }, 1000);
+
+    return () => window.clearTimeout(timer);
+  }, [readingGuideLeft, view]);
+
+  useEffect(() => {
     if (view !== 'exam' || !currentQuestion || remainingSeconds <= 0) return undefined;
 
     const timer = window.setTimeout(() => {
@@ -432,17 +517,39 @@ export default function ExamSessionPage() {
       };
 
     if (!currentAnswer) setAnswers(nextAnswers);
+    if (hasTimedComprehension) return;
     if (currentIndex === exam.questions.length - 1) completeExam(nextAnswers);
     else {
       pendingScrollSnapshotRef.current = captureScrollSnapshot();
       setCurrentIndex((index) => index + 1);
     }
-  }, [answers, currentAnswer, currentIndex, currentQuestion, exam?.questions?.length, remainingSeconds, view]);
+  }, [answers, currentAnswer, currentIndex, currentQuestion, exam?.questions?.length, hasTimedComprehension, remainingSeconds, view]);
 
   function initialQuestionTimes() {
     return Object.fromEntries(
       exam.questions.map((question) => [question.id, questionTimeLimit(question)])
     );
+  }
+
+  function startReading() {
+    const config = timedComprehensionConfig(exam);
+    if (!config) {
+      startExam();
+      return;
+    }
+
+    storageService.clearActiveExamSession(exam.examId);
+    exitSavedRef.current = false;
+    setAnswers({});
+    setTimeLeftByQuestion({});
+    setCurrentIndex(0);
+    setStartedAt('');
+    setResult(null);
+    setRecoverySession(null);
+    setPassageOpen(false);
+    setActivePassageSentenceId('');
+    setReadingGuideLeft(Number(config.readingGuideSeconds) || 0);
+    setView('reading');
   }
 
   function startExam() {
@@ -456,6 +563,8 @@ export default function ExamSessionPage() {
     setAttemptNumber(attempts.length + 1);
     setResult(null);
     setRecoverySession(null);
+    setPassageOpen(false);
+    setActivePassageSentenceId('');
     setView('exam');
   }
 
@@ -469,11 +578,13 @@ export default function ExamSessionPage() {
     setStartedAt(recoverySession.startedAt || new Date().toISOString());
     setAttemptNumber(Number(recoverySession.attemptNumber) || storageService.getExamAttempts(exam.examId).length + 1);
     setResult(null);
+    setPassageOpen(false);
+    setActivePassageSentenceId('');
     setView('exam');
   }
 
   function selectAnswer(answerIndex) {
-    if (!currentQuestion || currentAnswer?.timedOut) return;
+    if (!currentQuestion || currentAnswer?.timedOut || remainingSeconds <= 0) return;
     setAnswers((current) => ({
       ...current,
       [currentQuestion.id]: {
@@ -486,11 +597,21 @@ export default function ExamSessionPage() {
   function completeExam(finalAnswers) {
     if (!exam || exitSavedRef.current) return;
 
+    const completedAnswers = Object.fromEntries(
+      exam.questions.map((question) => [
+        question.id,
+        finalAnswers[question.id] || {
+          selectedAnswer: null,
+          timedOut: false
+        }
+      ])
+    );
+
     const attempt = buildExamAttempt({
       examId: exam.examId,
       examTitle: exam.examTitle,
       questions: exam.questions,
-      answers: finalAnswers,
+      answers: completedAnswers,
       attemptNumber,
       status: 'completed',
       startedAt,
@@ -504,6 +625,8 @@ export default function ExamSessionPage() {
     exitSavedRef.current = true;
     setResult(attempt);
     setHistory(storageService.getExamAttempts(exam.examId));
+    setPassageOpen(false);
+    setActivePassageSentenceId('');
     setView('result');
     window.history.back();
   }
@@ -560,7 +683,7 @@ export default function ExamSessionPage() {
         exam={exam}
         session={recoverySession}
         onContinue={continueExam}
-        onStartAgain={startExam}
+        onStartAgain={hasTimedComprehension ? startReading : startExam}
         onBack={() => navigate(topicReturnPath)}
       />
     );
@@ -571,8 +694,22 @@ export default function ExamSessionPage() {
       <ResultView
         attempt={result}
         exam={exam}
-        onRetake={startExam}
+        onRetake={hasTimedComprehension ? startReading : startExam}
         onHistory={showHistory}
+        onBack={() => navigate(topicReturnPath)}
+      />
+    );
+  }
+
+  if (view === 'reading' && comprehensionConfig) {
+    return (
+      <TimedComprehensionReadingView
+        exam={exam}
+        config={comprehensionConfig}
+        guideSecondsLeft={readingGuideLeft}
+        activeSentenceId={activePassageSentenceId}
+        onActiveSentenceChange={setActivePassageSentenceId}
+        onStartQuestions={startExam}
         onBack={() => navigate(topicReturnPath)}
       />
     );
@@ -581,20 +718,33 @@ export default function ExamSessionPage() {
   if (view === 'start') {
     const firstQuestion = exam.questions[0];
     const secondsPerQuestion = questionTimeLimit(firstQuestion);
+    const introLines = comprehensionConfig?.introLines || [];
 
     return (
       <main className="page cbc-exam-page">
         <section className="cbc-exam-start-card">
           <p className="cbc-exam-kicker">{categoryDisplayName(exam)} | {topicDisplayName(exam)}</p>
-          <h1>{exam.examTitle}</h1>
-          <p>{startInstructions(exam)}</p>
+          <h1>{comprehensionConfig?.introTitle || exam.examTitle}</h1>
+          {introLines.length ? (
+            <div className="cbc-comprehension-intro-copy">
+              {introLines.map((line) => <p key={line}>{line}</p>)}
+            </div>
+          ) : (
+            <p>{startInstructions(exam)}</p>
+          )}
           <div className="cbc-exam-start-stats">
             <span><strong>{exam.questions.length}</strong> questions</span>
             <span><strong>{secondsPerQuestion}</strong> seconds each</span>
-            <span><strong>{history.length + 1}</strong> next attempt</span>
+            {comprehensionConfig ? (
+              <span><strong>{formatPassageTime(comprehensionConfig.readingGuideSeconds)}</strong> reading guide</span>
+            ) : (
+              <span><strong>{history.length + 1}</strong> next attempt</span>
+            )}
           </div>
           <div className="cbc-exam-result-actions">
-            <button type="button" className="cbc-exam-button primary" onClick={startExam}>Start exam</button>
+            <button type="button" className="cbc-exam-button primary" onClick={hasTimedComprehension ? startReading : startExam}>
+              {hasTimedComprehension ? 'Start Reading' : 'Start exam'}
+            </button>
             <button type="button" className="cbc-exam-button quiet" onClick={() => navigate(topicReturnPath)}>Back to {topicDisplayName(exam)}</button>
           </div>
         </section>
@@ -615,7 +765,7 @@ export default function ExamSessionPage() {
 
   return (
     <main className="page cbc-exam-page cbc-exam-active-page stable-exam-page">
-      <section className="cbc-exam-session-head">
+      <section className={`cbc-exam-session-head ${hasTimedComprehension ? 'has-passage' : ''}`.trim()}>
         <div>
           <p className="cbc-exam-kicker">{exam.examTitle}</p>
           <h1>Question {currentIndex + 1} of {exam.questions.length}</h1>
@@ -624,6 +774,11 @@ export default function ExamSessionPage() {
           <span>Time left</span>
           <strong>{remainingSeconds}s</strong>
         </div>
+        {hasTimedComprehension ? (
+          <button type="button" className="cbc-exam-passage-toggle" onClick={() => setPassageOpen(true)}>
+            View Passage
+          </button>
+        ) : null}
         <button type="button" className="cbc-exam-leave" onClick={leaveExam}>Leave exam</button>
         <div className="cbc-exam-progress" aria-label={`${progress}% through exam`}>
           <span style={{ width: `${progress}%` }} />
@@ -675,7 +830,7 @@ export default function ExamSessionPage() {
         <p className={`cbc-exam-answer-status ${currentAnswer ? '' : 'empty'}`.trim()} role="status" aria-live="polite">
           {currentAnswer
             ? currentAnswer.timedOut
-              ? 'Time is up. Moving to the next question.'
+              ? hasTimedComprehension ? 'Time is up. This question is locked.' : 'Time is up. Moving to the next question.'
               : 'Answer saved. You can still change it before you finish.'
             : 'Choose an answer to continue.'}
         </p>
@@ -687,6 +842,17 @@ export default function ExamSessionPage() {
         onPrevious={previousQuestion}
         onNext={nextQuestion}
       />
+
+      {hasTimedComprehension ? (
+        <PassageDrawer
+          open={passageOpen}
+          passage={passageForExam(exam)}
+          timeLeft={remainingSeconds}
+          activeSentenceId={activePassageSentenceId}
+          onActiveSentenceChange={setActivePassageSentenceId}
+          onClose={() => setPassageOpen(false)}
+        />
+      ) : null}
     </main>
   );
 }

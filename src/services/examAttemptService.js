@@ -36,6 +36,9 @@ export function createExamEntries(questions = []) {
     const orderedQuestions = [...examQuestions].sort((a, b) => sequenceFor(a) - sequenceFor(b));
     const firstQuestion = orderedQuestions[0];
     const secondsPerQuestion = Number(firstQuestion?.estimatedTimeSeconds) || 30;
+    const timedComprehension = firstQuestion?.metadata?.timedComprehensionExam || null;
+    const isTimedComprehension = firstQuestion?.metadata?.examMode === 'timed-comprehension' && timedComprehension;
+    const readingGuideMinutes = Math.round((Number(timedComprehension?.readingGuideSeconds) || 0) / 60);
 
     return {
       id: examId,
@@ -43,13 +46,20 @@ export function createExamEntries(questions = []) {
       category: firstQuestion?.category,
       topicId: firstQuestion?.topicId,
       title: firstQuestion?.metadata?.examTitle || examId,
-      difficulty: 'Exam',
-      estimatedTime: `${orderedQuestions.length} questions | ${secondsPerQuestion}s each`,
+      difficulty: isTimedComprehension ? 'Timed Exam' : 'Exam',
+      estimatedTime: isTimedComprehension
+        ? `Timed Exam | ${secondsPerQuestion} seconds each | Reading guide: ${readingGuideMinutes} minutes`
+        : `${orderedQuestions.length} questions | ${secondsPerQuestion}s each`,
       examQuestions: orderedQuestions,
       metadata: {
         assessmentType: 'exam-entry',
         examId,
         examTitle: firstQuestion?.metadata?.examTitle || examId,
+        ...(isTimedComprehension ? {
+          examMode: 'timed-comprehension',
+          readingGuideSeconds: timedComprehension.readingGuideSeconds,
+          questionTimeSeconds: timedComprehension.questionTimeSeconds
+        } : {}),
         sequence: Math.min(...orderedQuestions.map(sequenceFor))
       }
     };

@@ -59,6 +59,42 @@ test('groups exam questions into one learner-facing exam entry', () => {
   assert.equal(examEntry.estimatedTime, '2 questions | 30s each');
 });
 
+test('timed comprehension exam entries expose reading guide and strict question timing', () => {
+  const entries = createExamEntries([
+    {
+      id: 'timed-reading-q001',
+      type: 'mcq',
+      title: 'Question 1',
+      question: 'Choose.',
+      options: ['a', 'b', 'c', 'd'],
+      correctAnswer: 0,
+      estimatedTimeSeconds: 60,
+      explanation: 'a',
+      category: 'grade-3',
+      topicId: 'english',
+      metadata: {
+        assessmentType: 'exam',
+        examId: 'timed-reading-001',
+        examTitle: 'Timed Reading 1',
+        examMode: 'timed-comprehension',
+        timedComprehensionExam: {
+          readingGuideSeconds: 600,
+          questionTimeSeconds: 60
+        },
+        sequence: 10
+      }
+    }
+  ]);
+
+  const examEntry = entries.find((entry) => entry.id === 'timed-reading-001');
+
+  assert.equal(examEntry.difficulty, 'Timed Exam');
+  assert.equal(examEntry.estimatedTime, 'Timed Exam | 60 seconds each | Reading guide: 10 minutes');
+  assert.equal(examEntry.metadata.examMode, 'timed-comprehension');
+  assert.equal(examEntry.metadata.readingGuideSeconds, 600);
+  assert.equal(examEntry.metadata.questionTimeSeconds, 60);
+});
+
 test('grades correct, incorrect, and timed-out answers separately', () => {
   const attempt = buildExamAttempt({
     examId: 'exam-001',

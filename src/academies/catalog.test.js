@@ -114,7 +114,8 @@ test('CBC English declares the spelling and reading comprehension content', () =
     'spelling-exam-003',
     'spelling-exam-004',
     'spelling-exam-005',
-    'spelling-exam-006'
+    'spelling-exam-006',
+    'reading-comprehension-class-library-exam-001'
   ]);
 });
 

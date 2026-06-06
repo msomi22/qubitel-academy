@@ -90,6 +90,11 @@
       "id": "spelling-exam-006",
       "file": "assessments/spelling-exam-006.js",
       "learningAreaId": "spelling"
+    },
+    {
+      "id": "reading-comprehension-class-library-exam-001",
+      "file": "assessments/reading-comprehension-class-library-exam-001.js",
+      "learningAreaId": "reading-comprehension"
     }
   ]
 }

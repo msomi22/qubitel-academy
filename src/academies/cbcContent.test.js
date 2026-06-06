@@ -20,6 +20,7 @@ import examThree from './cbc/grade-3/english/assessments/spelling-exam-003.js';
 import examFour from './cbc/grade-3/english/assessments/spelling-exam-004.js';
 import examFive from './cbc/grade-3/english/assessments/spelling-exam-005.js';
 import examSix from './cbc/grade-3/english/assessments/spelling-exam-006.js';
+import timedComprehensionExam from './cbc/grade-3/english/assessments/reading-comprehension-class-library-exam-001.js';
 import { getAcademyCatalog } from './catalog.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
 
@@ -64,7 +65,7 @@ const newGradeThreeSpellingExams = [
   ...examSix
 ];
 const gradeThreeSpellingQuestions = [spellingLesson, ...gradeThreeSpellingPractice, ...gradeThreeSpellingExams];
-const gradeThreeReadingQuestions = [readingLesson, ...readingPractice];
+const gradeThreeReadingQuestions = [readingLesson, ...readingPractice, ...timedComprehensionExam];
 const gradeThreeQuestions = [...gradeThreeSpellingQuestions, ...gradeThreeReadingQuestions];
 const allQuestions = [...gradeOneQuestions, ...gradeThreeQuestions];
 
@@ -210,7 +211,8 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
       'spelling-exam-003',
       'spelling-exam-004',
       'spelling-exam-005',
-      'spelling-exam-006'
+      'spelling-exam-006',
+      'reading-comprehension-class-library-exam-001'
     ]
   );
   assert.ok(
@@ -327,6 +329,44 @@ test('CBC reading comprehension school garden content exposes the passage and te
       && block.content.includes('Grade Three learners visited the school garden')
     )), question.id);
     assert.ok(expectedSkills.has(question.metadata.skill), question.id);
+  }
+});
+
+test('CBC Grade 3 timed comprehension class library exam is a separate timed assessment', () => {
+  assert.equal(timedComprehensionExam.length, 10);
+
+  const firstQuestion = timedComprehensionExam[0];
+  const config = firstQuestion.metadata.timedComprehensionExam;
+
+  assert.equal(firstQuestion.metadata.examId, 'reading-comprehension-class-library-exam-001');
+  assert.equal(firstQuestion.metadata.examTitle, 'Grade 3 English Timed Comprehension Exam 1');
+  assert.equal(firstQuestion.metadata.examMode, 'timed-comprehension');
+  assert.equal(firstQuestion.metadata.assessmentType, 'exam');
+  assert.equal(firstQuestion.metadata.learningAreaId, 'reading-comprehension');
+  assert.equal(config.passageTitle, 'The New Class Library');
+  assert.equal(config.readingGuideSeconds, 600);
+  assert.equal(config.questionTimeSeconds, 60);
+  assert.equal(config.autoAdvanceAfterReading, false);
+  assert.equal(config.allowStartQuestionsAnytime, true);
+  assert.equal(config.allowPassageDuringQuestions, true);
+  assert.equal(config.readAloud.enabled, true);
+  assert.equal(config.readAloud.highlightCurrentSentence, true);
+  assert.equal(config.passage.sentences.length, 15);
+  assert.ok(config.passage.sentences.some((sentence) => sentence.text.includes('new class library')));
+
+  for (const question of timedComprehensionExam) {
+    assert.equal(question.category, 'grade-3', question.id);
+    assert.equal(question.topicId, 'english', question.id);
+    assert.equal(question.estimatedTimeSeconds, 60, question.id);
+    assert.equal(question.metadata.examId, firstQuestion.metadata.examId, question.id);
+    assert.equal(question.metadata.examMode, 'timed-comprehension', question.id);
+    assert.equal(question.metadata.learningAreaId, 'reading-comprehension', question.id);
+    assert.equal(question.options.length, 4, question.id);
+    assert.equal(new Set(question.options).size, 4, question.id);
+    assert.ok(Number.isInteger(question.correctAnswer), question.id);
+    assert.ok(question.correctAnswer >= 0 && question.correctAnswer < 4, question.id);
+    assert.ok(question.explanation, question.id);
+    assert.ok(question.body.some((block) => block.type === 'section' && block.title === 'Objective'), question.id);
   }
 });
 
