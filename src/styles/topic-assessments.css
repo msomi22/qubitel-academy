@@ -1,0 +1,181 @@
+.topic-assessment-panel {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, var(--accent) 18%);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 30%),
+    color-mix(in srgb, var(--card, var(--bg-card)) 88%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent),
+    0 14px 30px rgb(0 0 0 / 0.12);
+}
+
+.topic-assessment-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topic-assessment-head .eyebrow,
+.topic-assessment-head h3 {
+  margin: 0;
+}
+
+.topic-assessment-head h3 {
+  color: var(--text, var(--text-primary));
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.topic-assessment-head > span {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 68%, var(--accent) 14%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 9%, var(--card, var(--bg-card)));
+  color: color-mix(in srgb, var(--text, var(--text-primary)) 88%, var(--accent) 12%);
+  font-size: 0.78rem;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.topic-assessment-grid {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  padding: 2px 2px 8px;
+  scroll-padding-inline: 2px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.topic-assessment-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.topic-assessment-grid::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 42%, var(--line, var(--border)) 58%);
+}
+
+.topic-assessment-grid::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 70%, transparent);
+}
+
+.topic-assessment-card {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 min(360px, calc(100vw - 54px));
+  min-height: 72px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, var(--accent) 18%);
+  border-radius: 15px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--card, var(--bg-card)) 96%, #fff 4%), color-mix(in srgb, var(--card, var(--bg-card)) 82%, var(--accent) 8%));
+  color: var(--text, var(--text-primary));
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  scroll-snap-align: start;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 7%, transparent);
+}
+
+.topic-assessment-card:hover,
+.topic-assessment-card:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 76%, var(--line, var(--border)) 24%);
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 34%),
+    color-mix(in srgb, var(--card, var(--bg-card)) 88%, var(--accent) 8%);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.topic-assessment-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent);
+  font-size: 1.05rem;
+}
+
+.topic-assessment-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.topic-assessment-copy strong,
+.topic-assessment-copy small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topic-assessment-copy strong {
+  color: var(--text, var(--text-primary));
+  font-size: 0.98rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.topic-assessment-copy small {
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.78rem;
+  font-weight: 760;
+  line-height: 1.15;
+}
+
+.topic-assessment-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.topic-assessment-card.is-complete .topic-assessment-status {
+  background: color-mix(in srgb, #22c55e 14%, transparent);
+  color: #22c55e;
+}
+
+@media (max-width: 760px) {
+  .topic-assessment-panel {
+    gap: 9px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .topic-assessment-head {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .topic-assessment-card {
+    flex-basis: min(320px, calc(100vw - 48px));
+    min-height: 66px;
+    padding: 9px 10px;
+  }
+}
