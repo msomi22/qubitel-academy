@@ -1,0 +1,2389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Multi-Academy Learning Framework — v1.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+/* ═══════════════════════════════════════════════════
+   CSS CUSTOM PROPERTIES — DUAL THEME
+═══════════════════════════════════════════════════ */
+:root[data-theme="dark"] {
+  --bg:          #0a0c10;
+  --bg-2:        #111318;
+  --bg-3:        #181c24;
+  --surface:     #1e2230;
+  --surface-2:   #252a3a;
+  --border:      rgba(255,255,255,0.07);
+  --border-hi:   rgba(255,255,255,0.14);
+  --accent:      #6c8fff;
+  --accent-2:    #ff7f5c;
+  --accent-3:    #4dffd2;
+  --accent-4:    #f9c74f;
+  --text:        #e8ecf7;
+  --text-2:      #9aa3bf;
+  --text-3:      #5a6180;
+  --code-bg:     #12151e;
+  --tag-bg:      rgba(108,143,255,0.12);
+  --tag-text:    #8faaff;
+  --pill-bg:     rgba(255,255,255,0.05);
+  --shadow:      0 8px 40px rgba(0,0,0,0.5);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.4);
+  --glow:        rgba(108,143,255,0.15);
+  --noise-opacity: 0.03;
+}
+:root[data-theme="light"] {
+  --bg:          #f4f5f8;
+  --bg-2:        #eceef4;
+  --bg-3:        #e4e7f0;
+  --surface:     #ffffff;
+  --surface-2:   #f8f9fc;
+  --border:      rgba(0,0,0,0.07);
+  --border-hi:   rgba(0,0,0,0.14);
+  --accent:      #3a60e8;
+  --accent-2:    #e8500a;
+  --accent-3:    #00a67e;
+  --accent-4:    #d4900a;
+  --text:        #1a1e2e;
+  --text-2:      #4a5275;
+  --text-3:      #8890ae;
+  --code-bg:     #f0f2f8;
+  --tag-bg:      rgba(58,96,232,0.09);
+  --tag-text:    #3a60e8;
+  --pill-bg:     rgba(0,0,0,0.05);
+  --shadow:      0 8px 40px rgba(0,0,0,0.1);
+  --shadow-card: 0 2px 16px rgba(0,0,0,0.07);
+  --glow:        rgba(58,96,232,0.08);
+  --noise-opacity: 0.015;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ═══════════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 4px; }
+
+/* ═══════════════════════════════════════════════════
+   FIXED TOP NAV
+═══════════════════════════════════════════════════ */
+.topnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  height: 60px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.3s;
+}
+.topnav-brand {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.topnav-brand .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
+}
+.topnav-right { display: flex; align-items: center; gap: 16px; }
+.version-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  border: 1px solid var(--border-hi);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+.theme-toggle {
+  cursor: pointer;
+  width: 36px; height: 36px;
+  border: 1px solid var(--border-hi);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 16px;
+  transition: all 0.2s;
+}
+.theme-toggle:hover {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════ */
+.layout {
+  display: flex;
+  padding-top: 60px;
+  min-height: 100vh;
+}
+.sidebar {
+  position: fixed;
+  top: 60px; left: 0; bottom: 0;
+  width: 260px;
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  padding: 24px 0 40px;
+  background: var(--bg);
+  transition: background 0.3s;
+  z-index: 100;
+}
+.sidebar-section { margin-bottom: 4px; }
+.sidebar-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 16px 24px 6px;
+}
+.sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 24px;
+  font-size: 0.825rem;
+  color: var(--text-2);
+  text-decoration: none;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+}
+.sidebar a:hover {
+  color: var(--text);
+  background: var(--surface);
+  border-left-color: var(--accent);
+}
+.sidebar a.active {
+  color: var(--accent);
+  background: var(--tag-bg);
+  border-left-color: var(--accent);
+  font-weight: 500;
+}
+.sidebar-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-3);
+  min-width: 22px;
+}
+
+/* ═══════════════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════════════ */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  padding: 0 0 80px;
+  max-width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 64px 72px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -80px; right: -80px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px;
+}
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+.badge-blue   { background: var(--tag-bg); color: var(--tag-text); }
+.badge-orange { background: rgba(255,127,92,0.12); color: var(--accent-2); }
+.badge-teal   { background: rgba(77,255,210,0.1); color: var(--accent-3); }
+.badge-yellow { background: rgba(249,199,79,0.12); color: var(--accent-4); }
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 20px;
+  max-width: 760px;
+}
+.hero-title .hl { color: var(--accent); }
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-2);
+  max-width: 640px;
+  margin-bottom: 36px;
+  line-height: 1.75;
+}
+.hero-meta {
+  display: flex; align-items: center; gap: 20px;
+  flex-wrap: wrap;
+}
+.meta-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text-3); }
+
+/* Academy cards in hero */
+.academy-pills {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  margin-top: 28px;
+}
+.academy-pill {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-hi);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: all 0.2s;
+}
+.academy-pill:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+.ap-icon {
+  width: 24px; height: 24px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+
+/* ═══════════════════════════════════════════════════
+   CONTENT SECTIONS
+═══════════════════════════════════════════════════ */
+.content-wrap {
+  padding: 0 64px;
+}
+.section {
+  padding: 56px 0 0;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 56px;
+}
+.section:last-child { border-bottom: none; }
+
+.section-header {
+  display: flex; align-items: baseline; gap: 14px;
+  margin-bottom: 28px;
+}
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  min-width: 32px;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+.section-title-line {
+  width: 32px; height: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  margin: 6px 0 20px;
+}
+.sub-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+  margin: 24px 0 12px;
+}
+p {
+  font-size: 0.9rem;
+  color: var(--text-2);
+  margin-bottom: 14px;
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════════════
+   GRID CARDS
+═══════════════════════════════════════════════════ */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 20px 0; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin: 20px 0; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
+}
+.card:hover {
+  border-color: var(--border-hi);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-1px);
+}
+.card-icon {
+  font-size: 22px;
+  margin-bottom: 10px;
+  display: block;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.card-body {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin: 0;
+}
+.card.accent-blue  { border-top: 3px solid var(--accent); }
+.card.accent-orange{ border-top: 3px solid var(--accent-2); }
+.card.accent-teal  { border-top: 3px solid var(--accent-3); }
+.card.accent-yellow{ border-top: 3px solid var(--accent-4); }
+
+/* ═══════════════════════════════════════════════════
+   ROLE CARDS
+═══════════════════════════════════════════════════ */
+.role-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin: 20px 0; }
+.role-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+}
+.role-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+}
+.role-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.role-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.role-list {
+  list-style: none;
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.role-list li {
+  font-size: 0.75rem;
+  color: var(--text-2);
+  background: var(--pill-bg);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+/* ═══════════════════════════════════════════════════
+   CODE BLOCKS
+═══════════════════════════════════════════════════ */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 16px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.code-lang {
+  font-size: 0.68rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.code-dots { display: flex; gap: 6px; }
+.code-dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.cd-r { background: #ff5f57; }
+.cd-y { background: #ffbd2e; }
+.cd-g { background: #28ca41; }
+.code-body {
+  padding: 16px;
+  overflow-x: auto;
+  color: var(--text);
+}
+.code-body .kw  { color: var(--accent); }
+.code-body .str { color: var(--accent-3); }
+.code-body .cm  { color: var(--text-3); font-style: italic; }
+.code-body .ty  { color: var(--accent-4); }
+.code-body .prop{ color: var(--accent-2); }
+
+/* ═══════════════════════════════════════════════════
+   FLOW DIAGRAM (text-based)
+═══════════════════════════════════════════════════ */
+.flow {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+  margin: 16px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+}
+.flow-step {
+  background: var(--surface);
+  border: 1px solid var(--border-hi);
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.flow-arrow { color: var(--accent); font-size: 1rem; }
+
+/* ═══════════════════════════════════════════════════
+   FEATURE LIST
+═══════════════════════════════════════════════════ */
+.feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 16px 0; }
+.feat-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.825rem;
+  color: var(--text-2);
+  padding: 6px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.feat-item::before {
+  content: '✓';
+  color: var(--accent-3);
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════════════ */
+.tbl-wrap { overflow-x: auto; margin: 20px 0; border-radius: 10px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 0.825rem; }
+thead th {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  padding: 12px 16px;
+  background: var(--surface-2);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+tbody td {
+  padding: 11px 16px;
+  color: var(--text-2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--surface); color: var(--text); }
+.td-key { font-family: 'JetBrains Mono', monospace; color: var(--accent); font-size: 0.78rem; }
+.td-yes { color: var(--accent-3); font-weight: 600; }
+.td-no  { color: var(--text-3); }
+
+/* ═══════════════════════════════════════════════════
+   PRINCIPLES BLOCKS
+═══════════════════════════════════════════════════ */
+.principle-stack { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.principle {
+  display: flex; gap: 16px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  align-items: flex-start;
+}
+.pr-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  background: var(--tag-bg);
+  border-radius: 6px;
+  padding: 3px 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.pr-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.pr-body { font-size: 0.8rem; color: var(--text-2); line-height: 1.7; margin: 0; }
+
+/* ═══════════════════════════════════════════════════
+   CALLOUT / QUOTE
+═══════════════════════════════════════════════════ */
+.callout {
+  border-left: 3px solid var(--accent);
+  background: var(--tag-bg);
+  border-radius: 0 8px 8px 0;
+  padding: 14px 20px;
+  margin: 16px 0;
+  font-size: 0.875rem;
+  color: var(--text);
+  font-style: italic;
+}
+.callout-warn {
+  border-left-color: var(--accent-2);
+  background: rgba(255,127,92,0.08);
+}
+.callout-ok {
+  border-left-color: var(--accent-3);
+  background: rgba(77,255,210,0.07);
+}
+
+/* ═══════════════════════════════════════════════════
+   PHASE ROADMAP
+═══════════════════════════════════════════════════ */
+.roadmap { margin: 20px 0; }
+.phase {
+  display: grid; grid-template-columns: 90px 1fr;
+  gap: 0; margin-bottom: 0;
+}
+.phase-track {
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 4px;
+}
+.phase-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); flex-shrink: 0;
+  box-shadow: 0 0 8px var(--accent);
+}
+.phase-line {
+  width: 2px; flex: 1; min-height: 20px;
+  background: linear-gradient(to bottom, var(--accent), var(--border));
+  margin-top: 4px;
+}
+.phase:last-child .phase-line { display: none; }
+.phase-content {
+  padding: 0 0 28px 0;
+}
+.phase-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--accent);
+  margin-bottom: 4px;
+  display: block;
+}
+.phase-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.phase-items {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.phase-tag {
+  font-size: 0.75rem;
+  color: var(--text-2);
+  background: var(--pill-bg);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+/* ═══════════════════════════════════════════════════
+   STAR RULES VISUAL
+═══════════════════════════════════════════════════ */
+.star-bars { margin: 16px 0; display: flex; flex-direction: column; gap: 8px; }
+.star-row {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.825rem;
+}
+.star-pct { min-width: 80px; color: var(--text-2); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+.star-bar-wrap { flex: 1; height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+.star-bar { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent-4), var(--accent-2)); transition: width 0.5s; }
+.star-label { color: var(--accent-4); min-width: 60px; text-align: right; }
+
+/* ═══════════════════════════════════════════════════
+   BADGE GRID
+═══════════════════════════════════════════════════ */
+.badge-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.badge-item {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  color: var(--text-2);
+  transition: all 0.2s;
+}
+.badge-item:hover {
+  border-color: var(--accent-4);
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════════
+   FOLDER TREE
+═══════════════════════════════════════════════════ */
+.tree {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--text-2);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  line-height: 1.9;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+.tree .dir { color: var(--accent); }
+.tree .file{ color: var(--text-2); }
+.tree .highlight { color: var(--accent-3); }
+
+/* ═══════════════════════════════════════════════════
+   TECH STACK / PROVIDER CHAIN
+═══════════════════════════════════════════════════ */
+.provider-chain {
+  display: flex; flex-direction: column; gap: 0; margin: 16px 0;
+}
+.pv {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.825rem; color: var(--text-2);
+}
+.pv:first-child { border-radius: 10px 10px 0 0; border-bottom: none; }
+.pv:last-child  { border-radius: 0 0 10px 10px; }
+.pv:not(:first-child):not(:last-child) { border-bottom: none; }
+.pv-icon { color: var(--accent); font-size: 1rem; }
+.pv-name { color: var(--text); font-weight: 500; min-width: 200px; }
+.pv-note { color: var(--text-3); font-size: 0.75rem; margin-left: auto; font-family: 'JetBrains Mono', monospace; }
+
+/* ═══════════════════════════════════════════════════
+   ENGINEERING RULES
+═══════════════════════════════════════════════════ */
+.eng-rules { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.eng-rule {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.825rem;
+  color: var(--text-2);
+  counter-increment: rule-counter;
+}
+.eng-rule-n {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-3);
+  background: var(--pill-bg);
+  border-radius: 4px;
+  padding: 2px 7px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ═══════════════════════════════════════════════════
+   SECTION PROGRESS INDICATOR (TOC pills)
+═══════════════════════════════════════════════════ */
+.toc-progress {
+  position: fixed;
+  right: 24px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 6px;
+  z-index: 150;
+}
+.toc-pip {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border-hi);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.toc-pip.active { background: var(--accent); transform: scale(1.5); }
+.toc-pip:hover  { background: var(--text-2); transform: scale(1.3); }
+
+/* ═══════════════════════════════════════════════════
+   AI ROADMAP PHASES
+═══════════════════════════════════════════════════ */
+.ai-phases { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin: 20px 0; }
+.ai-phase {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+}
+.ai-phase-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text-3);
+  margin-bottom: 8px;
+}
+.ai-phase-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.825rem;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+.ai-phase-time {
+  font-size: 0.72rem;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.ai-phase-note {
+  font-size: 0.75rem;
+  color: var(--text-2);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   PRIORITY MATRIX
+═══════════════════════════════════════════════════ */
+.priority-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin: 20px 0; }
+.priority-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.priority-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  padding: 3px 10px;
+  border-radius: 99px;
+  display: inline-flex;
+  margin-bottom: 12px;
+}
+.p1 { background: rgba(255,127,92,0.15); color: var(--accent-2); }
+.p2 { background: rgba(108,143,255,0.12); color: var(--tag-text); }
+.p3 { background: rgba(77,255,210,0.1); color: var(--accent-3); }
+.p4 { background: rgba(249,199,79,0.12); color: var(--accent-4); }
+.priority-items { display: flex; flex-direction: column; gap: 6px; }
+.priority-item {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  display: flex; align-items: flex-start; gap: 8px;
+  line-height: 1.5;
+}
+.priority-item::before {
+  content: '→';
+  color: var(--text-3);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   PERFORMANCE TABLE HIGHLIGHT
+═══════════════════════════════════════════════════ */
+.metric-ok { color: var(--accent-3); font-weight: 500; }
+.metric-warn { color: var(--accent-4); font-weight: 500; }
+
+/* ═══════════════════════════════════════════════════
+   SECURITY ROW
+═══════════════════════════════════════════════════ */
+.sec-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin: 20px 0; }
+.sec-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+.sec-card-icon { font-size: 18px; margin-bottom: 8px; }
+.sec-card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.825rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.sec-card-body { font-size: 0.78rem; color: var(--text-2); margin: 0; line-height: 1.6; }
+
+/* ═══════════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 24px 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════ */
+.footer {
+  margin-left: 260px;
+  padding: 32px 64px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-left {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.footer-right {
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+.footer-accent { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════ */
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero { animation: fadeSlide 0.6s ease both; }
+.hero-title { animation: fadeSlide 0.6s 0.1s ease both; }
+.hero-subtitle { animation: fadeSlide 0.6s 0.2s ease both; }
+
+/* ═══════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════ */
+@media (max-width: 1100px) {
+  .sidebar { display: none; }
+  .main, .footer { margin-left: 0; }
+  .content-wrap { padding: 0 32px; }
+  .hero { padding: 56px 32px 48px; }
+  .grid-3, .grid-4, .ai-phases, .sec-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 720px) {
+  .content-wrap { padding: 0 20px; }
+  .hero { padding: 40px 20px 36px; }
+  .grid-2, .grid-3, .grid-4, .ai-phases, .sec-grid, .role-grid, .priority-grid { grid-template-columns: 1fr; }
+  .feat-grid { grid-template-columns: repeat(2,1fr); }
+  .toc-progress { display: none; }
+  .topnav { padding: 0 20px; }
+  .footer { padding: 24px 20px; flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP NAV ═══ -->
+<nav class="topnav">
+  <div class="topnav-brand">
+    <span class="dot"></span>
+    Multi-Academy Learning Framework
+  </div>
+  <div class="topnav-right">
+    <span class="version-tag">v1.0</span>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark/light theme">
+      <span id="theme-icon">☀️</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Overview</div>
+    <a href="#vision"         class="active"><span class="sidebar-num">01</span> Vision</a>
+    <a href="#principles">            <span class="sidebar-num">02</span> Design Principles</a>
+    <a href="#roles">                 <span class="sidebar-num">03</span> User Roles</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Architecture</div>
+    <a href="#academy-model">         <span class="sidebar-num">04</span> Academy Model</a>
+    <a href="#module-model">          <span class="sidebar-num">05</span> Module Model</a>
+    <a href="#theme">                 <span class="sidebar-num">06</span> Theme System</a>
+    <a href="#component-override">    <span class="sidebar-num">15</span> Override System</a>
+    <a href="#folder-structure">      <span class="sidebar-num">16</span> Folder Structure</a>
+    <a href="#routing">               <span class="sidebar-num">17</span> Routing</a>
+    <a href="#zero-hardcode">         <span class="sidebar-num">28</span> Zero Hardcoding</a>
+    <a href="#config">                <span class="sidebar-num">29</span> Configuration</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Academies</div>
+    <a href="#cbc">                   <span class="sidebar-num">07</span> CBC Academy</a>
+    <a href="#tech">                  <span class="sidebar-num">08</span> Tech Academy</a>
+    <a href="#cx">                    <span class="sidebar-num">09</span> CX Academy</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Engines</div>
+    <a href="#content-schema">        <span class="sidebar-num">10</span> Content Schema</a>
+    <a href="#speech">                <span class="sidebar-num">11</span> Read-Aloud</a>
+    <a href="#practice">              <span class="sidebar-num">12</span> Assessment Engine</a>
+    <a href="#gamification">          <span class="sidebar-num">13</span> Gamification</a>
+    <a href="#progress">              <span class="sidebar-num">14</span> Progress Engine</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Standards</div>
+    <a href="#quality">               <span class="sidebar-num">18</span> Quality Standards</a>
+    <a href="#accessibility">         <span class="sidebar-num">19</span> Accessibility</a>
+    <a href="#privacy">               <span class="sidebar-num">20</span> Child Safety</a>
+    <a href="#performance">           <span class="sidebar-num">21</span> Performance</a>
+    <a href="#security">              <span class="sidebar-num">45</span> Security</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Enterprise</div>
+    <a href="#monetization">          <span class="sidebar-num">22</span> Monetization</a>
+    <a href="#tenancy">               <span class="sidebar-num">48</span> Multi-Tenancy</a>
+    <a href="#payments">              <span class="sidebar-num">49</span> Payments</a>
+    <a href="#parental">              <span class="sidebar-num">46</span> Parental Controls</a>
+    <a href="#social">                <span class="sidebar-num">52</span> Social Learning</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Roadmap</div>
+    <a href="#roadmap">               <span class="sidebar-num">25</span> Implementation</a>
+    <a href="#ai">                    <span class="sidebar-num">56</span> AI Roadmap</a>
+    <a href="#priority">              <span class="sidebar-num">57</span> Priority Matrix</a>
+    <a href="#rules">                 <span class="sidebar-num">26</span> Eng. Rules</a>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">
+      <span class="badge badge-blue">Complete Specification</span>
+      <span class="badge badge-orange">v1.0 Final</span>
+      <span class="badge badge-teal">57 Sections</span>
+    </div>
+    <h1 class="hero-title">
+      Multi-Academy<br/><span class="hl">Adaptive Learning</span><br/>Framework
+    </h1>
+    <p class="hero-subtitle">
+      A world-class, mobile-first, configuration-driven learning platform that supports multiple academies — CBC, Tech, CX and beyond — from a single stable core engine.
+    </p>
+    <div class="hero-meta">
+      <span class="meta-item">🏛️ Framework-first architecture</span>
+      <span class="meta-dot"></span>
+      <span class="meta-item">📱 Mobile-first design</span>
+      <span class="meta-dot"></span>
+      <span class="meta-item">🌍 Multi-language &amp; RTL support</span>
+      <span class="meta-dot"></span>
+      <span class="meta-item">♿ WCAG 2.1 AA compliant</span>
+    </div>
+    <div class="academy-pills">
+      <div class="academy-pill">
+        <div class="ap-icon" style="background:rgba(108,143,255,0.15)">📚</div>
+        CBC Academy
+        <span class="badge badge-blue">Grade 1–8</span>
+      </div>
+      <div class="academy-pill">
+        <div class="ap-icon" style="background:rgba(77,255,210,0.12)">💻</div>
+        Tech Academy
+        <span class="badge badge-teal">Developers</span>
+      </div>
+      <div class="academy-pill">
+        <div class="ap-icon" style="background:rgba(255,127,92,0.15)">🎧</div>
+        CX Academy
+        <span class="badge badge-orange">CX Teams</span>
+      </div>
+      <div class="academy-pill">
+        <div class="ap-icon" style="background:rgba(249,199,79,0.12)">➕</div>
+        Future Academies
+        <span class="badge badge-yellow">Extensible</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-wrap">
+
+    <!-- ═══ SECTION 1: VISION ═══ -->
+    <section class="section" id="vision">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="section-title">Vision</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>Build a world-class mobile-first learning framework that supports children, students, parents, teachers, and professional learners through a unified but deeply customizable platform.</p>
+
+      <div class="feat-grid">
+        <div class="feat-item">Grade-based learning</div>
+        <div class="feat-item">Track-based learning</div>
+        <div class="feat-item">Lessons &amp; Notes</div>
+        <div class="feat-item">Roadmaps</div>
+        <div class="feat-item">Lesson Plans</div>
+        <div class="feat-item">Teacher Notes</div>
+        <div class="feat-item">Student Notes</div>
+        <div class="feat-item">Topic Practice</div>
+        <div class="feat-item">Exams &amp; Results</div>
+        <div class="feat-item">Progress Tracking</div>
+        <div class="feat-item">Read-Aloud Learning</div>
+        <div class="feat-item">Visual Walkthroughs</div>
+        <div class="feat-item">Code Walkthroughs</div>
+        <div class="feat-item">Videos</div>
+        <div class="feat-item">Rewards &amp; Badges</div>
+        <div class="feat-item">Themes</div>
+        <div class="feat-item">Academy UI Overrides</div>
+        <div class="feat-item">Adaptive Difficulty</div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 2: PRINCIPLES ═══ -->
+    <section class="section" id="principles">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="section-title">Design Principles</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="principle-stack">
+        <div class="principle">
+          <span class="pr-num">P1</span>
+          <div>
+            <div class="pr-title">Mobile First</div>
+            <p class="pr-body">Small screen optimized layouts, large tap targets, simple navigation, bottom nav where useful, minimal scrolling, fast loading, offline-friendly, one-hand usage.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="pr-num">P2</span>
+          <div>
+            <div class="pr-title">Few Clicks to Learning</div>
+            <p class="pr-body">CBC: Choose Grade → Subject → Learn/Practice/Exam → Start. Tech: Choose Academy → Track → Topic → Learn/Practice/Visualize/Code. Users reach content in 3–4 taps.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="pr-num">P3</span>
+          <div>
+            <div class="pr-title">Framework First</div>
+            <p class="pr-body">Not only a CBC app — a reusable learning framework. Academies are added through configuration, module registration, content files, and optional overrides.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="pr-num">P4</span>
+          <div>
+            <div class="pr-title">Configuration Before Custom Code</div>
+            <p class="pr-body">Prefer configuration over hardcoded logic: theme tokens, navigation labels, academy structure, module structure, reward rules, exam scoring rules, unlock rules.</p>
+          </div>
+        </div>
+        <div class="principle">
+          <span class="pr-num">P5</span>
+          <div>
+            <div class="pr-title">Core Stability</div>
+            <p class="pr-body">The core never changes when a new academy, module, topic, or grade is added. New experiences are added through academy config, module config, content registry, theme config, and optional overrides.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 3: ROLES ═══ -->
+    <section class="section" id="roles">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="section-title">User Roles</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="role-grid">
+        <div class="role-card">
+          <div class="role-header">
+            <div class="role-avatar" style="background:rgba(108,143,255,0.15)">🎒</div>
+            <div class="role-name">Student / Learner</div>
+          </div>
+          <ul class="role-list">
+            <li>Select academy</li><li>Choose grade/track</li><li>Learn lessons</li>
+            <li>Read notes</li><li>Listen read-aloud</li><li>Watch videos</li>
+            <li>Practice questions</li><li>Take exams</li><li>View results</li>
+            <li>Earn stars</li><li>Unlock badges</li><li>Resume progress</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-header">
+            <div class="role-avatar" style="background:rgba(77,255,210,0.12)">👨‍👧</div>
+            <div class="role-name">Parent</div>
+          </div>
+          <ul class="role-list">
+            <li>View child progress</li><li>View weak areas</li><li>View exam results</li>
+            <li>View earned badges</li><li>View learning time</li><li>See next steps</li>
+            <li>Set time limits</li><li>Bedtime controls</li><li>Device management</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-header">
+            <div class="role-avatar" style="background:rgba(255,127,92,0.15)">👩‍🏫</div>
+            <div class="role-name">Teacher</div>
+          </div>
+          <ul class="role-list">
+            <li>View class progress</li><li>Assign lessons</li><li>Assign quizzes</li>
+            <li>Assign exams</li><li>Review performance</li><li>Identify weak areas</li>
+            <li>Access lesson plans</li><li>Create custom content</li><li>Remediation plans</li>
+          </ul>
+        </div>
+        <div class="role-card">
+          <div class="role-header">
+            <div class="role-avatar" style="background:rgba(249,199,79,0.12)">⚙️</div>
+            <div class="role-name">Admin / Content Manager</div>
+          </div>
+          <ul class="role-list">
+            <li>Add academies</li><li>Add modules</li><li>Add subjects</li>
+            <li>Configure themes</li><li>Configure rewards</li><li>Publish content</li>
+            <li>Manage tenants</li><li>Bulk enrolment</li><li>Access audit logs</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 4: ACADEMY MODEL ═══ -->
+    <section class="section" id="academy-model">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2 class="section-title">Academy Model</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>An academy defines a self-contained learning universe. Each owns its name, audience, theme, navigation model, modules, content labels, reward model, and progress model.</p>
+
+      <div class="grid-2">
+        <div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">TypeScript · CBC Config</span>
+              <div class="code-dots"><span class="cd-r"></span><span class="cd-y"></span><span class="cd-g"></span></div>
+            </div>
+            <div class="code-body"><pre><span class="kw">export const</span> <span class="prop">cbcAcademyConfig</span> = {
+  <span class="prop">id</span>: <span class="str">"cbc"</span>,
+  <span class="prop">name</span>: <span class="str">"CBC Academy"</span>,
+  <span class="prop">audience</span>: <span class="str">"Grade 1–8 learners"</span>,
+  <span class="prop">navigationModel</span>: <span class="str">"grade-subject-topic"</span>,
+  <span class="prop">defaultTheme</span>: <span class="str">"cbc-light"</span>,
+  <span class="prop">supportedThemes</span>: [
+    <span class="str">"cbc-light"</span>, <span class="str">"cbc-dark"</span>,
+    <span class="str">"cbc-grade-1-cartoon"</span>
+  ],
+  <span class="prop">modules</span>: [<span class="str">"grade-1"</span>, <span class="str">"grade-2"</span>],
+};</pre></div>
+          </div>
+        </div>
+        <div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang">TypeScript · Tech Config</span>
+              <div class="code-dots"><span class="cd-r"></span><span class="cd-y"></span><span class="cd-g"></span></div>
+            </div>
+            <div class="code-body"><pre><span class="kw">export const</span> <span class="prop">techAcademyConfig</span> = {
+  <span class="prop">id</span>: <span class="str">"tech"</span>,
+  <span class="prop">name</span>: <span class="str">"Tech Academy"</span>,
+  <span class="prop">audience</span>: <span class="str">"Developers"</span>,
+  <span class="prop">navigationModel</span>: <span class="str">"track-topic-problem"</span>,
+  <span class="prop">defaultTheme</span>: <span class="str">"tech-dark"</span>,
+  <span class="prop">supportedThemes</span>: [
+    <span class="str">"tech-dark"</span>, <span class="str">"tech-light"</span>
+  ],
+  <span class="prop">modules</span>: [
+    <span class="str">"dsa"</span>, <span class="str">"backend"</span>,
+    <span class="str">"frontend"</span>, <span class="str">"databases"</span>
+  ],
+};</pre></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 5: MODULE MODEL ═══ -->
+    <section class="section" id="module-model">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2 class="section-title">Module Model</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>A module is a large learning area inside an academy. Each module can define topics, lessons, notes, practices, exams, visualizations, videos, rewards, and overrides.</p>
+
+      <div class="grid-3">
+        <div class="card accent-blue">
+          <span class="card-icon">📚</span>
+          <div class="card-title">CBC Modules</div>
+          <p class="card-body">Grade 1 · Grade 2 · Grade 3 · Grade 4 · Grade 5 · Grade 6 · Grade 7 · Grade 8</p>
+        </div>
+        <div class="card accent-teal">
+          <span class="card-icon">💻</span>
+          <div class="card-title">Tech Modules</div>
+          <p class="card-body">DSA · Backend · Frontend · Databases · System Design · DevOps</p>
+        </div>
+        <div class="card accent-orange">
+          <span class="card-icon">🎧</span>
+          <div class="card-title">CX Modules</div>
+          <p class="card-body">Customer Support · Communication · Ticket Handling · Escalations</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 6: THEME ═══ -->
+    <section class="section" id="theme">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2 class="section-title">Theme System</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>Themes must not be hardcoded inside components. All visual parameters should be configurable through design tokens — colors, spacing, typography, radius, animation intensity, and mascot visibility.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Supported Theme Modes</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px;">
+            <div class="feat-item" style="font-size:0.8rem">☀️ Light theme</div>
+            <div class="feat-item" style="font-size:0.8rem">🌙 Dark theme</div>
+            <div class="feat-item" style="font-size:0.8rem">⚙️ System (auto)</div>
+            <div class="feat-item" style="font-size:0.8rem">🎨 Grade-specific themes</div>
+            <div class="feat-item" style="font-size:0.8rem">🏛️ Academy-specific themes</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Tunable Token Categories</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Colors</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Card radius</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Button radius</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Spacing</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Font scale</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Icon style</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Mascot visibility</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Animation intensity</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Reward effects</span>
+            <span style="font-size:0.75rem;background:var(--pill-bg);border:1px solid var(--border);padding:3px 10px;border-radius:99px;color:var(--text-2)">Typography</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 7: CBC ═══ -->
+    <section class="section" id="cbc">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2 class="section-title">CBC Academy Experience</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>The CBC Academy serves Grade 1–8 learners on the Kenyan Competency Based Curriculum. Every lesson maps to a specific CBC national standard.</p>
+
+      <div class="sub-title">Main User Flow</div>
+      <div class="flow">
+        <div class="flow-step">Open App</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">CBC Academy</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Choose Grade</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Choose Subject</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Learn / Practice / Exams</div>
+      </div>
+
+      <div class="sub-title">Grade 1 Lesson Flow</div>
+      <div class="flow">
+        <div class="flow-step">Grade 1</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">English</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Learn</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Choose Lesson</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Read / Listen / Practice</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Take Quiz</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">⭐ Earn Stars</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">🏅 Unlock Badge</div>
+      </div>
+
+      <div class="sub-title">Star Scoring Rules</div>
+      <div class="star-bars">
+        <div class="star-row">
+          <span class="star-pct">90–100%</span>
+          <div class="star-bar-wrap"><div class="star-bar" style="width:100%"></div></div>
+          <span class="star-label">⭐⭐⭐⭐⭐</span>
+        </div>
+        <div class="star-row">
+          <span class="star-pct">80–89%</span>
+          <div class="star-bar-wrap"><div class="star-bar" style="width:80%"></div></div>
+          <span class="star-label">⭐⭐⭐⭐</span>
+        </div>
+        <div class="star-row">
+          <span class="star-pct">70–79%</span>
+          <div class="star-bar-wrap"><div class="star-bar" style="width:60%"></div></div>
+          <span class="star-label">⭐⭐⭐</span>
+        </div>
+        <div class="star-row">
+          <span class="star-pct">50–69%</span>
+          <div class="star-bar-wrap"><div class="star-bar" style="width:40%"></div></div>
+          <span class="star-label">⭐⭐</span>
+        </div>
+        <div class="star-row">
+          <span class="star-pct">0–49%</span>
+          <div class="star-bar-wrap"><div class="star-bar" style="width:20%"></div></div>
+          <span class="star-label">⭐</span>
+        </div>
+      </div>
+
+      <div class="sub-title">Badges</div>
+      <div class="badge-grid">
+        <div class="badge-item">🌟 Reading Star</div>
+        <div class="badge-item">🔤 Spelling Hero</div>
+        <div class="badge-item">🧮 Math Explorer</div>
+        <div class="badge-item">🏆 Exam Champion</div>
+        <div class="badge-item">🔥 5-Day Streak</div>
+        <div class="badge-item">💯 Perfect Score</div>
+        <div class="badge-item">💪 Retry Champion</div>
+        <div class="badge-item">🌱 Growth Mindset</div>
+        <div class="badge-item">🚀 DP Beginner</div>
+        <div class="badge-item">🔭 Recursion Explorer</div>
+      </div>
+
+      <div class="callout-ok callout">
+        Rewards must encourage learning, not shame learners. Never lock core learning content behind performance — unlock cosmetic and motivational features only.
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 8: TECH ═══ -->
+    <section class="section" id="tech">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2 class="section-title">Tech Academy Experience</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>The Tech Academy serves developers and software learners. The DSA module is the flagship, featuring code walkthroughs, recursion visualizations, and DP tables.</p>
+
+      <div class="sub-title">DSA Module Tracks</div>
+      <div class="feat-grid">
+        <div class="feat-item">Arrays</div>
+        <div class="feat-item">Strings</div>
+        <div class="feat-item">Two Pointers</div>
+        <div class="feat-item">Sliding Window</div>
+        <div class="feat-item">Recursion</div>
+        <div class="feat-item">Dynamic Programming</div>
+        <div class="feat-item">Graphs</div>
+        <div class="feat-item">Trees</div>
+        <div class="feat-item">Heaps</div>
+        <div class="feat-item">Greedy</div>
+        <div class="feat-item">Binary Search</div>
+        <div class="feat-item">System Design</div>
+      </div>
+
+      <div class="sub-title">Code Walkthrough Features</div>
+      <div class="grid-2">
+        <div class="feat-item">Syntax-highlighted code</div>
+        <div class="feat-item">Step-by-step execution</div>
+        <div class="feat-item">Variable state display</div>
+        <div class="feat-item">Call stack visualization</div>
+        <div class="feat-item">Memory model</div>
+        <div class="feat-item">Recursion tree</div>
+        <div class="feat-item">Complexity explanation</div>
+        <div class="feat-item">Memoization visualization</div>
+      </div>
+
+      <div class="sub-title">Recursion Example — Fibonacci</div>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">Recursion Tree · fib(5)</span>
+          <div class="code-dots"><span class="cd-r"></span><span class="cd-y"></span><span class="cd-g"></span></div>
+        </div>
+        <div class="code-body"><pre>fib(5)
+├── fib(4)
+│   ├── fib(3)
+│   │   ├── fib(2)
+│   │   └── fib(1)
+│   └── fib(2)
+└── fib(3)  <span class="cm">← repeated subproblem → memoize</span>
+    ├── fib(2)
+    └── fib(1)</pre></div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 9: CX ═══ -->
+    <section class="section" id="cx">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2 class="section-title">CX Academy Experience</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>CX uses the same engine with different labels and content types. Scenario-based learning and role-play simulations are first-class citizens.</p>
+
+      <div class="flow">
+        <div class="flow-step">CX Academy</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Communication Skills</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Handling Difficult Customers</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Scenario</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Simulation</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Assessment</div>
+      </div>
+
+      <div class="sub-title">Content Types</div>
+      <div class="feat-grid">
+        <div class="feat-item">Lessons</div>
+        <div class="feat-item">Scenarios</div>
+        <div class="feat-item">Role-play simulations</div>
+        <div class="feat-item">Scripts</div>
+        <div class="feat-item">Assessments</div>
+        <div class="feat-item">Feedback</div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 10: CONTENT SCHEMA ═══ -->
+    <section class="section" id="content-schema">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2 class="section-title">Content Schema</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">TypeScript · Base Lesson Schema</span>
+          <div class="code-dots"><span class="cd-r"></span><span class="cd-y"></span><span class="cd-g"></span></div>
+        </div>
+        <div class="code-body"><pre><span class="kw">export type</span> <span class="ty">Lesson</span> = {
+  <span class="prop">id</span>: <span class="ty">string</span>;
+  <span class="prop">title</span>: <span class="ty">string</span>;
+  <span class="prop">summary</span>: <span class="ty">string</span>;
+  <span class="prop">objectives</span>: <span class="ty">string[]</span>;
+  <span class="prop">studentNotes</span>?: <span class="ty">string[]</span>;
+  <span class="prop">teacherNotes</span>?: <span class="ty">string[]</span>;
+  <span class="prop">contentBlocks</span>: <span class="ty">ContentBlock[]</span>;
+  <span class="prop">quizIds</span>?: <span class="ty">string[]</span>;
+  <span class="prop">practiceIds</span>?: <span class="ty">string[]</span>;
+  <span class="prop">videoIds</span>?: <span class="ty">string[]</span>;
+  <span class="prop">visualizationIds</span>?: <span class="ty">string[]</span>;
+};
+
+<span class="kw">export type</span> <span class="ty">ContentBlock</span> =
+  | <span class="ty">TextBlock</span> | <span class="ty">ImageBlock</span> | <span class="ty">AudioBlock</span>
+  | <span class="ty">VideoBlock</span> | <span class="ty">CodeBlock</span> | <span class="ty">VisualizationBlock</span>
+  | <span class="ty">CalloutBlock</span> | <span class="ty">QuizBlock</span>;
+
+<span class="kw">export type</span> <span class="ty">VisualizationBlock</span> = {
+  <span class="prop">type</span>: <span class="str">"visualization"</span>;
+  <span class="prop">visualizationType</span>:
+    | <span class="str">"recursion-tree"</span> | <span class="str">"call-stack"</span>
+    | <span class="str">"array-window"</span>  | <span class="str">"graph-traversal"</span>
+    | <span class="str">"dp-table"</span>      | <span class="str">"memory-model"</span>;
+  <span class="prop">data</span>: <span class="ty">unknown</span>;
+};</pre></div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 11: SPEECH ═══ -->
+    <section class="section" id="speech">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2 class="section-title">Read-Aloud &amp; Speech</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>Build a speech abstraction layer — not a custom engine. Providers are swapped through configuration. Required for CBC Grade 1–3.</p>
+
+      <div class="provider-chain">
+        <div class="pv">
+          <span class="pv-icon">🔊</span>
+          <span class="pv-name">SpeechService (abstraction layer)</span>
+          <span class="pv-note">provider interface</span>
+        </div>
+        <div class="pv">
+          <span class="pv-icon">🌐</span>
+          <span class="pv-name">BrowserSpeechProvider</span>
+          <span class="pv-note">Phase 1 · default</span>
+        </div>
+        <div class="pv">
+          <span class="pv-icon">☁️</span>
+          <span class="pv-name">CloudTtsProvider</span>
+          <span class="pv-note">Phase 2 · premium audio</span>
+        </div>
+        <div class="pv">
+          <span class="pv-icon">📁</span>
+          <span class="pv-name">RecordedAudioProvider</span>
+          <span class="pv-note">Phase 2 · offline-safe</span>
+        </div>
+        <div class="pv">
+          <span class="pv-icon">🎤</span>
+          <span class="pv-name">SpeechToTextProvider</span>
+          <span class="pv-note">Phase 3 · pronunciation practice</span>
+        </div>
+      </div>
+
+      <div class="sub-title">Read-Aloud Features (Grade 1–3 Required)</div>
+      <div class="feat-grid">
+        <div class="feat-item">Play / Pause / Stop</div>
+        <div class="feat-item">Replay</div>
+        <div class="feat-item">Slow speed mode</div>
+        <div class="feat-item">Normal speed mode</div>
+        <div class="feat-item">Sentence highlighting</div>
+        <div class="feat-item">Read instructions aloud</div>
+        <div class="feat-item">Read question aloud</div>
+        <div class="feat-item">Optional voice selection</div>
+        <div class="feat-item">&lt;200ms response time</div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 12: ASSESSMENT ═══ -->
+    <section class="section" id="practice">
+      <div class="section-header">
+        <span class="section-num">12</span>
+        <h2 class="section-title">Practice &amp; Assessment Engine</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="sub-title">Supported Practice Types</div>
+      <div class="feat-grid">
+        <div class="feat-item">Multiple choice</div>
+        <div class="feat-item">Fill in the blank</div>
+        <div class="feat-item">Matching</div>
+        <div class="feat-item">Spelling</div>
+        <div class="feat-item">Ordering</div>
+        <div class="feat-item">Short answer</div>
+        <div class="feat-item">Code answer</div>
+        <div class="feat-item">Drag and drop</div>
+        <div class="feat-item">Scenario response</div>
+      </div>
+
+      <div class="sub-title">Result Screen Elements</div>
+      <div class="grid-2">
+        <div class="feat-item">Score display</div>
+        <div class="feat-item">Stars earned</div>
+        <div class="feat-item">Correct answers</div>
+        <div class="feat-item">Wrong answers</div>
+        <div class="feat-item">Explanation</div>
+        <div class="feat-item">Retry button</div>
+        <div class="feat-item">Next recommendation</div>
+        <div class="feat-item">Progress update</div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 13: GAMIFICATION ═══ -->
+    <section class="section" id="gamification">
+      <div class="section-header">
+        <span class="section-num">13</span>
+        <h2 class="section-title">Gamification</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="grid-4">
+        <div class="card accent-yellow">
+          <span class="card-icon">⭐</span>
+          <div class="card-title">Stars</div>
+          <p class="card-body">Score-based, 1–5 per assessment. Configured via star rules.</p>
+        </div>
+        <div class="card accent-orange">
+          <span class="card-icon">🏅</span>
+          <div class="card-title">Badges</div>
+          <p class="card-body">Unlock on achievement milestones. Shown in badge shelf.</p>
+        </div>
+        <div class="card accent-blue">
+          <span class="card-icon">🔥</span>
+          <div class="card-title">Streaks</div>
+          <p class="card-body">Daily consecutive learning. Encourages habit formation.</p>
+        </div>
+        <div class="card accent-teal">
+          <span class="card-icon">🎉</span>
+          <div class="card-title">Celebrations</div>
+          <p class="card-body">Confetti, overlays, animations on excellent performance.</p>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        Rewards must encourage learning, not shame learners. No public ranking for young kids. No punitive messaging. No locking essential content.
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 14: PROGRESS ═══ -->
+    <section class="section" id="progress">
+      <div class="section-header">
+        <span class="section-num">14</span>
+        <h2 class="section-title">Progress Engine</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Free Users</th>
+              <th>Paid Users</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Progress storage</td><td>Browser storage (local)</td><td>Cloud sync</td></tr>
+            <tr><td>Cross-device sync</td><td class="td-no">✗</td><td class="td-yes">✓ Up to 5 devices</td></tr>
+            <tr><td>Parent dashboard</td><td class="td-no">✗</td><td class="td-yes">✓ Full access</td></tr>
+            <tr><td>Teacher reports</td><td class="td-no">✗</td><td class="td-yes">✓ Full access</td></tr>
+            <tr><td>Badges &amp; certificates</td><td>Basic</td><td>Premium + certs</td></tr>
+            <tr><td>Long-term history</td><td class="td-no">✗</td><td class="td-yes">✓ Indefinite</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 15: COMPONENT OVERRIDE ═══ -->
+    <section class="section" id="component-override">
+      <div class="section-header">
+        <span class="section-num">15</span>
+        <h2 class="section-title">Component Override System</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>Overrides follow a strict resolution order: module-specific first, then academy-specific, then the core default. Core components must be generic — no academy names, no grade names hardcoded.</p>
+
+      <div class="flow" style="flex-direction:column;align-items:flex-start;gap:4px;">
+        <div class="flow-step" style="width:100%;max-width:420px">academies/cbc/modules/grade-1/overrides/LessonCard.tsx</div>
+        <span class="flow-arrow" style="padding-left:16px">↓ fallback</span>
+        <div class="flow-step" style="width:100%;max-width:420px">academies/cbc/overrides/LessonCard.tsx</div>
+        <span class="flow-arrow" style="padding-left:16px">↓ fallback</span>
+        <div class="flow-step" style="width:100%;max-width:420px">core/components/LessonCard.tsx</div>
+      </div>
+
+      <div class="grid-2" style="margin-top:20px">
+        <div>
+          <div class="callout callout-warn">
+            ❌ Bad: <code style="font-family:'JetBrains Mono',monospace;font-size:0.82em">if (grade === "grade-1") showMascot()</code>
+          </div>
+        </div>
+        <div>
+          <div class="callout callout-ok">
+            ✓ Good: <code style="font-family:'JetBrains Mono',monospace;font-size:0.82em">if (theme.components.showMascot) showMascot()</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 16: FOLDER STRUCTURE ═══ -->
+    <section class="section" id="folder-structure">
+      <div class="section-header">
+        <span class="section-num">16</span>
+        <h2 class="section-title">Folder Structure</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="tree">
+<span class="dir">src/</span>
+  <span class="dir">app/</span>            App.tsx · routes.tsx · providers.tsx
+  <span class="dir">core/</span>           components/ · layouts/ · hooks/ · services/ · types/ · utils/
+  <span class="dir">platform/</span>
+    <span class="dir">academy/</span>      <span class="highlight">academyRegistry.ts · overrideResolver.ts · moduleLoader.ts</span>
+    <span class="dir">content/</span>      contentRegistry.ts · lessonEngine.ts · quizEngine.ts · examEngine.ts
+    <span class="dir">progress/</span>     progressService.ts · localProgressStore.ts · cloudProgressStore.ts
+    <span class="dir">speech/</span>       speechService.ts · providers/browserSpeechProvider.ts
+    <span class="dir">rewards/</span>      rewardEngine.ts · starRules.ts · badgeRegistry.ts · unlockEngine.ts
+    <span class="dir">theme/</span>        themeRegistry.ts · themeResolver.ts · themeTokens.ts
+  <span class="dir">academies/</span>
+    <span class="dir">cbc/</span>          <span class="highlight">academy.config.ts · theme.config.ts · reward.config.ts</span>
+      <span class="dir">modules/grade-1/</span>  subjects/english/ · overrides/
+    <span class="dir">tech/</span>         <span class="highlight">academy.config.ts · theme.config.ts</span>
+      <span class="dir">modules/dsa/</span>      tracks/dynamic-programming/ · visualizations/
+    <span class="dir">cx/</span>           <span class="highlight">academy.config.ts</span>
+      <span class="dir">modules/</span>      communication/ · support-skills/
+  <span class="dir">shared/</span>         ui/ · icons/ · assets/ · styles/
+  <span class="dir">i18n/</span>           locales/en/ · sw/ · zh/ · ar/ · fr/ · es/</div>
+    </section>
+
+    <!-- ═══ SECTION 17: ROUTING ═══ -->
+    <section class="section" id="routing">
+      <div class="section-header">
+        <span class="section-num">17</span>
+        <h2 class="section-title">Routing Strategy</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Path-Based Routing</div>
+          <div class="code-block" style="margin-top:10px">
+            <div class="code-body" style="padding:12px"><pre><span class="str">/academy/cbc</span>
+<span class="str">/academy/tech</span>
+<span class="str">/academy/cx</span></pre></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Subdomain-Based Routing</div>
+          <div class="code-block" style="margin-top:10px">
+            <div class="code-body" style="padding:12px"><pre><span class="str">cbc.academy.qubitel.net</span>
+<span class="str">tech.academy.qubitel.net</span>
+<span class="str">cx.academy.qubitel.net</span></pre></div>
+          </div>
+        </div>
+      </div>
+      <p>Same routing engine, different labels per academy. CBC uses Grades/Subjects/Lessons/Exams. Tech uses Tracks/Topics/Problems/Assessments.</p>
+    </section>
+
+    <!-- ═══ SECTION 18: QUALITY ═══ -->
+    <section class="section" id="quality">
+      <div class="section-header">
+        <span class="section-num">18</span>
+        <h2 class="section-title">Quality Standards</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Area</th><th>Requirement</th></tr></thead>
+          <tbody>
+            <tr><td>TypeScript</td><td>Strict mode · No <code>any</code> without justification · Explicit content schemas</td></tr>
+            <tr><td>Linting</td><td>ESLint · Prettier · Import order rules · No circular dependencies</td></tr>
+            <tr><td>Code Coverage</td><td>Engines ≥ 85% · Shared UI components ≥ 70% · Academy overrides ≥ 60%</td></tr>
+            <tr><td>Testing</td><td>Unit (engines) · Integration (academy loading) · E2E (critical flows) · Visual regression</td></tr>
+            <tr><td>Accessibility</td><td>WCAG 2.1 AA · Automated axe-core + manual screen reader checks</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 19: ACCESSIBILITY ═══ -->
+    <section class="section" id="accessibility">
+      <div class="section-header">
+        <span class="section-num">19</span>
+        <h2 class="section-title">Accessibility Standards</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="feat-grid">
+        <div class="feat-item">Visible focus states</div>
+        <div class="feat-item">Keyboard navigation</div>
+        <div class="feat-item">High color contrast</div>
+        <div class="feat-item">Screen reader labels</div>
+        <div class="feat-item">Reduced motion support</div>
+        <div class="feat-item">Large touch targets</div>
+        <div class="feat-item">Video captions</div>
+        <div class="feat-item">Audio alternatives</div>
+        <div class="feat-item">Simple language (kids)</div>
+        <div class="feat-item">Large buttons (kids)</div>
+        <div class="feat-item">Read-aloud (kids)</div>
+        <div class="feat-item">Friendly error messages</div>
+      </div>
+      <div class="callout" style="margin-top:16px">
+        All academies must pass Core Web Vitals (LCP, INP, CLS) on real mobile devices.
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 20: PRIVACY ═══ -->
+    <section class="section" id="privacy">
+      <div class="section-header">
+        <span class="section-num">20</span>
+        <h2 class="section-title">Child Safety &amp; Privacy</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Area</th><th>CBC Under-13</th><th>Tech 13+</th><th>CX Adult</th></tr></thead>
+          <tbody>
+            <tr><td>Discussion forums</td><td class="td-no">❌</td><td class="td-yes">✅ Moderated</td><td class="td-yes">✅</td></tr>
+            <tr><td>Peer review</td><td class="td-no">❌</td><td class="td-yes">✅ Code reviews</td><td class="td-yes">✅</td></tr>
+            <tr><td>Study groups</td><td>Parent-approved only</td><td class="td-yes">✅</td><td class="td-yes">✅</td></tr>
+            <tr><td>Leaderboards</td><td>Anonymised, class-only</td><td>Public optional</td><td>Public optional</td></tr>
+            <tr><td>Direct messaging</td><td class="td-no">❌</td><td>Limited</td><td class="td-yes">✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Minimal child data collection · Parent-controlled accounts · No unsafe messaging · No manipulative reward loops · Clear parent visibility</p>
+    </section>
+
+    <!-- ═══ SECTION 21: PERFORMANCE ═══ -->
+    <section class="section" id="performance">
+      <div class="section-header">
+        <span class="section-num">21</span>
+        <h2 class="section-title">Performance Standards</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>Mobile Target</th><th>Desktop Target</th></tr></thead>
+          <tbody>
+            <tr><td>Initial JS bundle (gzip)</td><td class="metric-ok">&lt; 300 KB</td><td class="metric-ok">&lt; 300 KB</td></tr>
+            <tr><td>Time to Interactive (TTI)</td><td class="metric-ok">&lt; 2.5 s</td><td class="metric-ok">&lt; 5 s</td></tr>
+            <tr><td>Lesson load</td><td class="metric-ok">&lt; 1.5 s</td><td class="metric-ok">&lt; 3 s</td></tr>
+            <tr><td>Exam load (first question)</td><td class="metric-ok">&lt; 1.0 s</td><td class="metric-ok">&lt; 2.5 s</td></tr>
+            <tr><td>Read-aloud response</td><td class="metric-ok">&lt; 200 ms</td><td class="metric-ok">&lt; 800 ms</td></tr>
+            <tr><td>Uptime SLA</td><td class="metric-ok">99.9%</td><td class="metric-ok">99.9%</td></tr>
+            <tr><td>RPO</td><td class="metric-warn">≤ 15 minutes</td><td class="metric-warn">≤ 15 minutes</td></tr>
+            <tr><td>RTO</td><td class="metric-warn">≤ 1 hour</td><td class="metric-warn">≤ 1 hour</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 22: MONETIZATION ═══ -->
+    <section class="section" id="monetization">
+      <div class="section-header">
+        <span class="section-num">22</span>
+        <h2 class="section-title">Monetization Model</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <span class="card-icon">🆓</span>
+          <div class="card-title">Free Tier</div>
+          <p class="card-body">Browser-local progress · Basic lessons · Basic practice · Limited cloud sync · 1 device</p>
+        </div>
+        <div class="card accent-yellow">
+          <span class="card-icon">💎</span>
+          <div class="card-title">Paid Tier</div>
+          <p class="card-body">Cloud progress sync · Parent dashboard · Advanced reports · Premium exams · Premium audio · More badges · Certificates · Up to 5 devices · Priority support</p>
+        </div>
+      </div>
+      <div class="callout">Free users must still have a genuinely useful learning experience.</div>
+
+      <div class="sub-title">Subscription Lifecycle</div>
+      <div class="flow">
+        <div class="flow-step">Active</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Payment Fails</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Grace (7 days)</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Dunning (3× / 14d)</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Downgrade to Free</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">Reactivate (90d)</div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 28: ZERO HARDCODE ═══ -->
+    <section class="section" id="zero-hardcode">
+      <div class="section-header">
+        <span class="section-num">28</span>
+        <h2 class="section-title">Zero-Hardcoding Architecture</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>The React code renders and executes based on configuration, schemas, registries, and provider contracts — not hardcoded academy or grade logic.</p>
+
+      <div class="sub-title">Must NOT be hardcoded in UI Components</div>
+      <div class="feat-grid">
+        <div class="feat-item" style="color:var(--accent-2)">Academy names</div>
+        <div class="feat-item" style="color:var(--accent-2)">Grade names</div>
+        <div class="feat-item" style="color:var(--accent-2)">Subject names</div>
+        <div class="feat-item" style="color:var(--accent-2)">Route labels</div>
+        <div class="feat-item" style="color:var(--accent-2)">Button labels</div>
+        <div class="feat-item" style="color:var(--accent-2)">Theme colors</div>
+        <div class="feat-item" style="color:var(--accent-2)">Star rules</div>
+        <div class="feat-item" style="color:var(--accent-2)">Badge unlock rules</div>
+        <div class="feat-item" style="color:var(--accent-2)">Feature flags</div>
+        <div class="feat-item" style="color:var(--accent-2)">Payment rules</div>
+        <div class="feat-item" style="color:var(--accent-2)">Language strings</div>
+        <div class="feat-item" style="color:var(--accent-2)">Progress strategy</div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 29: CONFIG ═══ -->
+    <section class="section" id="config">
+      <div class="section-header">
+        <span class="section-num">29</span>
+        <h2 class="section-title">Configuration-Driven System</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">Config Categories</div>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">
+            <div class="feat-item" style="font-size:0.77rem">Academy Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Module Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Navigation Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Theme Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Localization Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Feature Config</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">More Categories</div>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">
+            <div class="feat-item" style="font-size:0.77rem">Reward Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Assessment Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Progress Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Speech Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Payment Config</div>
+            <div class="feat-item" style="font-size:0.77rem">Route Config</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Config Sources</div>
+          <div style="display:flex;flex-direction:column;gap:5px;margin-top:8px">
+            <div class="feat-item" style="font-size:0.77rem">Local TypeScript files</div>
+            <div class="feat-item" style="font-size:0.77rem">JSON / YAML content</div>
+            <div class="feat-item" style="font-size:0.77rem">Remote backend config</div>
+            <div class="feat-item" style="font-size:0.77rem">Feature flag service</div>
+            <div class="feat-item" style="font-size:0.77rem">CMS / Admin portal</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 45: SECURITY ═══ -->
+    <section class="section" id="security">
+      <div class="section-header">
+        <span class="section-num">45</span>
+        <h2 class="section-title">Security Architecture</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="sec-grid">
+        <div class="sec-card">
+          <div class="sec-card-icon">🔐</div>
+          <div class="sec-card-title">Authentication</div>
+          <p class="sec-card-body">Email/password, Google, Apple, Clever for schools. MFA required for admin accounts, optional for teachers.</p>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon">🔒</div>
+          <div class="sec-card-title">Encryption</div>
+          <p class="sec-card-body">TLS 1.3 in transit · AES-256 at rest. No hardcoded secrets or credentials in source.</p>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon">👤</div>
+          <div class="sec-card-title">RBAC</div>
+          <p class="sec-card-body">Academy-scoped permissions. Role: school-admin, teacher, IT-admin with granular control.</p>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon">📋</div>
+          <div class="sec-card-title">Audit Logging</div>
+          <p class="sec-card-body">All authentication events, role changes, data exports, and consent actions are logged.</p>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon">🛡️</div>
+          <div class="sec-card-title">Hardening</div>
+          <p class="sec-card-body">Annual penetration testing. Weekly dependency scanning. Rate limiting on all API endpoints.</p>
+        </div>
+        <div class="sec-card">
+          <div class="sec-card-icon">📊</div>
+          <div class="sec-card-title">Compliance</div>
+          <p class="sec-card-body">COPPA, GDPR, FERPA considered. Consent collection, data export, and deletion on request.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 48: TENANCY ═══ -->
+    <section class="section" id="tenancy">
+      <div class="section-header">
+        <span class="section-num">48</span>
+        <h2 class="section-title">Enterprise Multi-Tenancy</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="grid-2">
+        <div>
+          <div class="sub-title">Tenant Types</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+            <span class="badge badge-blue">School</span>
+            <span class="badge badge-orange">District</span>
+            <span class="badge badge-teal">Government</span>
+            <span class="badge badge-yellow">Corporate</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub-title">Enterprise Features</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+            <div class="feat-item" style="font-size:0.8rem">Complete tenant data isolation</div>
+            <div class="feat-item" style="font-size:0.8rem">Custom branding (logo, colors, domain)</div>
+            <div class="feat-item" style="font-size:0.8rem">Bulk enrolment (CSV + Clever/ClassLink)</div>
+            <div class="feat-item" style="font-size:0.8rem">Granular admin roles</div>
+            <div class="feat-item" style="font-size:0.8rem">Custom SLA up to 99.99%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 49: PAYMENTS ═══ -->
+    <section class="section" id="payments">
+      <div class="section-header">
+        <span class="section-num">49</span>
+        <h2 class="section-title">Payment Providers</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Region</th><th>Supported Providers</th></tr></thead>
+          <tbody>
+            <tr><td>🌍 Global</td><td>Stripe</td></tr>
+            <tr><td>🌍 Africa (Kenya, Nigeria)</td><td>Paystack · Flutterwave</td></tr>
+            <tr><td>🇮🇳 India</td><td>Razorpay</td></tr>
+            <tr><td>🇨🇳 China</td><td>Alipay · WeChat Pay</td></tr>
+            <tr><td>🌎 Latin America</td><td>Mercado Pago</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 46: PARENTAL ═══ -->
+    <section class="section" id="parental">
+      <div class="section-header">
+        <span class="section-num">46</span>
+        <h2 class="section-title">Parental Controls</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Control</th><th>Description</th><th>Default (Grade 1–5)</th></tr></thead>
+          <tbody>
+            <tr><td>Daily time limits</td><td>Set max minutes/day (10–240)</td><td class="td-key">60 min</td></tr>
+            <tr><td>Bedtime controls</td><td>Block learning during set hours</td><td class="td-key">20:00 – 06:00</td></tr>
+            <tr><td>Content filtering</td><td>Restrict to specific modules / grades</td><td>Grade-locked</td></tr>
+            <tr><td>Reward approvals</td><td>Parent approves in-app cosmetic unlocks</td><td>Required</td></tr>
+            <tr><td>Device management</td><td>View + revoke connected devices</td><td>Full visibility</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 52: SOCIAL ═══ -->
+    <section class="section" id="social">
+      <div class="section-header">
+        <span class="section-num">52</span>
+        <h2 class="section-title">Social Learning</h2>
+      </div>
+      <div class="section-title-line"></div>
+      <p>Age-appropriate social features with AI-filtered and human-reviewed moderation for all user-generated content in Tech and CX academies.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>CBC (under 13)</th><th>Tech (13+)</th><th>CX (adult)</th></tr></thead>
+          <tbody>
+            <tr><td>Discussion forums</td><td class="td-no">❌</td><td class="td-yes">✅ Moderated</td><td class="td-yes">✅</td></tr>
+            <tr><td>Peer review</td><td class="td-no">❌</td><td class="td-yes">✅ Code reviews</td><td class="td-yes">✅ Scenario feedback</td></tr>
+            <tr><td>Study groups</td><td>Parent-approved only</td><td class="td-yes">✅</td><td class="td-yes">✅</td></tr>
+            <tr><td>Leaderboards</td><td>Anonymised, class-only</td><td>Public optional</td><td>Public optional</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 25: ROADMAP ═══ -->
+    <section class="section" id="roadmap">
+      <div class="section-header">
+        <span class="section-num">25</span>
+        <h2 class="section-title">Implementation Roadmap</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="roadmap">
+        <div class="phase">
+          <div class="phase-track"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <span class="phase-label">PHASE 1</span>
+            <div class="phase-title">Platform Foundation</div>
+            <div class="phase-items">
+              <span class="phase-tag">Academy Registry</span>
+              <span class="phase-tag">Theme Registry</span>
+              <span class="phase-tag">Module Loader</span>
+              <span class="phase-tag">Content Schema</span>
+              <span class="phase-tag">Core Layouts</span>
+              <span class="phase-tag">Override Resolver</span>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-track"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <span class="phase-label">PHASE 2</span>
+            <div class="phase-title">CBC MVP</div>
+            <div class="phase-items">
+              <span class="phase-tag">Grade Selector</span>
+              <span class="phase-tag">Grade 1 English</span>
+              <span class="phase-tag">Lessons</span>
+              <span class="phase-tag">Read Aloud</span>
+              <span class="phase-tag">Quiz Engine</span>
+              <span class="phase-tag">Exam Engine</span>
+              <span class="phase-tag">Result Screen</span>
+              <span class="phase-tag">Stars</span>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-track"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <span class="phase-label">PHASE 3</span>
+            <div class="phase-title">Rewards</div>
+            <div class="phase-items">
+              <span class="phase-tag">Badge Registry</span>
+              <span class="phase-tag">Reward Engine</span>
+              <span class="phase-tag">Celebration Overlay</span>
+              <span class="phase-tag">UI Unlocks</span>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-track"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <span class="phase-label">PHASE 4</span>
+            <div class="phase-title">Tech Academy</div>
+            <div class="phase-items">
+              <span class="phase-tag">Tech Config</span>
+              <span class="phase-tag">DSA Module</span>
+              <span class="phase-tag">DP Topic</span>
+              <span class="phase-tag">Code Walkthrough</span>
+              <span class="phase-tag">Recursion Viz</span>
+              <span class="phase-tag">Video Blocks</span>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-track"><div class="phase-dot"></div><div class="phase-line"></div></div>
+          <div class="phase-content">
+            <span class="phase-label">PHASE 5</span>
+            <div class="phase-title">Progress &amp; Dashboards</div>
+            <div class="phase-items">
+              <span class="phase-tag">Browser Storage</span>
+              <span class="phase-tag">Cloud Sync</span>
+              <span class="phase-tag">Parent Dashboard</span>
+              <span class="phase-tag">Teacher Dashboard</span>
+            </div>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-track"><div class="phase-dot"></div></div>
+          <div class="phase-content">
+            <span class="phase-label">PHASE 6</span>
+            <div class="phase-title">Expansion</div>
+            <div class="phase-items">
+              <span class="phase-tag">More CBC Grades</span>
+              <span class="phase-tag">More Subjects</span>
+              <span class="phase-tag">More Tech Tracks</span>
+              <span class="phase-tag">CX Academy</span>
+              <span class="phase-tag">Additional Academies</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 56: AI ═══ -->
+    <section class="section" id="ai">
+      <div class="section-header">
+        <span class="section-num">56</span>
+        <h2 class="section-title">AI Roadmap</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="ai-phases">
+        <div class="ai-phase">
+          <div class="ai-phase-num">Phase 1</div>
+          <div class="ai-phase-title">Personalized Question Hints</div>
+          <div class="ai-phase-time">6–12 months</div>
+          <p class="ai-phase-note">GPT-4o-mini with output filter. Cost cap $0.10/user/month.</p>
+        </div>
+        <div class="ai-phase">
+          <div class="ai-phase-num">Phase 2</div>
+          <div class="ai-phase-title">Personalised Practice Quiz Generation</div>
+          <div class="ai-phase-time">12–18 months</div>
+          <p class="ai-phase-note">Human review required for new question templates.</p>
+        </div>
+        <div class="ai-phase">
+          <div class="ai-phase-num">Phase 3</div>
+          <div class="ai-phase-title">Text-Only Tutoring Assistant</div>
+          <div class="ai-phase-time">18–24 months</div>
+          <p class="ai-phase-note">Guardrails in place. Zero PII sent to any LLM.</p>
+        </div>
+        <div class="ai-phase">
+          <div class="ai-phase-num">Phase 4</div>
+          <div class="ai-phase-title">Voice Conversational Tutor</div>
+          <div class="ai-phase-time">Future</div>
+          <p class="ai-phase-note">On-device small model for maximum privacy.</p>
+        </div>
+      </div>
+      <div class="callout callout-warn">
+        Safety rule: AI never makes final decisions on learner progression — it only suggests. Human (parent/teacher) or explicit rule must approve grade changes or content unlocks.
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 57: PRIORITY ═══ -->
+    <section class="section" id="priority">
+      <div class="section-header">
+        <span class="section-num">57</span>
+        <h2 class="section-title">Implementation Readiness Matrix</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="priority-grid">
+        <div class="priority-card">
+          <span class="priority-label p1">🚨 Priority 1 — Launch Blockers</span>
+          <div class="priority-items">
+            <div class="priority-item">Accessibility (WCAG 2.1 AA)</div>
+            <div class="priority-item">Privacy &amp; compliance (consent, deletion, export)</div>
+            <div class="priority-item">Offline support with conflict resolution</div>
+            <div class="priority-item">Performance budgets met</div>
+          </div>
+        </div>
+        <div class="priority-card">
+          <span class="priority-label p2">⚡ Priority 2 — Within 6 months</span>
+          <div class="priority-items">
+            <div class="priority-item">Analytics engine &amp; learner insights</div>
+            <div class="priority-item">Teacher authoring tools (basic)</div>
+            <div class="priority-item">Dynamic difficulty adjustment</div>
+            <div class="priority-item">Enterprise multi-tenancy</div>
+          </div>
+        </div>
+        <div class="priority-card">
+          <span class="priority-label p3">📅 Priority 3 — Within 12 months</span>
+          <div class="priority-items">
+            <div class="priority-item">LMS integrations (LTI 1.3, Canvas, Moodle)</div>
+            <div class="priority-item">Social learning (age-appropriate)</div>
+            <div class="priority-item">Adaptive video streaming</div>
+            <div class="priority-item">Parental time controls</div>
+          </div>
+        </div>
+        <div class="priority-card">
+          <span class="priority-label p4">🔭 Priority 4 — Future / Stretch</span>
+          <div class="priority-items">
+            <div class="priority-item">AI tutoring (personalised explanations)</div>
+            <div class="priority-item">AR/VR learning modules</div>
+            <div class="priority-item">Blockchain verifiable certificates</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 26: ENGINEERING RULES ═══ -->
+    <section class="section" id="rules">
+      <div class="section-header">
+        <span class="section-num">26</span>
+        <h2 class="section-title">Non-Negotiable Engineering Rules</h2>
+      </div>
+      <div class="section-title-line"></div>
+
+      <div class="eng-rules">
+        <div class="eng-rule"><span class="eng-rule-n">01</span> No academy-specific logic inside core.</div>
+        <div class="eng-rule"><span class="eng-rule-n">02</span> No hardcoded grade names inside reusable components.</div>
+        <div class="eng-rule"><span class="eng-rule-n">03</span> No direct localStorage usage outside progress services.</div>
+        <div class="eng-rule"><span class="eng-rule-n">04</span> No direct speech API usage inside UI components.</div>
+        <div class="eng-rule"><span class="eng-rule-n">05</span> No direct payment logic inside UI components.</div>
+        <div class="eng-rule"><span class="eng-rule-n">06</span> No duplicated screen logic across academies.</div>
+        <div class="eng-rule"><span class="eng-rule-n">07</span> All content must pass schema validation.</div>
+        <div class="eng-rule"><span class="eng-rule-n">08</span> All themes must use tokens — never inline or hardcoded values.</div>
+        <div class="eng-rule"><span class="eng-rule-n">09</span> Overrides must follow the documented resolution order.</div>
+        <div class="eng-rule"><span class="eng-rule-n">10</span> Essential learning content must never be locked behind gamification.</div>
+      </div>
+
+      <div class="callout callout-ok" style="margin-top:24px">
+        This specification is the complete foundation for the Multi-Academy Adaptive Learning Framework. All sections are mandatory for implementation unless explicitly marked as "future".
+      </div>
+    </section>
+
+  </div><!-- /content-wrap -->
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+  <div class="footer-left">
+    Multi-Academy Learning Framework
+    <span style="color:var(--text-3);font-weight:400"> · Complete Specification</span>
+  </div>
+  <div class="footer-right">
+    <span class="footer-accent">v1.0 Final</span> · 57 Sections · CBC · Tech · CX
+  </div>
+</footer>
+
+<!-- ═══ TOC PROGRESS PIPS ═══ -->
+<div class="toc-progress" id="toc-pips" aria-hidden="true">
+</div>
+
+<!-- ═══ SCRIPT ═══ -->
+<script>
+/* ── Theme toggle ── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('theme-icon').textContent = isDark ? '🌙' : '☀️';
+}
+
+/* ── Sidebar active link on scroll ── */
+const sections = document.querySelectorAll('.section[id]');
+const sidebarLinks = document.querySelectorAll('.sidebar a[href^="#"]');
+
+/* Build TOC pips */
+const pipsContainer = document.getElementById('toc-pips');
+sections.forEach((s, i) => {
+  const pip = document.createElement('div');
+  pip.className = 'toc-pip';
+  pip.title = s.querySelector('.section-title')?.textContent || '';
+  pip.addEventListener('click', () => {
+    s.scrollIntoView({ behavior: 'smooth' });
+  });
+  pipsContainer.appendChild(pip);
+});
+const pips = pipsContainer.querySelectorAll('.toc-pip');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const id = entry.target.id;
+    const link = document.querySelector(`.sidebar a[href="#${id}"]`);
+    const idx = Array.from(sections).indexOf(entry.target);
+    if (entry.isIntersecting) {
+      sidebarLinks.forEach(l => l.classList.remove('active'));
+      if (link) link.classList.add('active');
+      pips.forEach(p => p.classList.remove('active'));
+      if (pips[idx]) pips[idx].classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+sections.forEach(s => observer.observe(s));
+
+/* ── Smooth scroll for all anchor links ── */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
