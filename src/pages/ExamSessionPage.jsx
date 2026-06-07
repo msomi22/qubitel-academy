@@ -730,7 +730,7 @@ export default function ExamSessionPage() {
       <main className="page cbc-exam-page">
         <section className="cbc-exam-start-card">
           <p className="cbc-exam-kicker">{categoryDisplayName(exam)} | {topicDisplayName(exam)}</p>
-          <h1>{comprehensionConfig?.introTitle || exam.examTitle}</h1>
+          <h1>{exam.examTitle}</h1>
           {introLines.length ? (
             <div className="cbc-comprehension-intro-copy">
               {introLines.map((line) => <p key={line}>{line}</p>)}

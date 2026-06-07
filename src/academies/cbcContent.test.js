@@ -284,12 +284,22 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
       .every((reference) => reference.learningAreaId === 'spelling')
   );
   assert.ok(
+    gradeThreeEnglishTopic.assessments
+      .filter((reference) => reference.learningAreaId === 'spelling')
+      .every((reference) => reference.file.startsWith('assessments/spelling/'))
+  );
+  assert.ok(
     contentReferences
       .filter((reference) => (
         reference.id.startsWith('reading-comprehension')
         || reference.id.startsWith('grade-3-english-comprehension')
       ))
       .every((reference) => reference.learningAreaId === 'reading-comprehension')
+  );
+  assert.ok(
+    gradeThreeEnglishTopic.assessments
+      .filter((reference) => reference.learningAreaId === 'reading-comprehension')
+      .every((reference) => reference.file.startsWith('assessments/comprehension/'))
   );
   assert.deepEqual(
     contentReferences

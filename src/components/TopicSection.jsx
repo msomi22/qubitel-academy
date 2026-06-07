@@ -86,6 +86,14 @@ function examStatusLabel(entry, completed) {
   return isEntryComplete(entry, completed) ? 'Completed' : 'Ready';
 }
 
+function assessmentSubtitle(entry) {
+  return [
+    countLabel(examQuestionCount(entry), 'question'),
+    entry?.difficulty,
+    entry?.estimatedTime
+  ].filter(Boolean).join(' • ');
+}
+
 function TopicMetadataList({ className, items }) {
   if (!hasListItems(items)) return null;
   return <ul className={className}>{items.map((item) => <li key={item}>{item}</li>)}</ul>;
@@ -167,7 +175,7 @@ function TopicAssessments({
               <span className="topic-assessment-icon" aria-hidden="true">📝</span>
               <span className="topic-assessment-copy">
                 <strong>{assessment.title}</strong>
-                <small>{examQuestionCount(assessment)} questions • {assessment.estimatedTime}</small>
+                <small>{assessmentSubtitle(assessment)}</small>
               </span>
               <span className="topic-assessment-status">{examStatusLabel(assessment, completed)}</span>
             </button>

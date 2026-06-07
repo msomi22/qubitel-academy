@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   buildExamAttempt,
+  buildExamDisplayMetadata,
   createExamEntries,
   isExamQuestion
 } from './examAttemptService.js';
@@ -56,7 +57,7 @@ test('groups exam questions into one learner-facing exam entry', () => {
   assert.equal(isExamQuestion(questions[1]), true);
   assert.equal(examEntry.title, 'Exam 1');
   assert.equal(examEntry.examQuestions.length, 2);
-  assert.equal(examEntry.estimatedTime, '2 questions | 30s each');
+  assert.equal(examEntry.estimatedTime, '1 min');
 });
 
 test('timed comprehension exam entries expose reading guide and strict question timing', () => {
@@ -89,10 +90,103 @@ test('timed comprehension exam entries expose reading guide and strict question 
   const examEntry = entries.find((entry) => entry.id === 'timed-reading-001');
 
   assert.equal(examEntry.difficulty, 'Timed Exam');
-  assert.equal(examEntry.estimatedTime, 'Timed Exam | 60 seconds each | Reading guide: 10 minutes');
+  assert.equal(examEntry.estimatedTime, '11 min');
   assert.equal(examEntry.metadata.examMode, 'timed-comprehension');
   assert.equal(examEntry.metadata.readingGuideSeconds, 600);
   assert.equal(examEntry.metadata.questionTimeSeconds, 60);
+});
+
+test('CBC exam entries expose short card titles and fuller page titles', () => {
+  const cbcQuestions = [
+    {
+      id: 'class-library-q001',
+      type: 'mcq',
+      title: 'Question 1',
+      options: ['a', 'b', 'c', 'd'],
+      correctAnswer: 0,
+      estimatedTimeSeconds: 60,
+      category: 'grade-3',
+      topicId: 'english',
+      tags: ['cbc', 'grade-3', 'english', 'reading-comprehension'],
+      metadata: {
+        assessmentType: 'exam',
+        examId: 'reading-comprehension-class-library-exam-001',
+        examTitle: 'Grade 3 English Timed Comprehension Exam 1',
+        learningAreaId: 'reading-comprehension',
+        examMode: 'timed-comprehension',
+        timedComprehensionExam: {
+          passageTitle: 'The New Class Library',
+          readingGuideSeconds: 600,
+          questionTimeSeconds: 60
+        },
+        sequence: 1000
+      }
+    },
+    {
+      id: 'faithful-collie-q001',
+      type: 'mcq',
+      title: 'Question 1',
+      options: ['a', 'b', 'c', 'd'],
+      correctAnswer: 0,
+      estimatedTimeSeconds: 60,
+      category: 'grade-3',
+      topicId: 'english',
+      tags: ['cbc', 'grade-3', 'english', 'reading-comprehension'],
+      metadata: {
+        assessmentType: 'exam',
+        examId: 'grade-3-english-comprehension-faithful-collie-exam-011',
+        examTitle: 'Grade 3 English Comprehension Exam 011: The Faithful Collie',
+        learningAreaId: 'reading-comprehension',
+        examMode: 'timed-comprehension',
+        timedComprehensionExam: {
+          passageTitle: 'The Faithful Collie',
+          readingGuideSeconds: 600,
+          questionTimeSeconds: 60
+        },
+        sequence: 1100
+      }
+    },
+    {
+      id: 'spelling-q001',
+      type: 'mcq',
+      title: 'Question 1',
+      options: ['a', 'b', 'c', 'd'],
+      correctAnswer: 0,
+      estimatedTimeSeconds: 30,
+      category: 'grade-3',
+      topicId: 'english',
+      tags: ['cbc', 'grade-3', 'english', 'spelling'],
+      metadata: {
+        assessmentType: 'exam',
+        examId: 'grade-3-spelling-classroom-items-exam-007',
+        examTitle: 'Spelling Exam 7: Classroom Items',
+        learningAreaId: 'spelling',
+        sequence: 150
+      }
+    }
+  ];
+
+  const entries = createExamEntries(cbcQuestions);
+  const classLibrary = entries.find((entry) => entry.id === 'reading-comprehension-class-library-exam-001');
+  const faithfulCollie = entries.find((entry) => entry.id === 'grade-3-english-comprehension-faithful-collie-exam-011');
+  const spelling = entries.find((entry) => entry.id === 'grade-3-spelling-classroom-items-exam-007');
+
+  assert.equal(classLibrary.title, 'Exam 1: Class Library');
+  assert.equal(classLibrary.metadata.examPageTitle, 'Exam 1: Grade 3 - Class Library');
+  assert.equal(classLibrary.estimatedTime, '11 min');
+  assert.equal(faithfulCollie.title, 'Exam 2: The Faithful Collie');
+  assert.equal(faithfulCollie.metadata.examPageTitle, 'Exam 2: Grade 3 - The Faithful Collie');
+  assert.equal(spelling.title, 'Spelling 7: Classroom Items');
+  assert.equal(spelling.metadata.examPageTitle, 'Spelling 7: Grade 3 - Classroom Items');
+
+  assert.equal(
+    buildExamDisplayMetadata(
+      'grade-3-english-comprehension-faithful-collie-exam-011',
+      [cbcQuestions[1]],
+      cbcQuestions
+    ).pageTitle,
+    'Exam 2: Grade 3 - The Faithful Collie'
+  );
 });
 
 test('grades correct, incorrect, and timed-out answers separately', () => {
