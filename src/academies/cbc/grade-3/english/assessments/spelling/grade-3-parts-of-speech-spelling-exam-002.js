@@ -1,4 +1,4 @@
-import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
+import { defineMcqProblem } from '../../../../../../problems/problemAuthoring.js';
 
 const examId = 'grade-3-parts-of-speech-spelling-exam-002';
 const examTitle = 'Parts of Speech Exam 2: Telling More and Joining Words';

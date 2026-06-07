@@ -1,4 +1,4 @@
-import { defineMcqProblem } from "../../../../../problems/problemAuthoring.js";
+import { defineMcqProblem } from "../../../../../../problems/problemAuthoring.js";
 
 const examId = "grade-3-spelling-furniture-exam-008";
 const examTitle = "Spelling Exam 8: Furniture";

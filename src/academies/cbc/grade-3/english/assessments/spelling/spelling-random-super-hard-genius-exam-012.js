@@ -1,4 +1,4 @@
-import { defineMcqProblem } from "../../../../../problems/problemAuthoring.js";
+import { defineMcqProblem } from "../../../../../../problems/problemAuthoring.js";
 
 const examId = "grade-3-spelling-random-super-hard-genius-exam-012";
 const examTitle = "Spelling Exam 12: Random Super Hard Genius";

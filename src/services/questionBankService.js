@@ -16,7 +16,7 @@ import {
   getProblemValidationResult
 } from '../problems/problemDiscovery.js';
 import { normalizeProblem } from '../problems/normalizeProblem.js';
-import { isExamQuestion } from './examAttemptService.js';
+import { buildExamDisplayMetadata, isExamQuestion } from './examAttemptService.js';
 
 const bankModules = import.meta.env
   ? import.meta.glob('../academies/*/_legacy/banks/**/*.js')
@@ -478,9 +478,10 @@ export async function findExamById(examId) {
 
     if (questions.length) {
       const category = getCategory(topic.category);
+      const displayMetadata = buildExamDisplayMetadata(examId, questions, bank.questions);
       return {
         examId,
-        examTitle: questions[0].metadata.examTitle || examId,
+        examTitle: displayMetadata.pageTitle,
         questions,
         topic,
         category,

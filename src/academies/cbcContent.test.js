@@ -15,24 +15,24 @@ import partsOfSpeechLesson from './cbc/grade-3/english/lessons/grade-3-english-p
 import readingPractice from './cbc/grade-3/english/practice/reading-comprehension-school-garden-practice-001.js';
 import practiceOne from './cbc/grade-3/english/practice/spelling-practice-001.js';
 import practiceTwo from './cbc/grade-3/english/practice/spelling-practice-002.js';
-import examOne from './cbc/grade-3/english/assessments/spelling-exam-001.js';
-import examTwo from './cbc/grade-3/english/assessments/spelling-exam-002.js';
-import examThree from './cbc/grade-3/english/assessments/spelling-exam-003.js';
-import examFour from './cbc/grade-3/english/assessments/spelling-exam-004.js';
-import examFive from './cbc/grade-3/english/assessments/spelling-exam-005.js';
-import examSix from './cbc/grade-3/english/assessments/spelling-exam-006.js';
-import examSeven from './cbc/grade-3/english/assessments/spelling-classroom-items-exam-007.js';
-import examEight from './cbc/grade-3/english/assessments/spelling-furniture-exam-008.js';
-import examNine from './cbc/grade-3/english/assessments/spelling-body-parts-exam-009.js';
-import examTen from './cbc/grade-3/english/assessments/spelling-random-hard-exam-010.js';
-import examEleven from './cbc/grade-3/english/assessments/spelling-random-super-hard-exam-011.js';
-import examTwelve from './cbc/grade-3/english/assessments/spelling-random-super-hard-genius-exam-012.js';
-import examThirteen from './cbc/grade-3/english/assessments/spelling-domestic-animals-exam-013.js';
-import examFourteen from './cbc/grade-3/english/assessments/spelling-wild-animals-exam-014.js';
-import examFifteen from './cbc/grade-3/english/assessments/spelling-aquatic-animals-exam-015.js';
-import partsOfSpeechExamOne from './cbc/grade-3/english/assessments/grade-3-parts-of-speech-spelling-exam-001.js';
-import partsOfSpeechExamTwo from './cbc/grade-3/english/assessments/grade-3-parts-of-speech-spelling-exam-002.js';
-import timedComprehensionExam from './cbc/grade-3/english/assessments/reading-comprehension-class-library-exam-001.js';
+import examOne from './cbc/grade-3/english/assessments/spelling/spelling-exam-001.js';
+import examTwo from './cbc/grade-3/english/assessments/spelling/spelling-exam-002.js';
+import examThree from './cbc/grade-3/english/assessments/spelling/spelling-exam-003.js';
+import examFour from './cbc/grade-3/english/assessments/spelling/spelling-exam-004.js';
+import examFive from './cbc/grade-3/english/assessments/spelling/spelling-exam-005.js';
+import examSix from './cbc/grade-3/english/assessments/spelling/spelling-exam-006.js';
+import examSeven from './cbc/grade-3/english/assessments/spelling/spelling-classroom-items-exam-007.js';
+import examEight from './cbc/grade-3/english/assessments/spelling/spelling-furniture-exam-008.js';
+import examNine from './cbc/grade-3/english/assessments/spelling/spelling-body-parts-exam-009.js';
+import examTen from './cbc/grade-3/english/assessments/spelling/spelling-random-hard-exam-010.js';
+import examEleven from './cbc/grade-3/english/assessments/spelling/spelling-random-super-hard-exam-011.js';
+import examTwelve from './cbc/grade-3/english/assessments/spelling/spelling-random-super-hard-genius-exam-012.js';
+import examThirteen from './cbc/grade-3/english/assessments/spelling/spelling-domestic-animals-exam-013.js';
+import examFourteen from './cbc/grade-3/english/assessments/spelling/spelling-wild-animals-exam-014.js';
+import examFifteen from './cbc/grade-3/english/assessments/spelling/spelling-aquatic-animals-exam-015.js';
+import partsOfSpeechExamOne from './cbc/grade-3/english/assessments/spelling/grade-3-parts-of-speech-spelling-exam-001.js';
+import partsOfSpeechExamTwo from './cbc/grade-3/english/assessments/spelling/grade-3-parts-of-speech-spelling-exam-002.js';
+import timedComprehensionExam from './cbc/grade-3/english/assessments/comprehension/reading-comprehension-class-library-exam-001.js';
 import kiswahiliHadithiExam from './cbc/grade-3/kiswahili/assessments/kiswahili-hadithi-exam-001.js';
 import { getAcademyCatalog } from './catalog.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
@@ -265,7 +265,17 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
       'spelling-aquatic-animals-exam-015',
       'grade-3-parts-of-speech-spelling-exam-001',
       'grade-3-parts-of-speech-spelling-exam-002',
-      'reading-comprehension-class-library-exam-001'
+      'reading-comprehension-class-library-exam-001',
+      'grade-3-english-comprehension-faithful-collie-exam-011',
+      'grade-3-english-comprehension-bear-cub-adventure-exam-012',
+      'grade-3-english-comprehension-black-beauty-and-ginger-exam-013',
+      'grade-3-english-comprehension-john-and-the-cherries-exam-014',
+      'grade-3-english-comprehension-camping-holiday-exam-015',
+      'grade-3-english-comprehension-lion-and-the-mouse-exam-016',
+      'grade-3-english-comprehension-fox-and-the-goat-exam-017',
+      'grade-3-english-comprehension-tom-thumb-exam-018',
+      'grade-3-english-comprehension-some-useful-finds-exam-019',
+      'grade-3-english-comprehension-raman-meets-the-rocking-horse-exam-020'
     ]
   );
   assert.ok(
@@ -274,9 +284,22 @@ test('CBC Grade 3 English declares manifest-driven learning areas', () => {
       .every((reference) => reference.learningAreaId === 'spelling')
   );
   assert.ok(
+    gradeThreeEnglishTopic.assessments
+      .filter((reference) => reference.learningAreaId === 'spelling')
+      .every((reference) => reference.file.startsWith('assessments/spelling/'))
+  );
+  assert.ok(
     contentReferences
-      .filter((reference) => reference.id.startsWith('reading-comprehension'))
+      .filter((reference) => (
+        reference.id.startsWith('reading-comprehension')
+        || reference.id.startsWith('grade-3-english-comprehension')
+      ))
       .every((reference) => reference.learningAreaId === 'reading-comprehension')
+  );
+  assert.ok(
+    gradeThreeEnglishTopic.assessments
+      .filter((reference) => reference.learningAreaId === 'reading-comprehension')
+      .every((reference) => reference.file.startsWith('assessments/comprehension/'))
   );
   assert.deepEqual(
     contentReferences

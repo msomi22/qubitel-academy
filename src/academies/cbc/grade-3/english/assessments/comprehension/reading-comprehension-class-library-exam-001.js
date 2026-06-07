@@ -1,4 +1,4 @@
-import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
+import { defineMcqProblem } from '../../../../../../problems/problemAuthoring.js';
 
 export const classLibraryPassage = {
   title: 'The New Class Library',

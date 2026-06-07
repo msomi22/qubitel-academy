@@ -1,4 +1,4 @@
-import { defineMcqProblem } from "../../../../../problems/problemAuthoring.js";
+import { defineMcqProblem } from "../../../../../../problems/problemAuthoring.js";
 
 const examId = "grade-3-spelling-wild-animals-exam-014";
 const examTitle = "Spelling Exam 14: Wild Animals";

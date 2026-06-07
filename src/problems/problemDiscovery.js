@@ -11,7 +11,7 @@ import { normalizeProblem } from './normalizeProblem.js';
 import { validateProblemCollection } from './validateProblem.js';
 
 const academyContentModules = import.meta.env
-  ? import.meta.glob('../academies/*/*/*/{lessons,practice,assessments}/*.js')
+  ? import.meta.glob('../academies/*/*/*/{lessons,practice,assessments}/**/*.js')
   : {};
 
 const discoveryCache = new Map();

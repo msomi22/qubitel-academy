@@ -3,7 +3,7 @@ import test from 'node:test';
 
 import { validateManifestRecords, validateTopicManifest } from './manifest.js';
 
-test('rejects unsafe ids and content files that do not match their reference', () => {
+test('rejects unsafe ids and content files outside their section', () => {
   const errors = validateTopicManifest({
     id: 'Sliding Window',
     academy: 'tech',
@@ -16,6 +16,23 @@ test('rejects unsafe ids and content files that do not match their reference', (
 
   assert.ok(errors.some((error) => error.field === 'id'));
   assert.ok(errors.some((error) => error.field === 'lessons[0].file'));
+});
+
+test('accepts nested content files inside their section', () => {
+  const errors = validateTopicManifest({
+    id: 'english',
+    academy: 'cbc',
+    category: 'grade-3',
+    displayName: 'English',
+    lessons: [],
+    practice: [],
+    assessments: [{
+      id: 'grade-3-english-comprehension-faithful-collie-exam-011',
+      file: 'assessments/comprehension/faithful-collie-exam-011.js'
+    }]
+  });
+
+  assert.deepEqual(errors, []);
 });
 
 test('rejects duplicate content ids across topic sections', () => {

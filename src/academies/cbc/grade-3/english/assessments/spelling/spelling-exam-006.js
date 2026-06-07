@@ -1,4 +1,4 @@
-import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
+import { defineMcqProblem } from '../../../../../../problems/problemAuthoring.js';
 
 const words = [
   ['mango', ['mengo', 'mangoe', 'mangoo']],

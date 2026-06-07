@@ -9,6 +9,19 @@ function isSafeId(value) {
   return typeof value === 'string' && SAFE_ID_PATTERN.test(value);
 }
 
+function isSafeContentFile(value, section) {
+  if (typeof value !== 'string') return false;
+  const parts = value.split('/');
+  if (parts.length < 2 || parts[0] !== section) return false;
+  if (!parts.at(-1).endsWith('.js')) return false;
+  return parts.slice(1).every((part, index, segments) => {
+    const valueToCheck = index === segments.length - 1
+      ? part.replace(/\.js$/, '')
+      : part;
+    return isSafeId(valueToCheck);
+  });
+}
+
 function validateSafeId(value, path, field, errors) {
   if (!isSafeId(value)) {
     errors.push(issue(path, field, `${field} must be a lowercase kebab-case safe id.`));
@@ -46,12 +59,11 @@ function validateContentReferences(value, path, field, errors) {
       validateSafeId(reference.learningAreaId, path, `${referenceField}.learningAreaId`, errors);
     }
     if (typeof reference.file === 'string') {
-      const expectedFile = `${field}/${reference.id}.js`;
-      if (reference.file !== expectedFile) {
+      if (!isSafeContentFile(reference.file, field)) {
         errors.push(issue(
           path,
           `${referenceField}.file`,
-          `Content file must be ${expectedFile}.`
+          `Content file must be a .js file under ${field}/ using safe path segments.`
         ));
       }
     }

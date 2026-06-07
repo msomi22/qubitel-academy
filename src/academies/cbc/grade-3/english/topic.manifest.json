@@ -74,92 +74,142 @@
   "assessments": [
     {
       "id": "spelling-exam-001",
-      "file": "assessments/spelling-exam-001.js",
+      "file": "assessments/spelling/spelling-exam-001.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-exam-002",
-      "file": "assessments/spelling-exam-002.js",
+      "file": "assessments/spelling/spelling-exam-002.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-exam-003",
-      "file": "assessments/spelling-exam-003.js",
+      "file": "assessments/spelling/spelling-exam-003.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-exam-004",
-      "file": "assessments/spelling-exam-004.js",
+      "file": "assessments/spelling/spelling-exam-004.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-exam-005",
-      "file": "assessments/spelling-exam-005.js",
+      "file": "assessments/spelling/spelling-exam-005.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-exam-006",
-      "file": "assessments/spelling-exam-006.js",
+      "file": "assessments/spelling/spelling-exam-006.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-classroom-items-exam-007",
-      "file": "assessments/spelling-classroom-items-exam-007.js",
+      "file": "assessments/spelling/spelling-classroom-items-exam-007.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-furniture-exam-008",
-      "file": "assessments/spelling-furniture-exam-008.js",
+      "file": "assessments/spelling/spelling-furniture-exam-008.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-body-parts-exam-009",
-      "file": "assessments/spelling-body-parts-exam-009.js",
+      "file": "assessments/spelling/spelling-body-parts-exam-009.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-random-hard-exam-010",
-      "file": "assessments/spelling-random-hard-exam-010.js",
+      "file": "assessments/spelling/spelling-random-hard-exam-010.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-random-super-hard-exam-011",
-      "file": "assessments/spelling-random-super-hard-exam-011.js",
+      "file": "assessments/spelling/spelling-random-super-hard-exam-011.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-random-super-hard-genius-exam-012",
-      "file": "assessments/spelling-random-super-hard-genius-exam-012.js",
+      "file": "assessments/spelling/spelling-random-super-hard-genius-exam-012.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-domestic-animals-exam-013",
-      "file": "assessments/spelling-domestic-animals-exam-013.js",
+      "file": "assessments/spelling/spelling-domestic-animals-exam-013.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-wild-animals-exam-014",
-      "file": "assessments/spelling-wild-animals-exam-014.js",
+      "file": "assessments/spelling/spelling-wild-animals-exam-014.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "spelling-aquatic-animals-exam-015",
-      "file": "assessments/spelling-aquatic-animals-exam-015.js",
+      "file": "assessments/spelling/spelling-aquatic-animals-exam-015.js",
       "learningAreaId": "spelling"
     },
     {
       "id": "grade-3-parts-of-speech-spelling-exam-001",
-      "file": "assessments/grade-3-parts-of-speech-spelling-exam-001.js",
+      "file": "assessments/spelling/grade-3-parts-of-speech-spelling-exam-001.js",
       "learningAreaId": "parts-of-speech"
     },
     {
       "id": "grade-3-parts-of-speech-spelling-exam-002",
-      "file": "assessments/grade-3-parts-of-speech-spelling-exam-002.js",
+      "file": "assessments/spelling/grade-3-parts-of-speech-spelling-exam-002.js",
       "learningAreaId": "parts-of-speech"
     },
     {
       "id": "reading-comprehension-class-library-exam-001",
-      "file": "assessments/reading-comprehension-class-library-exam-001.js",
+      "file": "assessments/comprehension/reading-comprehension-class-library-exam-001.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-faithful-collie-exam-011",
+      "file": "assessments/comprehension/faithful-collie-exam-011.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-bear-cub-adventure-exam-012",
+      "file": "assessments/comprehension/bear-cub-adventure-exam-012.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-black-beauty-and-ginger-exam-013",
+      "file": "assessments/comprehension/black-beauty-and-ginger-exam-013.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-john-and-the-cherries-exam-014",
+      "file": "assessments/comprehension/john-and-the-cherries-exam-014.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-camping-holiday-exam-015",
+      "file": "assessments/comprehension/camping-holiday-exam-015.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-lion-and-the-mouse-exam-016",
+      "file": "assessments/comprehension/lion-and-the-mouse-exam-016.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-fox-and-the-goat-exam-017",
+      "file": "assessments/comprehension/fox-and-the-goat-exam-017.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-tom-thumb-exam-018",
+      "file": "assessments/comprehension/tom-thumb-exam-018.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-some-useful-finds-exam-019",
+      "file": "assessments/comprehension/some-useful-finds-exam-019.js",
+      "learningAreaId": "reading-comprehension"
+    },
+    {
+      "id": "grade-3-english-comprehension-raman-meets-the-rocking-horse-exam-020",
+      "file": "assessments/comprehension/raman-meets-the-rocking-horse-exam-020.js",
       "learningAreaId": "reading-comprehension"
     }
   ]
