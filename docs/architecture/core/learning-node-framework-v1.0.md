@@ -1,6 +1,6 @@
-Learning Node Framework v1.0
+# Learning Node Framework v1.0
 
-Purpose
+## Purpose
 
 This document defines the core Learning Node architecture used by the Multi-Academy Learning Platform.
 
@@ -15,11 +15,11 @@ The goal is to create a stable, extensible, academy-agnostic foundation that can
 
 without requiring changes to the core data structure.
 
-⸻
+---
 
-Design Principles
+## Design Principles
 
-Principle 1: Everything Is A LearningNode
+### Principle 1: Everything Is A LearningNode
 
 The platform must never hardcode concepts such as:
 
@@ -36,13 +36,13 @@ The platform must never hardcode concepts such as:
 
 Instead, all content structures are represented using a single universal object:
 
-LearningNode
+**LearningNode**
 
 Different academies define different hierarchies using LearningNodes.
 
-⸻
+---
 
-Principle 2: The Core Model Must Remain Stable
+### Principle 2: The Core Model Must Remain Stable
 
 Future enhancements should be implemented through:
 
@@ -54,9 +54,9 @@ Future enhancements should be implemented through:
 
 and not by changing the LearningNode schema itself.
 
-⸻
+---
 
-Principle 3: Declarative Architecture
+### Principle 3: Declarative Architecture
 
 LearningNodes describe:
 
@@ -68,10 +68,11 @@ LearningNodes describe:
 
 LearningNodes do not describe implementation details.
 
-⸻
+---
 
-Core LearningNode Model
+## Core LearningNode Model
 
+```typescript
 type LearningNode = {
   id: string;
   kind: string;
@@ -85,102 +86,114 @@ type LearningNode = {
   appearances?: NodeAppearance[];
   version?: number;
 };
+```
 
-⸻
+---
 
-Field Definitions
+## Field Definitions
 
-Field	Description
-id	Globally unique identifier
-kind	Type of node
-label	Human readable name
-summary	Optional description
-parentId	Parent node
-childIds	Child node references
-attributes	Additional metadata
-features	Capabilities offered
-actions	Available intents
-appearances	Presentation hints
-version	Version of node schema
+| Field        | Description                       |
+|--------------|-----------------------------------|
+| id           | Globally unique identifier        |
+| kind         | Type of node                      |
+| label        | Human readable name               |
+| summary      | Optional description              |
+| parentId     | Parent node                       |
+| childIds     | Child node references             |
+| attributes   | Additional metadata               |
+| features     | Capabilities offered              |
+| actions      | Available intents                 |
+| appearances  | Presentation hints                |
+| version      | Version of node schema            |
 
-⸻
+---
 
-Attributes
+## Attributes
 
 Attributes describe contextual information.
 
 Attributes must never contain implementation details.
 
-Structure
+### Structure
 
+```typescript
 type NodeAttribute = {
   key: string;
   value: unknown;
 };
+```
 
-Example
+### Example
 
+```json
 attributes: [
   {
-    key: "curriculum",
-    value: "CBC"
+    "key": "curriculum",
+    "value": "CBC"
   },
   {
-    key: "gradeLevel",
-    value: 1
+    "key": "gradeLevel",
+    "value": 1
   },
   {
-    key: "estimatedMinutes",
-    value: 15
+    "key": "estimatedMinutes",
+    "value": 15
   }
 ]
+```
 
-⸻
+---
 
-Features
+## Features
 
 Features describe capabilities available on a node.
 
-Structure
+### Structure
 
+```typescript
 type NodeFeature = {
   kind: string;
 };
+```
 
-Example
+### Example
 
+```json
 features: [
   {
-    kind: "guidedContent"
+    "kind": "guidedContent"
   },
   {
-    kind: "practice"
+    "kind": "practice"
   },
   {
-    kind: "assessment"
+    "kind": "assessment"
   }
 ]
+```
 
-Future Examples
+### Future Examples
 
+```json
 features: [
   {
-    kind: "aiTutor"
+    "kind": "aiTutor"
   },
   {
-    kind: "videoLesson"
+    "kind": "videoLesson"
   },
   {
-    kind: "parentReview"
+    "kind": "parentReview"
   },
   {
-    kind: "teacherAssignment"
+    "kind": "teacherAssignment"
   }
 ]
+```
 
-⸻
+---
 
-Actions
+## Actions
 
 Actions describe available intents.
 
@@ -188,100 +201,114 @@ Actions must be intent-based.
 
 Actions must never be route-based.
 
-Structure
+### Structure
 
+```typescript
 type NodeAction = {
   intent: string;
 };
+```
 
-Example
+### Example
 
+```json
 actions: [
   {
-    intent: "openChildren"
+    "intent": "openChildren"
   },
   {
-    intent: "resume"
+    "intent": "resume"
   },
   {
-    intent: "startPractice"
+    "intent": "startPractice"
   },
   {
-    intent: "takeAssessment"
+    "intent": "takeAssessment"
   }
 ]
+```
 
-Good Examples
+### Good Examples
 
+```
 openChildren
 resume
 startPractice
 takeAssessment
 reviewResults
 readAloud
+```
 
-Bad Examples
+### Bad Examples
 
+```
 goToEnglishPage
 openGradeOnePage
 openTopicScreen
+```
 
-⸻
+---
 
-Appearances
+## Appearances
 
 Appearances describe how a node should appear.
 
 Appearances are intentionally key-value based to avoid future schema changes.
 
-Structure
+### Structure
 
+```typescript
 type NodeAppearance = {
   key: string;
   value: unknown;
 };
+```
 
-Example
+### Example
 
+```json
 appearances: [
   {
-    key: "layout",
-    value: "grid"
+    "key": "layout",
+    "value": "grid"
   },
   {
-    key: "density",
-    value: "comfortable"
+    "key": "density",
+    "value": "comfortable"
   },
   {
-    key: "tone",
-    value: "playful"
+    "key": "tone",
+    "value": "playful"
   },
   {
-    key: "icon",
-    value: "book"
+    "key": "icon",
+    "value": "book"
   }
 ]
+```
 
-Future Examples
+### Future Examples
 
+```json
 appearances: [
   {
-    key: "animation",
-    value: "bounce"
+    "key": "animation",
+    "value": "bounce"
   },
   {
-    key: "mascot",
-    value: "owl"
+    "key": "mascot",
+    "value": "owl"
   },
   {
-    key: "soundEffect",
-    value: "success-chime"
+    "key": "soundEffect",
+    "value": "success-chime"
   }
 ]
+```
 
-⸻
+---
 
-Registries
+## Registries
 
 LearningNodes declare.
 
@@ -289,18 +316,20 @@ Registries implement.
 
 The LearningNode itself never contains implementation details.
 
-Registry Examples
+### Registry Examples
 
-Feature Registry
-Action Registry
-Appearance Registry
-Attribute Registry
+* Feature Registry
+* Action Registry
+* Appearance Registry
+* Attribute Registry
 
-Examples
+### Examples
 
+```typescript
 featureRegistry["practice"]
 actionRegistry["startPractice"]
 appearanceRegistry["playful"]
+```
 
 Registries resolve declarations into:
 
@@ -311,12 +340,13 @@ Registries resolve declarations into:
 * Progress tracking
 * Access rules
 
-⸻
+---
 
-CBC Academy Example
+## CBC Academy Example
 
-Hierarchy
+### Hierarchy
 
+```
 CBC Academy
  ├── Grade 1
  │    ├── English
@@ -344,16 +374,18 @@ CBC Academy
  ├── Grade 7
  ├── Grade 8
  └── Grade 9
+```
 
-⸻
+---
 
-CBC Root Node
+### CBC Root Node
 
+```json
 {
-  id: "cbc-academy",
-  kind: "academy",
-  label: "CBC Academy",
-  childIds: [
+  "id": "cbc-academy",
+  "kind": "academy",
+  "label": "CBC Academy",
+  "childIds": [
     "grade-1",
     "grade-2",
     "grade-3",
@@ -365,17 +397,19 @@ CBC Root Node
     "grade-9"
   ]
 }
+```
 
-⸻
+---
 
-Grade 1 Node
+### Grade 1 Node
 
+```json
 {
-  id: "grade-1",
-  kind: "grade",
-  label: "Grade 1",
-  parentId: "cbc-academy",
-  childIds: [
+  "id": "grade-1",
+  "kind": "grade",
+  "label": "Grade 1",
+  "parentId": "cbc-academy",
+  "childIds": [
     "grade-1-english",
     "grade-1-kiswahili",
     "grade-1-mathematics",
@@ -383,43 +417,45 @@ Grade 1 Node
     "grade-1-creative",
     "grade-1-religious"
   ],
-  attributes: [
+  "attributes": [
     {
-      key: "curriculum",
-      value: "CBC"
+      "key": "curriculum",
+      "value": "CBC"
     },
     {
-      key: "gradeLevel",
-      value: 1
+      "key": "gradeLevel",
+      "value": 1
     }
   ],
-  actions: [
+  "actions": [
     {
-      intent: "openChildren"
+      "intent": "openChildren"
     }
   ],
-  appearances: [
+  "appearances": [
     {
-      key: "layout",
-      value: "grid"
+      "key": "layout",
+      "value": "grid"
     },
     {
-      key: "tone",
-      value: "playful"
+      "key": "tone",
+      "value": "playful"
     }
   ]
 }
+```
 
-⸻
+---
 
-English Learning Area
+### English Learning Area
 
+```json
 {
-  id: "grade-1-english",
-  kind: "learningArea",
-  label: "English",
-  parentId: "grade-1",
-  childIds: [
+  "id": "grade-1-english",
+  "kind": "learningArea",
+  "label": "English",
+  "parentId": "grade-1",
+  "childIds": [
     "listening-speaking",
     "reading",
     "writing",
@@ -427,113 +463,125 @@ English Learning Area
     "comprehension"
   ]
 }
+```
 
-⸻
+---
 
-Listening and Speaking Node
+### Listening and Speaking Node
 
+```json
 {
-  id: "listening-speaking",
-  kind: "strand",
-  label: "Listening and Speaking",
-  parentId: "grade-1-english",
-  features: [
+  "id": "listening-speaking",
+  "kind": "strand",
+  "label": "Listening and Speaking",
+  "parentId": "grade-1-english",
+  "features": [
     {
-      kind: "guidedContent"
+      "kind": "guidedContent"
     },
     {
-      kind: "practice"
+      "kind": "practice"
     },
     {
-      kind: "assessment"
+      "kind": "assessment"
     }
   ],
-  actions: [
+  "actions": [
     {
-      intent: "startGuidedLearning"
+      "intent": "startGuidedLearning"
     },
     {
-      intent: "startPractice"
+      "intent": "startPractice"
     },
     {
-      intent: "takeAssessment"
+      "intent": "takeAssessment"
     }
   ]
 }
+```
 
-⸻
+---
 
-Lesson Node
+### Lesson Node
 
+```json
 {
-  id: "lesson-1",
-  kind: "lesson",
-  label: "Listening to Sounds",
-  parentId: "listening-speaking",
-  features: [
+  "id": "lesson-1",
+  "kind": "lesson",
+  "label": "Listening to Sounds",
+  "parentId": "listening-speaking",
+  "features": [
     {
-      kind: "guidedContent"
+      "kind": "guidedContent"
     },
     {
-      kind: "readAloud"
+      "kind": "readAloud"
     }
   ]
 }
+```
 
-⸻
+---
 
-Practice Node
+### Practice Node
 
+```json
 {
-  id: "practice-1",
-  kind: "practice",
-  label: "Listening Practice",
-  parentId: "listening-speaking",
-  actions: [
+  "id": "practice-1",
+  "kind": "practice",
+  "label": "Listening Practice",
+  "parentId": "listening-speaking",
+  "actions": [
     {
-      intent: "startPractice"
+      "intent": "startPractice"
     }
   ]
 }
+```
 
-⸻
+---
 
-Assessment Node
+### Assessment Node
 
+```json
 {
-  id: "assessment-1",
-  kind: "assessment",
-  label: "Listening Assessment",
-  parentId: "listening-speaking",
-  actions: [
+  "id": "assessment-1",
+  "kind": "assessment",
+  "label": "Listening Assessment",
+  "parentId": "listening-speaking",
+  "actions": [
     {
-      intent: "takeAssessment"
+      "intent": "takeAssessment"
     }
   ]
 }
+```
 
-⸻
+---
 
-Exam Node
+### Exam Node
 
+```json
 {
-  id: "exam-1",
-  kind: "exam",
-  label: "English Exam 1",
-  parentId: "grade-1-english",
-  actions: [
+  "id": "exam-1",
+  "kind": "exam",
+  "label": "English Exam 1",
+  "parentId": "grade-1-english",
+  "actions": [
     {
-      intent: "startExam"
+      "intent": "startExam"
     }
   ]
 }
+```
 
-⸻
+---
 
-Tech Academy Example
+## Tech Academy Example
 
 The same engine can support:
 
+```
 Tech Academy
  ├── System Design
  │    ├── Scalability
@@ -544,14 +592,15 @@ Tech Academy
  ├── Java
  ├── Kubernetes
  └── Architecture
+```
 
 without changing the LearningNode structure.
 
 Only the configured hierarchy changes.
 
-⸻
+---
 
-Final Principle
+## Final Principle
 
 The LearningNode must remain small, stable, and academy-agnostic.
 
@@ -564,3 +613,4 @@ Future growth must occur through:
 * Registries
 
 rather than modifying the LearningNode schema itself.
+```
