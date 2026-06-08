@@ -1,4 +1,4 @@
-name: Senior Dev Accelerator CI/CD
+name: Qubitel Academy CI/CD
 
 on:
   push:
@@ -10,7 +10,7 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  APP_NAME: senior-dev-accelerator-ui
+  APP_NAME: qubitel-academy-ui
 
 jobs:
   build-test-docker:
