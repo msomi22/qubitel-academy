@@ -134,6 +134,11 @@ export function flattenDepthFirst(
   }
 
   getRootNodes(registry).forEach(visit);
+
+  [...registry.nodesById.values()]
+    .sort((a, b) => a.id.localeCompare(b.id))
+    .forEach(visit);
+
   return flattenedNodes;
 }
 
