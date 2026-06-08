@@ -275,21 +275,21 @@ Grade 1:
 
 ---
 
-Validation Rules
+## Validation Rules
 
 The platform must validate the node graph during startup.
 
 Required validations:
 
-· No duplicate ids
-· Every parentId exists
-· Every childId exists
-· Parent references child
-· Child references parent
-· No circular references
-· No orphan nodes
-· No missing academy roots
-· No missing platform root
+1. No duplicate ids
+2. Every parentId exists
+3. Every childId exists
+4. Parent references child
+5. Child references parent
+6. No circular references
+7. No orphan nodes
+8. No missing academy roots
+9. No missing platform root
 
 Startup should fail when validation fails.
 
@@ -332,17 +332,17 @@ academies/
 
 ---
 
-Long‑Term Goal
+## Long‑Term Goal
 
 The Learning Node architecture should support:
 
-· Unlimited Academies
-· Unlimited Grades
-· Unlimited Topics
-· Unlimited Lessons
-· Unlimited Questions
-· Unlimited Assessments
-· Unlimited Exams
+- Unlimited Academies
+- Unlimited Grades
+- Unlimited Topics
+- Unlimited Lessons
+- Unlimited Questions
+- Unlimited Assessments
+- Unlimited Exams
 
 without requiring architecture changes.
 
