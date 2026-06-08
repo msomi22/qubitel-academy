@@ -1,5 +1,11 @@
 import { getActiveAcademy } from './detectAcademy.ts';
+import { migrateAcademyStorageKey } from './storageKeyMigration.ts';
 
 export function getAcademyStorageKey(hostname?: string): string {
-  return getActiveAcademy(hostname).storageKey;
+  const academy = getActiveAcademy(hostname);
+  migrateAcademyStorageKey({
+    academyId: academy.id,
+    currentKey: academy.storageKey
+  });
+  return academy.storageKey;
 }

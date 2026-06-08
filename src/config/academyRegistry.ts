@@ -6,10 +6,10 @@ export const academyRegistry: Record<AcademyId, AcademyConfig> = {
   tech: {
     id: 'tech',
     displayName: 'Technology Academy',
-    productName: 'Senior Dev Accelerator',
+    productName: 'Qubitel Academy',
     default: true,
     subdomains: ['academy.qubitel.net'],
-    storageKey: 'senior-dev-accelerator:v2',
+    storageKey: 'qubitel-academy:v2',
     categoryIds: [
       'dsa',
       'system',
@@ -24,9 +24,9 @@ export const academyRegistry: Record<AcademyId, AcademyConfig> = {
   cbc: {
     id: 'cbc',
     displayName: 'CBC Academy',
-    productName: 'CBC Exam Practice',
+    productName: 'CBC Academy',
     subdomains: ['cbc.academy.qubitel.net'],
-    storageKey: 'senior-dev-accelerator:v2:cbc',
+    storageKey: 'qubitel-academy:v2:cbc',
     categoryIds: ['grade-1', 'grade-3']
   },
 
@@ -35,7 +35,7 @@ export const academyRegistry: Record<AcademyId, AcademyConfig> = {
     displayName: 'Customer Experience Academy',
     productName: 'Customer Experience Academy',
     subdomains: ['cx.academy.qubitel.net'],
-    storageKey: 'senior-dev-accelerator:v2:customer-experience',
+    storageKey: 'qubitel-academy:v2:customer-experience',
     categoryIds: []
   }
 };

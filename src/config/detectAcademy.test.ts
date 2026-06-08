@@ -48,11 +48,11 @@ test('returns default academy for unknown id', () => {
   assert.equal(getAcademyById('missing').id, 'tech');
 });
 
-test('keeps learner storage isolated by academy while preserving the tech key', () => {
-  assert.equal(getAcademyStorageKey('academy.qubitel.net'), 'senior-dev-accelerator:v2');
-  assert.equal(getAcademyStorageKey('cbc.academy.qubitel.net'), 'senior-dev-accelerator:v2:cbc');
+test('keeps learner storage isolated by academy using Qubitel keys', () => {
+  assert.equal(getAcademyStorageKey('academy.qubitel.net'), 'qubitel-academy:v2');
+  assert.equal(getAcademyStorageKey('cbc.academy.qubitel.net'), 'qubitel-academy:v2:cbc');
   assert.equal(
     getAcademyStorageKey('cx.academy.qubitel.net'),
-    'senior-dev-accelerator:v2:customer-experience'
+    'qubitel-academy:v2:customer-experience'
   );
 });

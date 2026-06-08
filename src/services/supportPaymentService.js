@@ -31,7 +31,7 @@ export function trackSupportEvent(eventName, detail = {}) {
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
-      new CustomEvent('senior-dev-accelerator:support', {
+      new CustomEvent('qubitel-academy:support', {
         detail: { eventName, ...detail }
       })
     );

@@ -42,10 +42,10 @@ export STACK_NAME=kubetasker-ckad
 mkdir -p ~/kubetasker-ckad-lab
 cd ~/kubetasker-ckad-lab
 
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-create-kubetasker-lab.sh
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-status-kubetasker-lab.sh
-curl -fsSLO https://senior-dev-accelerator.pages.dev/downloads/ckad/aws-delete-kubetasker-lab.sh
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/kubetasker-ckad-aws-cloudformation.yaml
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/aws-create-kubetasker-lab.sh
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/aws-status-kubetasker-lab.sh
+curl -fsSLO https://academy.qubitel.net/downloads/ckad/aws-delete-kubetasker-lab.sh
 chmod +x aws-*-kubetasker-lab.sh
 
 ./aws-create-kubetasker-lab.sh \

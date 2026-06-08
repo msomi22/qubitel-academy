@@ -3,17 +3,38 @@ import test from 'node:test';
 
 import { storageService } from './storageService.js';
 
-function memoryStorage() {
-  const values = new Map();
+function memoryStorage(initialValues = {}) {
+  const values = new Map(Object.entries(initialValues));
   return {
     getItem(key) {
-      return values.get(key) || null;
+      return values.has(key) ? values.get(key) || null : null;
     },
     setItem(key, value) {
       values.set(key, value);
+    },
+    removeItem(key) {
+      values.delete(key);
     }
   };
 }
+
+test('reads legacy progress through the new Qubitel storage key without deleting old data', () => {
+  const previousLocalStorage = globalThis.localStorage;
+  const legacyValue = JSON.stringify({ completed: { 'legacy-question-001': true } });
+  globalThis.localStorage = memoryStorage({
+    'senior-dev-accelerator:v2': legacyValue
+  });
+
+  try {
+    const state = storageService.read();
+
+    assert.equal(state.completed['legacy-question-001'], true);
+    assert.equal(globalThis.localStorage.getItem('senior-dev-accelerator:v2'), legacyValue);
+    assert.equal(globalThis.localStorage.getItem('qubitel-academy:v2'), legacyValue);
+  } finally {
+    globalThis.localStorage = previousLocalStorage;
+  }
+});
 
 test('exam attempts append so retakes preserve previous scores', () => {
   const previousLocalStorage = globalThis.localStorage;

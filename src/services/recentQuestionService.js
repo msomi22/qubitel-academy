@@ -1,11 +1,15 @@
 import { findQuestionById } from './questionBankService.js';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
+import { migrateRecentQuestionsStorageKey } from '../config/storageKeyMigration.ts';
 
 function getRecentQuestionsStorageKey() {
   const academy = getActiveAcademy();
-  return academy.id === 'tech'
-    ? 'senior-dev-accelerator:recent-questions'
-    : `${academy.storageKey}:recent-questions`;
+  const currentKey = `${academy.storageKey}:recent-questions`;
+  migrateRecentQuestionsStorageKey({
+    academyId: academy.id,
+    currentKey
+  });
+  return currentKey;
 }
 
 export const RECENT_QUESTIONS_STORAGE_KEY = getRecentQuestionsStorageKey();

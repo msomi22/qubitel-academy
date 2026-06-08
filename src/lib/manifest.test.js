@@ -93,9 +93,9 @@ test('rejects category and topic records missing from their registered parents',
       manifest: {
         id: 'tech',
         displayName: 'Technology Academy',
-        productName: 'Senior Dev Accelerator',
+        productName: 'Qubitel Academy',
         subdomains: ['academy.qubitel.net'],
-        storageKey: 'senior-dev-accelerator:v2',
+        storageKey: 'qubitel-academy:v2',
         categories: ['dsa']
       }
     }],
@@ -122,9 +122,9 @@ test('allows duplicate topic ids when they live in different categories', () => 
       manifest: {
         id: 'cbc',
         displayName: 'CBC Academy',
-        productName: 'CBC Exam Practice',
+        productName: 'CBC Academy',
         subdomains: ['cbc.academy.qubitel.net'],
-        storageKey: 'senior-dev-accelerator:v2:cbc',
+        storageKey: 'qubitel-academy:v2:cbc',
         categories: ['grade-3', 'grade-4']
       }
     }],
