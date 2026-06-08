@@ -1,0 +1,1 @@
+export const x={id:'customer-experience',displayName:'Customer Experience Academy',productName:'Customer Experience Academy',subdomains:['cx.academy.qubitel.net'],storageKey:'qubitel-academy:v2:customer-experience',categoryIds:[]};
