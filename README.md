@@ -1,22 +1,112 @@
-# Senior Dev Accelerator
+# Qubitel Academy
 
-A fast, multi-page learning platform for DSA and System Design mastery.
+Qubitel Academy is a fast, multi-page learning platform for structured learning, practice, assessments, and exams.
 
-## What changed in this performance refactor
+The platform is evolving into a **LearningNode-powered multi-academy system** that can support:
+
+- Technology Academy
+- CBC Academy
+- Customer Experience Academy
+- Future academies
+
+The current production experience includes Technology Academy content for DSA, System Design, Java, Kubernetes, Aptitude, ML/AI, and Engineering Leadership, while CBC and Customer Experience academy support continues to grow.
+
+---
+
+## Repository rename
+
+The repository has moved from:
+
+```text
+msomi22/senior-dev-accelerator
+```
+
+to:
+
+```text
+msomi22/qubitel-academy
+```
+
+If your local clone still points to the old repository URL, update it:
+
+```bash
+git remote set-url origin https://github.com/msomi22/qubitel-academy.git
+git remote -v
+```
+
+---
+
+## Storage migration
+
+The app now uses Qubitel storage keys such as:
+
+```text
+qubitel-academy:v2
+qubitel-academy:v2:cbc
+qubitel-academy:v2:customer-experience
+```
+
+Existing learner progress from the previous storage keys is migrated automatically on first read. The migration copies old browser data into the new Qubitel key without deleting the old value and without overwriting newer Qubitel data.
+
+No learner action is required.
+
+---
+
+## Platform direction
+
+Qubitel Academy is being migrated toward a unified architecture where:
+
+```text
+Qubitel Academy
+├── Technology Academy
+├── CBC Academy
+└── Customer Experience Academy
+```
+
+The long-term goal is for all academies, grades, categories, topics, lessons, questions, practices, assessments, and exams to be represented through a shared **LearningNode** model instead of academy-specific hardcoded structures.
+
+---
+
+## Current performance architecture
+
+This version avoids earlier runtime slowdown by:
 
 - Route-level lazy loading with `React.lazy` and `Suspense`.
-- Topic pages load visible content through the topic manifest and question-bank service.
-- Home and Progress pages use a lightweight manifest instead of importing all quizzes.
-- DSA and System Design pages load only the selected topic bank.
-- Random question page loads only the selected/random topic bank.
-- Changeable values such as PayPal configuration and storage keys live in `src/config/siteConfig.js`.
-- The learner support CTA is a reusable component: `src/components/SupportButton.jsx`.
+- Topic pages loading visible content through manifests and question-bank services.
+- Home and Progress pages using lightweight metadata instead of importing all quiz content upfront.
+- Topic quiz banks loading independently.
+- Rendering only the first few questions for selected topics, then revealing more on demand.
+- Keeping performance knobs in `.env` instead of hardcoding them.
+- Avoiding expensive backdrop blur on repeated cards.
+- Removing React StrictMode double-mount behavior in local development.
 
-## Topic coverage
+Tune these values in `.env`:
 
-### DSA
+```bash
+VITE_INITIAL_VISIBLE_QUESTIONS=5
+VITE_VISIBLE_QUESTIONS_STEP=5
+VITE_ENABLE_TOPIC_ORBIT=true
+```
 
-Includes the original app topics plus the frameworks from the uploaded DSA Pattern Frameworks guide:
+---
+
+## Academy coverage
+
+### Technology Academy
+
+Current Technology Academy areas include:
+
+- Data Structures & Algorithms
+- System Design
+- Java
+- Kubernetes / CKAD
+- Aptitude Test Practice
+- ML / AI
+- Engineering Leadership
+
+#### DSA topics
+
+Includes the original app topics plus pattern-based learning tracks:
 
 - WIND — Sliding Window
 - PAIR — Two Pointers
@@ -34,7 +124,7 @@ Includes the original app topics plus the frameworks from the uploaded DSA Patte
 - STACK — Monotonic Stack / Queue
 - Trees
 
-### System Design
+#### System Design topics
 
 - Scalability
 - Databases
@@ -42,12 +132,40 @@ Includes the original app topics plus the frameworks from the uploaded DSA Patte
 - Messaging Queues
 - API Design
 
-Production-visible real DSA and System Design content is authored under `src/data/problems/**` and made production-visible through problem metadata.
+### CBC Academy
+
+CBC Academy currently supports child-friendly learning and exam practice for selected grades and learning areas.
+
+Current focus areas include:
+
+- Grade 1 foundation practice
+- Grade 3 English
+- Reading comprehension
+- Spelling
+- Parts of speech
+- Mathematics
+- Kiswahili
+- CRE
+- Environmental Activities
+- Creative Activities
+
+### Customer Experience Academy
+
+Customer Experience Academy is registered as part of the multi-academy direction and will continue growing through future content and LearningNode migration tasks.
+
+---
 
 ## Setup
 
+Install dependencies:
+
 ```bash
 npm install
+```
+
+Start local development:
+
+```bash
 npm run dev
 ```
 
@@ -57,27 +175,91 @@ Then open:
 http://localhost:5173
 ```
 
+---
+
 ## Production build
+
+Build the app:
 
 ```bash
 npm run build
+```
+
+Preview the production build locally:
+
+```bash
 npm run preview
 ```
 
-## Documentation
+---
 
-- Problem authoring guide: `docs/problem-authoring.md`
-- GitHub issue authoring guide: `docs/github-issue-authoring-guidelines.md`
+## Common validation commands
+
+Run unit tests:
+
+```bash
+npm run test:unit
+```
+
+Run all tests:
+
+```bash
+npm run test
+```
+
+Run production build validation:
+
+```bash
+npm run build
+```
+
+---
+
+## Cloudflare Pages deployment
+
+Cloudflare Pages continues to work after the repository rename. No Cloudflare dashboard change is currently required.
+
+Still, after future repository, branch, environment, or deployment changes, verify:
+
+```text
+Workers & Pages → Pages project → Settings → Builds
+```
+
+Expected build settings:
+
+```text
+Production branch: main
+Build command: npm run build
+Build output directory: dist
+```
+
+Expected custom domains:
+
+```text
+academy.qubitel.net
+cbc.academy.qubitel.net
+cx.academy.qubitel.net
+```
+
+If a future deployment fails because Cloudflare still references an old repository connection, reconnect the existing Pages project to:
+
+```text
+msomi22/qubitel-academy
+```
+
+Do not delete the existing Pages project unless deployment cannot be safely repaired. Prefer keeping the existing project so production domains and deployment history remain stable.
+
+---
 
 ## Configure the support CTA
 
-Copy `.env.example` to `.env` and set your support payment links:
+Copy `.env.example` to `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-Then edit:
+Then configure public hosted payment links:
 
 ```text
 VITE_PAYPAL_SUPPORT_LINK=""
@@ -85,19 +267,61 @@ VITE_PAYPAL_HOSTED_BUTTON_ID="YOUR_REAL_PAYPAL_HOSTED_BUTTON_ID"
 VITE_PAYSTACK_SUPPORT_LINK=""
 ```
 
-The visible CTA copy is owned by `src/config/siteConfig.js` and defaults to `🚀 Support from $1`. Clicking it opens a frontend-only support options modal. PayPal uses `VITE_PAYPAL_SUPPORT_LINK` when configured, then falls back to the hosted PayPal donation URL. Paystack appears only when `VITE_PAYSTACK_SUPPORT_LINK` is configured.
+The visible CTA copy is owned by:
+
+```text
+src/config/siteConfig.js
+```
+
+The default CTA copy is:
+
+```text
+🚀 Support from $1
+```
+
+Clicking the CTA opens a frontend-only support options modal.
+
+PayPal uses `VITE_PAYPAL_SUPPORT_LINK` when configured, then falls back to the hosted PayPal donation URL. Paystack appears only when `VITE_PAYSTACK_SUPPORT_LINK` is configured.
 
 Do not put private secrets in frontend environment variables or `.env.example`. Hosted payment links are public URLs only.
 
-## Add real production content
+---
 
-New real content should be authored as discovered problem files under:
+## Content authoring
+
+Content is organized through academy manifests, topic manifests, and content files.
+
+Current academy content lives under:
 
 ```text
-src/data/problems/{category}/{topicId}/{problem-id}.js
+src/academies/
 ```
 
-Production visibility is controlled by each problem's metadata:
+Examples:
+
+```text
+src/academies/tech/
+src/academies/cbc/
+src/academies/customer-experience/
+```
+
+Topic manifests declare lessons, practice items, and assessments for each academy area.
+
+When adding new content, keep it close to the academy/topic it belongs to and register it through the relevant manifest.
+
+---
+
+## Add real production content
+
+New production-ready content should be:
+
+- authored in the correct academy/topic location;
+- declared in the relevant topic manifest;
+- reviewed for learner clarity;
+- marked with production-safe metadata where applicable;
+- validated through tests and production build.
+
+Production-visible content should use metadata such as:
 
 ```js
 metadata: {
@@ -106,36 +330,71 @@ metadata: {
 }
 ```
 
-Do not add new real production content to `src/data/banks/**`, and do not add per-question production allow-list entries for new real content. Legacy banks remain supported for local/test/demo compatibility. If a discovered problem and a legacy bank item share the same `id`, the discovered problem is preferred.
+Avoid adding new real production content to legacy bank locations unless the task specifically requires legacy compatibility.
+
+If a discovered problem and a legacy bank item share the same `id`, the discovered problem should be preferred.
+
+---
 
 ## Add a new topic
 
-1. Add the topic metadata to `src/data/topicManifest.js`.
-2. Use `questionBank: { mode: 'discovered' }` when the topic should rely on discovered problem files only.
-3. Add one or more problem files under `src/data/problems/{category}/{topicId}/`.
-4. Run validation/build commands.
+When adding a new topic, update all required source-of-truth files for the active architecture.
 
-The UI will automatically support progress, random practice, topic navigation, and completion tracking for visible topics.
+Typical checklist:
+
+1. Add the topic manifest under the correct academy/category path.
+2. Register the topic in the parent category manifest.
+3. Add lesson, practice, or assessment content under the topic folder.
+4. Ensure the topic is visible in the correct academy/profile.
+5. Run validation and build commands.
+
+Recommended validation:
+
+```bash
+npm run test:unit
+npm run build
+```
+
+The UI should automatically support progress, random practice, topic navigation, and completion tracking for visible topics when the topic is wired correctly.
+
+---
+
+## Documentation
+
+Useful project docs:
+
+- Problem authoring guide: `docs/problem-authoring.md`
+- GitHub issue authoring guide: `docs/github-issue-authoring-guidelines.md`
+- LearningNode framework: `docs/architecture/core/learning-node-framework-v1.0.md`
+- LearningNode implementation guide: `docs/architecture/core/learning-node-implementation-guide-v1.0.md`
+
+---
 
 ## Important note on content protection
 
-The app includes mild right-click, selection, and shortcut blocking. This is useful for casual friction, but no browser-based protection can fully prevent a determined developer from inspecting client-side content.
+The app includes mild right-click, selection, and shortcut blocking.
 
-## Performance architecture
+This is useful for casual friction, but no browser-based protection can fully prevent a determined developer from inspecting client-side content.
 
-This version avoids the earlier runtime slowdown by:
+Do not treat frontend-only content protection as a strong security boundary.
 
-- Lazy loading each route.
-- Lazy loading each topic quiz bank independently.
-- Rendering only the first few questions for the selected topic, then revealing more on demand.
-- Keeping performance knobs in `.env` instead of hardcoding them.
-- Avoiding expensive backdrop blur on repeated cards.
-- Removing React StrictMode double-mount behavior in local development.
+---
 
-Tune these values in `.env`:
+## Migration notes
 
-```bash
-VITE_INITIAL_VISIBLE_QUESTIONS=5
-VITE_VISIBLE_QUESTIONS_STEP=5
-VITE_ENABLE_TOPIC_ORBIT=true
+The platform is currently transitioning from a technology-focused learning app into a multi-academy learning platform.
+
+During migration:
+
+- keep existing production routes working;
+- avoid broad blind renames;
+- avoid mixing unrelated refactors into focused PRs;
+- keep Technology Academy content stable;
+- migrate architecture incrementally through the LearningNode epic;
+- validate Cloudflare Pages deployment after repository or app identity changes.
+
+Current repository:
+
+```text
+https://github.com/msomi22/qubitel-academy
 ```
