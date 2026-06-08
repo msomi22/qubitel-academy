@@ -1,9 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { getBreadcrumbs } from '../navigation/index.ts';
-import { getChildren } from '../registry/index.ts';
-import { createNodeRoutePath } from '../routing/index.ts';
-import { validateLearningNodeRegistry } from '../validation/index.ts';
-import { createQubitelAcademyPlatformRegistry as registry } from './index.ts';
+import { validateLearningNodeRegistry as validate } from '../validation/index.ts';
+import { createQubitelAcademyPlatformRegistry as reg } from './index.ts';
 
-test('academy registry validates and
+test('academy platform graph validates', () => {
+  assert.equal(validate(reg(), { requireSingleRoot: true }).valid, true);
+});
