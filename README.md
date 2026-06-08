@@ -4,12 +4,12 @@ Qubitel Academy is a fast, multi-page learning platform for structured learning,
 
 The platform is evolving into a **LearningNode-powered multi-academy system** that can support:
 
-- Technology Academy
-- CBC Academy
-- Customer Experience Academy
-- Future academies
+* Technology Academy
+* CBC Academy
+* Customer Experience Academy
+* Future academies
 
-The current production experience includes Technology Academy content for DSA, System Design, Java, Kubernetes, Aptitude, ML/AI, and Engineering Leadership, while CBC and Customer Experience academy support continues to grow.
+The current production experience still includes the original Technology Academy content for DSA, System Design, Java, Kubernetes, Aptitude, ML/AI, and Engineering Leadership, while CBC and Customer Experience academy support continues to grow.
 
 ---
 
@@ -27,28 +27,12 @@ to:
 msomi22/qubitel-academy
 ```
 
-If your local clone still points to the old repository URL, update it:
+If your local clone still points to the old repository URL, update it as follows:
 
 ```bash
 git remote set-url origin https://github.com/msomi22/qubitel-academy.git
 git remote -v
 ```
-
----
-
-## Storage migration
-
-The app now uses Qubitel storage keys such as:
-
-```text
-qubitel-academy:v2
-qubitel-academy:v2:cbc
-qubitel-academy:v2:customer-experience
-```
-
-Existing learner progress from the previous storage keys is migrated automatically on first read. The migration copies old browser data into the new Qubitel key without deleting the old value and without overwriting newer Qubitel data.
-
-No learner action is required.
 
 ---
 
@@ -71,14 +55,14 @@ The long-term goal is for all academies, grades, categories, topics, lessons, qu
 
 This version avoids earlier runtime slowdown by:
 
-- Route-level lazy loading with `React.lazy` and `Suspense`.
-- Topic pages loading visible content through manifests and question-bank services.
-- Home and Progress pages using lightweight metadata instead of importing all quiz content upfront.
-- Topic quiz banks loading independently.
-- Rendering only the first few questions for selected topics, then revealing more on demand.
-- Keeping performance knobs in `.env` instead of hardcoding them.
-- Avoiding expensive backdrop blur on repeated cards.
-- Removing React StrictMode double-mount behavior in local development.
+* Route-level lazy loading with `React.lazy` and `Suspense`.
+* Topic pages loading visible content through manifests and question-bank services.
+* Home and Progress pages using lightweight metadata instead of importing all quiz content upfront.
+* Topic quiz banks loading independently.
+* Rendering only the first few questions for selected topics, then revealing more on demand.
+* Keeping performance knobs in `.env` instead of hardcoding them.
+* Avoiding expensive backdrop blur on repeated cards.
+* Removing React StrictMode double-mount behavior in local development.
 
 Tune these values in `.env`:
 
@@ -96,41 +80,41 @@ VITE_ENABLE_TOPIC_ORBIT=true
 
 Current Technology Academy areas include:
 
-- Data Structures & Algorithms
-- System Design
-- Java
-- Kubernetes / CKAD
-- Aptitude Test Practice
-- ML / AI
-- Engineering Leadership
+* Data Structures & Algorithms
+* System Design
+* Java
+* Kubernetes / CKAD
+* Aptitude Test Practice
+* ML / AI
+* Engineering Leadership
 
 #### DSA topics
 
 Includes the original app topics plus pattern-based learning tracks:
 
-- WIND — Sliding Window
-- PAIR — Two Pointers
-- SEAR — Binary Search
-- PREF — Prefix Sum & Hashing
-- GREED — Greedy
-- STATE — Dynamic Programming
-- NODES — Graph BFS / DFS
-- HEAP — Heap / Priority Queue
-- CHOOSE — Backtracking
-- UNION — Union-Find / DSU
-- TRIE — Prefix Tree
-- BITS — Bit Manipulation
-- SPLIT — Divide & Conquer
-- STACK — Monotonic Stack / Queue
-- Trees
+* WIND — Sliding Window
+* PAIR — Two Pointers
+* SEAR — Binary Search
+* PREF — Prefix Sum & Hashing
+* GREED — Greedy
+* STATE — Dynamic Programming
+* NODES — Graph BFS / DFS
+* HEAP — Heap / Priority Queue
+* CHOOSE — Backtracking
+* UNION — Union-Find / DSU
+* TRIE — Prefix Tree
+* BITS — Bit Manipulation
+* SPLIT — Divide & Conquer
+* STACK — Monotonic Stack / Queue
+* Trees
 
 #### System Design topics
 
-- Scalability
-- Databases
-- Caching
-- Messaging Queues
-- API Design
+* Scalability
+* Databases
+* Caching
+* Messaging Queues
+* API Design
 
 ### CBC Academy
 
@@ -138,16 +122,16 @@ CBC Academy currently supports child-friendly learning and exam practice for sel
 
 Current focus areas include:
 
-- Grade 1 foundation practice
-- Grade 3 English
-- Reading comprehension
-- Spelling
-- Parts of speech
-- Mathematics
-- Kiswahili
-- CRE
-- Environmental Activities
-- Creative Activities
+* Grade 1 foundation practice
+* Grade 3 English
+* Reading comprehension
+* Spelling
+* Parts of speech
+* Mathematics
+* Kiswahili
+* CRE
+* Environmental Activities
+* Creative Activities
 
 ### Customer Experience Academy
 
@@ -217,21 +201,27 @@ npm run build
 
 ## Cloudflare Pages deployment
 
-Cloudflare Pages continues to work after the repository rename. No Cloudflare dashboard change is currently required.
+After the repository rename, confirm Cloudflare Pages is still connected to the correct repository:
 
-Still, after future repository, branch, environment, or deployment changes, verify:
+```text
+msomi22/qubitel-academy
+```
+
+In Cloudflare, review:
 
 ```text
 Workers & Pages → Pages project → Settings → Builds
 ```
 
-Expected build settings:
+Confirm:
 
 ```text
 Production branch: main
 Build command: npm run build
 Build output directory: dist
 ```
+
+Also confirm environment variables and custom domains.
 
 Expected custom domains:
 
@@ -241,13 +231,13 @@ cbc.academy.qubitel.net
 cx.academy.qubitel.net
 ```
 
-If a future deployment fails because Cloudflare still references an old repository connection, reconnect the existing Pages project to:
+If Cloudflare still references the old repository name, reconnect the Pages Git integration to:
 
 ```text
 msomi22/qubitel-academy
 ```
 
-Do not delete the existing Pages project unless deployment cannot be safely repaired. Prefer keeping the existing project so production domains and deployment history remain stable.
+Do not delete the existing Pages project unless deployment cannot be safely repaired. Prefer reconnecting the existing project so production domains and deployment history remain stable.
 
 ---
 
@@ -315,11 +305,11 @@ When adding new content, keep it close to the academy/topic it belongs to and re
 
 New production-ready content should be:
 
-- authored in the correct academy/topic location;
-- declared in the relevant topic manifest;
-- reviewed for learner clarity;
-- marked with production-safe metadata where applicable;
-- validated through tests and production build.
+* authored in the correct academy/topic location;
+* declared in the relevant topic manifest;
+* reviewed for learner clarity;
+* marked with production-safe metadata where applicable;
+* validated through tests and production build.
 
 Production-visible content should use metadata such as:
 
@@ -363,10 +353,10 @@ The UI should automatically support progress, random practice, topic navigation,
 
 Useful project docs:
 
-- Problem authoring guide: `docs/problem-authoring.md`
-- GitHub issue authoring guide: `docs/github-issue-authoring-guidelines.md`
-- LearningNode framework: `docs/architecture/core/learning-node-framework-v1.0.md`
-- LearningNode implementation guide: `docs/architecture/core/learning-node-implementation-guide-v1.0.md`
+* Problem authoring guide: `docs/problem-authoring.md`
+* GitHub issue authoring guide: `docs/github-issue-authoring-guidelines.md`
+* LearningNode framework: `docs/architecture/core/learning-node-framework-v1.0.md`
+* LearningNode implementation guide: `docs/architecture/core/learning-node-implementation-guide-v1.0.md`
 
 ---
 
@@ -386,12 +376,12 @@ The platform is currently transitioning from a technology-focused learning app i
 
 During migration:
 
-- keep existing production routes working;
-- avoid broad blind renames;
-- avoid mixing unrelated refactors into focused PRs;
-- keep Technology Academy content stable;
-- migrate architecture incrementally through the LearningNode epic;
-- validate Cloudflare Pages deployment after repository or app identity changes.
+* keep existing production routes working;
+* avoid broad blind renames;
+* avoid mixing unrelated refactors into focused PRs;
+* keep Technology Academy content stable;
+* migrate architecture incrementally through the LearningNode epic;
+* validate Cloudflare Pages deployment after repository or app identity changes.
 
 Current repository:
 
