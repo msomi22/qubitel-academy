@@ -1,13 +1,2 @@
-import type { AcademyConfig, AcademyId } from '../types/academy.ts';
-
-export const DEFAULT_ACADEMY_ID: AcademyId = 'tech';
-
-export const academyRegistry: Record<AcademyId, AcademyConfig> = {
-  tech: {
-    id: 'tech',
-    displayName: 'Technology Academy',
-    productName: 'Qubitel Academy',
-    default: true,
-    subdomains: ['academy.qubitel.net', 'tech.academy.qubitel.net'],
-    storageKey: 'qubitel-academy:v2',
-    category
+export const DEFAULT_ACADEMY_ID='tech';
+export const academyRegistry={tech:{id:'tech',displayName:'Technology Academy',productName:'Qubitel Academy',default:true,subdomains:['academy.qubitel.net','tech.academy.qubitel.net'],storageKey:'qubitel-academy:v2',categoryIds:['dsa','system','java','kubernetes-ckad','aptitude','ml-ai','engineering-leadership']},cbc:{id:'cbc',displayName:'CBC Academy',productName:'CBC Academy',subdomains:['cbc.academy.qubitel.net'],storageKey
