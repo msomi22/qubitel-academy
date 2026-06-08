@@ -14,12 +14,12 @@ Current examples:
 
 | Hostname | Academy id | Product |
 |---|---:|---|
-| `academy.qubitel.net` | `tech` | Senior Dev Accelerator |
-| `cbc.academy.qubitel.net` | `cbc` | CBC Exam Practice |
+| `academy.qubitel.net` | `tech` | Qubitel Academy |
+| `cbc.academy.qubitel.net` | `cbc` | CBC Academy |
 | `cx.academy.qubitel.net` | `customer-experience` | Customer Experience Academy |
-| `localhost`, previews, unknown hosts | `tech` | Senior Dev Accelerator |
+| `localhost`, previews, unknown hosts | `tech` | Qubitel Academy |
 
-The current production experience remains Senior Dev Accelerator. CBC and Customer Experience are registered as future academy boundaries only; their active academy manifests intentionally expose no categories.
+The current production experience is the Technology Academy entry point of Qubitel Academy. CBC and Customer Experience are registered as independent academy boundaries and continue to grow through academy-scoped manifests and content.
 
 The academy registry, manifest validation, catalog, content loader, storage isolation, and active tech content migration are implemented. Adding an academy is now primarily config + manifests + content, followed by validation and deliberate learner exposure.
 
@@ -59,13 +59,14 @@ src/
 │   ├── catalog.js                       # Builds validated academy/category/topic catalogs
 │   ├── manifestImports.generated.js     # Static imports for Vite and Node tests
 │   ├── tech/                            # Active learner-facing academy
-│   ├── cbc/                             # Registered skeleton; no active categories
-│   └── customer-experience/             # Registered skeleton; no active categories
+│   ├── cbc/                             # CBC academy content boundary
+│   └── customer-experience/             # Customer Experience academy content boundary
 │
 ├── config/
 │   ├── academyRegistry.ts       # Academy ids, display names, subdomains, storage keys, safe category ids
 │   ├── detectAcademy.ts         # Hostname/subdomain to academy resolution
-│   ├── academyStorage.ts        # Returns the active academy storage key
+│   ├── academyStorage.ts        # Returns the active academy storage key and triggers safe migration
+│   ├── storageKeyMigration.ts   # Copies legacy storage keys to Qubitel keys without deleting old data
 │   └── detectAcademy.test.ts    # Node test coverage for detection and default fallback
 │
 ├── lib/
@@ -164,9 +165,29 @@ Required behavior:
 - `academy.qubitel.net`, `localhost`, preview hosts, and unknown hosts resolve to `tech`.
 - `cbc.academy.qubitel.net` resolves to `cbc`.
 - `cx.academy.qubitel.net` resolves to `customer-experience`.
-- `tech` keeps the existing storage key `senior-dev-accelerator:v2` so existing learner progress is preserved.
-- CBC and Customer Experience use separate storage keys for future isolation.
-- CBC and Customer Experience category arrays remain empty in the active registry until they are ready for learner exposure.
+- Each academy has a Qubitel storage key:
+  - `tech` → `qubitel-academy:v2`
+  - `cbc` → `qubitel-academy:v2:cbc`
+  - `customer-experience` → `qubitel-academy:v2:customer-experience`
+- Legacy browser storage is copied into the new Qubitel key on first read, without deleting the old key.
+- CBC and Customer Experience use separate storage keys for isolation.
+
+---
+
+## Storage Migration
+
+Older learner progress may exist in browser storage under legacy keys:
+
+```text
+senior-dev-accelerator:v2
+senior-dev-accelerator:v2:cbc
+senior-dev-accelerator:v2:customer-experience
+senior-dev-accelerator:recent-questions
+```
+
+The storage migration helper copies legacy values into the matching Qubitel key only when the new key is missing. It does **not** delete the legacy value and does **not** overwrite newer Qubitel data.
+
+This protects existing learner progress while allowing the app to use the new Qubitel naming going forward.
 
 ---
 
@@ -211,10 +232,10 @@ Add every new category/topic id to its parent manifest, then regenerate static m
 {
   "id": "tech",
   "displayName": "Technology Academy",
-  "productName": "Senior Dev Accelerator",
+  "productName": "Qubitel Academy",
   "description": "Engineering and computer science learning for professionals.",
   "subdomains": ["academy.qubitel.net"],
-  "storageKey": "senior-dev-accelerator:v2",
+  "storageKey": "qubitel-academy:v2",
   "default": true,
   "categories": ["dsa", "java", "kubernetes-ckad", "system", "aptitude", "ml-ai", "engineering-leadership"]
 }
@@ -263,9 +284,10 @@ Learners do not normally select this manually. The URL selects the academy, then
 
 - Active tech categories, topics, authored problems, and visuals have moved into `src/academies/tech/`.
 - Topic manifests are the source of truth for authored content discovery.
-- Existing question ids, topic ids, routes, and the tech storage key are preserved.
+- Existing question ids, topic ids, and routes are preserved.
+- Legacy browser progress is migrated non-destructively into Qubitel storage keys.
 - Legacy banks are isolated under `src/academies/tech/_legacy/banks/` and continue to merge behind the same service API.
-- CBC and Customer Experience manifests exist, but their active category arrays remain empty.
+- CBC and Customer Experience manifests exist and are isolated by academy.
 - All active catalog imports resolve through `src/academies/catalog.js`.
 
 ---
