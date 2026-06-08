@@ -1,1 +1,0 @@
-import{techAcademy as t}from'./tech.ts';import{cbcAcademy as c}from'./cbc.ts';import{customerExperienceAcademy as x}from'./customerExperience.ts';export const DEFAULT_ACADEMY_ID='tech',r={tech:t,cbc:c,'customer-experience':x};export const getAcademyById=(a='tech')=>r[a]||r.tech;export const getDefaultAcademy=()=>r.tech;export const getAcademies=()=>Object.values(r);
