@@ -13,8 +13,16 @@ import { siteConfig } from './config/siteConfig.js';
 import { useContentProtection } from './hooks/useContentProtection.js';
 import { usePreferences } from './hooks/usePreferences.js';
 
+//const Home = lazy(() => import('./pages/Home.jsx'));
+//const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'));
 const Home = lazy(() => import('./pages/Home.jsx'));
+const HomeAcademyAware = lazy(() => import('./pages/HomeAcademyAware.jsx'));
 const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'));
+
+const enableAcademyAwareHome =
+  import.meta.env.VITE_ENABLE_ACADEMY_AWARE_HOME === 'true';
+
+
 const DSAPage = lazy(() => import('./pages/DSAPage.jsx'));
 const SystemDesignPage = lazy(() => import('./pages/SystemDesignPage.jsx'));
 const CategoryPage = lazy(() => import('./pages/CategoryPage.jsx'));
@@ -76,6 +84,7 @@ export default function App() {
   const { theme } = usePreferences();
   const { pathname } = useLocation();
   const isExamRoute = pathname.startsWith('/exam/');
+  const HomePage = enableAcademyAwareHome ? HomeAcademyAware : Home;
 
   useEffect(() => {
     document.title = `${siteConfig.appName} | Learning Dashboard`;
@@ -96,7 +105,7 @@ export default function App() {
               perceived-performance experience on route transitions */}
           <Suspense fallback={<PageSkeleton />}>
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<HomePage />} />
               <Route path="/categories" element={<CategoriesPage />} />
               <Route path="/dsa" element={<DSAPage />} />
               <Route path="/system-design" element={<SystemDesignPage />} />

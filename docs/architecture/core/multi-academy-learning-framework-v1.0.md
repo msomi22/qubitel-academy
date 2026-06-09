@@ -1121,7 +1121,7 @@ The platform should support both path-based and domain-based academy resolution.
 
 ```text
 cbc.academy.qubitel.net
-tech.academy.qubitel.net
+academy.qubitel.net
 cx.academy.qubitel.net
 ```
 
@@ -2025,25 +2025,25 @@ The academy is selected by a tenant resolver before rendering the app experience
 ## 34.2 Example Domain Mapping
 
 ```text
-cbc.academy.test.com  → CBC Academy
-tech.academy.test.com → Tech Academy
-cx.academy.test.com   → CX Academy
+cbc.academy.qubitel.net  → CBC Academy
+academy.qubitel.net → Tech Academy
+cx.academy.qubitel.net   → CX Academy
 ```
 
 Expected behavior:
 
 ```text
-Grade 1 learner visits cbc.academy.test.com
+Grade 1 learner visits cbc.academy.qubitel.net
 → App resolves academyId = "cbc"
 → Loads CBC content
 → Shows CBC grades, subjects, lessons, quizzes, exams
 
-IT student visits tech.academy.test.com
+IT student visits academy.qubitel.net
 → App resolves academyId = "tech"
 → Loads Tech content
 → Shows Tech tracks such as DSA, Backend, Frontend, Databases
 
-Customer support specialist visits cx.academy.test.com
+Customer support specialist visits cx.academy.qubitel.net
 → App resolves academyId = "cx"
 → Loads CX content
 → Shows CX modules such as Communication, Support Skills, Ticket Handling
@@ -2058,9 +2058,9 @@ They should land on their own academy content.
 Correct mapping:
 
 ```text
-cbc.academy.test.com  → CBC content
-tech.academy.test.com → Tech content
-cx.academy.test.com   → CX content
+cbc.academy.qubitel.net  → CBC content
+academy.qubitel.net → Tech content
+cx.academy.qubitel.net   → CX content
 ```
 
 ## 34.4 Tenant Resolver
@@ -2072,9 +2072,9 @@ Example:
 ```ts
 export function resolveTenantFromHost(hostname: string): string {
   const mappings = {
-    "cbc.academy.test.com": "cbc",
-    "tech.academy.test.com": "tech",
-    "cx.academy.test.com": "cx",
+    "cbc.academy.qubitel.net": "cbc",
+    "academy.qubitel.net": "tech",
+    "cx.academy.qubitel.net": "cx",
   };
 
   return mappings[hostname] ?? "default";
@@ -2106,7 +2106,7 @@ Example:
 ```ts
 export const cbcAcademyConfig = {
   id: "cbc",
-  hosts: ["cbc.academy.test.com", "cbc.academy.qubitel.net"],
+  hosts: ["cbc.academy.qubitel.net"],
   defaultRoute: "/",
   modules: ["grade-1", "grade-2", "grade-3"],
 };
@@ -2117,7 +2117,7 @@ Example:
 ```ts
 export const techAcademyConfig = {
   id: "tech",
-  hosts: ["tech.academy.test.com", "tech.academy.qubitel.net"],
+  hosts: ["academy.qubitel.net"],
   defaultRoute: "/",
   modules: ["dsa", "backend", "frontend", "databases"],
 };
@@ -2128,7 +2128,7 @@ Example:
 ```ts
 export const cxAcademyConfig = {
   id: "cx",
-  hosts: ["cx.academy.test.com", "cx.academy.qubitel.net"],
+  hosts: ["cx.academy.qubitel.net"],
   defaultRoute: "/",
   modules: ["communication", "support-skills", "ticket-handling"],
 };
@@ -2139,10 +2139,10 @@ export const cxAcademyConfig = {
 If hostname is unknown:
 
 ```text
-academy.test.com
+academy.qubitel.net
 → Show academy selector
 
-unknown.academy.test.com
+unknown.academy.qubitel.net
 → Show not configured page or academy selector
 ```
 
@@ -2155,17 +2155,17 @@ Local development should support host-based testing.
 Example `/etc/hosts` entries:
 
 ```text
-127.0.0.1 cbc.academy.test.com
-127.0.0.1 tech.academy.test.com
-127.0.0.1 cx.academy.test.com
+127.0.0.1 cbc.academy.qubitel.net
+127.0.0.1 academy.qubitel.net
+127.0.0.1 cx.academy.qubitel.net
 ```
 
 Dev server:
 
 ```text
-http://cbc.academy.test.com:5173
-http://tech.academy.test.com:5173
-http://cx.academy.test.com:5173
+http://cbc.academy.qubitel.net:5173
+http://academy.qubitel.net:5173
+http://cx.academy.qubitel.net:5173
 ```
 
 ## 34.9 Deployment Support
@@ -2185,15 +2185,15 @@ Runtime academy resolution
 
 ## 34.10 Domain Resolution Readiness
 
-Requirement: Grade 1 student uses `cbc.academy.test.com` and lands on CBC content.
+Requirement: Grade 1 student uses `cbc.academy.qubitel.net` and lands on CBC content.
 
 Supported.
 
-Requirement: IT student uses `tech.academy.test.com` and lands on Tech content.
+Requirement: IT student uses `academy.qubitel.net` and lands on Tech content.
 
 Supported.
 
-Requirement: Customer support specialist uses `cx.academy.test.com` and lands on CX content.
+Requirement: Customer support specialist uses `cx.academy.qubitel.net` and lands on CX content.
 
 Supported.
 

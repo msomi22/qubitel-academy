@@ -388,3 +388,7 @@ Current repository:
 ```text
 https://github.com/msomi22/qubitel-academy
 ```
+
+## test
+VITE_ENABLE_ACADEMY_AWARE_HOME=true npm run dev -- --host 0.0.0.0
+VITE_ENABLE_ACADEMY_AWARE_HOME=false npm run dev -- --host 0.0.0.0
