@@ -262,6 +262,7 @@ export async function getAcademyHomeViewModel(input: {
   const weakTopicSections = [...unfinishedTopics]
   .sort((a, b) => (
     (a.progress?.percent || 0) - (b.progress?.percent || 0)
+    || (b.progress?.total || 0) - (a.progress?.total || 0)
     || a.title.localeCompare(b.title)
   ))
   .slice(0, 3);

@@ -130,7 +130,6 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
   const focusSection = getSectionByKind(homeModel, 'focus');
   const learningPathsSection = getSectionByKind(homeModel, 'learningPaths');
   const stageSection = getSectionByKind(homeModel, 'stage');
-
   const focusChildren = getSectionChildren(focusSection);
   const learningAreas = getSectionChildren(learningPathsSection);
 
@@ -252,7 +251,7 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
               <small>Practice</small>
             </span>
           </div>
-          
+
         </article>
       </section>
     </main>
