@@ -3,193 +3,206 @@
    Owns:
    - greeting/title/subtitle
    - Continue / Read with me / Practice cards
-   - image illustrations inside action cards
+   - real image illustrations inside action cards
    ========================================================= */
 
-.cbc-home-hero-content {
-  position: relative;
-  z-index: 8;
-  max-width: 740px;
-}
-
-.cbc-home-greeting {
-  margin: 2px 0 6px;
-  color: #11144a;
-  font-size: 20px;
-  line-height: 1.1;
-  font-weight: 950;
-  letter-spacing: -0.02em;
-}
-
-:root[data-theme="dark"] .cbc-home-greeting {
-  color: #f5fbff;
-}
-
-.cbc-home-hero-title {
-  margin: 0;
-  max-width: 100%;
-  width: fit-content;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  column-gap: 0.18em;
-  row-gap: 0;
-  color: #11144a;
-  font-size: clamp(48px, 4.45vw, 66px);
-  line-height: 0.98;
-  font-weight: 950;
-  letter-spacing: -0.052em;
-  text-shadow: 0 3px 0 rgba(255, 255, 255, 0.45);
-}
-
-.cbc-home-hero-title span {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-/* Current JSX is: Ready to <span>learn</span> today?
-   So only the span word becomes green. */
-#cbc-home-title > span {
-  color: #109654 !important;
-}
-
-:root[data-theme="dark"] .cbc-home-hero-title {
-  color: #f5fbff;
-  text-shadow: 0 4px 14px rgba(4, 13, 28, 0.36);
-}
-
-:root[data-theme="dark"] #cbc-home-title > span {
-  color: #6ee7b7 !important;
-}
-
-.cbc-home-hero-subtitle {
-  max-width: 48rem;
-  margin: 16px 0 24px;
-  color: #353d73;
-  font-size: 18px;
-  line-height: 1.3;
-  font-weight: 800;
-}
-
-:root[data-theme="dark"] .cbc-home-hero-subtitle {
-  color: #d7e7ff;
-}
-
-.cbc-home-hero-actions {
-  position: relative;
-  z-index: 9;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  max-width: 1040px;
-}
-
-.cbc-home-action-card {
-  position: relative;
-  height: 148px;
-  min-height: 148px;
-  border-radius: 24px;
-  padding: 20px 24px;
-  display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
-  align-items: center;
-  gap: 18px;
-  overflow: hidden;
-  color: #ffffff;
-  box-shadow:
-    0 16px 30px rgba(20, 62, 107, 0.2),
-    inset 0 0 0 2px rgba(255, 255, 255, 0.22);
-  isolation: isolate;
-  transform: translateZ(0);
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.cbc-home-action-card:hover,
-.cbc-home-action-card:focus-visible {
-  transform: translateY(-3px);
-  box-shadow:
-    0 20px 38px rgba(20, 62, 107, 0.24),
-    inset 0 0 0 2px rgba(255, 255, 255, 0.28);
-}
-
-.cbc-home-action-card:focus-visible {
-  outline: 4px solid rgba(255, 212, 55, 0.72);
-  outline-offset: 3px;
-}
-
-.cbc-home-action-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: 0.96;
-}
-
-.cbc-home-action-card--continue::before {
-  background: linear-gradient(135deg, #36d98d 0%, #09aa78 100%);
-}
-
-.cbc-home-action-card--read::before {
-  background: linear-gradient(135deg, #4698ff 0%, #2468ef 100%);
-}
-
-.cbc-home-action-card--practice::before {
-  background: linear-gradient(135deg, #b466ff 0%, #7045e8 100%);
-}
-
-.cbc-home-action-card-shine {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 10% 12%, rgba(255, 255, 255, 0.28), transparent 16%),
-    radial-gradient(circle at 84% 84%, rgba(255, 255, 255, 0.1), transparent 28%);
-}
-
-.cbc-home-action-illustration {
-  width: 96px;
-  height: 96px;
-  display: grid;
-  place-items: center;
-  justify-self: center;
-  align-self: center;
-  flex-shrink: 0;
-}
-
-.cbc-home-action-illustration img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  user-select: none;
-  pointer-events: none;
-  filter: drop-shadow(0 10px 14px rgba(20, 32, 71, 0.22));
-}
-
-.cbc-home-action-card-copy-wrap {
-  display: block;
-  min-width: 0;
-}
-
-.cbc-home-action-title {
-  display: block;
-  color: #ffffff;
-  font-size: 25px;
-  line-height: 1.05;
-  font-weight: 950;
-  letter-spacing: -0.035em;
-  text-shadow: 0 2px 8px rgba(20, 30, 70, 0.18);
-}
-
-.cbc-home-action-copy {
-  display: block;
-  margin-top: 8px;
-  max-width: 15ch;
-  color: #ffffff;
-  font-size: 17px;
-  line-height: 1.18;
-  font-weight: 800;
-  text-shadow: 0 2px 8px rgba(20, 30, 70, 0.16);
-}
+   .cbc-home-hero-content {
+    position: relative;
+    z-index: 8;
+    max-width: 920px;
+  }
+  
+  .cbc-home-greeting {
+    margin: 2px 0 6px;
+    color: #11144a;
+    font-size: 20px;
+    line-height: 1.1;
+    font-weight: 950;
+    letter-spacing: -0.02em;
+  }
+  
+  :root[data-theme="dark"] .cbc-home-greeting {
+    color: #f5fbff;
+  }
+  
+  .cbc-home-hero-title {
+    margin: 0;
+    max-width: 100%;
+    width: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.16em;
+    row-gap: 0;
+    color: #11144a;
+    font-size: clamp(48px, 4.7vw, 74px);
+    line-height: 0.96;
+    font-weight: 950;
+    letter-spacing: -0.055em;
+    text-shadow: 0 3px 0 rgba(255, 255, 255, 0.45);
+  }
+  
+  .cbc-home-hero-title span {
+    display: inline-block;
+    white-space: nowrap;
+  }
+  
+  #cbc-home-title > span {
+    color: #109654;
+  }
+  
+  :root[data-theme="dark"] .cbc-home-hero-title {
+    color: #f5fbff;
+    text-shadow: 0 4px 14px rgba(4, 13, 28, 0.36);
+  }
+  
+  :root[data-theme="dark"] #cbc-home-title > span {
+    color: #6ee7b7;
+  }
+  
+  .cbc-home-hero-subtitle {
+    max-width: 48rem;
+    margin: 16px 0 24px;
+    color: #353d73;
+    font-size: 18px;
+    line-height: 1.3;
+    font-weight: 800;
+  }
+  
+  :root[data-theme="dark"] .cbc-home-hero-subtitle {
+    color: #d7e7ff;
+  }
+  
+  .cbc-home-hero-actions {
+    position: relative;
+    z-index: 9;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    max-width: 860px;
+  }
+  
+  .cbc-home-action-card {
+    position: relative;
+    height: 118px;
+    min-height: 118px;
+    border-radius: 24px;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+    overflow: hidden;
+    color: #ffffff;
+    box-shadow:
+      0 16px 30px rgba(20, 62, 107, 0.2),
+      inset 0 0 0 2px rgba(255, 255, 255, 0.22);
+    isolation: isolate;
+    transform: translateZ(0);
+    transition:
+      transform 160ms ease,
+      box-shadow 160ms ease;
+  }
+  
+  .cbc-home-action-card:hover,
+  .cbc-home-action-card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow:
+      0 20px 38px rgba(20, 62, 107, 0.24),
+      inset 0 0 0 2px rgba(255, 255, 255, 0.28);
+  }
+  
+  .cbc-home-action-card:focus-visible {
+    outline: 4px solid rgba(255, 212, 55, 0.72);
+    outline-offset: 3px;
+  }
+  
+  .cbc-home-action-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.96;
+  }
+  
+  .cbc-home-action-card--continue::before {
+    background: linear-gradient(135deg, #36d98d 0%, #09aa78 100%);
+  }
+  
+  .cbc-home-action-card--read::before {
+    background: linear-gradient(135deg, #4698ff 0%, #2468ef 100%);
+  }
+  
+  .cbc-home-action-card--practice::before {
+    background: linear-gradient(135deg, #b466ff 0%, #7045e8 100%);
+  }
+  
+  .cbc-home-action-card-shine {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(circle at 10% 12%, rgba(255, 255, 255, 0.28), transparent 16%),
+      radial-gradient(circle at 84% 84%, rgba(255, 255, 255, 0.1), transparent 28%);
+  }
+  
+  .cbc-home-action-illustration {
+    width: 70px;
+    height: 70px;
+    display: grid;
+    place-items: center;
+    justify-self: center;
+    align-self: center;
+    overflow: visible;
+    flex-shrink: 0;
+  }
+  
+  .cbc-home-action-illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+    transform-origin: center;
+    filter: drop-shadow(0 8px 11px rgba(20, 32, 71, 0.2));
+  }
+  
+  /* Generated assets have safe canvas padding; scale the visible object inside the icon box. */
+  .cbc-home-action-card--continue .cbc-home-action-illustration img {
+    transform: scale(1.42);
+  }
+  
+  .cbc-home-action-card--read .cbc-home-action-illustration img {
+    transform: scale(1.5);
+  }
+  
+  .cbc-home-action-card--practice .cbc-home-action-illustration img {
+    transform: scale(1.34);
+  }
+  
+  .cbc-home-action-card-copy-wrap {
+    display: block;
+    min-width: 0;
+  }
+  
+  .cbc-home-action-title {
+    display: block;
+    color: #ffffff;
+    font-size: 22px;
+    line-height: 1.04;
+    font-weight: 950;
+    letter-spacing: -0.035em;
+    text-shadow: 0 2px 8px rgba(20, 30, 70, 0.18);
+  }
+  
+  .cbc-home-action-copy {
+    display: block;
+    margin-top: 6px;
+    max-width: 17ch;
+    color: #ffffff;
+    font-size: 14.5px;
+    line-height: 1.16;
+    font-weight: 800;
+    text-shadow: 0 2px 8px rgba(20, 30, 70, 0.16);
+  }
