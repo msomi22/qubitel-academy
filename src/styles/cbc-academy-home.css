@@ -1,0 +1,555 @@
+.cbc-home-page {
+  --cbc-page-bg:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #38e8c8) 14%, transparent), transparent 28rem),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--purple, #a78bfa) 12%, transparent), transparent 24rem),
+    var(--bg, #0d0f14);
+
+  --cbc-text: var(--text-primary, #eef0f5);
+  --cbc-heading: var(--text-primary, #eef0f5);
+  --cbc-muted: var(--text-secondary, #9aa3b5);
+
+  --cbc-panel: color-mix(in srgb, var(--bg-card, #181d28) 88%, transparent);
+  --cbc-panel-strong: var(--bg-card, #181d28);
+  --cbc-border: var(--line-strong, rgba(255, 255, 255, 0.13));
+  --cbc-shadow: var(--shadow, 0 2px 8px rgba(0, 0, 0, 0.42));
+
+  --cbc-primary: var(--accent, #38e8c8);
+  --cbc-primary-strong: var(--accent-dark, #1dbfa3);
+  --cbc-secondary: var(--purple, #a78bfa);
+  --cbc-primary-soft: var(--accent-dim, rgba(56, 232, 200, 0.12));
+
+  --cbc-yellow-soft: color-mix(in srgb, #facc15 16%, var(--surface, #232b3e));
+  --cbc-blue-soft: color-mix(in srgb, #60a5fa 14%, var(--surface, #232b3e));
+  --cbc-info-soft: var(--accent-dim, rgba(56, 232, 200, 0.12));
+  --cbc-subtle: var(--surface, #232b3e);
+
+  min-height: 100vh;
+  padding: 1rem;
+  color: var(--cbc-text);
+  background: var(--cbc-page-bg);
+}
+
+:root[data-theme="light"] .cbc-home-page {
+  --cbc-page-bg:
+    radial-gradient(circle at top left, rgba(255, 214, 102, 0.32), transparent 28rem),
+    radial-gradient(circle at top right, rgba(129, 140, 248, 0.20), transparent 24rem),
+    linear-gradient(135deg, #fff8ea 0%, #f4fbff 52%, #fff2f7 100%);
+
+  --cbc-text: #233047;
+  --cbc-heading: #172033;
+  --cbc-muted: #5f6b80;
+  --cbc-panel: rgba(255, 255, 255, 0.86);
+  --cbc-panel-strong: rgba(255, 255, 255, 0.94);
+  --cbc-border: rgba(35, 48, 71, 0.08);
+  --cbc-shadow: 0 18px 45px rgba(35, 48, 71, 0.10);
+
+  --cbc-primary: #7c3aed;
+  --cbc-primary-strong: #6d28d9;
+  --cbc-secondary: #ec4899;
+  --cbc-primary-soft: #f2eafe;
+
+  --cbc-yellow-soft: #fef3c7;
+  --cbc-blue-soft: #dbeafe;
+  --cbc-info-soft: #ecfeff;
+  --cbc-subtle: #f8fafc;
+}
+
+.cbc-home-hero,
+.cbc-home-panel,
+.cbc-home-action-card,
+.cbc-home-learning-card,
+.cbc-home-focus-card {
+  border: 1px solid var(--cbc-border);
+  box-shadow: var(--cbc-shadow);
+}
+
+.cbc-home-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.2rem;
+  border-radius: 2rem;
+  background: var(--cbc-panel);
+  backdrop-filter: blur(16px);
+}
+
+.cbc-home-eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--cbc-primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cbc-home-hero h1,
+.cbc-home-panel h2 {
+  margin: 0;
+  color: var(--cbc-heading);
+  line-height: 1.05;
+}
+
+.cbc-home-hero h1 {
+  font-size: clamp(2rem, 8vw, 4.4rem);
+}
+
+.cbc-home-hero p,
+.cbc-home-panel p {
+  color: var(--cbc-muted);
+  font-weight: 650;
+}
+
+.cbc-home-hero__actions,
+.cbc-home-action-grid,
+.cbc-home-learning-grid,
+.cbc-home-focus-list,
+.cbc-home-mini-stats {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.cbc-home-hero__actions {
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  margin-top: 1rem;
+}
+
+.cbc-home-primary-button,
+.cbc-home-secondary-button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.cbc-home-primary-button {
+  color: var(--cbc-primary);
+  border: 1px solid color-mix(in srgb, var(--cbc-primary) 42%, transparent);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--cbc-primary) 16%, transparent),
+      color-mix(in srgb, var(--cbc-secondary) 12%, transparent)
+    );
+}
+
+.cbc-home-secondary-button {
+  color: var(--cbc-primary);
+  border: 1px solid color-mix(in srgb, var(--cbc-primary) 28%, transparent);
+  background: color-mix(in srgb, var(--cbc-primary-soft) 70%, transparent);
+}
+
+:root[data-theme="light"] .cbc-home-primary-button {
+  color: #ffffff;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--cbc-primary), var(--cbc-secondary));
+}
+
+:root[data-theme="light"] .cbc-home-secondary-button {
+  color: var(--cbc-primary);
+  border-color: transparent;
+  background: var(--cbc-primary-soft);
+}
+
+.cbc-home-mascot-card {
+  display: grid;
+  min-width: 8rem;
+  place-items: center;
+  padding: 1rem;
+  border: 1px solid var(--cbc-border);
+  border-radius: 1.6rem;
+  color: var(--cbc-heading);
+  background: linear-gradient(135deg, var(--cbc-yellow-soft), var(--cbc-blue-soft));
+  text-align: center;
+}
+
+.cbc-home-mascot-card span {
+  font-size: 3rem;
+}
+
+.cbc-home-mascot-card strong {
+  font-size: 1.6rem;
+}
+
+.cbc-home-mascot-card small {
+  color: var(--cbc-muted);
+  font-weight: 800;
+}
+
+.cbc-home-action-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1rem 0;
+}
+
+.cbc-home-action-card,
+.cbc-home-learning-card,
+.cbc-home-focus-card {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  border-radius: 1.5rem;
+  padding: 1rem;
+  background: var(--cbc-panel-strong);
+  color: var(--cbc-text);
+  text-decoration: none;
+}
+
+.cbc-home-action-card:hover,
+.cbc-home-learning-card:hover,
+.cbc-home-focus-card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--cbc-primary) 40%, var(--cbc-border));
+}
+
+.cbc-home-action-card strong,
+.cbc-home-learning-card strong,
+.cbc-home-focus-card strong {
+  display: block;
+  color: var(--cbc-heading);
+  font-size: 1rem;
+}
+
+.cbc-home-action-card small,
+.cbc-home-learning-card small,
+.cbc-home-focus-card small {
+  display: block;
+  color: var(--cbc-muted);
+  font-weight: 650;
+}
+
+.cbc-home-action-card__emoji,
+.cbc-home-learning-card__emoji {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 1rem;
+  background: var(--cbc-yellow-soft);
+  font-size: 1.7rem;
+}
+
+.cbc-home-action-card--primary {
+  background: linear-gradient(135deg, var(--cbc-primary-soft), var(--cbc-panel-strong));
+}
+
+.cbc-home-panel {
+  padding: 1rem;
+  border-radius: 1.7rem;
+  background: var(--cbc-panel);
+}
+
+.cbc-home-section-heading {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.cbc-home-section-heading a {
+  color: var(--cbc-primary);
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.cbc-home-learning-grid {
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+}
+
+.cbc-home-learning-card {
+  justify-content: space-between;
+}
+
+.cbc-home-learning-card__copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.cbc-home-progress-pill {
+  display: grid;
+  min-width: 4.5rem;
+  place-items: center;
+  border-radius: 1rem;
+  padding: 0.45rem;
+  background: var(--cbc-info-soft);
+  color: var(--cbc-primary);
+  font-weight: 900;
+}
+
+.cbc-home-progress-pill small {
+  color: var(--cbc-primary);
+  font-size: 0.68rem;
+}
+
+.cbc-home-two-column {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cbc-home-focus-card {
+  justify-content: space-between;
+}
+
+.cbc-home-focus-card > span:first-child {
+  font-size: 1.5rem;
+}
+
+.cbc-home-focus-card b {
+  color: var(--cbc-primary);
+}
+
+.cbc-home-mini-stats {
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 1rem;
+}
+
+.cbc-home-mini-stats span {
+  display: grid;
+  place-items: center;
+  border-radius: 1.2rem;
+  padding: 0.8rem;
+  background: var(--cbc-subtle);
+}
+
+.cbc-home-mini-stats strong {
+  color: var(--cbc-primary);
+  font-size: 1.35rem;
+}
+
+.cbc-home-mini-stats small {
+  color: var(--cbc-muted);
+  font-weight: 800;
+}
+
+.cbc-home-empty-note {
+  margin: 0;
+  border-radius: 1.2rem;
+  padding: 1rem;
+  color: var(--cbc-muted);
+  background: var(--cbc-subtle);
+}
+
+.cbc-home-support-link {
+  margin-top: 1rem;
+}
+
+@media (max-width: 760px) {
+  .cbc-home-page {
+    padding: 0.75rem;
+  }
+
+  .cbc-home-hero {
+    grid-template-columns: 1fr;
+    border-radius: 1.5rem;
+  }
+
+  .cbc-home-mascot-card {
+    grid-template-columns: auto 1fr;
+    justify-items: start;
+    text-align: left;
+  }
+
+  .cbc-home-action-grid,
+  .cbc-home-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .cbc-home-learning-card {
+    align-items: flex-start;
+  }
+}
+
+
+
+/* Compact CBC home layout */
+.cbc-home-page {
+  padding: 0.75rem;
+}
+
+.cbc-home-hero {
+  grid-template-columns: minmax(0, 1fr) 7rem;
+  gap: 0.85rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1.45rem;
+}
+
+.cbc-home-hero h1 {
+  font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+  letter-spacing: -0.045em;
+}
+
+.cbc-home-hero p {
+  margin: 0.45rem 0 0;
+  font-size: 0.9rem;
+}
+
+.cbc-home-eyebrow {
+  margin-bottom: 0.25rem;
+  font-size: 0.68rem;
+}
+
+.cbc-home-hero__actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-top: 0.8rem;
+}
+
+.cbc-home-primary-button,
+.cbc-home-secondary-button {
+  min-height: 2.55rem;
+  padding: 0.62rem 0.9rem;
+  font-size: 0.82rem;
+}
+
+.cbc-home-mascot-card {
+  min-width: 6.4rem;
+  padding: 0.7rem;
+  border-radius: 1.15rem;
+}
+
+.cbc-home-mascot-card span {
+  font-size: 2rem;
+}
+
+.cbc-home-mascot-card strong {
+  font-size: 1.25rem;
+}
+
+.cbc-home-mascot-card small {
+  font-size: 0.72rem;
+}
+
+.cbc-home-action-grid {
+  gap: 0.6rem;
+  margin: 0.7rem 0;
+}
+
+.cbc-home-action-card,
+.cbc-home-learning-card,
+.cbc-home-focus-card {
+  min-height: auto;
+  gap: 0.65rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 1.1rem;
+}
+
+.cbc-home-action-card__emoji,
+.cbc-home-learning-card__emoji {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.8rem;
+  font-size: 1.3rem;
+}
+
+.cbc-home-action-card strong,
+.cbc-home-learning-card strong,
+.cbc-home-focus-card strong {
+  font-size: 0.9rem;
+}
+
+.cbc-home-action-card small,
+.cbc-home-learning-card small,
+.cbc-home-focus-card small {
+  font-size: 0.72rem;
+}
+
+.cbc-home-panel {
+  padding: 0.8rem 0.9rem;
+  border-radius: 1.25rem;
+}
+
+.cbc-home-section-heading {
+  margin-bottom: 0.65rem;
+}
+
+.cbc-home-section-heading h2,
+.cbc-home-panel h2 {
+  font-size: 1.05rem;
+}
+
+.cbc-home-learning-grid {
+  gap: 0.55rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.cbc-home-progress-pill {
+  min-width: 4rem;
+  padding: 0.35rem;
+  border-radius: 0.8rem;
+}
+
+.cbc-home-progress-pill span {
+  font-size: 0.82rem;
+}
+
+.cbc-home-progress-pill small {
+  font-size: 0.6rem;
+}
+
+.cbc-home-two-column {
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+  grid-template-columns: minmax(0, 1.3fr) minmax(15rem, 0.7fr);
+}
+
+.cbc-home-focus-list {
+  gap: 0.55rem;
+}
+
+.cbc-home-focus-card > span:first-child {
+  font-size: 1.25rem;
+}
+
+.cbc-home-mini-stats {
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.cbc-home-mini-stats span {
+  padding: 0.6rem;
+  border-radius: 0.9rem;
+}
+
+.cbc-home-mini-stats strong {
+  font-size: 1.1rem;
+}
+
+.cbc-home-mini-stats small {
+  font-size: 0.68rem;
+}
+
+@media (max-width: 760px) {
+  .cbc-home-page {
+    padding: 0.55rem;
+  }
+
+  .cbc-home-hero {
+    grid-template-columns: 1fr;
+    padding: 0.85rem;
+  }
+
+  .cbc-home-hero h1 {
+    font-size: clamp(1.7rem, 9vw, 2.5rem);
+  }
+
+  .cbc-home-hero__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .cbc-home-action-grid,
+  .cbc-home-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .cbc-home-mascot-card {
+    grid-template-columns: auto 1fr;
+    min-width: 0;
+  }
+}
