@@ -146,3 +146,38 @@
     outline: 4px solid rgba(255, 212, 55, 0.72);
     outline-offset: 3px;
   }
+
+  /* =========================================================
+   Dark theme stars card
+   Color-only. Do not move card.
+   ========================================================= */
+
+:root[data-theme="dark"] .cbc-home-stars-card {
+  background: rgba(13, 24, 39, 0.96);
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme="dark"] .cbc-home-stars-title,
+:root[data-theme="dark"] .cbc-home-stars-earned,
+:root[data-theme="dark"] .cbc-home-stars-message {
+  color: #f8fbff;
+}
+
+:root[data-theme="dark"] .cbc-home-stars-number {
+  color: #8b5cf6;
+}
+
+:root[data-theme="dark"] .cbc-home-stars-progress {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+:root[data-theme="dark"] .cbc-home-progress-link {
+  color: #6ee7d8;
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+:root[data-theme="dark"] .cbc-home-progress-link:hover,
+:root[data-theme="dark"] .cbc-home-progress-link:focus-visible {
+  background: rgba(16, 185, 129, 0.18);
+}

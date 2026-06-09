@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { categoryPath } from '../../services/categoryNavigationService.js';
 import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/owl-with-backpack-transparent.png';
 import actionContinueBook from '../../assets/academies/cbc/grade-1/home/action-continue-book.png';
 import actionReadOwlBook from '../../assets/academies/cbc/grade-1/home/action-read-owl-book.png';
@@ -87,6 +88,59 @@ function getSubjectMeta(section, index = 0) {
   if (matched) return matched;
 
   return SUBJECT_META[index % SUBJECT_META.length] || SUBJECT_META[0];
+}
+
+
+function getTopicText(topic) {
+  return normaliseText(
+    `${topic?.id || ''} ${topic?.name || ''} ${topic?.displayName || ''} ${topic?.description || ''} ${topic?.category || ''}`
+  );
+}
+
+function topicMatchesMeta(topic, meta) {
+  const text = getTopicText(topic);
+  return meta.match.some((term) => text.includes(term));
+}
+
+function getTopicLearningHref(topic) {
+  if (!topic?.category || !topic?.id) return '/categories';
+
+  const params = new URLSearchParams();
+  params.set('topic', String(topic.id));
+  params.set('page', '1');
+
+  return `${categoryPath(topic.category)}?${params.toString()}`;
+}
+
+function toSubjectTopicSection(topic, meta) {
+  return {
+    id: `subject:${topic.category}/${topic.id}`,
+    title: meta.friendlyName,
+    summary: meta.copy,
+    href: getTopicLearningHref(topic),
+    kind: 'subjectTopic',
+    progress: topic.progress,
+    source: 'compatibility'
+  };
+}
+
+function getDisplayLearningAreas(homeModel, fallbackLearningAreas = []) {
+  const topics = Array.isArray(homeModel?.homeContent?.topics)
+    ? homeModel.homeContent.topics
+    : [];
+
+  const gradeOneTopics = topics.filter((topic) => (
+    topic?.category === 'grade-1' && Number(topic?.count || 0) > 0
+  ));
+
+  const selected = SUBJECT_META
+    .map((meta) => {
+      const topic = gradeOneTopics.find((item) => topicMatchesMeta(item, meta));
+      return topic ? toSubjectTopicSection(topic, meta) : null;
+    })
+    .filter(Boolean);
+
+  return selected.length ? selected : fallbackLearningAreas;
 }
 
 function getFriendlySubjectTitle(section, index = 0) {
@@ -359,13 +413,18 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
   const learningPathsSection = getSectionByKind(homeModel, 'learningPaths');
 
   const focusChildren = getSectionChildren(focusSection);
-  const learningAreas = getSectionChildren(learningPathsSection);
-  const todayLessons = getTodayLessons({ continueSection, focusChildren, learningAreas });
+  const rawLearningAreas = getSectionChildren(learningPathsSection);
+  const learningAreas = getDisplayLearningAreas(homeModel, rawLearningAreas);
+  const todayLessons = getTodayLessons({
+    continueSection,
+    focusChildren,
+    learningAreas: rawLearningAreas
+  });
 
   const continueHref = continueSection?.href || homeModel.continueAction?.href || '/categories';
 
   const readWithMeHref = findFriendlyHref(
-    [...learningAreas, ...focusChildren],
+    [...learningAreas, ...rawLearningAreas, ...focusChildren],
     ['read', 'reading', 'english', 'comprehension'],
     '/categories'
   );
@@ -425,10 +484,6 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
 
         <CbcOwlMascot />
         <CbcStarsCard progress={progress} />
-
-        <span className="cbc-home-ground-decor cbc-home-plant-left" aria-hidden="true">🌿</span>
-        <span className="cbc-home-ground-decor cbc-home-flower-right" aria-hidden="true">🌸</span>
-        <span className="cbc-home-ground-decor cbc-home-tree-right" aria-hidden="true">🌲</span>
 
         <section className="cbc-home-learning-area-panel" aria-labelledby="cbc-home-learning-areas-title">
           <div className="cbc-home-learning-heading-row">

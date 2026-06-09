@@ -5,7 +5,6 @@
    - green grass/hill behind owl
    - far bushes/trees/flowers
    - white lower wave for learning cards
-   - clouds
    ========================================================= */
 
    .cbc-home-stage {
@@ -118,53 +117,45 @@
       linear-gradient(180deg, rgba(18, 28, 42, 0.98), rgba(18, 28, 42, 0.95));
   }
   
-  /* Cloud shapes */
-  .cbc-home-cloud {
-    position: absolute;
-    z-index: 1;
-    width: 84px;
-    height: 30px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.82);
-    filter: drop-shadow(0 8px 10px rgba(77, 160, 194, 0.1));
-  }
-  
+  /* Clouds are intentionally disabled.
+     The JSX still renders cloud spans, but they should not appear in any theme. */
+  .cbc-home-cloud,
   .cbc-home-cloud::before,
-  .cbc-home-cloud::after {
-    content: "";
-    position: absolute;
-    bottom: 11px;
-    border-radius: 50%;
-    background: inherit;
-  }
-  
-  .cbc-home-cloud::before {
-    left: 14px;
-    width: 37px;
-    height: 37px;
-  }
-  
-  .cbc-home-cloud::after {
-    right: 12px;
-    width: 50px;
-    height: 50px;
-  }
-  
-  .cbc-home-cloud--one {
-    left: 2%;
-    top: 98px;
-    transform: scale(1.15);
-  }
-  
-  .cbc-home-cloud--two {
-    left: 43%;
-    top: 138px;
-    opacity: 0.85;
-    transform: scale(0.82);
-  }
-  
+  .cbc-home-cloud::after,
+  .cbc-home-cloud--one,
+  .cbc-home-cloud--two,
   .cbc-home-cloud--three {
-    right: 27%;
-    top: 72px;
-    transform: scale(1.12);
+    display: none !important;
+    content: none !important;
+  }
+  
+  /* =========================================================
+     Dark theme hero readability
+     Color-only. Do not move layout.
+     ========================================================= */
+  
+  :root[data-theme="dark"] .cbc-home-greeting {
+    color: #f7fbff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+  }
+  
+  :root[data-theme="dark"] .cbc-home-hero-title {
+    color: #f8fbff;
+    text-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  }
+  
+  :root[data-theme="dark"] #cbc-home-title > span {
+    color: #6ee7b7;
+  }
+  
+  :root[data-theme="dark"] .cbc-home-hero-subtitle {
+    color: #e8f3ff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  
+  :root[data-theme="dark"] .cbc-home-hero-title,
+  :root[data-theme="dark"] .cbc-home-greeting,
+  :root[data-theme="dark"] .cbc-home-hero-subtitle {
+    position: relative;
+    z-index: 4;
   }

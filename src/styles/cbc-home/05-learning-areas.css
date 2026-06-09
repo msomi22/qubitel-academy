@@ -464,3 +464,70 @@
     color: #c8d5f5;
     background: rgba(255, 255, 255, 0.07);
   }
+
+  /* =========================================================
+   Dark theme readability fixes
+   Do not change layout here.
+   Keeps scenic English/Math cards readable in dark mode.
+   ========================================================= */
+
+:root[data-theme="dark"] .cbc-home-learning-area-panel {
+  background: rgba(8, 18, 31, 0.72);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+:root[data-theme="dark"] .cbc-home-section-heading {
+  color: #f7fbff;
+}
+
+:root[data-theme="dark"] .cbc-home-view-all-link {
+  color: #76f5d2;
+}
+
+/* Scenic cards should remain light even inside dark theme */
+:root[data-theme="dark"] .cbc-home-subject-card--english,
+:root[data-theme="dark"] .cbc-home-subject-card--math {
+  background: transparent;
+}
+
+:root[data-theme="dark"] .cbc-home-subject-card--english .cbc-home-subject-card__title {
+  color: #159946;
+}
+
+:root[data-theme="dark"] .cbc-home-subject-card--math .cbc-home-subject-card__title {
+  color: #2878ff;
+}
+
+:root[data-theme="dark"] .cbc-home-subject-card--english .cbc-home-subject-card__copy,
+:root[data-theme="dark"] .cbc-home-subject-card--math .cbc-home-subject-card__copy {
+  color: #121a3f;
+}
+
+/* Keep Start learning buttons white and readable on scenic cards */
+:root[data-theme="dark"] .cbc-home-subject-card--english .cbc-home-start-learning,
+:root[data-theme="dark"] .cbc-home-subject-card--math .cbc-home-start-learning {
+  color: #101648;
+  background: #ffffff;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+:root[data-theme="dark"] .cbc-home-subject-card--english .cbc-home-start-learning span {
+  color: #ffffff;
+  background: #159946;
+}
+
+:root[data-theme="dark"] .cbc-home-subject-card--math .cbc-home-start-learning span {
+  color: #ffffff;
+  background: #2878ff;
+}
+
+/* Keep non-scenic fallback cards dark-friendly */
+:root[data-theme="dark"] .cbc-home-subject-card--kiswahili {
+  color: #c084fc;
+  background: rgba(53, 27, 82, 0.94);
+}
+
+:root[data-theme="dark"] .cbc-home-subject-card--environment {
+  color: #fb923c;
+  background: rgba(78, 46, 14, 0.94);
+}
