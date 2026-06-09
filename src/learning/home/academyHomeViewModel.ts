@@ -259,6 +259,13 @@ export async function getAcademyHomeViewModel(input: {
     (section) => (section.progress?.percent || 0) < 100
   );
 
+  const weakTopicSections = [...unfinishedTopics]
+  .sort((a, b) => (
+    (a.progress?.percent || 0) - (b.progress?.percent || 0)
+    || a.title.localeCompare(b.title)
+  ))
+  .slice(0, 3);
+
   const activeTopic = [...unfinishedTopics]
     .filter((section) => (section.progress?.done || 0) > 0)
     .sort((a, b) => (
@@ -344,7 +351,7 @@ export async function getAcademyHomeViewModel(input: {
         summary: 'Topics that need more practice.',
         href: '/categories',
         kind: 'focus',
-        children: (topicSections.length ? topicSections : recommendedSections).slice(0, 3),
+        children: weakTopicSections.length ? weakTopicSections : recommendedSections,
         source: 'learningNode'
       },
       {
