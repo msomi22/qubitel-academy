@@ -1,76 +1,37 @@
 # Qubitel Academy
 
-Qubitel Academy is a fast, multi-page learning platform for structured learning, practice, assessments, and exams.
+Qubitel Academy is a fast, multi-academy learning platform for structured lessons, practice, assessments, exams, and learner progress tracking.
 
-The platform is evolving into a **LearningNode-powered multi-academy system** that can support:
+It is built around a growing **LearningNode-powered architecture** designed to support multiple academies from one shared platform.
 
-* Technology Academy
-* CBC Academy
-* Customer Experience Academy
-* Future academies
-
-The current production experience still includes the original Technology Academy content for DSA, System Design, Java, Kubernetes, Aptitude, ML/AI, and Engineering Leadership, while CBC and Customer Experience academy support continues to grow.
-
----
-
-## Repository rename
-
-The repository has moved from:
+Current academy direction:
 
 ```text
-msomi22/senior-dev-accelerator
-```
-
-to:
-
-```text
-msomi22/qubitel-academy
-```
-
-If your local clone still points to the old repository URL, update it as follows:
-
-```bash
-git remote set-url origin https://github.com/msomi22/qubitel-academy.git
-git remote -v
+Qubitel Academy
+├── Technology Academy
+├── CBC Academy
+├── Customer Experience Academy
+└── Future Academies
 ```
 
 ---
 
 ## Platform direction
 
-Qubitel Academy is being migrated toward a unified architecture where:
+Qubitel Academy is evolving into a unified multi-academy learning system where academies, grades, categories, topics, lessons, practice questions, assessments, and exams can be represented through a shared **LearningNode** model.
 
-```text
-Qubitel Academy
-├── Technology Academy
-├── CBC Academy
-└── Customer Experience Academy
-```
+The goal is to reduce hardcoded academy-specific structures and make the platform easier to extend, personalize, and maintain.
 
-The long-term goal is for all academies, grades, categories, topics, lessons, questions, practices, assessments, and exams to be represented through a shared **LearningNode** model instead of academy-specific hardcoded structures.
+The platform is designed to support:
 
----
-
-## Current performance architecture
-
-This version avoids earlier runtime slowdown by:
-
-* Route-level lazy loading with `React.lazy` and `Suspense`.
-* Topic pages loading visible content through manifests and question-bank services.
-* Home and Progress pages using lightweight metadata instead of importing all quiz content upfront.
-* Topic quiz banks loading independently.
-* Rendering only the first few questions for selected topics, then revealing more on demand.
-* Keeping performance knobs in `.env` instead of hardcoding them.
-* Avoiding expensive backdrop blur on repeated cards.
-* Removing React StrictMode double-mount behavior in local development.
-
-Tune these values in `.env`:
-
-```bash
-VITE_INITIAL_VISIBLE_QUESTIONS=5
-VITE_VISIBLE_QUESTIONS_STEP=5
-VITE_ENABLE_TOPIC_ORBIT=true
-```
+* domain-specific academies;
+* academy-aware routing;
+* reusable learning flows;
+* structured lessons and practice;
+* assessments and exams;
+* progress tracking;
+* academy-specific UI and content overrides;
+* future personalization and adaptive learning.
 
 ---
 
@@ -78,7 +39,9 @@ VITE_ENABLE_TOPIC_ORBIT=true
 
 ### Technology Academy
 
-Current Technology Academy areas include:
+Technology Academy focuses on software engineering mastery and technical interview preparation.
+
+Current areas include:
 
 * Data Structures & Algorithms
 * System Design
@@ -88,9 +51,9 @@ Current Technology Academy areas include:
 * ML / AI
 * Engineering Leadership
 
-#### DSA topics
+#### DSA learning tracks
 
-Includes the original app topics plus pattern-based learning tracks:
+Pattern-based DSA tracks include:
 
 * WIND — Sliding Window
 * PAIR — Two Pointers
@@ -110,15 +73,19 @@ Includes the original app topics plus pattern-based learning tracks:
 
 #### System Design topics
 
+Current System Design areas include:
+
 * Scalability
 * Databases
 * Caching
 * Messaging Queues
 * API Design
 
+---
+
 ### CBC Academy
 
-CBC Academy currently supports child-friendly learning and exam practice for selected grades and learning areas.
+CBC Academy supports child-friendly learning, practice, and exam preparation for selected grades and learning areas.
 
 Current focus areas include:
 
@@ -133,9 +100,69 @@ Current focus areas include:
 * Environmental Activities
 * Creative Activities
 
+CBC Academy is expected to continue growing toward a structured Grade 1–8 learning experience.
+
+---
+
 ### Customer Experience Academy
 
-Customer Experience Academy is registered as part of the multi-academy direction and will continue growing through future content and LearningNode migration tasks.
+Customer Experience Academy is part of the multi-academy platform direction.
+
+It is intended to support future customer service, communication, support operations, and learner practice content through the shared LearningNode architecture.
+
+---
+
+## Architecture direction
+
+The platform is moving toward a shared content and learning architecture based on:
+
+* academy manifests;
+* category manifests;
+* topic manifests;
+* LearningNode definitions;
+* academy-aware routing;
+* production-safe metadata;
+* reusable lesson, practice, assessment, and exam flows.
+
+Current academy content lives under:
+
+```text
+src/academies/
+```
+
+Examples:
+
+```text
+src/academies/tech/
+src/academies/cbc/
+src/academies/customer-experience/
+```
+
+When adding content, keep it close to the academy or topic it belongs to and register it through the relevant manifest.
+
+---
+
+## Performance architecture
+
+The app uses performance-focused loading patterns to keep the learning experience fast as content grows.
+
+Current performance strategies include:
+
+* route-level lazy loading with `React.lazy` and `Suspense`;
+* manifest-based topic loading;
+* lightweight metadata for Home and Progress pages;
+* independently loaded topic quiz banks;
+* progressive question rendering;
+* environment-based performance knobs;
+* reduced expensive visual effects on repeated cards.
+
+Performance-related environment values:
+
+```bash
+VITE_INITIAL_VISIBLE_QUESTIONS=5
+VITE_VISIBLE_QUESTIONS_STEP=5
+VITE_ENABLE_TOPIC_ORBIT=true
+```
 
 ---
 
@@ -153,10 +180,38 @@ Start local development:
 npm run dev
 ```
 
-Then open:
+Open:
 
 ```text
 http://localhost:5173
+```
+
+To test on another device on the same network:
+
+```bash
+npm run dev -- --host 0.0.0.0
+```
+
+---
+
+## Academy-aware home testing
+
+The academy-aware home experience can be enabled or disabled with:
+
+```bash
+VITE_ENABLE_ACADEMY_AWARE_HOME=true
+```
+
+Run locally with academy-aware home enabled:
+
+```bash
+VITE_ENABLE_ACADEMY_AWARE_HOME=true npm run dev -- --host 0.0.0.0
+```
+
+Run locally with academy-aware home disabled:
+
+```bash
+VITE_ENABLE_ACADEMY_AWARE_HOME=false npm run dev -- --host 0.0.0.0
 ```
 
 ---
@@ -177,7 +232,7 @@ npm run preview
 
 ---
 
-## Common validation commands
+## Validation commands
 
 Run unit tests:
 
@@ -197,31 +252,24 @@ Run production build validation:
 npm run build
 ```
 
+Recommended validation before opening a PR:
+
+```bash
+npm run test:unit
+npm run build
+```
+
 ---
 
 ## Cloudflare Pages deployment
 
-After the repository rename, confirm Cloudflare Pages is still connected to the correct repository:
-
-```text
-msomi22/qubitel-academy
-```
-
-In Cloudflare, review:
-
-```text
-Workers & Pages → Pages project → Settings → Builds
-```
-
-Confirm:
+Cloudflare Pages should use the following build settings:
 
 ```text
 Production branch: main
 Build command: npm run build
 Build output directory: dist
 ```
-
-Also confirm environment variables and custom domains.
 
 Expected custom domains:
 
@@ -231,17 +279,16 @@ cbc.academy.qubitel.net
 cx.academy.qubitel.net
 ```
 
-If Cloudflare still references the old repository name, reconnect the Pages Git integration to:
+After deployment-related changes, confirm:
 
-```text
-msomi22/qubitel-academy
-```
-
-Do not delete the existing Pages project unless deployment cannot be safely repaired. Prefer reconnecting the existing project so production domains and deployment history remain stable.
+* the correct GitHub repository is connected;
+* environment variables are configured;
+* custom domains are active;
+* the production build succeeds.
 
 ---
 
-## Configure the support CTA
+## Support CTA configuration
 
 Copy `.env.example` to `.env`:
 
@@ -249,7 +296,7 @@ Copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-Then configure public hosted payment links:
+Configure public hosted payment links:
 
 ```text
 VITE_PAYPAL_SUPPORT_LINK=""
@@ -263,7 +310,7 @@ The visible CTA copy is owned by:
 src/config/siteConfig.js
 ```
 
-The default CTA copy is:
+Default CTA copy:
 
 ```text
 🚀 Support from $1
@@ -271,7 +318,9 @@ The default CTA copy is:
 
 Clicking the CTA opens a frontend-only support options modal.
 
-PayPal uses `VITE_PAYPAL_SUPPORT_LINK` when configured, then falls back to the hosted PayPal donation URL. Paystack appears only when `VITE_PAYSTACK_SUPPORT_LINK` is configured.
+PayPal uses `VITE_PAYPAL_SUPPORT_LINK` when configured, then falls back to the hosted PayPal donation URL.
+
+Paystack appears only when `VITE_PAYSTACK_SUPPORT_LINK` is configured.
 
 Do not put private secrets in frontend environment variables or `.env.example`. Hosted payment links are public URLs only.
 
@@ -281,27 +330,19 @@ Do not put private secrets in frontend environment variables or `.env.example`. 
 
 Content is organized through academy manifests, topic manifests, and content files.
 
-Current academy content lives under:
+Topic manifests declare lessons, practice items, assessments, and exams for each academy area.
 
-```text
-src/academies/
-```
+When adding new content:
 
-Examples:
-
-```text
-src/academies/tech/
-src/academies/cbc/
-src/academies/customer-experience/
-```
-
-Topic manifests declare lessons, practice items, and assessments for each academy area.
-
-When adding new content, keep it close to the academy/topic it belongs to and register it through the relevant manifest.
+1. Add the content under the correct academy or topic folder.
+2. Register it through the relevant manifest.
+3. Confirm it appears in the correct academy/profile.
+4. Validate learner-facing copy.
+5. Run tests and production build validation.
 
 ---
 
-## Add real production content
+## Production content rules
 
 New production-ready content should be:
 
@@ -360,7 +401,7 @@ Useful project docs:
 
 ---
 
-## Important note on content protection
+## Content protection note
 
 The app includes mild right-click, selection, and shortcut blocking.
 
@@ -372,23 +413,11 @@ Do not treat frontend-only content protection as a strong security boundary.
 
 ## Migration notes
 
-The platform is currently transitioning from a technology-focused learning app into a multi-academy learning platform.
-
-During migration:
+During the multi-academy migration:
 
 * keep existing production routes working;
 * avoid broad blind renames;
 * avoid mixing unrelated refactors into focused PRs;
 * keep Technology Academy content stable;
 * migrate architecture incrementally through the LearningNode epic;
-* validate Cloudflare Pages deployment after repository or app identity changes.
-
-Current repository:
-
-```text
-https://github.com/msomi22/qubitel-academy
-```
-
-## test
-VITE_ENABLE_ACADEMY_AWARE_HOME=true npm run dev -- --host 0.0.0.0
-VITE_ENABLE_ACADEMY_AWARE_HOME=false npm run dev -- --host 0.0.0.0
+* validate Cloudflare Pages deployment after app identity, routing, or deployment changes.
