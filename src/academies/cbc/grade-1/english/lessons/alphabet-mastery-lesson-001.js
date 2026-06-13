@@ -9,6 +9,15 @@ const viteAlphabetAudio = typeof import.meta.glob === 'function'
   })
   : {};
 
+
+  function isNodeTestRunner() {
+    return (
+      typeof process !== 'undefined' &&
+      Array.isArray(process.argv) &&
+      process.argv.includes('--test')
+    );
+  }
+
 // function alphabetAudioSrc(fileName) {
 //   const vitePath = `${AUDIO_ASSET_ROOT}/${fileName}`;
 //   return viteAlphabetAudio[vitePath] || new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
@@ -27,7 +36,7 @@ function alphabetAudioSrc(fileName) {
 
 
   if (!key) {
-    if (import.meta.env?.MODE === 'test') {
+    if (isNodeTestRunner()) {
       return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
     }
   
@@ -35,8 +44,10 @@ function alphabetAudioSrc(fileName) {
       fileName,
       availableAudioKeysSample: Object.keys(viteAlphabetAudio).slice(0, 10)
     });
+  
     return '';
   }
+  
 
   return viteAlphabetAudio[key];
 }
