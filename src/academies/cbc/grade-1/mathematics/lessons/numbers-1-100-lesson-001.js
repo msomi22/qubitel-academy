@@ -24,9 +24,23 @@ function numberAudioFile(number) {
   return `${String(number).padStart(3, '0')}.mp3`;
 }
 
+// function numberAudioSrc(fileName) {
+//   const vitePath = `${AUDIO_ASSET_ROOT}/${fileName}`;
+//   return viteNumberAudio[vitePath] || new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+// }
+
 function numberAudioSrc(fileName) {
-  const vitePath = `${AUDIO_ASSET_ROOT}/${fileName}`;
-  return viteNumberAudio[vitePath] || new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+  const key = Object.keys(viteNumberAudio).find((path) => path.endsWith(`/${fileName}`));
+
+  if (!key) {
+    console.warn('Number audio asset missing', {
+      fileName,
+      availableAudioKeysSample: Object.keys(viteNumberAudio).slice(0, 10)
+    });
+    return '';
+  }
+
+  return viteNumberAudio[key];
 }
 
 function createNumberCard(number) {

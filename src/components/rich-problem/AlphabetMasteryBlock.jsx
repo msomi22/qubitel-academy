@@ -50,28 +50,82 @@ export default function AlphabetMasteryBlock({ block }) {
     audioRef.current = null;
   }
 
+  // function handlePlay(card) {
+  //   clearCurrentAudio();
+
+  //   if (!card?.audioSrc) {
+  //     setActiveCardId('');
+  //     setAudioMessage(`Audio is not available for ${card?.label || 'this card'}.`);
+  //     return;
+  //   }
+
+  //   const audio = new Audio(card.audioSrc);
+  //   audioRef.current = audio;
+  //   setActiveCardId(card.id);
+  //   setAudioMessage('');
+
+  //   audio.addEventListener('ended', () => {
+  //     setActiveCardId((current) => (current === card.id ? '' : current));
+  //   }, { once: true });
+  //   audio.addEventListener('error', () => {
+  //     setActiveCardId((current) => (current === card.id ? '' : current));
+  //     setAudioMessage(`Audio is not available for ${card.label}.`);
+  //   }, { once: true });
+
+  //   audio.play()
+  //     .then(() => {
+  //       setPlayedCardIds((current) => {
+  //         const next = new Set(current);
+  //         next.add(card.id);
+  //         return next;
+  //       });
+  //     })
+  //     .catch(() => {
+  //       setActiveCardId('');
+  //       setAudioMessage(`Audio could not play for ${card.label}.`);
+  //     });
+  // }
+
+
   function handlePlay(card) {
     clearCurrentAudio();
-
+  
     if (!card?.audioSrc) {
+      console.warn('Alphabet audio source missing', {
+        cardId: card?.id,
+        label: card?.label,
+        audioFile: card?.audioFile,
+        card
+      });
       setActiveCardId('');
       setAudioMessage(`Audio is not available for ${card?.label || 'this card'}.`);
       return;
     }
-
+  
     const audio = new Audio(card.audioSrc);
+    audio.preload = 'auto';
     audioRef.current = audio;
     setActiveCardId(card.id);
     setAudioMessage('');
-
+  
     audio.addEventListener('ended', () => {
       setActiveCardId((current) => (current === card.id ? '' : current));
     }, { once: true });
+  
     audio.addEventListener('error', () => {
+      console.warn('Alphabet audio element error', {
+        cardId: card.id,
+        label: card.label,
+        audioFile: card.audioFile,
+        audioSrc: card.audioSrc,
+        mediaError: audio.error
+      });
       setActiveCardId((current) => (current === card.id ? '' : current));
       setAudioMessage(`Audio is not available for ${card.label}.`);
     }, { once: true });
-
+  
+    audio.load();
+  
     audio.play()
       .then(() => {
         setPlayedCardIds((current) => {
@@ -80,7 +134,16 @@ export default function AlphabetMasteryBlock({ block }) {
           return next;
         });
       })
-      .catch(() => {
+      .catch((error) => {
+        console.warn('Alphabet audio playback failed', {
+          cardId: card.id,
+          label: card.label,
+          audioFile: card.audioFile,
+          audioSrc: card.audioSrc,
+          errorName: error?.name,
+          errorMessage: error?.message,
+          error
+        });
         setActiveCardId('');
         setAudioMessage(`Audio could not play for ${card.label}.`);
       });
