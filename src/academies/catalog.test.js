@@ -93,6 +93,8 @@ test('CBC Grade 1 declares the shared subject structure with content under learn
   assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-001']);
   assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001']);
   assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);
+  assert.deepEqual(mathematics.lessons.map((item) => item.id), ['numbers-1-100-lesson-001']);
+  assert.equal(mathematics.lessons[0].learningAreaId, 'numbers');
   assert.deepEqual(mathematics.practice.map((item) => item.id), ['numbers-practice-001', 'shapes-practice-001']);
   assert.deepEqual(mathematics.assessments.map((item) => item.id), ['counting-exam-001']);
 

@@ -1,7 +1,7 @@
 import { topicManifest } from '../academies/catalog.js';
 import { isSupportedProblemType, problemTypeRegistry } from './problemTypeRegistry.js';
 
-const SUPPORTED_RICH_BODY_BLOCK_TYPES = new Set(['section', 'callout', 'table', 'image', 'diagram', 'flow', 'code', 'checklist', 'comparison', 'architectureDecision', 'tabs', 'divider', 'alphabetMastery']);
+const SUPPORTED_RICH_BODY_BLOCK_TYPES = new Set(['section', 'callout', 'table', 'image', 'diagram', 'flow', 'code', 'checklist', 'comparison', 'architectureDecision', 'tabs', 'divider', 'alphabetMastery', 'numberAudioGrid']);
 const CALLOUT_TONES = new Set(['info', 'warning', 'success', 'danger']);
 const RENDERING_VARIANTS = new Set(['default', 'architecture-case-study', 'interview-drill', 'deep-dive']);
 const RENDERING_DENSITIES = new Set(['compact', 'comfortable', 'detailed']);
@@ -137,6 +137,24 @@ function validateBody(problem, body, errors, field = 'body') {
             if (typeof card.audioFile !== 'string' || !card.audioFile.endsWith('.mp3')) errors.push(error(problem?.id, `${cardField}.audioFile`, 'Alphabet card requires an MP3 audio file.'));
             if (typeof card.audioSrc !== 'string' || !card.audioSrc.trim()) errors.push(error(problem?.id, `${cardField}.audioSrc`, 'Alphabet card requires an audio source.'));
           }
+        });
+      }
+    }
+    if (block.type === 'numberAudioGrid') {
+      if (!Array.isArray(block.numbers) || block.numbers.length !== 100) {
+        errors.push(error(problem?.id, `${blockField}.numbers`, 'Number audio grid block requires 100 number entries.'));
+      } else {
+        block.numbers.forEach((item, numberIndex) => {
+          const itemField = `${blockField}.numbers[${numberIndex}]`;
+          if (!isPlainObject(item)) {
+            errors.push(error(problem?.id, itemField, 'Number audio entry must be an object.'));
+            return;
+          }
+          if (!Number.isInteger(item.number) || item.number !== numberIndex + 1) errors.push(error(problem?.id, `${itemField}.number`, 'Number audio entry must be ordered from 1 to 100.'));
+          if (typeof item.label !== 'string' || !item.label.trim()) errors.push(error(problem?.id, `${itemField}.label`, 'Number audio entry requires a label.'));
+          if (typeof item.ariaLabel !== 'string' || !item.ariaLabel.trim()) errors.push(error(problem?.id, `${itemField}.ariaLabel`, 'Number audio entry requires an aria label.'));
+          if (typeof item.audioFile !== 'string' || !item.audioFile.endsWith('.mp3')) errors.push(error(problem?.id, `${itemField}.audioFile`, 'Number audio entry requires an MP3 audio file.'));
+          if (typeof item.audioSrc !== 'string' || !item.audioSrc.trim()) errors.push(error(problem?.id, `${itemField}.audioSrc`, 'Number audio entry requires an audio source.'));
         });
       }
     }
