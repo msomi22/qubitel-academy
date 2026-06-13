@@ -17,7 +17,20 @@ const viteAlphabetAudio = typeof import.meta.glob === 'function'
 function alphabetAudioSrc(fileName) {
   const key = Object.keys(viteAlphabetAudio).find((path) => path.endsWith(`/${fileName}`));
 
+  // if (!key) {
+  //   console.warn('Alphabet audio asset missing', {
+  //     fileName,
+  //     availableAudioKeysSample: Object.keys(viteAlphabetAudio).slice(0, 10)
+  //   });
+  //   return '';
+  // }
+
+
   if (!key) {
+    if (import.meta.env?.MODE === 'test') {
+      return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+    }
+  
     console.warn('Alphabet audio asset missing', {
       fileName,
       availableAudioKeysSample: Object.keys(viteAlphabetAudio).slice(0, 10)
