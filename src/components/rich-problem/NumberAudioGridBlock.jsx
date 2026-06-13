@@ -49,28 +49,81 @@ export default function NumberAudioGridBlock({ block }) {
     audioRef.current = null;
   }
 
+  // function handlePlay(item) {
+  //   clearCurrentAudio();
+
+  //   if (!item?.audioSrc) {
+  //     setActiveNumberId('');
+  //     setAudioMessage(`Audio is not available for ${item?.label || 'this number'}.`);
+  //     return;
+  //   }
+
+  //   const audio = new Audio(item.audioSrc);
+  //   audioRef.current = audio;
+  //   setActiveNumberId(item.id);
+  //   setAudioMessage('');
+
+  //   audio.addEventListener('ended', () => {
+  //     setActiveNumberId((current) => (current === item.id ? '' : current));
+  //   }, { once: true });
+  //   audio.addEventListener('error', () => {
+  //     setActiveNumberId((current) => (current === item.id ? '' : current));
+  //     setAudioMessage(`Audio is not available for ${item.label}.`);
+  //   }, { once: true });
+
+  //   audio.play()
+  //     .then(() => {
+  //       setPlayedNumberIds((current) => {
+  //         const next = new Set(current);
+  //         next.add(item.id);
+  //         return next;
+  //       });
+  //     })
+  //     .catch(() => {
+  //       setActiveNumberId('');
+  //       setAudioMessage(`Audio could not play for ${item.label}.`);
+  //     });
+  // }
+
   function handlePlay(item) {
     clearCurrentAudio();
-
+  
     if (!item?.audioSrc) {
+      console.warn('Number audio source missing', {
+        numberId: item?.id,
+        label: item?.label,
+        audioFile: item?.audioFile,
+        item
+      });
       setActiveNumberId('');
       setAudioMessage(`Audio is not available for ${item?.label || 'this number'}.`);
       return;
     }
-
+  
     const audio = new Audio(item.audioSrc);
+    audio.preload = 'auto';
     audioRef.current = audio;
     setActiveNumberId(item.id);
     setAudioMessage('');
-
+  
     audio.addEventListener('ended', () => {
       setActiveNumberId((current) => (current === item.id ? '' : current));
     }, { once: true });
+  
     audio.addEventListener('error', () => {
+      console.warn('Number audio element error', {
+        numberId: item.id,
+        label: item.label,
+        audioFile: item.audioFile,
+        audioSrc: item.audioSrc,
+        mediaError: audio.error
+      });
       setActiveNumberId((current) => (current === item.id ? '' : current));
       setAudioMessage(`Audio is not available for ${item.label}.`);
     }, { once: true });
-
+  
+    audio.load();
+  
     audio.play()
       .then(() => {
         setPlayedNumberIds((current) => {
@@ -79,7 +132,16 @@ export default function NumberAudioGridBlock({ block }) {
           return next;
         });
       })
-      .catch(() => {
+      .catch((error) => {
+        console.warn('Number audio playback failed', {
+          numberId: item.id,
+          label: item.label,
+          audioFile: item.audioFile,
+          audioSrc: item.audioSrc,
+          errorName: error?.name,
+          errorMessage: error?.message,
+          error
+        });
         setActiveNumberId('');
         setAudioMessage(`Audio could not play for ${item.label}.`);
       });

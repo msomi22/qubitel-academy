@@ -9,9 +9,55 @@ const viteAlphabetAudio = typeof import.meta.glob === 'function'
   })
   : {};
 
+
+  // function isNodeTestRunner() {
+  //   return (
+  //     typeof process !== 'undefined' &&
+  //     Array.isArray(process.argv) &&
+  //     process.argv.includes('--test')
+  //   );
+  // }
+
+  function isNonBrowserRuntime() {
+    return typeof window === 'undefined';
+  }
+
+// function alphabetAudioSrc(fileName) {
+//   const vitePath = `${AUDIO_ASSET_ROOT}/${fileName}`;
+//   return viteAlphabetAudio[vitePath] || new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+// }
+
 function alphabetAudioSrc(fileName) {
-  const vitePath = `${AUDIO_ASSET_ROOT}/${fileName}`;
-  return viteAlphabetAudio[vitePath] || new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+  const key = Object.keys(viteAlphabetAudio).find((path) => path.endsWith(`/${fileName}`));
+
+  // if (!key) {
+  //   console.warn('Alphabet audio asset missing', {
+  //     fileName,
+  //     availableAudioKeysSample: Object.keys(viteAlphabetAudio).slice(0, 10)
+  //   });
+  //   return '';
+  // }
+
+
+  if (!key) {
+    // if (isNodeTestRunner()) {
+    //   return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+    // }
+
+    if (isNonBrowserRuntime()) {
+      return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+    }
+  
+    console.warn('Alphabet audio asset missing', {
+      fileName,
+      availableAudioKeysSample: Object.keys(viteAlphabetAudio).slice(0, 10)
+    });
+  
+    return '';
+  }
+
+
+  return viteAlphabetAudio[key];
 }
 
 function createAlphabetCard({ letter, word, visual, color }) {
