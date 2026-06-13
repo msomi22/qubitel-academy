@@ -1,63 +1,10 @@
 import { defineLearningProblem } from '../../../../../problems/problemAuthoring.js';
 
-const AUDIO_ASSET_ROOT = '../../../../../assets/academies/cbc/alphabets';
-const viteAlphabetAudio = typeof import.meta.glob === 'function'
-  ? import.meta.glob('../../../../../assets/academies/cbc/alphabets/*.mp3', {
-    eager: true,
-    query: '?url',
-    import: 'default'
-  })
-  : {};
-
-
-  // function isNodeTestRunner() {
-  //   return (
-  //     typeof process !== 'undefined' &&
-  //     Array.isArray(process.argv) &&
-  //     process.argv.includes('--test')
-  //   );
-  // }
-
-  function isNonBrowserRuntime() {
-    return typeof window === 'undefined';
-  }
-
-// function alphabetAudioSrc(fileName) {
-//   const vitePath = `${AUDIO_ASSET_ROOT}/${fileName}`;
-//   return viteAlphabetAudio[vitePath] || new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
-// }
-
 function alphabetAudioSrc(fileName) {
-  const key = Object.keys(viteAlphabetAudio).find((path) => path.endsWith(`/${fileName}`));
-
-  // if (!key) {
-  //   console.warn('Alphabet audio asset missing', {
-  //     fileName,
-  //     availableAudioKeysSample: Object.keys(viteAlphabetAudio).slice(0, 10)
-  //   });
-  //   return '';
-  // }
-
-
-  if (!key) {
-    // if (isNodeTestRunner()) {
-    //   return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
-    // }
-
-    if (isNonBrowserRuntime()) {
-      return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
-    }
-  
-    console.warn('Alphabet audio asset missing', {
-      fileName,
-      availableAudioKeysSample: Object.keys(viteAlphabetAudio).slice(0, 10)
-    });
-  
-    return '';
-  }
-
-
-  return viteAlphabetAudio[key];
+  return new URL(
+    `../../../../../assets/academies/cbc/alphabets/${fileName}`,
+    import.meta.url
+  ).href;
 }
 
 function createAlphabetCard({ letter, word, visual, color }) {

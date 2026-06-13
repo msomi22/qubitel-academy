@@ -1,14 +1,5 @@
 import { defineLearningProblem } from '../../../../../problems/problemAuthoring.js';
 
-const AUDIO_ASSET_ROOT = '../../../../../assets/academies/cbc/numbers';
-const viteNumberAudio = typeof import.meta.glob === 'function'
-  ? import.meta.glob('../../../../../assets/academies/cbc/numbers/*.mp3', {
-    eager: true,
-    query: '?url',
-    import: 'default'
-  })
-  : {};
-
 const NUMBER_COLORS = [
   '#0ea66b',
   '#f27a05',
@@ -24,52 +15,11 @@ function numberAudioFile(number) {
   return `${String(number).padStart(3, '0')}.mp3`;
 }
 
-// function isNodeTestRunner() {
-//   return (
-//     typeof process !== 'undefined' &&
-//     Array.isArray(process.argv) &&
-//     process.argv.includes('--test')
-//   );
-// }
-
-function isNonBrowserRuntime() {
-  return typeof window === 'undefined';
-}
-
-// function numberAudioSrc(fileName) {
-//   const vitePath = `${AUDIO_ASSET_ROOT}/${fileName}`;
-//   return viteNumberAudio[vitePath] || new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
-// }
-
 function numberAudioSrc(fileName) {
-  const key = Object.keys(viteNumberAudio).find((path) => path.endsWith(`/${fileName}`));
-
-  // if (!key) {
-  //   console.warn('Number audio asset missing', {
-  //     fileName,
-  //     availableAudioKeysSample: Object.keys(viteNumberAudio).slice(0, 10)
-  //   });
-  //   return '';
-  // }
-
-  if (!key) {
-    // if (isNodeTestRunner()) {
-    //   return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
-    // }
-
-    if (isNonBrowserRuntime()) {
-      return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
-    }
-  
-    console.warn('Number audio asset missing', {
-      fileName,
-      availableAudioKeysSample: Object.keys(viteNumberAudio).slice(0, 10)
-    });
-  
-    return '';
-  }
-
-  return viteNumberAudio[key];
+  return new URL(
+    `../../../../../assets/academies/cbc/numbers/${fileName}`,
+    import.meta.url
+  ).href;
 }
 
 function createNumberCard(number) {
