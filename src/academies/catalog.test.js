@@ -80,6 +80,16 @@ test('CBC Grade 1 declares the shared subject structure with content under learn
   const emptySubjects = gradeOneTopics.filter((topic) => ['creative-activities', 'kiswahili'].includes(topic.id));
 
   assert.deepEqual(cre.practice.map((item) => item.id), ['christian-values-practice-001']);
+  assert.deepEqual(english.learningAreas.map((area) => area.id), [
+    'listening-speaking',
+    'alphabet-mastery',
+    'reading-readiness',
+    'writing-readiness',
+    'language-use'
+  ]);
+  assert.equal(english.learningAreas.find((area) => area.id === 'alphabet-mastery').sequence, 15);
+  assert.deepEqual(english.lessons.map((item) => item.id), ['alphabet-mastery-lesson-001']);
+  assert.equal(english.lessons[0].learningAreaId, 'alphabet-mastery');
   assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-001']);
   assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001']);
   assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);

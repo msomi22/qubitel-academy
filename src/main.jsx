@@ -63,6 +63,7 @@ import './styles/topic-assessments.css';
 import './styles/cbc-subject-learning-areas.css';
 import './styles/cbc-grade-one-wide-screen-fix.css';
 import './styles/cbc-exam-start-button-fix.css';
+import './styles/alphabet-mastery.css';
 
 function loadCloudflareAnalytics() {
   const { hostname, protocol } = window.location;
