@@ -8,6 +8,7 @@ import gradeOneEnglishListeningPractice from './cbc/grade-1/english/practice/lis
 import gradeOneEnglishReadingPractice from './cbc/grade-1/english/practice/reading-readiness-practice-001.js';
 import gradeOneEnvironmentalHomePractice from './cbc/grade-1/environmental-activities/practice/home-and-school-practice-001.js';
 import gradeOneMathCountingExam from './cbc/grade-1/mathematics/assessments/counting-exam-001.js';
+import gradeOneMathNumbersLesson, { numbersOneToOneHundred } from './cbc/grade-1/mathematics/lessons/numbers-1-100-lesson-001.js';
 import gradeOneMathNumbersPractice from './cbc/grade-1/mathematics/practice/numbers-practice-001.js';
 import gradeOneMathShapesPractice from './cbc/grade-1/mathematics/practice/shapes-practice-001.js';
 import gradeOneReadingExam from './cbc/grade-1/english/assessments/object-matching-exam-001.js';
@@ -51,7 +52,7 @@ const subjectTopicIds = [
 const gradeThreeEnglishTopic = cbcTopics.find((topic) => topic.category === 'grade-3' && topic.id === 'english');
 const gradeOneTopics = cbcTopics.filter((topic) => topic.category === 'grade-1');
 const gradeThreeTopics = cbcTopics.filter((topic) => topic.category === 'grade-3');
-const gradeOneLessons = [gradeOneEnglishAlphabetLesson];
+const gradeOneLessons = [gradeOneEnglishAlphabetLesson, gradeOneMathNumbersLesson];
 const gradeOnePracticeQuestions = [
   ...gradeOneCreValuesPractice,
   ...gradeOneEnglishListeningPractice,
@@ -219,6 +220,8 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
   assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001']);
   assert.equal(english.learningAreas.some((area) => area.id === 'parts-of-speech'), false);
   assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);
+  assert.deepEqual(mathematics.lessons.map((item) => item.id), ['numbers-1-100-lesson-001']);
+  assert.equal(mathematics.lessons[0].learningAreaId, 'numbers');
   assert.deepEqual(mathematics.practice.map((item) => item.id), ['numbers-practice-001', 'shapes-practice-001']);
   assert.deepEqual(mathematics.assessments.map((item) => item.id), ['counting-exam-001']);
 
@@ -287,6 +290,52 @@ test('CBC Grade 1 English Alphabet Mastery lesson renders exact MP3-backed card 
       const audioFile = new URL(`../assets/academies/cbc/alphabets/${fileName}`, import.meta.url);
       assert.equal(existsSync(audioFile), true, `${fileName} should use an existing MP3 asset`);
     }
+  }
+});
+
+test('CBC Grade 1 Mathematics Numbers 1–100 lesson renders exact MP3-backed number cards', () => {
+  const numberBlock = gradeOneMathNumbersLesson.body.find((block) => block.type === 'numberAudioGrid');
+
+  assert.equal(gradeOneMathNumbersLesson.id, 'numbers-1-100-lesson-001');
+  assert.equal(gradeOneMathNumbersLesson.title, 'Numbers 1–100');
+  assert.equal(gradeOneMathNumbersLesson.topicId, 'mathematics');
+  assert.equal(gradeOneMathNumbersLesson.category, 'grade-1');
+  assert.equal(gradeOneMathNumbersLesson.metadata.learningAreaId, 'numbers');
+  assert.equal(gradeOneMathNumbersLesson.metadata.reviewStatus, 'approved');
+  assert.deepEqual(gradeOneMathNumbersLesson.metadata.visibility, ['prod']);
+  assert.equal(numberBlock.numbers, numbersOneToOneHundred);
+  assert.equal(numberBlock.numbers.length, 100);
+  assert.equal(new Set(numberBlock.numbers.map((item) => item.id)).size, 100);
+  assert.deepEqual(
+    numberBlock.numbers.slice(0, 3).map((item) => [item.display, item.label, item.ariaLabel, item.audioFile]),
+    [
+      ['1', 'Number 1', 'Play number 1', '001.mp3'],
+      ['2', 'Number 2', 'Play number 2', '002.mp3'],
+      ['3', 'Number 3', 'Play number 3', '003.mp3']
+    ]
+  );
+  assert.deepEqual(
+    numberBlock.numbers.slice(-3).map((item) => [item.display, item.label, item.ariaLabel, item.audioFile]),
+    [
+      ['98', 'Number 98', 'Play number 98', '098.mp3'],
+      ['99', 'Number 99', 'Play number 99', '099.mp3'],
+      ['100', 'Number 100', 'Play number 100', '100.mp3']
+    ]
+  );
+
+  for (const [index, item] of numberBlock.numbers.entries()) {
+    const number = index + 1;
+    const expectedFile = `${String(number).padStart(3, '0')}.mp3`;
+
+    assert.equal(item.number, number);
+    assert.equal(item.display, String(number));
+    assert.equal(item.label, `Number ${number}`);
+    assert.equal(item.ariaLabel, `Play number ${number}`);
+    assert.equal(item.audioFile, expectedFile);
+    assert.match(item.audioSrc, new RegExp(`${expectedFile}$`));
+
+    const audioFile = new URL(`../assets/academies/cbc/numbers/${expectedFile}`, import.meta.url);
+    assert.equal(existsSync(audioFile), true, `${expectedFile} should use an existing MP3 asset`);
   }
 });
 

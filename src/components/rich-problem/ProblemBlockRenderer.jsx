@@ -6,6 +6,7 @@ import ProblemFlowBlock from './ProblemFlowBlock.jsx';
 import ProblemImageBlock, { isTrustedStaticImageSrc } from './ProblemImageBlock.jsx';
 import ProblemTableBlock from './ProblemTableBlock.jsx';
 import AlphabetMasteryBlock from './AlphabetMasteryBlock.jsx';
+import NumberAudioGridBlock from './NumberAudioGridBlock.jsx';
 import InlineTechnicalText from './InlineTechnicalText.jsx';
 
 function LinkedText({ text }) {
@@ -161,6 +162,7 @@ export default function ProblemBlockRenderer({ block, index = 0 }) {
     case 'architectureDecision': return <ArchitectureDecisionBlock block={block} />;
     case 'tabs': return <TabsBlock block={block} />;
     case 'alphabetMastery': return <AlphabetMasteryBlock block={block} />;
+    case 'numberAudioGrid': return <NumberAudioGridBlock block={block} />;
     case 'divider': return <hr className="problem-rich-divider" aria-hidden="true" />;
     default: return <UnknownBlock block={block} index={index} />;
   }
