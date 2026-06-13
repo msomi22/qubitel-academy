@@ -64,7 +64,7 @@ export const alphabetMasteryLetters = [
   { letter: 'Q', word: 'queen', visual: '👑', color: '#9a59d1' },
   { letter: 'R', word: 'rabbit', visual: '🐰', color: '#d14e57' },
   { letter: 'S', word: 'sun', visual: '☀️', color: '#e5a500' },
-  { letter: 'T', word: 'tigger', visual: '🐯', color: '#de6f20' },
+  { letter: 'T', word: 'tiger', visual: '🐯', color: '#de6f20' },
   { letter: 'U', word: 'umbrella', visual: '☂️', color: '#5b7ee5' },
   { letter: 'V', word: 'van', visual: '🚐', color: '#168f6f' },
   { letter: 'W', word: 'woman', visual: '👩', color: '#bf5674' },

@@ -67,7 +67,7 @@ sound_scripts = {
     #"q": ("Q", "kwu", "queen", "q"),
     #"r": ("R", "ɹ", "rabbit", "rrrh"),
     #"s": ("S", "s", "sun", "ssssss"),
-    #"t": ("T", "tɪ", "tigger", "tih"),
+    #"t": ("T", "tɪ", "tiger", "tih"),
     #"u": ("U", "ʌ", "umbrella", "uh"),
     #"v": ("V", "vu", "van", "vu"),
     #"w": ("W", "wu", "woman", "wu"),

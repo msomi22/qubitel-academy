@@ -253,7 +253,7 @@ test('CBC Grade 1 English Alphabet Mastery lesson renders exact MP3-backed card 
     ['Q', 'Letter Q', 'q for queen'],
     ['R', 'Letter R', 'r for rabbit'],
     ['S', 'Letter S', 's for sun'],
-    ['T', 'Letter T', 't for tigger'],
+    ['T', 'Letter T', 't for tiger'],
     ['U', 'Letter U', 'u for umbrella'],
     ['V', 'Letter V', 'v for van'],
     ['W', 'Letter W', 'w for woman'],
