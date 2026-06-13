@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import test from 'node:test';
 
 import gradeOneCreValuesPractice from './cbc/grade-1/cre/practice/christian-values-practice-001.js';
+import gradeOneEnglishAlphabetLesson, { alphabetMasteryLetters } from './cbc/grade-1/english/lessons/alphabet-mastery-lesson-001.js';
 import gradeOneEnglishListeningPractice from './cbc/grade-1/english/practice/listening-speaking-practice-001.js';
 import gradeOneEnglishReadingPractice from './cbc/grade-1/english/practice/reading-readiness-practice-001.js';
 import gradeOneEnvironmentalHomePractice from './cbc/grade-1/environmental-activities/practice/home-and-school-practice-001.js';
@@ -49,6 +51,7 @@ const subjectTopicIds = [
 const gradeThreeEnglishTopic = cbcTopics.find((topic) => topic.category === 'grade-3' && topic.id === 'english');
 const gradeOneTopics = cbcTopics.filter((topic) => topic.category === 'grade-1');
 const gradeThreeTopics = cbcTopics.filter((topic) => topic.category === 'grade-3');
+const gradeOneLessons = [gradeOneEnglishAlphabetLesson];
 const gradeOnePracticeQuestions = [
   ...gradeOneCreValuesPractice,
   ...gradeOneEnglishListeningPractice,
@@ -58,7 +61,7 @@ const gradeOnePracticeQuestions = [
   ...gradeOneMathShapesPractice
 ];
 const gradeOneExamQuestions = [...gradeOneMathCountingExam, ...gradeOneReadingExam];
-const gradeOneQuestions = [...gradeOnePracticeQuestions, ...gradeOneExamQuestions];
+const gradeOneQuestions = [...gradeOneLessons, ...gradeOnePracticeQuestions, ...gradeOneExamQuestions];
 const gradeThreeSpellingPractice = [
   ...practiceOne,
   ...practiceTwo
@@ -203,6 +206,15 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
   const emptySubjects = gradeOneTopics.filter((topic) => ['creative-activities', 'kiswahili'].includes(topic.id));
 
   assert.deepEqual(cre.practice.map((item) => item.id), ['christian-values-practice-001']);
+  assert.deepEqual(english.learningAreas.map((area) => area.id), [
+    'listening-speaking',
+    'alphabet-mastery',
+    'reading-readiness',
+    'writing-readiness',
+    'language-use'
+  ]);
+  assert.deepEqual(english.lessons.map((item) => item.id), ['alphabet-mastery-lesson-001']);
+  assert.equal(english.lessons[0].learningAreaId, 'alphabet-mastery');
   assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-001']);
   assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001']);
   assert.equal(english.learningAreas.some((area) => area.id === 'parts-of-speech'), false);
@@ -213,6 +225,68 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
   for (const subject of emptySubjects) {
     assert.equal(subject.questionBank.mode, 'empty');
     assert.deepEqual([...subject.lessons, ...subject.practice, ...subject.assessments], []);
+  }
+});
+
+test('CBC Grade 1 English Alphabet Mastery lesson renders exact MP3-backed card pairs', () => {
+  const alphabetBlock = gradeOneEnglishAlphabetLesson.body.find((block) => block.type === 'alphabetMastery');
+  const expectedLabels = [
+    ['A', 'Letter A', 'a for apple'],
+    ['B', 'Letter B', 'b for ball'],
+    ['C', 'Letter C', 'c for cat'],
+    ['D', 'Letter D', 'd for dog'],
+    ['E', 'Letter E', 'e for egg'],
+    ['F', 'Letter F', 'f for fish'],
+    ['G', 'Letter G', 'g for goat'],
+    ['H', 'Letter H', 'h for hat'],
+    ['I', 'Letter I', 'i for ink'],
+    ['J', 'Letter J', 'j for jug'],
+    ['K', 'Letter K', 'k for kite'],
+    ['L', 'Letter L', 'l for lion'],
+    ['M', 'Letter M', 'm for moon'],
+    ['N', 'Letter N', 'n for net'],
+    ['O', 'Letter O', 'o for orange'],
+    ['P', 'Letter P', 'p for pot'],
+    ['Q', 'Letter Q', 'q for queen'],
+    ['R', 'Letter R', 'r for rabbit'],
+    ['S', 'Letter S', 's for sun'],
+    ['T', 'Letter T', 't for tigger'],
+    ['U', 'Letter U', 'u for umbrella'],
+    ['V', 'Letter V', 'v for van'],
+    ['W', 'Letter W', 'w for woman'],
+    ['X', 'Letter X', 'x for fox'],
+    ['Y', 'Letter Y', 'y for yacht'],
+    ['Z', 'Letter Z', 'z for zebra']
+  ];
+
+  assert.equal(gradeOneEnglishAlphabetLesson.topicId, 'english');
+  assert.equal(gradeOneEnglishAlphabetLesson.category, 'grade-1');
+  assert.equal(gradeOneEnglishAlphabetLesson.metadata.learningAreaId, 'alphabet-mastery');
+  assert.equal(gradeOneEnglishAlphabetLesson.metadata.reviewStatus, 'approved');
+  assert.deepEqual(gradeOneEnglishAlphabetLesson.metadata.visibility, ['prod']);
+  assert.equal(alphabetBlock.letters, alphabetMasteryLetters);
+  assert.equal(alphabetBlock.letters.length, 26);
+
+  assert.deepEqual(
+    alphabetBlock.letters.map((item) => [item.letter, item.identifier.label, item.phonetic.label]),
+    expectedLabels
+  );
+
+  for (const item of alphabetBlock.letters) {
+    const lower = item.letter.toLowerCase();
+    const expectedFiles = [`${lower}_letter.mp3`, `${lower}_sound_word.mp3`];
+
+    assert.equal(item.display, `${item.letter} ${lower}`);
+    assert.equal(item.identifier.ariaLabel, `Play Letter ${item.letter}`);
+    assert.equal(item.phonetic.ariaLabel, `Play ${item.phonetic.label}`);
+    assert.deepEqual([item.identifier.audioFile, item.phonetic.audioFile], expectedFiles);
+    assert.match(item.identifier.audioSrc, /_letter\.mp3$/);
+    assert.match(item.phonetic.audioSrc, /_sound_word\.mp3$/);
+
+    for (const fileName of expectedFiles) {
+      const audioFile = new URL(`../assets/academies/cbc/alphabets/${fileName}`, import.meta.url);
+      assert.equal(existsSync(audioFile), true, `${fileName} should use an existing MP3 asset`);
+    }
   }
 });
 
@@ -337,7 +411,7 @@ test('CBC Grade 3 exposes subject learning areas and current content state', () 
 test('CBC Grade 1 wording avoids unclear blank instructions', () => {
   for (const question of gradeOneQuestions) {
     assert.doesNotMatch(question.question, /blank/i, question.id);
-    assert.doesNotMatch(question.readAloudText, /blank/i, question.id);
+    if (question.readAloudText) assert.doesNotMatch(question.readAloudText, /blank/i, question.id);
   }
 });
 

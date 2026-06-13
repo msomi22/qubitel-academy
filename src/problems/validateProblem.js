@@ -1,7 +1,7 @@
 import { topicManifest } from '../academies/catalog.js';
 import { isSupportedProblemType, problemTypeRegistry } from './problemTypeRegistry.js';
 
-const SUPPORTED_RICH_BODY_BLOCK_TYPES = new Set(['section', 'callout', 'table', 'image', 'diagram', 'flow', 'code', 'checklist', 'comparison', 'architectureDecision', 'tabs', 'divider']);
+const SUPPORTED_RICH_BODY_BLOCK_TYPES = new Set(['section', 'callout', 'table', 'image', 'diagram', 'flow', 'code', 'checklist', 'comparison', 'architectureDecision', 'tabs', 'divider', 'alphabetMastery']);
 const CALLOUT_TONES = new Set(['info', 'warning', 'success', 'danger']);
 const RENDERING_VARIANTS = new Set(['default', 'architecture-case-study', 'interview-drill', 'deep-dive']);
 const RENDERING_DENSITIES = new Set(['compact', 'comfortable', 'detailed']);
@@ -111,6 +111,32 @@ function validateBody(problem, body, errors, field = 'body') {
           if (!tab?.label) errors.push(error(problem?.id, `${blockField}.tabs[${tabIndex}].label`, 'Each tab requires a label.'));
           if (!Array.isArray(tab?.body) || tab.body.length === 0) errors.push(error(problem?.id, `${blockField}.tabs[${tabIndex}].body`, 'Each tab requires a non-empty body array.'));
           else validateBody(problem, tab.body, errors, `${blockField}.tabs[${tabIndex}].body`);
+        });
+      }
+    }
+    if (block.type === 'alphabetMastery') {
+      if (!Array.isArray(block.letters) || block.letters.length !== 26) {
+        errors.push(error(problem?.id, `${blockField}.letters`, 'Alphabet mastery block requires 26 letter entries.'));
+      } else {
+        block.letters.forEach((item, letterIndex) => {
+          const itemField = `${blockField}.letters[${letterIndex}]`;
+          if (!isPlainObject(item)) {
+            errors.push(error(problem?.id, itemField, 'Alphabet letter entry must be an object.'));
+            return;
+          }
+          if (typeof item.letter !== 'string' || item.letter.length !== 1) errors.push(error(problem?.id, `${itemField}.letter`, 'Letter entry must include one uppercase letter.'));
+          for (const cardType of ['identifier', 'phonetic']) {
+            const card = item[cardType];
+            const cardField = `${itemField}.${cardType}`;
+            if (!isPlainObject(card)) {
+              errors.push(error(problem?.id, cardField, 'Alphabet card must be an object.'));
+              continue;
+            }
+            if (typeof card.label !== 'string' || !card.label.trim()) errors.push(error(problem?.id, `${cardField}.label`, 'Alphabet card requires a label.'));
+            if (typeof card.ariaLabel !== 'string' || !card.ariaLabel.trim()) errors.push(error(problem?.id, `${cardField}.ariaLabel`, 'Alphabet card requires an aria label.'));
+            if (typeof card.audioFile !== 'string' || !card.audioFile.endsWith('.mp3')) errors.push(error(problem?.id, `${cardField}.audioFile`, 'Alphabet card requires an MP3 audio file.'));
+            if (typeof card.audioSrc !== 'string' || !card.audioSrc.trim()) errors.push(error(problem?.id, `${cardField}.audioSrc`, 'Alphabet card requires an audio source.'));
+          }
         });
       }
     }
