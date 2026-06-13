@@ -10,12 +10,16 @@ const viteAlphabetAudio = typeof import.meta.glob === 'function'
   : {};
 
 
-  function isNodeTestRunner() {
-    return (
-      typeof process !== 'undefined' &&
-      Array.isArray(process.argv) &&
-      process.argv.includes('--test')
-    );
+  // function isNodeTestRunner() {
+  //   return (
+  //     typeof process !== 'undefined' &&
+  //     Array.isArray(process.argv) &&
+  //     process.argv.includes('--test')
+  //   );
+  // }
+
+  function isNonBrowserRuntime() {
+    return typeof window === 'undefined';
   }
 
 // function alphabetAudioSrc(fileName) {
@@ -36,7 +40,11 @@ function alphabetAudioSrc(fileName) {
 
 
   if (!key) {
-    if (isNodeTestRunner()) {
+    // if (isNodeTestRunner()) {
+    //   return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+    // }
+
+    if (isNonBrowserRuntime()) {
       return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
     }
   
@@ -47,7 +55,7 @@ function alphabetAudioSrc(fileName) {
   
     return '';
   }
-  
+
 
   return viteAlphabetAudio[key];
 }

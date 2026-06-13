@@ -24,12 +24,16 @@ function numberAudioFile(number) {
   return `${String(number).padStart(3, '0')}.mp3`;
 }
 
-function isNodeTestRunner() {
-  return (
-    typeof process !== 'undefined' &&
-    Array.isArray(process.argv) &&
-    process.argv.includes('--test')
-  );
+// function isNodeTestRunner() {
+//   return (
+//     typeof process !== 'undefined' &&
+//     Array.isArray(process.argv) &&
+//     process.argv.includes('--test')
+//   );
+// }
+
+function isNonBrowserRuntime() {
+  return typeof window === 'undefined';
 }
 
 // function numberAudioSrc(fileName) {
@@ -49,7 +53,11 @@ function numberAudioSrc(fileName) {
   // }
 
   if (!key) {
-    if (isNodeTestRunner()) {
+    // if (isNodeTestRunner()) {
+    //   return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
+    // }
+
+    if (isNonBrowserRuntime()) {
       return new URL(`${AUDIO_ASSET_ROOT}/${fileName}`, import.meta.url).href;
     }
   
