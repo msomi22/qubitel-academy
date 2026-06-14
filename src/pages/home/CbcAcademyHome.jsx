@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import { categoryPath } from '../../services/categoryNavigationService.js';
-import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/owl-with-backpack-transparent.png';
-import actionContinueBook from '../../assets/academies/cbc/grade-1/home/action-continue-book.png';
-import actionReadOwlBook from '../../assets/academies/cbc/grade-1/home/action-read-owl-book.png';
-import actionPracticeTarget from '../../assets/academies/cbc/grade-1/home/action-practice-target.png';
-import subjectEnglishAbcBook from '../../assets/academies/cbc/grade-1/home/subject-english-abc-book.png';
-import subjectMathCardScene from '../../assets/academies/cbc/grade-1/home/subject-math-board-blocks.png';
+import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/owl-with-backpack-transparent.webp';
+import actionContinueBook from '../../assets/academies/cbc/grade-1/home/action-continue-book.webp';
+import actionReadOwlBook from '../../assets/academies/cbc/grade-1/home/action-read-owl-book.webp';
+import actionPracticeTarget from '../../assets/academies/cbc/grade-1/home/action-practice-target.webp';
+import subjectEnglishAbcBook from '../../assets/academies/cbc/grade-1/home/subject-english-hero.webp';
+import subjectMathCardScene from '../../assets/academies/cbc/grade-1/home/subject-math-board-blocks.webp';
 import '../../styles/cbc-academy-home.css';
 
 const emptyProgress = {
