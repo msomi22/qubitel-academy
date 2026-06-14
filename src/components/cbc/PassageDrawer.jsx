@@ -74,10 +74,28 @@ export default function PassageDrawer({
   passage,
   timeLeft,
   lang = 'en-US',
+  preferredVoiceNames = [],
   activeSentenceId,
   onActiveSentenceChange,
   onClose
 }) {
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    closeButtonRef.current?.focus();
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        onClose?.();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
@@ -89,7 +107,12 @@ export default function PassageDrawer({
             <h2 id="cbc-passage-drawer-title">{passage?.title || 'Reading Passage'}</h2>
             <span>Question time left: {formatPassageTime(timeLeft)}</span>
           </div>
-          <button type="button" className="cbc-exam-button primary" onClick={onClose}>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            className="cbc-exam-button primary"
+            onClick={onClose}
+          >
             Back to Question
           </button>
         </header>
@@ -107,3 +130,42 @@ export default function PassageDrawer({
     </div>
   );
 }
+
+// export default function PassageDrawer({
+//   open,
+//   passage,
+//   timeLeft,
+//   lang = 'en-US',
+//   activeSentenceId,
+//   onActiveSentenceChange,
+//   onClose
+// }) {
+//   if (!open) return null;
+
+//   return (
+//     <div className="cbc-passage-drawer" role="dialog" aria-modal="true" aria-labelledby="cbc-passage-drawer-title">
+//       <div className="cbc-passage-drawer-panel">
+//         <header className="cbc-passage-drawer-head">
+//           <div>
+//             <p className="cbc-exam-kicker">Reading Passage</p>
+//             <h2 id="cbc-passage-drawer-title">{passage?.title || 'Reading Passage'}</h2>
+//             <span>Question time left: {formatPassageTime(timeLeft)}</span>
+//           </div>
+//           <button type="button" className="cbc-exam-button primary" onClick={onClose}>
+//             Back to Question
+//           </button>
+//         </header>
+
+//         <PassageReadAloudControls
+//           sentences={passage?.sentences || []}
+//           lang={lang}
+//           preferredVoiceNames={preferredVoiceNames}
+//           onActiveSentenceChange={onActiveSentenceChange}
+//           className="cbc-passage-drawer-read-aloud"
+//         />
+
+//         <ReadingPassage passage={passage} activeSentenceId={activeSentenceId} />
+//       </div>
+//     </div>
+//   );
+// }

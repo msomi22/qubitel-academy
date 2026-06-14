@@ -1,4 +1,5 @@
 import { defineMcqProblem } from '../../../../../../problems/problemAuthoring.js';
+import { placeCorrectAnswerAt, targetAnswerSlotForQuestion } from '../../../../../../utils/cbcAnswerDistribution.js';
 
 export const someUsefulFindsPassage = {
   title: "Some Useful Finds",
@@ -489,9 +490,17 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
       content: 'I can read a passage and answer timed comprehension questions.'
     }
   ],
-  options: item.options,
+  options: placeCorrectAnswerAt(
+    item.options,
+    item.correctAnswer,
+    targetAnswerSlotForQuestion(index)
+  ),
+  options: placeCorrectAnswerAt(
+    item.options,
+    item.correctAnswer,
+    targetAnswerSlotForQuestion(index)
+  ),
   correctAnswer: item.correctAnswer,
-  explanation: item.explanation,
   finalTakeaway: 'Use details from the passage to choose the best answer.',
   tags: ['cbc', 'grade-3', 'english', learningAreaId, 'timed-exam', item.skill],
   metadata: {

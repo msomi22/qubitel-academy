@@ -553,12 +553,75 @@
   color: var(--cbc-exam-accent);
 }
 
-.cbc-exam-options button:hover:not(:disabled),
+/* .cbc-exam-options button:hover:not(:disabled),
 .cbc-exam-options button:focus-visible,
 .cbc-exam-options button.selected {
   border-color: var(--cbc-exam-accent);
   background: var(--cbc-exam-accent-soft);
   outline: none;
+} */
+
+.cbc-exam-options button {
+  position: relative;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.cbc-exam-options button:hover:not(:disabled):not(.selected) {
+  border-color: color-mix(in srgb, var(--cbc-exam-accent) 52%, var(--cbc-exam-border));
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 88%, var(--cbc-exam-accent) 8%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cbc-exam-accent) 12%, transparent);
+}
+
+.cbc-exam-options button:focus-visible:not(.selected) {
+  border-color: color-mix(in srgb, var(--cbc-exam-accent) 62%, var(--cbc-exam-border));
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 86%, var(--cbc-exam-accent) 10%);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--cbc-exam-accent) 18%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--cbc-exam-accent) 70%, transparent);
+  outline-offset: 2px;
+}
+
+.cbc-exam-options button.selected {
+  border-color: var(--cbc-exam-accent);
+  background: color-mix(in srgb, var(--cbc-exam-accent) 24%, var(--card, var(--bg-card)));
+  box-shadow:
+    inset 0 0 0 1px var(--cbc-exam-accent),
+    0 10px 24px color-mix(in srgb, var(--cbc-exam-accent) 18%, transparent);
+  outline: none;
+}
+
+.cbc-exam-options button.selected:hover:not(:disabled),
+.cbc-exam-options button.selected:focus-visible {
+  border-color: var(--cbc-exam-accent);
+  background: color-mix(in srgb, var(--cbc-exam-accent) 28%, var(--card, var(--bg-card)));
+  box-shadow:
+    inset 0 0 0 1px var(--cbc-exam-accent),
+    0 0 0 4px color-mix(in srgb, var(--cbc-exam-accent) 18%, transparent),
+    0 10px 24px color-mix(in srgb, var(--cbc-exam-accent) 18%, transparent);
+}
+
+.cbc-exam-options button.selected strong {
+  background: var(--cbc-exam-accent);
+  color: #fff;
+}
+
+.cbc-exam-options button.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--cbc-exam-accent);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 950;
 }
 
 .cbc-exam-options button:disabled {
