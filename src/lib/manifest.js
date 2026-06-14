@@ -80,7 +80,7 @@ function validateContentReferences(value, path, field, errors) {
 function validateLearningAreas(value, path, errors) {
   if (value === undefined) return;
   if (!Array.isArray(value)) {
-    errors.push(issue(path, 'learningAreas', 'learningAreas must be an array when provided.'));
+    errors.push(issue(path, 'learningAreas', 'Learning areas must be an array when provided.'));
     return;
   }
 
