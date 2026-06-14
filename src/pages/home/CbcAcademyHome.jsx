@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { getCbcLastActivityContinueState } from '../../services/cbcLastActivityService.js';
 import { categoryPath } from '../../services/categoryNavigationService.js';
 import { buildCbcGradeSelectionPath } from '../../utils/cbcGradeSelectionRouting.js';
 import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/owl-with-backpack-transparent.webp';
@@ -298,13 +299,16 @@ function getTodayLessons({ learningAreas }) {
   ));
 }
 
-function getContinueHref(homeModel, continueSection) {
-  return continueSection?.href
+function getContinueHref(homeModel, continueSection, lastActivityState) {
+  return lastActivityState?.href
+    || continueSection?.href
     || homeModel?.continueAction?.href
     || buildCbcGradeSelectionPath({ action: 'continue' });
 }
 
-function getContinueCardTitle(continueSection) {
+function getContinueCardTitle(continueSection, lastActivityState) {
+  if (lastActivityState?.title) return lastActivityState.title;
+
   const title = String(continueSection?.title || '').trim();
 
   if (!title || title.toLowerCase() === 'review progress') return 'Continue';
@@ -313,7 +317,9 @@ function getContinueCardTitle(continueSection) {
   return `Continue ${title}`;
 }
 
-function getContinueCardDescription(continueSection) {
+function getContinueCardDescription(continueSection, lastActivityState) {
+  if (lastActivityState?.description) return lastActivityState.description;
+
   const summary = String(continueSection?.summary || '').trim();
 
   return summary && summary !== 'All visible topics are complete.'
@@ -460,7 +466,8 @@ function CbcLessonCard({ section, index }) {
 }
 
 function CbcEmptyHome({ homeModel }) {
-  const continueHref = getContinueHref(homeModel, null);
+  const lastActivityState = getCbcLastActivityContinueState();
+  const continueHref = getContinueHref(homeModel, null, lastActivityState);
 
   return (
     <main className="cbc-home-page cbc-home-page--empty">
@@ -483,8 +490,8 @@ function CbcEmptyHome({ homeModel }) {
           <div className="cbc-home-hero-actions" aria-label="Main learner actions">
             <CbcActionCard
               to={continueHref}
-              title="Continue"
-              description="Pick up where you left off"
+              title={lastActivityState?.title || 'Continue'}
+              description={lastActivityState?.description || 'Pick up where you left off'}
               imageSrc={actionContinueBook}
               variant="cbc-home-action-card--continue"
             />
@@ -520,13 +527,14 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
   const progress = homeModel.progress || emptyProgress;
   const continueSection = getSectionByKind(homeModel, 'continue');
   const learningPathsSection = getSectionByKind(homeModel, 'learningPaths');
+  const lastActivityState = getCbcLastActivityContinueState();
 
   const rawLearningAreas = getSectionChildren(learningPathsSection);
   const learningAreas = getDisplayLearningAreas(homeModel, rawLearningAreas);
   const todayLessons = getTodayLessons({
     learningAreas: homeModel.homeContent?.topics
   });
-  const continueHref = getContinueHref(homeModel, continueSection);
+  const continueHref = getContinueHref(homeModel, continueSection, lastActivityState);
 
   if (!homeModel.hasContent) {
     return <CbcEmptyHome homeModel={homeModel} />;
@@ -557,8 +565,8 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
           <div className="cbc-home-hero-actions" aria-label="Main learner actions">
             <CbcActionCard
               to={continueHref}
-              title={getContinueCardTitle(continueSection)}
-              description={getContinueCardDescription(continueSection)}
+              title={getContinueCardTitle(continueSection, lastActivityState)}
+              description={getContinueCardDescription(continueSection, lastActivityState)}
               imageSrc={actionContinueBook}
               variant="cbc-home-action-card--continue"
             />

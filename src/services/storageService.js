@@ -9,6 +9,7 @@ const defaults = {
   timedQuestionAttempts: {},
   examAttempts: {},
   activeExamSessions: {},
+  lastCbcActivity: null,
   grade1VoiceType: 'female',
   complexDesignSubmissions: {}
 };
@@ -128,6 +129,38 @@ export const storageService = {
     delete activeExamSessions[examId];
     this.write({ activeExamSessions });
     return activeExamSessions;
+  },
+  setLastCbcActivity(activity = {}) {
+    const categoryId = String(activity.categoryId || '').trim();
+    const topicId = String(activity.topicId || '').trim();
+    const href = String(activity.href || '').trim();
+
+    if (!categoryId || !topicId || !href) return null;
+
+    const lastCbcActivity = {
+      academy: 'cbc',
+      categoryId,
+      topicId,
+      activityType: String(activity.activityType || 'topic').trim() || 'topic',
+      href,
+      title: String(activity.title || topicId).trim() || topicId,
+      updatedAt: activity.updatedAt || new Date().toISOString()
+    };
+
+    if (activity.categoryTitle) {
+      lastCbcActivity.categoryTitle = String(activity.categoryTitle);
+    }
+
+    this.write({ lastCbcActivity });
+    return lastCbcActivity;
+  },
+  getLastCbcActivity() {
+    const activity = this.read().lastCbcActivity;
+
+    if (!activity || activity.academy !== 'cbc') return null;
+    if (!activity.categoryId || !activity.topicId || !activity.href) return null;
+
+    return activity;
   },
   setGradeOneVoiceType(voiceType) {
     const grade1VoiceType = voiceType === 'male' ? 'male' : 'female';

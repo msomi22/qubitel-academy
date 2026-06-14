@@ -14,6 +14,7 @@ import {
   buildCategorySearchParams,
   readCategorySearchState
 } from '../services/categoryNavigationService.js';
+import { recordCbcLastActivity } from '../services/cbcLastActivityService.js';
 import {
   buildLearningAreaSummaries,
   filterContentByLearningArea,
@@ -219,6 +220,32 @@ export default function CategoryPage({ fixedCategoryId }) {
       filteredCount: selectedLearningAreaQuestions.length
     };
   }, [selectedLearningArea, selectedLearningAreaQuestions, selectedTopic]);
+
+  useEffect(() => {
+    if (loadingTopics || loadingBanks || !selectedTopic) return;
+
+    recordCbcLastActivity({
+      category,
+      categoryId,
+      topic: selectedTopic,
+      activityType: selectedLearningAreaId ? 'practice' : 'topic',
+      learningAreaId: selectedLearningAreaId,
+      page: currentPage,
+      difficulty: topicDifficulty,
+      completionFilter
+    });
+  }, [
+    category,
+    categoryId,
+    completionFilter,
+    currentPage,
+    loadingBanks,
+    loadingTopics,
+    selectedLearningAreaId,
+    selectedTopic,
+    topicDifficulty
+  ]);
+
   const visibleLibraryTopics = useMemo(() => {
     if (completionFilter === 'all') return filteredTopics;
     return selectedTopic ? [selectedTopic] : filteredTopics.slice(0, 1);
