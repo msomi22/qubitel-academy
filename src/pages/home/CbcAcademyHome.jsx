@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { categoryPath } from '../../services/categoryNavigationService.js';
+import { buildCbcGradeSelectionPath } from '../../utils/cbcGradeSelectionRouting.js';
 import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/owl-with-backpack-transparent.webp';
-import actionContinueBook from '../../assets/academies/cbc/grade-1/home/action-continue-book.webp';
 import actionReadOwlBook from '../../assets/academies/cbc/grade-1/home/action-read-owl-book.webp';
 import actionPracticeTarget from '../../assets/academies/cbc/grade-1/home/action-practice-target.webp';
 import subjectEnglishAbcBook from '../../assets/academies/cbc/grade-1/home/subject-english-hero.webp';
@@ -16,6 +16,7 @@ const emptyProgress = {
 
 const SUBJECT_META = [
   {
+    subject: 'english',
     match: ['english', 'reading', 'comprehension', 'language', 'vowel', 'spelling'],
     friendlyName: 'English',
     copy: 'Read, write and have fun!',
@@ -27,6 +28,7 @@ const SUBJECT_META = [
     lessonMeta: 'English • 5 min'
   },
   {
+    subject: 'math',
     match: ['math', 'mathematics', 'number', 'addition', 'subtraction', 'count'],
     friendlyName: 'Math',
     copy: 'Count, add and solve!',
@@ -38,6 +40,7 @@ const SUBJECT_META = [
     lessonMeta: 'Math • 5 min'
   },
   {
+    subject: 'kiswahili',
     match: ['kiswahili', 'swahili', 'salamu'],
     friendlyName: 'Kiswahili',
     copy: 'Soma, andika na uelewe!',
@@ -48,7 +51,8 @@ const SUBJECT_META = [
     lessonMeta: 'Kiswahili • 5 min'
   },
   {
-    match: ['environmental', 'environment', 'activities', 'weather', 'plants', 'animals', 'home science'],
+    subject: 'environmental-activities',
+    match: ['cre', 'christian religious', 'environmental', 'environment', 'activities', 'weather', 'plants', 'animals', 'home science'],
     friendlyName: 'Environmental Activities',
     copy: 'Discover our world and take care!',
     cardClass: 'cbc-home-subject-card--environment',
@@ -56,6 +60,24 @@ const SUBJECT_META = [
     visualClass: 'cbc-home-world-art',
     lessonIcon: '🌺',
     lessonMeta: 'Env. Activities • 5 min'
+  }
+];
+
+const TODAY_LESSON_META = [
+  {
+    subject: 'math',
+    match: ['math', 'mathematics', 'number', 'addition', 'subtraction', 'count'],
+    friendlyName: 'Mathematics'
+  },
+  {
+    subject: 'kiswahili',
+    match: ['kiswahili', 'swahili', 'salamu'],
+    friendlyName: 'Kiswahili'
+  },
+  {
+    subject: 'cre',
+    match: ['cre', 'christian religious', 'environmental', 'environment', 'activities'],
+    friendlyName: 'CRE'
   }
 ];
 
@@ -102,6 +124,53 @@ function topicMatchesMeta(topic, meta) {
   return meta.match.some((term) => text.includes(term));
 }
 
+function getSubjectFromText(value) {
+  const text = normaliseText(value);
+
+  if (/\bcre\b/.test(text) || text.includes('christian religious')) return 'cre';
+  if (text.includes('kiswahili') || text.includes('swahili')) return 'kiswahili';
+  if (text.includes('english') || text.includes('reading') || text.includes('comprehension')) return 'english';
+  if (text.includes('math') || text.includes('mathematics') || text.includes('number')) return 'math';
+  if (text.includes('environmental') || text.includes('environment')) return 'environmental-activities';
+
+  return '';
+}
+
+function getSubjectFromHref(href = '') {
+  if (!href) return '';
+
+  try {
+    const url = new URL(href, 'https://cbc.academy.qubitel.net');
+    return getSubjectFromText(url.searchParams.get('topic') || '');
+  } catch {
+    return '';
+  }
+}
+
+function getSectionSubject(section) {
+  if (section?.subject) return section.subject;
+
+  return getSubjectFromHref(section?.href) || getSubjectFromText(getSectionText(section));
+}
+
+function getLearningAreaHref(section, meta) {
+  const subject = section?.kind === 'subjectTopic'
+    ? meta.subject
+    : getSectionSubject(section);
+
+  return subject
+    ? buildCbcGradeSelectionPath({ subject })
+    : section?.href || '/categories';
+}
+
+function getTodayLessonHref(section) {
+  const subject = getSectionSubject(section);
+
+  return subject
+    ? buildCbcGradeSelectionPath({ subject })
+    : section?.href || '/categories';
+}
+
 function getTopicLearningHref(topic) {
   if (!topic?.category || !topic?.id) return '/categories';
 
@@ -120,6 +189,34 @@ function toSubjectTopicSection(topic, meta) {
     href: getTopicLearningHref(topic),
     kind: 'subjectTopic',
     progress: topic.progress,
+    source: 'compatibility'
+  };
+}
+
+function getTopicCount(topic) {
+  return Number(topic?.count || topic?.progress?.total || 0);
+}
+
+function getBestTopicForMeta(topics, meta) {
+  const candidates = topics.filter((topic) => topicMatchesMeta(topic, meta));
+
+  return candidates.sort((a, b) => (
+    Number(getTopicCount(b) > 0) - Number(getTopicCount(a) > 0)
+    || getTopicCount(b) - getTopicCount(a)
+    || String(a.category || '').localeCompare(String(b.category || ''))
+    || String(a.id || '').localeCompare(String(b.id || ''))
+  ))[0] || null;
+}
+
+function toTodayLessonSection(topic, meta) {
+  return {
+    id: `today:${meta.subject}:${topic?.category || 'grade-selection'}/${topic?.id || meta.subject}`,
+    title: meta.friendlyName,
+    summary: meta.friendlyName,
+    href: topic ? getTopicLearningHref(topic) : buildCbcGradeSelectionPath({ subject: meta.subject }),
+    kind: 'todayLesson',
+    subject: meta.subject,
+    progress: topic?.progress,
     source: 'compatibility'
   };
 }
@@ -183,15 +280,6 @@ function CbcActionIllustration({ src }) {
   );
 }
 
-function findFriendlyHref(sections, terms, fallback = '/categories') {
-  const match = sections.find((section) => {
-    const text = getSectionText(section);
-    return terms.some((term) => text.includes(term));
-  });
-
-  return match?.href || fallback;
-}
-
 function getStarCount(progress) {
   const done = Number(progress?.done || 0);
   const percent = clampPercent(progress?.percent);
@@ -202,20 +290,11 @@ function getStarCount(progress) {
   return 0;
 }
 
-function getTodayLessons({ continueSection, focusChildren, learningAreas }) {
-  const seen = new Set();
-  const candidates = [continueSection, ...focusChildren, ...learningAreas].filter(Boolean);
-
-  return candidates
-    .filter((section) => {
-      const key = section.id || section.href || section.title;
-
-      if (!key || seen.has(key)) return false;
-
-      seen.add(key);
-      return true;
-    })
-    .slice(0, 4);
+function getTodayLessons({ learningAreas }) {
+  const topics = Array.isArray(learningAreas) ? learningAreas : [];
+  return TODAY_LESSON_META.map((meta) => (
+    toTodayLessonSection(getBestTopicForMeta(topics, meta), meta)
+  ));
 }
 
 function CbcOwlMascot() {
@@ -278,10 +357,11 @@ function CbcStarsCard({ progress }) {
 function CbcLearningAreaCard({ section, index }) {
   const meta = getSubjectMeta(section, index);
   const visualClassName = `cbc-home-subject-visual ${meta.visualClass}`;
+  const href = getLearningAreaHref(section, meta);
 
   return (
     <Link
-      to={section.href || '/categories'}
+      to={href}
       className={`cbc-home-subject-card ${meta.cardClass}`.trim()}
     >
       {meta.backgroundSrc ? (
@@ -332,10 +412,11 @@ function CbcLearningAreaCard({ section, index }) {
 function CbcLessonCard({ section, index }) {
   const meta = getSubjectMeta(section, index);
   const title = section?.title || getFriendlySubjectTitle(section, index);
+  const href = getTodayLessonHref(section);
 
   return (
     <Link
-      to={section?.href || '/categories'}
+      to={href}
       className={`cbc-home-lesson-card ${meta.lessonClass}`.trim()}
     >
       <span className="cbc-home-lesson-icon" aria-hidden="true">
@@ -355,11 +436,6 @@ function CbcLessonCard({ section, index }) {
 }
 
 function CbcEmptyHome({ homeModel }) {
-  const primaryAction = homeModel.continueAction || {
-    href: '/categories',
-    label: 'Start learning'
-  };
-
   return (
     <main className="cbc-home-page cbc-home-page--empty">
       <section className="cbc-home-stage" aria-labelledby="cbc-home-title">
@@ -380,11 +456,11 @@ function CbcEmptyHome({ homeModel }) {
 
           <div className="cbc-home-hero-actions" aria-label="Main learner actions">
             <CbcActionCard
-              to={primaryAction.href}
-              title="Continue"
-              description="Start your first fun activity"
-              imageSrc={actionContinueBook}
-              variant="cbc-home-action-card--continue"
+              to={buildCbcGradeSelectionPath({ action: 'read-with-me' })}
+              title="Read with me"
+              description="Listen and read fun stories"
+              imageSrc={actionReadOwlBook}
+              variant="cbc-home-action-card--read"
             />
           </div>
         </div>
@@ -408,26 +484,13 @@ function CbcEmptyHome({ homeModel }) {
 
 export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
   const progress = homeModel.progress || emptyProgress;
-  const continueSection = getSectionByKind(homeModel, 'continue');
-  const focusSection = getSectionByKind(homeModel, 'focus');
   const learningPathsSection = getSectionByKind(homeModel, 'learningPaths');
 
-  const focusChildren = getSectionChildren(focusSection);
   const rawLearningAreas = getSectionChildren(learningPathsSection);
   const learningAreas = getDisplayLearningAreas(homeModel, rawLearningAreas);
   const todayLessons = getTodayLessons({
-    continueSection,
-    focusChildren,
-    learningAreas: rawLearningAreas
+    learningAreas: homeModel.homeContent?.topics
   });
-
-  const continueHref = continueSection?.href || homeModel.continueAction?.href || '/categories';
-
-  const readWithMeHref = findFriendlyHref(
-    [...learningAreas, ...rawLearningAreas, ...focusChildren],
-    ['read', 'reading', 'english', 'comprehension'],
-    '/categories'
-  );
 
   if (!homeModel.hasContent) {
     return <CbcEmptyHome homeModel={homeModel} />;
@@ -457,15 +520,7 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
 
           <div className="cbc-home-hero-actions" aria-label="Main learner actions">
             <CbcActionCard
-              to={continueHref}
-              title="Continue"
-              description={continueSection?.summary || 'Pick up where you left off'}
-              imageSrc={actionContinueBook}
-              variant="cbc-home-action-card--continue"
-            />
-
-            <CbcActionCard
-              to={readWithMeHref}
+              to={buildCbcGradeSelectionPath({ action: 'read-with-me' })}
               title="Read with me"
               description="Listen and read fun stories"
               imageSrc={actionReadOwlBook}
