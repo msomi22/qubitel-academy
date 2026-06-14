@@ -4,7 +4,7 @@ import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/
 import actionContinueBook from '../../assets/academies/cbc/grade-1/home/action-continue-book.webp';
 import actionReadOwlBook from '../../assets/academies/cbc/grade-1/home/action-read-owl-book.webp';
 import actionPracticeTarget from '../../assets/academies/cbc/grade-1/home/action-practice-target.webp';
-import subjectEnglishAbcBook from '../../assets/academies/cbc/grade-1/home/subject-english-abc-book.webp';
+import subjectEnglishAbcBook from '../../assets/academies/cbc/grade-1/home/subject-english-hero.webp';
 import subjectMathCardScene from '../../assets/academies/cbc/grade-1/home/subject-math-board-blocks.webp';
 import '../../styles/cbc-academy-home.css';
 
