@@ -64,57 +64,57 @@
         }
 
         function renderTvDebug(title, details) {
-          try {
-            var existing = document.getElementById('tv-debug-overlay');
-
-            if (existing && existing.parentNode) {
-              existing.parentNode.removeChild(existing);
-            }
-
-            var wrapper = document.createElement('div');
-            wrapper.id = 'tv-debug-overlay';
-
-            wrapper.style.position = 'fixed';
-            wrapper.style.left = '0';
-            wrapper.style.top = '0';
-            wrapper.style.right = '0';
-            wrapper.style.bottom = '0';
-            wrapper.style.zIndex = '2147483647';
-            wrapper.style.background = '#111827';
-            wrapper.style.color = '#ffffff';
-            wrapper.style.overflow = 'auto';
-            wrapper.style.padding = '16px';
-            wrapper.style.boxSizing = 'border-box';
-            wrapper.style.fontFamily = 'Arial, sans-serif';
-            wrapper.style.textAlign = 'left';
-
-            var heading = document.createElement('div');
-            heading.style.fontSize = '20px';
-            heading.style.fontWeight = '700';
-            heading.style.marginBottom = '12px';
-            heading.textContent = title;
-
-            var body = document.createElement('pre');
-            body.style.whiteSpace = 'pre-wrap';
-            body.style.fontSize = '14px';
-            body.style.lineHeight = '1.35';
-            body.style.margin = '0';
-            body.style.maxWidth = '100%';
-            body.style.wordBreak = 'break-word';
-            body.textContent = details || '';
-
-            wrapper.appendChild(heading);
-            wrapper.appendChild(body);
-
-            document.body.appendChild(wrapper);
-          } catch (error) {
             try {
-              document.body.textContent = 'TV debug render failed: ' + String(error);
-            } catch (_) {
-              // Ignore.
+              var existing = document.getElementById('tv-debug-overlay');
+
+              if (existing && existing.parentNode) {
+                existing.parentNode.removeChild(existing);
+              }
+
+              var wrapper = document.createElement('div');
+              wrapper.id = 'tv-debug-overlay';
+
+              wrapper.style.position = 'fixed';
+              wrapper.style.left = '0';
+              wrapper.style.top = '0';
+              wrapper.style.right = '0';
+              wrapper.style.bottom = '0';
+              wrapper.style.zIndex = '2147483647';
+              wrapper.style.background = '#111827';
+              wrapper.style.color = '#ffffff';
+              wrapper.style.overflow = 'auto';
+              wrapper.style.padding = '16px';
+              wrapper.style.boxSizing = 'border-box';
+              wrapper.style.fontFamily = 'Arial, sans-serif';
+              wrapper.style.textAlign = 'left';
+
+              var heading = document.createElement('div');
+              heading.style.fontSize = '20px';
+              heading.style.fontWeight = '700';
+              heading.style.marginBottom = '12px';
+              heading.textContent = title;
+
+              var body = document.createElement('pre');
+              body.style.whiteSpace = 'pre-wrap';
+              body.style.fontSize = '14px';
+              body.style.lineHeight = '1.35';
+              body.style.margin = '0';
+              body.style.maxWidth = '100%';
+              body.style.wordBreak = 'break-word';
+              body.textContent = details || '';
+
+              wrapper.appendChild(heading);
+              wrapper.appendChild(body);
+
+              document.body.appendChild(wrapper);
+            } catch (error) {
+              try {
+                document.body.textContent = 'TV debug render failed: ' + String(error);
+              } catch (_) {
+                // Ignore.
+              }
             }
           }
-        }
 
         function enableTvDebug() {
           var enabled = getParam('tvDebug') === 'true';
