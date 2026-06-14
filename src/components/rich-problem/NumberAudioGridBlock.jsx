@@ -3,8 +3,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import useGridRemoteNavigation from '../../hooks/useGridRemoteNavigation.js';
 
 const AUTO_READ_DEFAULT_SECONDS = 5;
-const AUTO_READ_INTERVAL_OPTIONS = [1, 2, 3, 5, 10, 15, 30];
-const MIN_AUTO_READ_SECONDS = 1;
+const AUTO_READ_INTERVAL_OPTIONS = [2, 3, 5, 10, 15, 30];
+const MIN_AUTO_READ_SECONDS = 2;
 const MAX_AUTO_READ_SECONDS = 60;
 
 function normalizeAutoReadSeconds(value) {
