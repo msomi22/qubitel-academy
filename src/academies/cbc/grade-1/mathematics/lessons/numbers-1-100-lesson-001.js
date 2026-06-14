@@ -11,7 +11,7 @@ const NUMBER_COLORS = [
   '#5f7a31'
 ];
 
-const NUMBER_WORDS = [
+export const NUMBER_WORDS = [
   'Zero',
   'One',
   'Two',
