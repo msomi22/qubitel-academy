@@ -77,8 +77,12 @@ function loadCloudflareAnalytics() {
   document.head.append(script);
 }
 
-
+// This is a simple debug overlay for TV runtime errors, which can be enabled by adding ?tvDebug=true to the URL.
 function enableTvDebugOverlay() {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
 
   if (params.get('tvDebug') !== 'true') {
@@ -86,20 +90,20 @@ function enableTvDebugOverlay() {
   }
 
   function showDebug(title, details) {
-    document.body.innerHTML = `
-      <pre style="
-        white-space: pre-wrap;
-        padding: 32px;
-        font-size: 22px;
-        line-height: 1.5;
-        color: #ffffff;
-        background: #111827;
-        min-height: 100vh;
-        overflow: auto;
-      ">${title}
+    const pre = document.createElement('pre');
 
-${details}</pre>
-    `;
+    pre.style.whiteSpace = 'pre-wrap';
+    pre.style.padding = '32px';
+    pre.style.fontSize = '22px';
+    pre.style.lineHeight = '1.5';
+    pre.style.color = '#ffffff';
+    pre.style.background = '#111827';
+    pre.style.minHeight = '100vh';
+    pre.style.overflow = 'auto';
+
+    pre.textContent = `${title}\n\n${details}`;
+
+    document.body.replaceChildren(pre);
   }
 
   window.addEventListener('error', (event) => {
@@ -126,6 +130,8 @@ ${details}</pre>
 }
 
 enableTvDebugOverlay();
+
+// Load analytics after setting up the debug overlay, so that any errors in the analytics script will also be caught by the overlay.
 
 loadCloudflareAnalytics();
 
