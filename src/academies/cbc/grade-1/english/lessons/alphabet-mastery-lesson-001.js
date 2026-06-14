@@ -83,6 +83,7 @@ const lesson = defineLearningProblem({
       type: 'alphabetMastery',
       title: 'Alphabet Mastery',
       subtitle: 'Tap a card and listen',
+      autoReadSeconds: 5,
       letters: alphabetMasteryLetters
     }
   ],

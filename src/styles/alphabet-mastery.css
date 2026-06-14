@@ -140,6 +140,7 @@
 .alphabet-mastery-toolbar {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   min-width: 0;
   padding: 14px 18px 10px;
@@ -193,6 +194,103 @@
   color: #ffffff;
   content: "♪";
   font-size: 0.82rem;
+}
+
+.alphabet-mastery-auto-controls {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.alphabet-mastery-interval-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, #0b56d0 30%, var(--alphabet-board-line));
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--alphabet-board-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.alphabet-mastery-interval-control select {
+  min-width: 64px;
+  border: 0;
+  background: transparent;
+  color: #0b2d72;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 950;
+}
+
+.alphabet-mastery-interval-control select:focus-visible {
+  outline: 3px solid color-mix(in srgb, #0b56d0 38%, transparent);
+  outline-offset: 2px;
+}
+
+.alphabet-mastery-auto-button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, #0b56d0 52%, var(--alphabet-board-line));
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff, #eaf3ff);
+  color: #0b2d72;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(11, 86, 208, 0.16);
+}
+
+.alphabet-mastery-auto-button:hover,
+.alphabet-mastery-auto-button:focus-visible {
+  border-color: #0b56d0;
+  outline: 3px solid color-mix(in srgb, #0b56d0 38%, transparent);
+  outline-offset: 2px;
+  box-shadow: 0 12px 24px rgba(11, 86, 208, 0.22);
+}
+
+.alphabet-mastery-auto-button--secondary {
+  background: linear-gradient(180deg, #ffffff, #eefaf3);
+  color: #0d6738;
+  box-shadow: 0 8px 18px rgba(16, 169, 79, 0.14);
+}
+
+.alphabet-mastery-auto-timer {
+  display: inline-grid;
+  gap: 1px;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 7px 12px;
+  border: 1px solid color-mix(in srgb, var(--alphabet-card-accent, #159b53) 38%, var(--alphabet-board-line));
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fffdf4, #ecfff3);
+  color: #11305f;
+  box-shadow: 0 10px 22px rgba(15, 143, 73, 0.14);
+}
+
+.alphabet-mastery-auto-timer strong,
+.alphabet-mastery-auto-timer small {
+  overflow-wrap: anywhere;
+  line-height: 1.1;
+}
+
+.alphabet-mastery-auto-timer strong {
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.alphabet-mastery-auto-timer small {
+  color: var(--alphabet-board-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .alphabet-mastery-grid {
@@ -276,7 +374,61 @@
   background:
     radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.98), color-mix(in srgb, var(--alphabet-card-accent, #159b53) 16%, white) 100%),
     var(--alphabet-board-card);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 20%, transparent), 0 16px 30px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 26%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 20%, transparent),
+    0 16px 30px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 26%, transparent);
+}
+
+.alphabet-mastery-card.is-auto-reading {
+  z-index: 3;
+  padding-top: 30px;
+  border-color: color-mix(in srgb, var(--alphabet-card-accent, #159b53) 88%, #10205f);
+  background:
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--alphabet-card-accent, #159b53) 34%, transparent), transparent 42%),
+    radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.99), color-mix(in srgb, var(--alphabet-card-accent, #159b53) 28%, white) 100%),
+    var(--alphabet-board-card);
+  box-shadow:
+    0 0 0 4px #ffffff,
+    0 0 0 9px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 44%, transparent),
+    0 22px 42px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 38%, transparent);
+  transform: translateY(-4px) scale(1.08);
+  animation: alphabet-mastery-reading-pulse 900ms ease-in-out infinite alternate;
+}
+
+.alphabet-mastery-card.is-auto-reading::after {
+  position: absolute;
+  inset: -8px;
+  border: 3px solid color-mix(in srgb, var(--alphabet-card-accent, #159b53) 80%, #ffffff);
+  border-radius: 14px;
+  content: "";
+  pointer-events: none;
+}
+
+.alphabet-mastery-now-badge {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  z-index: 2;
+  max-width: calc(100% - 14px);
+  padding: 4px 7px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--alphabet-card-accent, #159b53) 72%, #ffffff);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--alphabet-card-accent, #159b53) 86%, #10205f);
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.alphabet-mastery-card.is-auto-reading .alphabet-mastery-card-visual,
+.alphabet-mastery-card.is-auto-reading .alphabet-mastery-playing-label {
+  color: color-mix(in srgb, var(--alphabet-card-accent, #159b53) 86%, #10205f);
 }
 
 .alphabet-mastery-card-visual {
@@ -345,6 +497,22 @@
   font-weight: 800;
 }
 
+@keyframes alphabet-mastery-reading-pulse {
+  from {
+    box-shadow:
+      0 0 0 4px #ffffff,
+      0 0 0 9px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 38%, transparent),
+      0 20px 38px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 34%, transparent);
+  }
+
+  to {
+    box-shadow:
+      0 0 0 5px #ffffff,
+      0 0 0 13px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 54%, transparent),
+      0 26px 50px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 46%, transparent);
+  }
+}
+
 :root[data-theme="dark"] .alphabet-mastery-board {
   --alphabet-board-ink: #f5fbff;
   --alphabet-board-muted: #d1e6ff;
@@ -384,6 +552,51 @@
 :root[data-theme="dark"] .alphabet-mastery-progress small,
 :root[data-theme="dark"] .alphabet-mastery-status {
   color: var(--alphabet-board-muted);
+}
+
+:root[data-theme="dark"] .alphabet-mastery-auto-button {
+  border-color: rgba(147, 197, 253, 0.45);
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.24), rgba(15, 23, 42, 0.96));
+  color: #e6f1ff;
+}
+
+:root[data-theme="dark"] .alphabet-mastery-interval-control {
+  border-color: rgba(147, 197, 253, 0.35);
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--alphabet-board-muted);
+}
+
+:root[data-theme="dark"] .alphabet-mastery-interval-control select {
+  color: #f5fbff;
+}
+
+:root[data-theme="dark"] .alphabet-mastery-auto-button--secondary {
+  border-color: rgba(110, 231, 183, 0.42);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.2), rgba(15, 23, 42, 0.96));
+  color: #dcfff1;
+}
+
+:root[data-theme="dark"] .alphabet-mastery-auto-timer {
+  border-color: color-mix(in srgb, var(--alphabet-card-accent, #159b53) 52%, rgba(255, 255, 255, 0.2));
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.98), rgba(13, 20, 31, 0.98));
+  color: #f5fbff;
+}
+
+:root[data-theme="dark"] .alphabet-mastery-auto-timer small {
+  color: var(--alphabet-board-muted);
+}
+
+:root[data-theme="dark"] .alphabet-mastery-card.is-auto-reading {
+  background:
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--alphabet-card-accent, #159b53) 48%, transparent), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--alphabet-card-accent, #159b53) 32%, rgba(15, 23, 42, 0.98)), rgba(15, 23, 42, 0.98)),
+    #151922;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alphabet-mastery-card.is-auto-reading {
+    animation: none;
+  }
 }
 
 @media (max-width: 359px) {
