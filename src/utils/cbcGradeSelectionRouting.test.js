@@ -77,3 +77,19 @@ test('buildCbcGradeDestinationPath sends read-with-me to an available reading su
     '/category/grade-1?topic=english&page=1'
   );
 });
+
+test('buildCbcGradeDestinationPath keeps continue and read-with-me destinations distinct', () => {
+  const gradeThree = {
+    id: 'grade-3',
+    topics: ['kiswahili', 'mathematics']
+  };
+
+  assert.equal(
+    buildCbcGradeDestinationPath(gradeThree, { type: 'action', action: 'continue' }),
+    '/category/grade-3'
+  );
+  assert.equal(
+    buildCbcGradeDestinationPath(gradeThree, { type: 'action', action: 'read-with-me' }),
+    '/category/grade-3?topic=english&page=1'
+  );
+});

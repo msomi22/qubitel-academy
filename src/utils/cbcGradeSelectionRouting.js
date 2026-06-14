@@ -92,7 +92,7 @@ export function buildCbcGradeDestinationPath(category, intent, options = {}) {
     if (intent.action === 'read-with-me') {
       return buildCategoryTopicPath(
         category,
-        findAvailableTopic(category, ['english', 'kiswahili'])
+        findAvailableTopic(category, ['english']) || 'english'
       );
     }
 
