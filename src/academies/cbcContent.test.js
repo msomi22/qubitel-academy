@@ -8,7 +8,7 @@ import gradeOneEnglishListeningPractice from './cbc/grade-1/english/practice/lis
 import gradeOneEnglishReadingPractice from './cbc/grade-1/english/practice/reading-readiness-practice-001.js';
 import gradeOneEnvironmentalHomePractice from './cbc/grade-1/environmental-activities/practice/home-and-school-practice-001.js';
 import gradeOneMathCountingExam from './cbc/grade-1/mathematics/assessments/counting-exam-001.js';
-import gradeOneMathNumbersLesson, { numbersOneToOneHundred } from './cbc/grade-1/mathematics/lessons/numbers-1-100-lesson-001.js';
+import gradeOneMathNumbersLesson, { NUMBER_WORDS, numbersOneToOneHundred } from './cbc/grade-1/mathematics/lessons/numbers-1-100-lesson-001.js';
 import gradeOneMathNumbersPractice from './cbc/grade-1/mathematics/practice/numbers-practice-001.js';
 import gradeOneMathShapesPractice from './cbc/grade-1/mathematics/practice/shapes-practice-001.js';
 import gradeOneReadingExam from './cbc/grade-1/english/assessments/object-matching-exam-001.js';
@@ -309,28 +309,29 @@ test('CBC Grade 1 Mathematics Numbers 1–100 lesson renders exact MP3-backed nu
   assert.deepEqual(
     numberBlock.numbers.slice(0, 3).map((item) => [item.display, item.label, item.ariaLabel, item.audioFile]),
     [
-      ['1', 'Number 1', 'Play number 1', '001.mp3'],
-      ['2', 'Number 2', 'Play number 2', '002.mp3'],
-      ['3', 'Number 3', 'Play number 3', '003.mp3']
+      ['1', 'One', 'Play number One', '001.mp3'],
+      ['2', 'Two', 'Play number Two', '002.mp3'],
+      ['3', 'Three', 'Play number Three', '003.mp3']
     ]
   );
   assert.deepEqual(
     numberBlock.numbers.slice(-3).map((item) => [item.display, item.label, item.ariaLabel, item.audioFile]),
     [
-      ['98', 'Number 98', 'Play number 98', '098.mp3'],
-      ['99', 'Number 99', 'Play number 99', '099.mp3'],
-      ['100', 'Number 100', 'Play number 100', '100.mp3']
+      ['98', 'Ninety Eight', 'Play number Ninety Eight', '098.mp3'],
+      ['99', 'Ninety Nine', 'Play number Ninety Nine', '099.mp3'],
+      ['100', 'One Hundred', 'Play number One Hundred', '100.mp3']
     ]
   );
 
   for (const [index, item] of numberBlock.numbers.entries()) {
     const number = index + 1;
     const expectedFile = `${String(number).padStart(3, '0')}.mp3`;
+    const numberWord = NUMBER_WORDS[number];
 
     assert.equal(item.number, number);
     assert.equal(item.display, String(number));
-    assert.equal(item.label, `Number ${number}`);
-    assert.equal(item.ariaLabel, `Play number ${number}`);
+    assert.equal(item.label, numberWord);
+    assert.equal(item.ariaLabel, `Play number ${numberWord}`);
     assert.equal(item.audioFile, expectedFile);
     assert.match(item.audioSrc, new RegExp(`${expectedFile}$`));
 
