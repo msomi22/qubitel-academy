@@ -231,6 +231,22 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
   }
 });
 
+test('CBC Grade 1 audio lessons place Objective before the activity grid', () => {
+  const lessons = [
+    { lesson: gradeOneEnglishAlphabetLesson, gridType: 'alphabetMastery' },
+    { lesson: gradeOneMathNumbersLesson, gridType: 'numberAudioGrid' }
+  ];
+
+  for (const { lesson, gridType } of lessons) {
+    const objectiveIndex = lesson.body.findIndex((block) => block.type === 'section' && block.title === 'Objective');
+    const gridIndex = lesson.body.findIndex((block) => block.type === gridType);
+
+    assert.equal(objectiveIndex, 0, lesson.id);
+    assert.equal(gridIndex, 1, lesson.id);
+    assert.ok(objectiveIndex < gridIndex, lesson.id);
+  }
+});
+
 test('CBC Grade 1 English Alphabet Mastery lesson renders exact MP3-backed card pairs', () => {
   const alphabetBlock = gradeOneEnglishAlphabetLesson.body.find((block) => block.type === 'alphabetMastery');
   const expectedLabels = [
