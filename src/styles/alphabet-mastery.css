@@ -261,8 +261,14 @@
 }
 
 .alphabet-mastery-card:focus-visible {
-  outline: 3px solid #102a65;
+  z-index: 2;
+  border-color: var(--alphabet-card-accent, #159b53);
+  outline: 4px solid color-mix(in srgb, var(--alphabet-card-accent, #159b53) 46%, #102a65);
   outline-offset: 3px;
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 22%, transparent),
+    0 18px 34px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 28%, transparent);
+  transform: scale(1.035);
 }
 
 .alphabet-mastery-card.is-playing {
@@ -357,6 +363,13 @@
     radial-gradient(circle at 50% 0, rgba(255, 255, 255, 0.12), rgba(20, 24, 32, 0.96) 76%),
     #151922;
   color: var(--alphabet-board-ink);
+}
+
+:root[data-theme="dark"] .alphabet-mastery-card:focus-visible {
+  outline-color: color-mix(in srgb, var(--alphabet-card-accent, #159b53) 62%, #e0f2fe);
+  box-shadow:
+    0 0 0 7px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 30%, transparent),
+    0 18px 36px color-mix(in srgb, var(--alphabet-card-accent, #159b53) 36%, transparent);
 }
 
 :root[data-theme="dark"] .alphabet-mastery-card-label {

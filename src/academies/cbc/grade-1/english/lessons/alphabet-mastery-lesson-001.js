@@ -75,15 +75,15 @@ const lesson = defineLearningProblem({
   question: 'Tap each alphabet card to hear the letter name and sound word.',
   body: [
     {
+      type: 'section',
+      title: 'Objective',
+      content: 'I can listen to letter names and match each sound with its example word.'
+    },
+    {
       type: 'alphabetMastery',
       title: 'Alphabet Mastery',
       subtitle: 'Tap a card and listen',
       letters: alphabetMasteryLetters
-    },
-    {
-      type: 'section',
-      title: 'Objective',
-      content: 'I can listen to letter names and match each sound with its example word.'
     }
   ],
   explanation: 'Letter names and sound-word pairs help learners connect printed letters with spoken sounds.',

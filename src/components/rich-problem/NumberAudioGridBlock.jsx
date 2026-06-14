@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import useGridRemoteNavigation from '../../hooks/useGridRemoteNavigation.js';
+
+const AUTO_READ_SECONDS = 30;
 
 function safeNumbers(block) {
   return Array.isArray(block?.numbers)
@@ -12,21 +16,26 @@ function stopAudio(audio) {
   audio.currentTime = 0;
 }
 
-function NumberAudioCard({ item, isActive, onPlay }) {
+function NumberAudioCard({ item, isActive, isAutoReading, itemRef, onPlay }) {
+  const activityLabel = isAutoReading ? 'Auto Read' : isActive ? 'Playing' : '';
+
   return (
     <button
-      type="button"
-      className={`number-audio-card ${isActive ? 'is-playing' : ''}`}
-      style={{ '--number-card-accent': item.color }}
+      aria-current={isAutoReading ? 'true' : undefined}
       aria-label={item.ariaLabel}
-      aria-pressed={isActive}
+      aria-pressed={isActive || isAutoReading}
+      className={`number-audio-card ${isActive ? 'is-playing' : ''} ${isAutoReading ? 'is-auto-reading' : ''}`}
+      data-grid-nav-item="true"
       onClick={() => onPlay(item)}
+      ref={itemRef}
+      style={{ '--number-card-accent': item.color }}
+      type="button"
     >
       <span className="number-audio-card-value" aria-hidden="true">{item.display || item.number}</span>
       <span className="number-audio-card-label">{item.label}</span>
       <span className="number-audio-card-sound" aria-hidden="true">
         <span className="number-audio-sound-mark" />
-        <span className="number-audio-playing-label">{isActive ? 'Playing' : ''}</span>
+        <span className="number-audio-playing-label">{activityLabel}</span>
       </span>
     </button>
   );
@@ -35,59 +44,40 @@ function NumberAudioCard({ item, isActive, onPlay }) {
 export default function NumberAudioGridBlock({ block }) {
   const numbers = useMemo(() => safeNumbers(block), [block]);
   const audioRef = useRef(null);
+  const isMountedRef = useRef(false);
   const [activeNumberId, setActiveNumberId] = useState('');
   const [playedNumberIds, setPlayedNumberIds] = useState(() => new Set());
   const [audioMessage, setAudioMessage] = useState('');
+  const [autoReadStatus, setAutoReadStatus] = useState('idle');
+  const [autoReadIndex, setAutoReadIndex] = useState(-1);
+  const [autoReadSeconds, setAutoReadSeconds] = useState(AUTO_READ_SECONDS);
   const totalCards = numbers.length;
   const progress = totalCards ? Math.round((playedNumberIds.size / totalCards) * 100) : 0;
+  const { focusItem, getItemRef, gridProps } = useGridRemoteNavigation({
+    itemCount: totalCards,
+    initialIndex: 0
+  });
+  const activeAutoReadItem = autoReadStatus !== 'idle' && autoReadIndex >= 0 ? numbers[autoReadIndex] : null;
+  const isAutoReadActive = autoReadStatus !== 'idle';
+  const isAutoReadPaused = autoReadStatus === 'paused';
 
-  useEffect(() => () => stopAudio(audioRef.current), []);
-
-  function clearCurrentAudio() {
+  const clearCurrentAudio = useCallback(() => {
     if (!audioRef.current) return;
     stopAudio(audioRef.current);
     audioRef.current = null;
-  }
+  }, []);
 
-  // function handlePlay(item) {
-  //   clearCurrentAudio();
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      clearCurrentAudio();
+    };
+  }, [clearCurrentAudio]);
 
-  //   if (!item?.audioSrc) {
-  //     setActiveNumberId('');
-  //     setAudioMessage(`Audio is not available for ${item?.label || 'this number'}.`);
-  //     return;
-  //   }
-
-  //   const audio = new Audio(item.audioSrc);
-  //   audioRef.current = audio;
-  //   setActiveNumberId(item.id);
-  //   setAudioMessage('');
-
-  //   audio.addEventListener('ended', () => {
-  //     setActiveNumberId((current) => (current === item.id ? '' : current));
-  //   }, { once: true });
-  //   audio.addEventListener('error', () => {
-  //     setActiveNumberId((current) => (current === item.id ? '' : current));
-  //     setAudioMessage(`Audio is not available for ${item.label}.`);
-  //   }, { once: true });
-
-  //   audio.play()
-  //     .then(() => {
-  //       setPlayedNumberIds((current) => {
-  //         const next = new Set(current);
-  //         next.add(item.id);
-  //         return next;
-  //       });
-  //     })
-  //     .catch(() => {
-  //       setActiveNumberId('');
-  //       setAudioMessage(`Audio could not play for ${item.label}.`);
-  //     });
-  // }
-
-  function handlePlay(item) {
+  const playNumber = useCallback((item) => {
     clearCurrentAudio();
-  
+
     if (!item?.audioSrc) {
       console.warn('Number audio source missing', {
         numberId: item?.id,
@@ -95,22 +85,28 @@ export default function NumberAudioGridBlock({ block }) {
         audioFile: item?.audioFile,
         item
       });
-      setActiveNumberId('');
-      setAudioMessage(`Audio is not available for ${item?.label || 'this number'}.`);
+      if (isMountedRef.current) {
+        setActiveNumberId('');
+        setAudioMessage(`Audio is not available for ${item?.label || 'this number'}.`);
+      }
       return;
     }
-  
+
     const audio = new Audio(item.audioSrc);
     audio.preload = 'auto';
     audioRef.current = audio;
     setActiveNumberId(item.id);
     setAudioMessage('');
-  
+
     audio.addEventListener('ended', () => {
+      if (!isMountedRef.current || audioRef.current !== audio) return;
+      audioRef.current = null;
       setActiveNumberId((current) => (current === item.id ? '' : current));
     }, { once: true });
-  
+
     audio.addEventListener('error', () => {
+      if (!isMountedRef.current || audioRef.current !== audio) return;
+      audioRef.current = null;
       console.warn('Number audio element error', {
         numberId: item.id,
         label: item.label,
@@ -121,11 +117,12 @@ export default function NumberAudioGridBlock({ block }) {
       setActiveNumberId((current) => (current === item.id ? '' : current));
       setAudioMessage(`Audio is not available for ${item.label}.`);
     }, { once: true });
-  
+
     audio.load();
-  
+
     audio.play()
       .then(() => {
+        if (!isMountedRef.current) return;
         setPlayedNumberIds((current) => {
           const next = new Set(current);
           next.add(item.id);
@@ -133,6 +130,8 @@ export default function NumberAudioGridBlock({ block }) {
         });
       })
       .catch((error) => {
+        if (!isMountedRef.current || audioRef.current !== audio || error?.name === 'AbortError') return;
+        audioRef.current = null;
         console.warn('Number audio playback failed', {
           numberId: item.id,
           label: item.label,
@@ -145,7 +144,85 @@ export default function NumberAudioGridBlock({ block }) {
         setActiveNumberId('');
         setAudioMessage(`Audio could not play for ${item.label}.`);
       });
+  }, [clearCurrentAudio]);
+
+  const resetAutoReadState = useCallback(() => {
+    setAutoReadStatus('idle');
+    setAutoReadIndex(-1);
+    setAutoReadSeconds(AUTO_READ_SECONDS);
+    setActiveNumberId('');
+    clearCurrentAudio();
+  }, [clearCurrentAudio]);
+
+  const finishAutoRead = useCallback(() => {
+    resetAutoReadState();
+    setAudioMessage('Auto Read complete.');
+    window.requestAnimationFrame(() => focusItem(0));
+  }, [focusItem, resetAutoReadState]);
+
+  function handleManualPlay(item) {
+    if (isAutoReadActive) resetAutoReadState();
+    playNumber(item);
   }
+
+  function handleStartAutoRead() {
+    setAudioMessage('');
+    setAutoReadIndex(0);
+    setAutoReadSeconds(AUTO_READ_SECONDS);
+    setAutoReadStatus('running');
+  }
+
+  function handlePauseAutoRead() {
+    if (!isAutoReadActive || isAutoReadPaused) return;
+    clearCurrentAudio();
+    setActiveNumberId('');
+    setAutoReadStatus('paused');
+    setAudioMessage('Auto Read paused.');
+  }
+
+  function handleResumeAutoRead() {
+    if (!isAutoReadPaused) return;
+    setAudioMessage('');
+    setAutoReadStatus('running');
+  }
+
+  function handleStopAutoRead() {
+    const focusIndex = autoReadIndex >= 0 ? autoReadIndex : 0;
+    resetAutoReadState();
+    setAudioMessage('Auto Read stopped.');
+    window.requestAnimationFrame(() => focusItem(focusIndex));
+  }
+
+  useEffect(() => {
+    if (autoReadStatus !== 'running' || autoReadIndex < 0) return;
+    const item = numbers[autoReadIndex];
+    if (!item) return;
+
+    focusItem(autoReadIndex);
+    playNumber(item);
+  }, [autoReadIndex, autoReadStatus, focusItem, numbers, playNumber]);
+
+  useEffect(() => {
+    if (autoReadStatus !== 'running' || !numbers.length) return undefined;
+
+    const timeout = window.setTimeout(() => {
+      if (!isMountedRef.current) return;
+      if (autoReadSeconds > 1) {
+        setAutoReadSeconds((current) => Math.max(1, current - 1));
+        return;
+      }
+
+      if (autoReadIndex < numbers.length - 1) {
+        setAutoReadIndex((current) => Math.min(current + 1, numbers.length - 1));
+        setAutoReadSeconds(AUTO_READ_SECONDS);
+        return;
+      }
+
+      finishAutoRead();
+    }, 1000);
+
+    return () => window.clearTimeout(timeout);
+  }, [autoReadIndex, autoReadSeconds, autoReadStatus, finishAutoRead, numbers.length]);
 
   if (!numbers.length) {
     return (
@@ -155,6 +232,10 @@ export default function NumberAudioGridBlock({ block }) {
       </section>
     );
   }
+
+  const autoReadStatusText = activeAutoReadItem
+    ? `${isAutoReadPaused ? 'Paused on' : 'Auto Reading'} ${activeAutoReadItem.label}.`
+    : '';
 
   return (
     <section className="workspace-block problem-rich-block number-audio-board" aria-labelledby="number-audio-heading">
@@ -176,21 +257,47 @@ export default function NumberAudioGridBlock({ block }) {
         <span className="number-audio-tab is-active">1-100</span>
         <span className="number-audio-toolbar-count">{totalCards} cards</span>
         <span className="number-audio-sound-status">Sound on</span>
+        <div className="number-audio-auto-controls" aria-label="Auto Read controls">
+          {!isAutoReadActive ? (
+            <button className="number-audio-auto-button" onClick={handleStartAutoRead} type="button">
+              Auto Read
+            </button>
+          ) : (
+            <>
+              <span className="number-audio-auto-timer" role="timer" aria-live="polite">
+                <strong>{isAutoReadPaused ? `Paused: ${autoReadSeconds}s` : `Auto Read: ${autoReadSeconds}s`}</strong>
+                <small>Next number in {autoReadSeconds} seconds</small>
+              </span>
+              <button
+                className="number-audio-auto-button number-audio-auto-button--secondary"
+                onClick={isAutoReadPaused ? handleResumeAutoRead : handlePauseAutoRead}
+                type="button"
+              >
+                {isAutoReadPaused ? 'Resume' : 'Pause'}
+              </button>
+              <button className="number-audio-auto-button number-audio-auto-button--secondary" onClick={handleStopAutoRead} type="button">
+                Stop
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="number-audio-grid" aria-label="Number sound cards">
-        {numbers.map((item) => (
+      <div className="number-audio-grid" aria-label="Number sound cards" {...gridProps}>
+        {numbers.map((item, index) => (
           <NumberAudioCard
             item={item}
             isActive={activeNumberId === item.id}
+            isAutoReading={activeAutoReadItem?.id === item.id}
+            itemRef={getItemRef(index)}
             key={item.id}
-            onPlay={handlePlay}
+            onPlay={handleManualPlay}
           />
         ))}
       </div>
 
       <div className="number-audio-status" role="status" aria-live="polite">
-        {audioMessage || (activeNumberId ? 'Playing audio.' : '')}
+        {audioMessage || autoReadStatusText || (activeNumberId ? 'Playing audio.' : '')}
       </div>
     </section>
   );
