@@ -154,15 +154,15 @@ const lesson = defineLearningProblem({
   question: 'Tap each number card to hear the number name.',
   body: [
     {
+      type: 'section',
+      title: 'Objective',
+      content: 'I can listen to number names from 1 to 100 and match each spoken number with its written form.'
+    },
+    {
       type: 'numberAudioGrid',
       title: 'Numbers 1–100',
       subtitle: 'Tap a number and listen',
       numbers: numbersOneToOneHundred
-    },
-    {
-      type: 'section',
-      title: 'Objective',
-      content: 'I can listen to number names from 1 to 100 and match each spoken number with its written form.'
     }
   ],
   explanation: 'Listening to each number name helps learners connect number symbols with spoken counting words.',

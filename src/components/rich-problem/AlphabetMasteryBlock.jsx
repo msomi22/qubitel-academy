@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import useGridRemoteNavigation from '../../hooks/useGridRemoteNavigation.js';
 
 function safeLetters(block) {
   return Array.isArray(block?.letters) ? block.letters.filter((item) => item?.letter && item?.identifier && item?.phonetic) : [];
@@ -10,16 +12,18 @@ function stopAudio(audio) {
   audio.currentTime = 0;
 }
 
-function AlphabetCard({ card, cardType, color, display, isActive, onPlay }) {
+function AlphabetCard({ card, cardType, color, display, isActive, itemRef, onPlay }) {
   const isIdentifier = cardType === 'identifier';
   return (
     <button
-      type="button"
-      className={`alphabet-mastery-card alphabet-mastery-card--${cardType} ${isActive ? 'is-playing' : ''}`}
-      style={{ '--alphabet-card-accent': color }}
       aria-label={card.ariaLabel}
       aria-pressed={isActive}
+      className={`alphabet-mastery-card alphabet-mastery-card--${cardType} ${isActive ? 'is-playing' : ''}`}
+      data-grid-nav-item="true"
       onClick={() => onPlay(card)}
+      ref={itemRef}
+      style={{ '--alphabet-card-accent': color }}
+      type="button"
     >
       <span className="alphabet-mastery-card-visual" aria-hidden="true">
         {isIdentifier ? display : card.visual}
@@ -36,60 +40,34 @@ function AlphabetCard({ card, cardType, color, display, isActive, onPlay }) {
 export default function AlphabetMasteryBlock({ block }) {
   const letters = useMemo(() => safeLetters(block), [block]);
   const audioRef = useRef(null);
+  const isMountedRef = useRef(false);
   const [activeCardId, setActiveCardId] = useState('');
   const [playedCardIds, setPlayedCardIds] = useState(() => new Set());
   const [audioMessage, setAudioMessage] = useState('');
   const totalCards = letters.length * 2;
   const progress = totalCards ? Math.round((playedCardIds.size / totalCards) * 100) : 0;
+  const { getItemRef, gridProps } = useGridRemoteNavigation({
+    itemCount: totalCards,
+    initialIndex: 0
+  });
 
-  useEffect(() => () => stopAudio(audioRef.current), []);
-
-  function clearCurrentAudio() {
+  const clearCurrentAudio = useCallback(() => {
     if (!audioRef.current) return;
     stopAudio(audioRef.current);
     audioRef.current = null;
-  }
+  }, []);
 
-  // function handlePlay(card) {
-  //   clearCurrentAudio();
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      clearCurrentAudio();
+    };
+  }, [clearCurrentAudio]);
 
-  //   if (!card?.audioSrc) {
-  //     setActiveCardId('');
-  //     setAudioMessage(`Audio is not available for ${card?.label || 'this card'}.`);
-  //     return;
-  //   }
-
-  //   const audio = new Audio(card.audioSrc);
-  //   audioRef.current = audio;
-  //   setActiveCardId(card.id);
-  //   setAudioMessage('');
-
-  //   audio.addEventListener('ended', () => {
-  //     setActiveCardId((current) => (current === card.id ? '' : current));
-  //   }, { once: true });
-  //   audio.addEventListener('error', () => {
-  //     setActiveCardId((current) => (current === card.id ? '' : current));
-  //     setAudioMessage(`Audio is not available for ${card.label}.`);
-  //   }, { once: true });
-
-  //   audio.play()
-  //     .then(() => {
-  //       setPlayedCardIds((current) => {
-  //         const next = new Set(current);
-  //         next.add(card.id);
-  //         return next;
-  //       });
-  //     })
-  //     .catch(() => {
-  //       setActiveCardId('');
-  //       setAudioMessage(`Audio could not play for ${card.label}.`);
-  //     });
-  // }
-
-
-  function handlePlay(card) {
+  const handlePlay = useCallback((card) => {
     clearCurrentAudio();
-  
+
     if (!card?.audioSrc) {
       console.warn('Alphabet audio source missing', {
         cardId: card?.id,
@@ -97,22 +75,28 @@ export default function AlphabetMasteryBlock({ block }) {
         audioFile: card?.audioFile,
         card
       });
-      setActiveCardId('');
-      setAudioMessage(`Audio is not available for ${card?.label || 'this card'}.`);
+      if (isMountedRef.current) {
+        setActiveCardId('');
+        setAudioMessage(`Audio is not available for ${card?.label || 'this card'}.`);
+      }
       return;
     }
-  
+
     const audio = new Audio(card.audioSrc);
     audio.preload = 'auto';
     audioRef.current = audio;
     setActiveCardId(card.id);
     setAudioMessage('');
-  
+
     audio.addEventListener('ended', () => {
+      if (!isMountedRef.current || audioRef.current !== audio) return;
+      audioRef.current = null;
       setActiveCardId((current) => (current === card.id ? '' : current));
     }, { once: true });
-  
+
     audio.addEventListener('error', () => {
+      if (!isMountedRef.current || audioRef.current !== audio) return;
+      audioRef.current = null;
       console.warn('Alphabet audio element error', {
         cardId: card.id,
         label: card.label,
@@ -123,11 +107,12 @@ export default function AlphabetMasteryBlock({ block }) {
       setActiveCardId((current) => (current === card.id ? '' : current));
       setAudioMessage(`Audio is not available for ${card.label}.`);
     }, { once: true });
-  
+
     audio.load();
-  
+
     audio.play()
       .then(() => {
+        if (!isMountedRef.current) return;
         setPlayedCardIds((current) => {
           const next = new Set(current);
           next.add(card.id);
@@ -135,6 +120,8 @@ export default function AlphabetMasteryBlock({ block }) {
         });
       })
       .catch((error) => {
+        if (!isMountedRef.current || audioRef.current !== audio || error?.name === 'AbortError') return;
+        audioRef.current = null;
         console.warn('Alphabet audio playback failed', {
           cardId: card.id,
           label: card.label,
@@ -147,7 +134,7 @@ export default function AlphabetMasteryBlock({ block }) {
         setActiveCardId('');
         setAudioMessage(`Audio could not play for ${card.label}.`);
       });
-  }
+  }, [clearCurrentAudio]);
 
   if (!letters.length) {
     return (
@@ -180,8 +167,8 @@ export default function AlphabetMasteryBlock({ block }) {
         <span className="alphabet-mastery-sound-status">Sound on</span>
       </div>
 
-      <div className="alphabet-mastery-grid" aria-label="Alphabet sound cards">
-        {letters.map((item) => (
+      <div className="alphabet-mastery-grid" aria-label="Alphabet sound cards" {...gridProps}>
+        {letters.map((item, index) => (
           <div className="alphabet-mastery-letter-row" style={{ '--alphabet-card-accent': item.color }} key={item.id}>
             <AlphabetCard
               card={item.identifier}
@@ -189,6 +176,7 @@ export default function AlphabetMasteryBlock({ block }) {
               color={item.color}
               display={item.display}
               isActive={activeCardId === item.identifier.id}
+              itemRef={getItemRef(index * 2)}
               onPlay={handlePlay}
             />
             <AlphabetCard
@@ -197,6 +185,7 @@ export default function AlphabetMasteryBlock({ block }) {
               color={item.color}
               display={item.display}
               isActive={activeCardId === item.phonetic.id}
+              itemRef={getItemRef(index * 2 + 1)}
               onPlay={handlePlay}
             />
           </div>

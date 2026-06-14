@@ -87,6 +87,12 @@
   select {
     cursor: pointer;
   }
+
+  :where(a, button, [role="button"], [role="link"], [role="tab"], [tabindex]):not([tabindex="-1"])[data-tv-remote-focus="true"] {
+    outline: 3px solid color-mix(in srgb, var(--accent) 76%, #ffffff 24%);
+    outline-offset: 4px;
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
   
   /* Learning content should be selectable. */
   .protect-content,

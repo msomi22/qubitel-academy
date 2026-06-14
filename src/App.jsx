@@ -18,6 +18,7 @@ import PageSkeleton from './components/PageSkeleton.jsx';
 import { siteConfig } from './config/siteConfig.js';
 import { useContentProtection } from './hooks/useContentProtection.js';
 import { usePreferences } from './hooks/usePreferences.js';
+import useTvRemoteNavigation from './hooks/useTvRemoteNavigation.js';
 
 const Home = lazy(() => import('./pages/Home.jsx'));
 const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'));
@@ -79,6 +80,7 @@ function RouteScrollReset() {
 
 export default function App() {
   useContentProtection();
+  useTvRemoteNavigation();
   const { theme } = usePreferences();
   const { pathname } = useLocation();
   const isExamRoute = pathname.startsWith('/exam/');
