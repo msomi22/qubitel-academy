@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import PassageReadAloudControls from './PassageReadAloudControls.jsx';
 
 export function formatPassageTime(totalSeconds = 0) {
@@ -15,8 +16,25 @@ function sentenceMapFor(passage = {}) {
 }
 
 export function ReadingPassage({ passage = {}, activeSentenceId = '', className = '' }) {
+  const sentenceRefs = useRef(new Map());
   const sentencesById = sentenceMapFor(passage);
   const paragraphs = Array.isArray(passage.paragraphs) ? passage.paragraphs : [];
+
+  useEffect(() => {
+    if (!activeSentenceId) return;
+
+    const activeNode = sentenceRefs.current.get(activeSentenceId);
+
+    if (!activeNode || typeof activeNode.scrollIntoView !== 'function') {
+      return;
+    }
+
+    activeNode.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest'
+    });
+  }, [activeSentenceId]);
 
   return (
     <article className={`cbc-reading-passage ${className}`.trim()} aria-label={passage.title || 'Reading passage'}>
@@ -31,6 +49,13 @@ export function ReadingPassage({ passage = {}, activeSentenceId = '', className 
               return (
                 <span
                   key={sentence.id}
+                  ref={(node) => {
+                    if (node) {
+                      sentenceRefs.current.set(sentence.id, node);
+                    } else {
+                      sentenceRefs.current.delete(sentence.id);
+                    }
+                  }}
                   className={activeSentenceId === sentence.id ? 'active-sentence' : ''}
                 >
                   {sentence.text}{' '}

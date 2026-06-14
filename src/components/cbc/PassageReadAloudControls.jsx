@@ -25,6 +25,8 @@ export default function PassageReadAloudControls({
   const [supported, setSupported] = useState(false);
   const [status, setStatus] = useState('idle');
   const [speed, setSpeed] = useState('normal');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const stoppedRef = useRef(false);
   const speedRef = useRef(speed);
 
@@ -60,10 +62,10 @@ export default function PassageReadAloudControls({
     const utterance = new Utterance(sentence.text);
     utterance.lang = activeLang;
     utterance.rate = rateForSpeed(speedRef.current);
-    
+
     const isEnglish = activeLang.toLowerCase().startsWith('en');
     utterance.pitch = isEnglish ? 1.05 : 1;
-    
+
     const availableVoices = synth.getVoices?.() || [];
 
     const preferredVoice = availableVoices.find((voice) =>
@@ -71,7 +73,7 @@ export default function PassageReadAloudControls({
         voice.name.toLowerCase() === name.toLowerCase()
       )
     );
-    
+
     const voice = preferredVoice || pickPreferredVoice(availableVoices, voiceType, activeLang);
     if (voice) utterance.voice = voice;
 
@@ -80,18 +82,29 @@ export default function PassageReadAloudControls({
       speakSentence(index + 1);
     };
 
-    utterance.onerror = () => {
+    utterance.onerror = (event) => {
       if (stoppedRef.current) return;
+
       setStatus('idle');
       onActiveSentenceChange?.('');
+
+      const reason = event?.error ? ` (${event.error})` : '';
+      setErrorMessage(`Read aloud failed on this browser${reason}.`);
     };
 
-    synth.speak(utterance);
+    try {
+      synth.speak(utterance);
+    } catch (error) {
+      setStatus('idle');
+      onActiveSentenceChange?.('');
+      setErrorMessage(`Read aloud failed on this browser: ${error?.message || String(error)}`);
+    }
   }
 
   function startReading() {
     if (!supported || !sentences.length) return;
 
+    setErrorMessage('');
     stoppedRef.current = false;
     getSpeechSynthesis()?.cancel?.();
     setStatus('reading');
@@ -112,6 +125,7 @@ export default function PassageReadAloudControls({
     stoppedRef.current = true;
     getSpeechSynthesis()?.cancel?.();
     setStatus('idle');
+    setErrorMessage('');
     onActiveSentenceChange?.('');
   }
 
@@ -158,6 +172,7 @@ export default function PassageReadAloudControls({
       </div>
 
       {!supported ? <p>Read aloud is not supported in this browser.</p> : null}
+      {errorMessage ? <p className="cbc-passage-read-aloud-error">{errorMessage}</p> : null}
     </section>
   );
 }
