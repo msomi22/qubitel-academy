@@ -77,6 +77,56 @@ function loadCloudflareAnalytics() {
   document.head.append(script);
 }
 
+
+function enableTvDebugOverlay() {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get('tvDebug') !== 'true') {
+    return;
+  }
+
+  function showDebug(title, details) {
+    document.body.innerHTML = `
+      <pre style="
+        white-space: pre-wrap;
+        padding: 32px;
+        font-size: 22px;
+        line-height: 1.5;
+        color: #ffffff;
+        background: #111827;
+        min-height: 100vh;
+        overflow: auto;
+      ">${title}
+
+${details}</pre>
+    `;
+  }
+
+  window.addEventListener('error', (event) => {
+    showDebug(
+      'TV Runtime Error',
+      [
+        event.message,
+        event.filename,
+        `Line: ${event.lineno}, Column: ${event.colno}`,
+        event.error?.stack || ''
+      ].join('\n')
+    );
+  });
+
+  window.addEventListener('unhandledrejection', (event) => {
+    showDebug(
+      'TV Promise Rejection',
+      [
+        event.reason?.message || String(event.reason),
+        event.reason?.stack || ''
+      ].join('\n')
+    );
+  });
+}
+
+enableTvDebugOverlay();
+
 loadCloudflareAnalytics();
 
 createRoot(document.getElementById('root')).render(
