@@ -98,7 +98,13 @@ export default function PassageReadAloudControls({
     utterance.onerror = (event) => {
       const error = event?.error || '';
 
-      if (isStaleReadSession(sessionId) || isIntentionalCancelError(error)) {
+      if (isStaleReadSession(sessionId)) {
+        return;
+      }
+
+      if (isIntentionalCancelError(error)) {
+        setStatus('idle');
+        onActiveSentenceChange?.('');
         return;
       }
 
@@ -167,12 +173,15 @@ export default function PassageReadAloudControls({
         >
           Read Aloud
         </button>
+
         <button type="button" className="cbc-exam-button secondary" onClick={pauseReading} disabled={status !== 'reading'}>
           Pause
         </button>
+
         <button type="button" className="cbc-exam-button secondary" onClick={resumeReading} disabled={status !== 'paused'}>
           Resume
         </button>
+
         <button type="button" className="cbc-exam-button quiet" onClick={stopReading} disabled={status === 'idle'}>
           Stop
         </button>
@@ -187,6 +196,7 @@ export default function PassageReadAloudControls({
         >
           Slow
         </button>
+
         <button
           type="button"
           className={speed === 'normal' ? 'active' : ''}
