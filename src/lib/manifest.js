@@ -11,14 +11,20 @@ function isSafeId(value) {
 
 function isSafeContentFile(value, section) {
   if (typeof value !== 'string') return false;
+
   const parts = value.split('/');
+
   if (parts.length < 2 || parts[0] !== section) return false;
+
   const fileName = parts[parts.length - 1];
+
   if (!fileName.endsWith('.js')) return false;
+
   return parts.slice(1).every((part, index, segments) => {
     const valueToCheck = index === segments.length - 1
       ? part.replace(/\.js$/, '')
       : part;
+
     return isSafeId(valueToCheck);
   });
 }

@@ -21,15 +21,15 @@
     "@vitejs/plugin-react": "latest",
     "compromise": "latest",
     "fuzzball": "latest",
-    "vite": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-router-dom": "latest"
+    "react-router-dom": "latest",
+    "vite": "latest"
   },
   "devDependencies": {
     "@types/node": "latest",
-    "@vitejs/plugin-legacy": "latest",
-    "terser": "latest",
+    "@vitejs/plugin-legacy": "^8.0.2",
+    "terser": "^5.48.0",
     "typescript": "latest"
   }
 }

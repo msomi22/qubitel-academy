@@ -201,7 +201,7 @@ function SearchResultsSection({ results, completed }) {
               </button>
             ))}
 
-            {pageNumbers.at(-1) < totalPages ? (
+            {pageNumbers[pageNumbers.length - 1] < totalPages ? (
               <span className="pagination-gap">…</span>
             ) : null}
 

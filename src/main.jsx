@@ -85,24 +85,6 @@ function loadCloudflareAnalytics() {
   document.head.append(script);
 }
 
-function removeTvDebugOverlayAfterSuccessfulBoot() {
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return;
-  }
-
-  if (!window.__TV_DEBUG_ENABLED__) {
-    return;
-  }
-
-  window.setTimeout(() => {
-    const overlay = document.getElementById('tv-debug-overlay');
-
-    if (overlay && overlay.parentNode) {
-      overlay.parentNode.removeChild(overlay);
-    }
-  }, 0);
-}
-
 loadCloudflareAnalytics();
 
 createRoot(document.getElementById('root')).render(
@@ -110,5 +92,3 @@ createRoot(document.getElementById('root')).render(
     <App />
   </BrowserRouter>
 );
-
-removeTvDebugOverlayAfterSuccessfulBoot();
