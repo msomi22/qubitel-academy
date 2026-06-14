@@ -147,7 +147,20 @@ function findCurrentItem(items, target) {
   return items.find((item) => item.node === target || item.node.contains(target)) || null;
 }
 
-function nextIndexForKey(items, current, key) {
+function nextLinearIndexForKey(items, current, key) {
+  const orderedItems = [...items].sort((a, b) => a.index - b.index);
+  const currentPosition = orderedItems.findIndex((item) => item.index === current.index);
+
+  if (currentPosition < 0) return current.index;
+
+  const direction = key === 'ArrowRight' || key === 'ArrowDown' ? 1 : -1;
+  return orderedItems[currentPosition + direction]?.index ?? current.index;
+}
+
+function nextIndexForKey(items, current, key, navigationMode = 'grid') {
+  if (navigationMode === 'linear') {
+    return nextLinearIndexForKey(items, current, key);
+  }
   const rows = groupRows(items);
   const rowIndex = rows.findIndex((row) => row.items.some((item) => item.index === current.index));
   if (rowIndex < 0) return current.index;
@@ -169,7 +182,13 @@ function nextIndexForKey(items, current, key) {
   return current.index;
 }
 
-export default function useGridRemoteNavigation({ itemCount, initialIndex = 0, autoFocus = true, onNavigate = null } = {}) {
+export default function useGridRemoteNavigation({
+  itemCount,
+  initialIndex = 0,
+  autoFocus = true,
+  navigationMode = 'grid',
+  onNavigate = null
+} = {}) {
   const itemRefs = useRef([]);
   const containerRef = useRef(null);
   const hasAutoFocusedRef = useRef(false);
@@ -251,7 +270,8 @@ export default function useGridRemoteNavigation({ itemCount, initialIndex = 0, a
       || items[0];
     if (!current) return;
 
-    const nextIndex = nextIndexForKey(items, current, event.key);
+    const nextIndex = nextIndexForKey(items, current, event.key, navigationMode);
+
     event.preventDefault();
     markActiveGrid();
     if (nextIndex === current.index) {
@@ -262,7 +282,7 @@ export default function useGridRemoteNavigation({ itemCount, initialIndex = 0, a
     if (focusItem(nextIndex) && typeof onNavigate === 'function') {
       onNavigate(nextIndex, event);
     }
-  }, [focusItem, markActiveGrid, onNavigate]);
+  }, [focusItem, markActiveGrid, navigationMode, onNavigate]);
 
   const onKeyDown = useCallback((event) => {
     handleNavigationKey(event);
@@ -286,6 +306,15 @@ export default function useGridRemoteNavigation({ itemCount, initialIndex = 0, a
     itemRefs.current.length = itemCount || 0;
     activeIndexRef.current = Math.min(activeIndexRef.current, Math.max((itemCount || 1) - 1, 0));
   }, [itemCount]);
+
+  useEffect(() => {
+    if (!itemCount) {
+      activeIndexRef.current = 0;
+      return;
+    }
+  
+    activeIndexRef.current = Math.min(Math.max(initialIndex, 0), itemCount - 1);
+  }, [initialIndex, itemCount]);
 
   useEffect(() => {
     if (!autoFocus || hasAutoFocusedRef.current || !itemCount) return undefined;
