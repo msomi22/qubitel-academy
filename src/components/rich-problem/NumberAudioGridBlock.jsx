@@ -2,7 +2,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import useGridRemoteNavigation from '../../hooks/useGridRemoteNavigation.js';
 
-const AUTO_READ_SECONDS = 30;
+const AUTO_READ_DEFAULT_SECONDS = 5;
+const AUTO_READ_INTERVAL_OPTIONS = [1, 2, 3, 5, 10, 15, 30];
+const MIN_AUTO_READ_SECONDS = 1;
+const MAX_AUTO_READ_SECONDS = 60;
+
+function normalizeAutoReadSeconds(value) {
+  const numericValue = Number(value);
+  if (!Number.isFinite(numericValue)) return AUTO_READ_DEFAULT_SECONDS;
+  return Math.min(Math.max(Math.round(numericValue), MIN_AUTO_READ_SECONDS), MAX_AUTO_READ_SECONDS);
+}
 
 function safeNumbers(block) {
   return Array.isArray(block?.numbers)
@@ -18,11 +27,12 @@ function stopAudio(audio) {
 
 function NumberAudioCard({ item, isActive, isAutoReading, itemRef, onPlay }) {
   const activityLabel = isAutoReading ? 'Auto Read' : isActive ? 'Playing' : '';
+  const cardAriaLabel = isAutoReading ? `Reading now: ${item.label}` : item.ariaLabel;
 
   return (
     <button
       aria-current={isAutoReading ? 'true' : undefined}
-      aria-label={item.ariaLabel}
+      aria-label={cardAriaLabel}
       aria-pressed={isActive || isAutoReading}
       className={`number-audio-card ${isActive ? 'is-playing' : ''} ${isAutoReading ? 'is-auto-reading' : ''}`}
       data-grid-nav-item="true"
@@ -31,6 +41,7 @@ function NumberAudioCard({ item, isActive, isAutoReading, itemRef, onPlay }) {
       style={{ '--number-card-accent': item.color }}
       type="button"
     >
+      {isAutoReading ? <span className="number-audio-now-badge" aria-hidden="true">Reading now</span> : null}
       <span className="number-audio-card-value" aria-hidden="true">{item.display || item.number}</span>
       <span className="number-audio-card-label">{item.label}</span>
       <span className="number-audio-card-sound" aria-hidden="true">
@@ -50,7 +61,11 @@ export default function NumberAudioGridBlock({ block }) {
   const [audioMessage, setAudioMessage] = useState('');
   const [autoReadStatus, setAutoReadStatus] = useState('idle');
   const [autoReadIndex, setAutoReadIndex] = useState(-1);
-  const [autoReadSeconds, setAutoReadSeconds] = useState(AUTO_READ_SECONDS);
+  const [autoReadIntervalSeconds, setAutoReadIntervalSeconds] = useState(() => normalizeAutoReadSeconds(block?.autoReadSeconds));
+  const [autoReadSeconds, setAutoReadSeconds] = useState(autoReadIntervalSeconds);
+  const autoReadIntervalOptions = useMemo(() => {
+    return Array.from(new Set([...AUTO_READ_INTERVAL_OPTIONS, autoReadIntervalSeconds])).sort((a, b) => a - b);
+  }, [autoReadIntervalSeconds]);
   const totalCards = numbers.length;
   const progress = totalCards ? Math.round((playedNumberIds.size / totalCards) * 100) : 0;
   const { focusItem, getItemRef, gridProps } = useGridRemoteNavigation({
@@ -74,6 +89,12 @@ export default function NumberAudioGridBlock({ block }) {
       clearCurrentAudio();
     };
   }, [clearCurrentAudio]);
+
+  useEffect(() => {
+    const nextSeconds = normalizeAutoReadSeconds(block?.autoReadSeconds);
+    setAutoReadIntervalSeconds(nextSeconds);
+    setAutoReadSeconds(nextSeconds);
+  }, [block?.autoReadSeconds]);
 
   const playNumber = useCallback((item) => {
     clearCurrentAudio();
@@ -149,10 +170,10 @@ export default function NumberAudioGridBlock({ block }) {
   const resetAutoReadState = useCallback(() => {
     setAutoReadStatus('idle');
     setAutoReadIndex(-1);
-    setAutoReadSeconds(AUTO_READ_SECONDS);
+    setAutoReadSeconds(autoReadIntervalSeconds);
     setActiveNumberId('');
     clearCurrentAudio();
-  }, [clearCurrentAudio]);
+  }, [autoReadIntervalSeconds, clearCurrentAudio]);
 
   const finishAutoRead = useCallback(() => {
     resetAutoReadState();
@@ -168,8 +189,14 @@ export default function NumberAudioGridBlock({ block }) {
   function handleStartAutoRead() {
     setAudioMessage('');
     setAutoReadIndex(0);
-    setAutoReadSeconds(AUTO_READ_SECONDS);
+    setAutoReadSeconds(autoReadIntervalSeconds);
     setAutoReadStatus('running');
+  }
+
+  function handleAutoReadIntervalChange(event) {
+    const nextSeconds = normalizeAutoReadSeconds(event.target.value);
+    setAutoReadIntervalSeconds(nextSeconds);
+    setAutoReadSeconds(nextSeconds);
   }
 
   function handlePauseAutoRead() {
@@ -214,7 +241,7 @@ export default function NumberAudioGridBlock({ block }) {
 
       if (autoReadIndex < numbers.length - 1) {
         setAutoReadIndex((current) => Math.min(current + 1, numbers.length - 1));
-        setAutoReadSeconds(AUTO_READ_SECONDS);
+        setAutoReadSeconds(autoReadIntervalSeconds);
         return;
       }
 
@@ -222,7 +249,7 @@ export default function NumberAudioGridBlock({ block }) {
     }, 1000);
 
     return () => window.clearTimeout(timeout);
-  }, [autoReadIndex, autoReadSeconds, autoReadStatus, finishAutoRead, numbers.length]);
+  }, [autoReadIndex, autoReadIntervalSeconds, autoReadSeconds, autoReadStatus, finishAutoRead, numbers.length]);
 
   if (!numbers.length) {
     return (
@@ -258,6 +285,14 @@ export default function NumberAudioGridBlock({ block }) {
         <span className="number-audio-toolbar-count">{totalCards} cards</span>
         <span className="number-audio-sound-status">Sound on</span>
         <div className="number-audio-auto-controls" aria-label="Auto Read controls">
+          <label className="number-audio-interval-control">
+            <span>Every</span>
+            <select aria-label="Auto Read interval" value={autoReadIntervalSeconds} onChange={handleAutoReadIntervalChange}>
+              {autoReadIntervalOptions.map((seconds) => (
+                <option key={seconds} value={seconds}>{seconds}s</option>
+              ))}
+            </select>
+          </label>
           {!isAutoReadActive ? (
             <button className="number-audio-auto-button" onClick={handleStartAutoRead} type="button">
               Auto Read

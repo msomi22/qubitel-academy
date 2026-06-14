@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { topicLibraryConfig } from '../config/topicLibraryConfig.js';
+import useGridRemoteNavigation from '../hooks/useGridRemoteNavigation.js';
 import { topicProgress } from '../services/questionBankService.js';
 import { getQuestionSetProgress } from '../services/topicFilterService.js';
 
@@ -133,6 +134,11 @@ export default function TopicLibrary({
     const start = (safePage - 1) * topicLibraryConfig.topicsPerPage;
     return filteredTopics.slice(start, start + topicLibraryConfig.topicsPerPage);
   }, [filteredTopics, safePage]);
+  const selectedTopicIndex = Math.max(0, visibleTopics.findIndex((topic) => topic.id === selectedId));
+  const { getItemRef, gridProps } = useGridRemoteNavigation({
+    itemCount: visibleTopics.length,
+    initialIndex: selectedTopicIndex
+  });
 
   useEffect(() => { setCurrentPage(1); }, [difficulty, completionFilter, sortBy]);
   useEffect(() => { if (safePage !== currentPage) setCurrentPage(safePage); }, [currentPage, safePage]);
@@ -153,8 +159,8 @@ export default function TopicLibrary({
         <label><span>Sort</span><select value={sortBy} onChange={(event) => onSortChange?.(event.target.value)}><option value="recommended">Recommended</option><option value="name">Name</option><option value="progress">Progress</option><option value="questions">Questions</option></select></label>
       </div>
 
-      <div className="topic-picker scalable-topic-picker premium-topic-rail-list">
-        {visibleTopics.map((topic) => {
+      <div className="topic-picker scalable-topic-picker premium-topic-rail-list" aria-label={`${label} navigation`} {...gridProps}>
+        {visibleTopics.map((topic, index) => {
           const count = topic.filteredCount ?? topic.count ?? 0;
           const countLabel = getQuestionCountLabel(count);
           const shortLabel = getTopicShortLabel(topic);
@@ -164,7 +170,7 @@ export default function TopicLibrary({
           const progressTotal = progress.total || count;
 
           return (
-            <button key={topic.id} type="button" aria-label={`${shortLabel} — ${topic.name}, ${countLabel}, ${progress.done}/${progressTotal} complete`} className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${fullyCompleted ? 'done' : ''}`} onClick={() => onSelect(topic.id)}>
+            <button key={topic.id} type="button" aria-current={selectedId === topic.id ? 'true' : undefined} aria-label={`${shortLabel} — ${topic.name}, ${countLabel}, ${progress.done}/${progressTotal} complete`} className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${fullyCompleted ? 'done' : ''}`} data-grid-nav-item="true" onClick={() => onSelect(topic.id)} ref={getItemRef(index)}>
               <TopicIcon topic={topic} />
               <span className="premium-topic-rail-copy"><strong>{topic.name}</strong><em>{progress.done}/{progressTotal} complete</em></span>
               <span className="premium-topic-rail-compact" aria-hidden="true"><strong>{shortLabel}</strong><small>{countLabel}</small></span>

@@ -211,6 +211,41 @@
   max-width: 100%;
 }
 
+.number-audio-interval-control {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, #0b56d0 30%, var(--number-board-line));
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--number-board-muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.number-audio-interval-control span {
+  white-space: nowrap;
+}
+
+.number-audio-interval-control select {
+  min-width: 64px;
+  border: 0;
+  background: transparent;
+  color: #0b2d72;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.number-audio-interval-control select:focus-visible {
+  outline: 3px solid color-mix(in srgb, #0b56d0 38%, transparent);
+  outline-offset: 2px;
+}
+
 .number-audio-auto-button {
   min-height: 38px;
   padding: 0 14px;
@@ -331,20 +366,59 @@
 }
 
 .number-audio-card.is-auto-reading {
-  z-index: 1;
+  z-index: 3;
+  padding-top: 30px;
   border-color: color-mix(in srgb, var(--number-card-accent, #159b53) 88%, #10205f);
   background:
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--number-card-accent, #159b53) 34%, transparent), transparent 42%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.99), color-mix(in srgb, var(--number-card-accent, #159b53) 28%, white)),
     var(--number-board-card);
   box-shadow:
-    0 0 0 4px color-mix(in srgb, var(--number-card-accent, #159b53) 28%, transparent),
-    0 18px 36px color-mix(in srgb, var(--number-card-accent, #159b53) 34%, transparent);
-  transform: translateY(-2px) scale(1.02);
+    0 0 0 4px #ffffff,
+    0 0 0 9px color-mix(in srgb, var(--number-card-accent, #159b53) 44%, transparent),
+    0 22px 42px color-mix(in srgb, var(--number-card-accent, #159b53) 38%, transparent);
+  transform: translateY(-4px) scale(1.08);
+  animation: number-audio-reading-pulse 900ms ease-in-out infinite alternate;
+}
+
+.number-audio-card.is-auto-reading::after {
+  position: absolute;
+  inset: -8px;
+  border: 3px solid color-mix(in srgb, var(--number-card-accent, #159b53) 80%, #ffffff);
+  border-radius: 14px;
+  content: "";
+  pointer-events: none;
+}
+
+.number-audio-now-badge {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  z-index: 2;
+  max-width: calc(100% - 14px);
+  padding: 4px 7px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--number-card-accent, #159b53) 72%, #ffffff);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--number-card-accent, #159b53) 86%, #10205f);
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .number-audio-card.is-auto-reading .number-audio-card-value,
 .number-audio-card.is-auto-reading .number-audio-playing-label {
   color: color-mix(in srgb, var(--number-card-accent, #159b53) 86%, #10205f);
+}
+
+.number-audio-card.is-auto-reading .number-audio-card-value {
+  font-size: 2.72rem;
 }
 
 .number-audio-card-value {
@@ -397,6 +471,22 @@
   line-height: 1;
 }
 
+@keyframes number-audio-reading-pulse {
+  from {
+    box-shadow:
+      0 0 0 4px #ffffff,
+      0 0 0 9px color-mix(in srgb, var(--number-card-accent, #159b53) 38%, transparent),
+      0 20px 38px color-mix(in srgb, var(--number-card-accent, #159b53) 34%, transparent);
+  }
+
+  to {
+    box-shadow:
+      0 0 0 5px #ffffff,
+      0 0 0 13px color-mix(in srgb, var(--number-card-accent, #159b53) 54%, transparent),
+      0 26px 50px color-mix(in srgb, var(--number-card-accent, #159b53) 46%, transparent);
+  }
+}
+
 .number-audio-status {
   min-height: 30px;
   padding: 0 18px 16px;
@@ -422,6 +512,16 @@
   border-color: rgba(147, 197, 253, 0.45);
   background: linear-gradient(180deg, rgba(59, 130, 246, 0.24), rgba(15, 23, 42, 0.96));
   color: #e6f1ff;
+}
+
+:root[data-theme="dark"] .number-audio-interval-control {
+  border-color: rgba(147, 197, 253, 0.35);
+  background: rgba(15, 23, 42, 0.72);
+  color: var(--number-board-muted);
+}
+
+:root[data-theme="dark"] .number-audio-interval-control select {
+  color: #f5fbff;
 }
 
 :root[data-theme="dark"] .number-audio-auto-button--secondary {
@@ -456,7 +556,8 @@
 
 :root[data-theme="dark"] .number-audio-card.is-auto-reading {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--number-card-accent, #159b53) 28%, rgba(15, 23, 42, 0.98)), rgba(15, 23, 42, 0.98)),
+    radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--number-card-accent, #159b53) 48%, transparent), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--number-card-accent, #159b53) 32%, rgba(15, 23, 42, 0.98)), rgba(15, 23, 42, 0.98)),
     #151922;
 }
 
@@ -472,6 +573,12 @@
 :root[data-theme="dark"] .number-audio-progress small,
 :root[data-theme="dark"] .number-audio-status {
   color: var(--number-board-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .number-audio-card.is-auto-reading {
+    animation: none;
+  }
 }
 
 @media (max-width: 359px) {
