@@ -13,7 +13,8 @@ function isSafeContentFile(value, section) {
   if (typeof value !== 'string') return false;
   const parts = value.split('/');
   if (parts.length < 2 || parts[0] !== section) return false;
-  if (!parts.at(-1).endsWith('.js')) return false;
+  const fileName = parts[parts.length - 1];
+  if (!fileName.endsWith('.js')) return false;
   return parts.slice(1).every((part, index, segments) => {
     const valueToCheck = index === segments.length - 1
       ? part.replace(/\.js$/, '')
@@ -73,7 +74,7 @@ function validateContentReferences(value, path, field, errors) {
 function validateLearningAreas(value, path, errors) {
   if (value === undefined) return;
   if (!Array.isArray(value)) {
-    errors.push(issue(path, 'learningAreas', 'learningAreas must be an array when provided.'));
+    errors.push(issue(path, 'learningAreas', 'Learning areas must be an array when provided.'));
     return;
   }
 
