@@ -495,11 +495,6 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
     item.correctAnswer,
     targetAnswerSlotForQuestion(index)
   ),
-  options: placeCorrectAnswerAt(
-    item.options,
-    item.correctAnswer,
-    targetAnswerSlotForQuestion(index)
-  ),
   correctAnswer: item.correctAnswer,
   finalTakeaway: 'Use details from the passage to choose the best answer.',
   tags: ['cbc', 'grade-3', 'english', learningAreaId, 'timed-exam', item.skill],

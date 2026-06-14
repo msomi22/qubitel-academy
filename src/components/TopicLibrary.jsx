@@ -6,7 +6,6 @@ import { topicProgress } from '../services/questionBankService.js';
 import { getQuestionSetProgress } from '../services/topicFilterService.js';
 
 const ALL = 'all';
-//const POINTER_DWELL_SELECT_MS = 220;//
 
 function getVisibleTopicProgress(topic, completed = {}) {
   if (Array.isArray(topic.filteredQuestions)) {
@@ -119,7 +118,6 @@ export default function TopicLibrary({
   const [currentPage, setCurrentPage] = useState(1);
   const [pointerTargetId, setPointerTargetId] = useState('');
   const libraryRef = useRef(null);
-  //const pointerSelectTimeoutRef = useRef(null);//
 
   const filteredTopics = useMemo(() => {
     return [...topics].sort((a, b) => {
@@ -149,57 +147,15 @@ export default function TopicLibrary({
 
   useEffect(() => { setCurrentPage(1); }, [difficulty, completionFilter, sortBy]);
   useEffect(() => { if (safePage !== currentPage) setCurrentPage(safePage); }, [currentPage, safePage]);
-  
-  // useEffect(() => () => {
-  //   if (!pointerSelectTimeoutRef.current) return;
-  //   window.clearTimeout(pointerSelectTimeoutRef.current.timeoutId);
-  // }, []);
-
-  // function clearPointerSelectTimer() {
-  //   if (!pointerSelectTimeoutRef.current) return;
-  //   window.clearTimeout(pointerSelectTimeoutRef.current.timeoutId);
-  //   pointerSelectTimeoutRef.current = null;
-  // }
-
-  // function handlePointerPreview(topicId, index, event) {
-  //   if (event.pointerType === 'touch') return;
-
-  //   focusItem(index, { preventScroll: true, scroll: false });
-  //   setPointerTargetId(topicId);
-
-  //   if (topicId === selectedId || pointerSelectTimeoutRef.current?.topicId === topicId) return;
-
-  //   clearPointerSelectTimer();
-  //   pointerSelectTimeoutRef.current = {
-  //     topicId,
-  //     timeoutId: window.setTimeout(() => {
-  //       pointerSelectTimeoutRef.current = null;
-  //       onSelect(topicId);
-  //     }, POINTER_DWELL_SELECT_MS) //
-  //   };
-  // }
 
   function handlePointerPreview(topicId, event) {
     if (event.pointerType === 'touch') return;
     setPointerTargetId(topicId);
   }
 
-  // function handlePointerExit() {
-  //   clearPointerSelectTimer();
-  //   setPointerTargetId('');
-  // }
-
   function handlePointerExit() {
     setPointerTargetId('');
   }
-
-  // function handleTopicNavigate(index) {
-  //   clearPointerSelectTimer();
-  //   setPointerTargetId('');
-  //   const topic = visibleTopics[index];
-  //   if (!topic || topic.id === selectedId) return;
-  //   onSelect(topic.id);
-  // }
 
   function handleTopicNavigate(index) {
     setPointerTargetId('');
@@ -209,12 +165,6 @@ export default function TopicLibrary({
   
     onSelect(topic.id);
   }
-
-  // function handleTopicActivate(topicId) {
-  //   clearPointerSelectTimer();
-  //   setPointerTargetId('');
-  //   onSelect(topicId);
-  // }
 
   function handleTopicActivate(topicId) {
     setPointerTargetId('');

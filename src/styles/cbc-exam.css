@@ -553,14 +553,6 @@
   color: var(--cbc-exam-accent);
 }
 
-/* .cbc-exam-options button:hover:not(:disabled),
-.cbc-exam-options button:focus-visible,
-.cbc-exam-options button.selected {
-  border-color: var(--cbc-exam-accent);
-  background: var(--cbc-exam-accent-soft);
-  outline: none;
-} */
-
 .cbc-exam-options button {
   position: relative;
   transition:
