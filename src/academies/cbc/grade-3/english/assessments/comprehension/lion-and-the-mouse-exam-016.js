@@ -1,4 +1,5 @@
 import { defineMcqProblem } from '../../../../../../problems/problemAuthoring.js';
+import { placeCorrectAnswerAt, targetAnswerSlotForQuestion } from '../../../../../../utils/cbcAnswerDistribution.js';
 
 export const lionAndTheMousePassage = {
   title: "The Lion and the Mouse",
@@ -499,7 +500,11 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
       content: 'I can read a passage and answer timed comprehension questions.'
     }
   ],
-  options: item.options,
+  options: placeCorrectAnswerAt(
+    item.options,
+    item.correctAnswer,
+    targetAnswerSlotForQuestion(index)
+  ),
   correctAnswer: item.correctAnswer,
   explanation: item.explanation,
   finalTakeaway: 'Use details from the passage to choose the best answer.',

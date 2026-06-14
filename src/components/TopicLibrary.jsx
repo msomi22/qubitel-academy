@@ -6,7 +6,6 @@ import { topicProgress } from '../services/questionBankService.js';
 import { getQuestionSetProgress } from '../services/topicFilterService.js';
 
 const ALL = 'all';
-const POINTER_DWELL_SELECT_MS = 220;
 
 function getVisibleTopicProgress(topic, completed = {}) {
   if (Array.isArray(topic.filteredQuestions)) {
@@ -119,7 +118,6 @@ export default function TopicLibrary({
   const [currentPage, setCurrentPage] = useState(1);
   const [pointerTargetId, setPointerTargetId] = useState('');
   const libraryRef = useRef(null);
-  const pointerSelectTimeoutRef = useRef(null);
 
   const filteredTopics = useMemo(() => {
     return [...topics].sort((a, b) => {
@@ -137,59 +135,38 @@ export default function TopicLibrary({
     const start = (safePage - 1) * topicLibraryConfig.topicsPerPage;
     return filteredTopics.slice(start, start + topicLibraryConfig.topicsPerPage);
   }, [filteredTopics, safePage]);
+
   const selectedTopicIndex = Math.max(0, visibleTopics.findIndex((topic) => topic.id === selectedId));
-  const { focusItem, getItemRef, gridProps } = useGridRemoteNavigation({
+  
+  const { getItemRef, gridProps } = useGridRemoteNavigation({
     itemCount: visibleTopics.length,
     initialIndex: selectedTopicIndex,
+    navigationMode: 'linear',
     onNavigate: handleTopicNavigate
   });
 
   useEffect(() => { setCurrentPage(1); }, [difficulty, completionFilter, sortBy]);
   useEffect(() => { if (safePage !== currentPage) setCurrentPage(safePage); }, [currentPage, safePage]);
-  useEffect(() => () => {
-    if (!pointerSelectTimeoutRef.current) return;
-    window.clearTimeout(pointerSelectTimeoutRef.current.timeoutId);
-  }, []);
 
-  function clearPointerSelectTimer() {
-    if (!pointerSelectTimeoutRef.current) return;
-    window.clearTimeout(pointerSelectTimeoutRef.current.timeoutId);
-    pointerSelectTimeoutRef.current = null;
-  }
-
-  function handlePointerPreview(topicId, index, event) {
+  function handlePointerPreview(topicId, event) {
     if (event.pointerType === 'touch') return;
-
-    focusItem(index, { preventScroll: true, scroll: false });
     setPointerTargetId(topicId);
-
-    if (topicId === selectedId || pointerSelectTimeoutRef.current?.topicId === topicId) return;
-
-    clearPointerSelectTimer();
-    pointerSelectTimeoutRef.current = {
-      topicId,
-      timeoutId: window.setTimeout(() => {
-        pointerSelectTimeoutRef.current = null;
-        onSelect(topicId);
-      }, POINTER_DWELL_SELECT_MS)
-    };
   }
 
   function handlePointerExit() {
-    clearPointerSelectTimer();
     setPointerTargetId('');
   }
 
   function handleTopicNavigate(index) {
-    clearPointerSelectTimer();
     setPointerTargetId('');
+  
     const topic = visibleTopics[index];
     if (!topic || topic.id === selectedId) return;
+  
     onSelect(topic.id);
   }
 
   function handleTopicActivate(topicId) {
-    clearPointerSelectTimer();
     setPointerTargetId('');
     onSelect(topicId);
   }
@@ -221,7 +198,13 @@ export default function TopicLibrary({
           const progressTotal = progress.total || count;
 
           return (
-            <button key={topic.id} type="button" aria-current={selectedId === topic.id ? 'true' : undefined} aria-label={`${shortLabel} — ${topic.name}, ${countLabel}, ${progress.done}/${progressTotal} complete`} className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${pointerTargetId === topic.id ? 'is-pointer-target' : ''} ${fullyCompleted ? 'done' : ''}`} data-grid-nav-item="true" onClick={() => handleTopicActivate(topic.id)} onPointerEnter={(event) => handlePointerPreview(topic.id, index, event)} onPointerLeave={handlePointerExit} onPointerMove={(event) => handlePointerPreview(topic.id, index, event)} ref={getItemRef(index)}>
+            <button key={topic.id} type="button" aria-current={selectedId === topic.id ? 'true' : undefined} aria-label={`${shortLabel} — ${topic.name}, ${countLabel}, ${progress.done}/${progressTotal} complete`} 
+               className={`topic-tab glass premium-topic-rail-item icon-${getTopicIconType(topic)} ${selectedId === topic.id ? 'active' : ''} ${pointerTargetId === topic.id ? 'is-pointer-target' : ''} ${fullyCompleted ? 'done' : ''}`} data-grid-nav-item="true" 
+               onClick={() => handleTopicActivate(topic.id)} 
+               onPointerEnter={(event) => handlePointerPreview(topic.id, event)}
+               onPointerLeave={handlePointerExit}
+               onPointerMove={(event) => handlePointerPreview(topic.id, event)}
+               ref={getItemRef(index)}>
               <TopicIcon topic={topic} />
               <span className="premium-topic-rail-copy"><strong>{topic.name}</strong><em>{progress.done}/{progressTotal} complete</em></span>
               <span className="premium-topic-rail-compact" aria-hidden="true"><strong>{shortLabel}</strong><small>{countLabel}</small></span>

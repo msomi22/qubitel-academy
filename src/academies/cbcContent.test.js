@@ -37,6 +37,16 @@ import partsOfSpeechExamOne from './cbc/grade-3/english/assessments/spelling/gra
 import partsOfSpeechExamTwo from './cbc/grade-3/english/assessments/spelling/grade-3-parts-of-speech-spelling-exam-002.js';
 import timedComprehensionExam from './cbc/grade-3/english/assessments/comprehension/reading-comprehension-class-library-exam-001.js';
 import kiswahiliHadithiExam from './cbc/grade-3/kiswahili/assessments/kiswahili-hadithi-exam-001.js';
+import faithfulCollieExam from './cbc/grade-3/english/assessments/comprehension/faithful-collie-exam-011.js';
+import bearCubAdventureExam from './cbc/grade-3/english/assessments/comprehension/bear-cub-adventure-exam-012.js';
+import blackBeautyAndGingerExam from './cbc/grade-3/english/assessments/comprehension/black-beauty-and-ginger-exam-013.js';
+import johnAndTheCherriesExam from './cbc/grade-3/english/assessments/comprehension/john-and-the-cherries-exam-014.js';
+import campingHolidayExam from './cbc/grade-3/english/assessments/comprehension/camping-holiday-exam-015.js';
+import lionAndTheMouseExam from './cbc/grade-3/english/assessments/comprehension/lion-and-the-mouse-exam-016.js';
+import foxAndTheGoatExam from './cbc/grade-3/english/assessments/comprehension/fox-and-the-goat-exam-017.js';
+import tomThumbExam from './cbc/grade-3/english/assessments/comprehension/tom-thumb-exam-018.js';
+import someUsefulFindsExam from './cbc/grade-3/english/assessments/comprehension/some-useful-finds-exam-019.js';
+import ramanMeetsTheRockingHorseExam from './cbc/grade-3/english/assessments/comprehension/raman-meets-the-rocking-horse-exam-020.js';
 import { getAcademyCatalog } from './catalog.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
 
@@ -102,7 +112,61 @@ const gradeThreeSpellingExamsSevenToFifteen = [
   ...examFifteen
 ];
 const gradeThreeSpellingQuestions = [spellingLesson, ...gradeThreeSpellingPractice, ...gradeThreeSpellingExams];
-const gradeThreeReadingQuestions = [readingLesson, ...readingPractice, ...timedComprehensionExam];
+
+
+const gradeThreeTimedComprehensionExams = [
+  {
+    examId: 'reading-comprehension-class-library-exam-001',
+    questions: timedComprehensionExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-faithful-collie-exam-011',
+    questions: faithfulCollieExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-bear-cub-adventure-exam-012',
+    questions: bearCubAdventureExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-black-beauty-and-ginger-exam-013',
+    questions: blackBeautyAndGingerExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-john-and-the-cherries-exam-014',
+    questions: johnAndTheCherriesExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-camping-holiday-exam-015',
+    questions: campingHolidayExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-lion-and-the-mouse-exam-016',
+    questions: lionAndTheMouseExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-fox-and-the-goat-exam-017',
+    questions: foxAndTheGoatExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-tom-thumb-exam-018',
+    questions: tomThumbExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-some-useful-finds-exam-019',
+    questions: someUsefulFindsExam
+  },
+  {
+    examId: 'grade-3-english-comprehension-raman-meets-the-rocking-horse-exam-020',
+    questions: ramanMeetsTheRockingHorseExam
+  }
+];
+
+const gradeThreeReadingQuestions = [
+  readingLesson,
+  ...readingPractice,
+  ...gradeThreeTimedComprehensionExams.flatMap((exam) => exam.questions)
+];
+
 const gradeThreePartsOfSpeechExams = [...partsOfSpeechExamOne, ...partsOfSpeechExamTwo];
 const gradeThreePartsOfSpeechQuestions = [partsOfSpeechLesson, ...gradeThreePartsOfSpeechExams];
 const gradeThreeEnglishQuestions = [...gradeThreeSpellingQuestions, ...gradeThreeReadingQuestions, ...gradeThreePartsOfSpeechQuestions];
@@ -188,6 +252,41 @@ test('CBC Grade 1 visual exams have 15 four-option question-only read-aloud ques
     assert.ok(question.promptVisual, question.id);
     assert.ok(Number.isInteger(question.correctAnswer), question.id);
     assert.ok(question.correctAnswer >= 0 && question.correctAnswer < 4, question.id);
+  }
+});
+
+
+test('CBC Grade 3 timed comprehension exams mix correct answer positions across A/B/C/D', () => {
+  for (const group of gradeThreeTimedComprehensionExams) {
+    const counts = [0, 0, 0, 0];
+
+    for (const question of group.questions) {
+      assert.equal(question.options.length, 4, question.id);
+      assert.equal(new Set(question.options).size, 4, question.id);
+      assert.ok(Number.isInteger(question.correctAnswer), question.id);
+      assert.ok(question.correctAnswer >= 0 && question.correctAnswer < 4, question.id);
+      counts[question.correctAnswer] += 1;
+    }
+
+    const usedLetters = counts.filter((count) => count > 0).length;
+    const highestCount = Math.max(...counts);
+
+    assert.ok(
+      usedLetters >= 4,
+      `${group.examId} should use all answer letters A/B/C/D. Counts: ${counts.join(', ')}`
+    );
+
+    assert.ok(
+      highestCount <= Math.ceil(group.questions.length / 2),
+      `${group.examId} should not be dominated by one answer letter. Counts: ${counts.join(', ')}`
+    );
+
+    if (group.questions.length >= 20) {
+      assert.ok(
+        counts.every((count) => count >= 3),
+        `${group.examId} should distribute correct answers repeatedly across A/B/C/D. Counts: ${counts.join(', ')}`
+      );
+    }
   }
 });
 

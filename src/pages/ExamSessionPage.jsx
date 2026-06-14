@@ -348,6 +348,7 @@ export default function ExamSessionPage() {
   const exitSavedRef = useRef(false);
   const sessionRef = useRef({});
   const pendingScrollSnapshotRef = useRef(null);
+  const passageToggleRef = useRef(null);
 
   activeRef.current = view === 'exam';
   sessionRef.current = { answers, currentIndex, startedAt, attemptNumber, timeLeftByQuestion };
@@ -651,6 +652,18 @@ export default function ExamSessionPage() {
     setCurrentIndex((index) => Math.max(0, index - 1));
   }
 
+  function openPassage() {
+    setPassageOpen(true);
+  }
+  
+  function closePassage() {
+    setPassageOpen(false);
+  
+    window.requestAnimationFrame(() => {
+      passageToggleRef.current?.focus();
+    });
+  }
+
   function leaveExam() {
     if (!window.confirm(LEAVE_WARNING)) return;
     saveAbandonedAttempt();
@@ -781,7 +794,12 @@ export default function ExamSessionPage() {
           <strong>{remainingSeconds}s</strong>
         </div>
         {hasTimedComprehension ? (
-          <button type="button" className="cbc-exam-passage-toggle" onClick={() => setPassageOpen(true)}>
+            <button
+            ref={passageToggleRef}
+            type="button"
+            className="cbc-exam-passage-toggle"
+            onClick={openPassage}
+          >
             View Passage
           </button>
         ) : null}
@@ -856,7 +874,7 @@ export default function ExamSessionPage() {
           timeLeft={remainingSeconds}
           activeSentenceId={activePassageSentenceId}
           onActiveSentenceChange={setActivePassageSentenceId}
-          onClose={() => setPassageOpen(false)}
+          onClose={closePassage}
           lang={comprehensionConfig?.readAloud?.lang || 'en-US'}
           preferredVoiceNames={comprehensionConfig?.readAloud?.preferredVoiceNames || []}
         />

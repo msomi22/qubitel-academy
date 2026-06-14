@@ -74,10 +74,28 @@ export default function PassageDrawer({
   passage,
   timeLeft,
   lang = 'en-US',
+  preferredVoiceNames = [],
   activeSentenceId,
   onActiveSentenceChange,
   onClose
 }) {
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    closeButtonRef.current?.focus();
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        onClose?.();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onClose]);
+
   if (!open) return null;
 
   return (
@@ -89,7 +107,12 @@ export default function PassageDrawer({
             <h2 id="cbc-passage-drawer-title">{passage?.title || 'Reading Passage'}</h2>
             <span>Question time left: {formatPassageTime(timeLeft)}</span>
           </div>
-          <button type="button" className="cbc-exam-button primary" onClick={onClose}>
+          <button
+            ref={closeButtonRef}
+            type="button"
+            className="cbc-exam-button primary"
+            onClick={onClose}
+          >
             Back to Question
           </button>
         </header>
