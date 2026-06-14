@@ -67,6 +67,10 @@ import './styles/alphabet-mastery.css';
 import './styles/number-audio-grid.css';
 
 function loadCloudflareAnalytics() {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return;
+  }
+
   const { hostname, protocol } = window.location;
 
   if (protocol !== 'https:' || !hostname.endsWith('qubitel.net')) {
@@ -82,6 +86,10 @@ function loadCloudflareAnalytics() {
 }
 
 function removeTvDebugOverlayAfterSuccessfulBoot() {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return;
+  }
+
   if (!window.__TV_DEBUG_ENABLED__) {
     return;
   }
