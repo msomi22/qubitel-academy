@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from './Button.jsx';
 
 import { performanceConfig } from '../config/performanceConfig.js';
+import { recordCbcLastActivity } from '../services/cbcLastActivityService.js';
 import { createExamEntries } from '../services/examAttemptService.js';
 import {
   buildProblemPath,
@@ -398,13 +399,35 @@ function TopicSection({
 
   function openFocusedProblem(question) {
     if (!question?.id) return;
+    const learningAreaId = returnContext?.learningAreaId || getQuestionLearningAreaId(question);
+    const activityTopicId = returnContext?.topicId || question.topicId || topic.id;
+    const activityTopic = { ...topic, id: activityTopicId };
+
     if (isExamEntry(question)) {
-      navigate(`/exam/${question.id}`);
+      const examPath = `/exam/${question.id}`;
+      recordCbcLastActivity({
+        categoryId: returnContext?.categoryId || question.category || topic.category,
+        topic: activityTopic,
+        topicId: activityTopicId,
+        learningAreaId,
+        activityType: 'assessment',
+        href: examPath
+      });
+      navigate(examPath);
       return;
     }
 
-    const learningAreaId = returnContext?.learningAreaId || getQuestionLearningAreaId(question);
-    navigate(buildProblemPath(question.id, { learningAreaId }), {
+    const problemPath = buildProblemPath(question.id, { learningAreaId });
+    recordCbcLastActivity({
+      categoryId: returnContext?.categoryId || question.category || topic.category,
+      topic: activityTopic,
+      topicId: activityTopicId,
+      learningAreaId,
+      activityType: question.type === 'learning' ? 'lesson' : 'practice',
+      href: problemPath
+    });
+
+    navigate(problemPath, {
       state: { returnToCategory: { ...returnContext, questionId: question.id } }
     });
   }

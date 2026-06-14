@@ -7,6 +7,7 @@ import { getQuestionRenderer } from '../components/question-renderers/registry/q
 import { getActiveAcademy } from '../config/detectAcademy.ts';
 
 import { findQuestionById } from '../services/questionBankService.js';
+import { recordCbcLastActivity } from '../services/cbcLastActivityService.js';
 import {
   getAdjacentQuestions,
   getQuestionsForNavigationScope,
@@ -138,6 +139,33 @@ export default function ProblemPage() {
     lastRecordedQuestionId.current = currentQuestionId;
     recordQuestionOpen(entry.question);
   }, [entry?.question?.id, entry?.question]);
+
+  useEffect(() => {
+    if (!entry?.question?.id) return;
+
+    const categoryId = entry.question.category || entry.topic?.category || entry.category?.id;
+    const topicId = entry.question.topicId || entry.topic?.id;
+
+    recordCbcLastActivity({
+      category: entry.category || { id: categoryId, name: entry.categoryName },
+      categoryId,
+      topic: {
+        ...entry.topic,
+        id: topicId,
+        category: categoryId
+      },
+      topicId,
+      activityType: entry.question.type === 'learning' ? 'lesson' : 'practice',
+      href: `${location.pathname}${location.search}`
+    });
+  }, [
+    entry?.category,
+    entry?.categoryName,
+    entry?.question,
+    entry?.topic,
+    location.pathname,
+    location.search
+  ]);
 
   function handleCompletionClick(id) {
     if (completed[id]) {

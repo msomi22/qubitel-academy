@@ -97,16 +97,19 @@ function categoryClassName(category) {
     .replace(/^-|-$/g, '');
 }
 
-function CategoryCard({ category }) {
+function CategoryCard({ category, getCategoryRoute }) {
   const progress = Number.isFinite(category.progressPercent) ? Math.round(category.progressPercent) : 0;
   const topicCount = formatCount(category.topicCount, 'Topic', 'Topics');
   const questionCount = formatCount(category.quizCount, 'Question', 'Questions');
   const progressCount = `${progress}%`;
+  const route = getCategoryRoute
+    ? getCategoryRoute(category)
+    : category.route || `/category/${category.id}`;
 
   return (
     <Link
       className={`category-card scalable-category-card premium-category-card category-card--${categoryClassName(category)} accent-${categoryAccent(category)}`}
-      to={category.route || `/category/${category.id}`}
+      to={route}
     >
       <div className="premium-category-card__head">
         <span className="premium-category-card__icon" aria-hidden="true">
@@ -137,12 +140,23 @@ function CategoryCard({ category }) {
   );
 }
 
-export default function CategoryLibrary({ categories = [], completed = {} }) {
+export default function CategoryLibrary({
+  categories = [],
+  completed = {},
+  copy = {},
+  getCategoryRoute = null
+}) {
   const [query, setQuery] = useState('');
   const [domain, setDomain] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
   const [currentPage, setCurrentPage] = useState(1);
   const [countedCategories, setCountedCategories] = useState({});
+  const searchLabel = copy.searchLabel || 'Search topics';
+  const searchPlaceholder = copy.searchPlaceholder || 'Search topics...';
+  const controlsLabel = copy.controlsLabel || 'Topic filters';
+  const libraryLabel = copy.libraryLabel || 'Topic categories';
+  const emptyTitle = copy.emptyTitle || 'No topics found';
+  const emptyDescription = copy.emptyDescription || 'Try a broader search or clear the domain filter.';
 
   const debouncedQuery = useDebouncedValue(query, categoryLibraryConfig.categorySearchDebounceMs);
 
@@ -222,16 +236,16 @@ export default function CategoryLibrary({ categories = [], completed = {} }) {
   }
 
   return (
-    <section className="category-library premium-category-library" aria-label="Topic categories">
-      <div className="category-library-controls premium-category-controls" aria-label="Topic filters">
+    <section className="category-library premium-category-library" aria-label={libraryLabel}>
+      <div className="category-library-controls premium-category-controls" aria-label={controlsLabel}>
         <label className="premium-category-controls__search">
-          <span>Search topics</span>
+          <span>{searchLabel}</span>
           <input
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search topics..."
-            aria-label="Search topics"
+            placeholder={searchPlaceholder}
+            aria-label={searchLabel}
             autoComplete="off"
           />
         </label>
@@ -266,14 +280,18 @@ export default function CategoryLibrary({ categories = [], completed = {} }) {
 
       <div className="category-grid scalable-category-grid premium-category-grid">
         {visibleCategories.map((category) => (
-          <CategoryCard key={category.id} category={countedCategories[category.id] || category} />
+          <CategoryCard
+            key={category.id}
+            category={countedCategories[category.id] || category}
+            getCategoryRoute={getCategoryRoute}
+          />
         ))}
       </div>
 
       {!visibleCategories.length ? (
         <div className="empty-state glass-lite premium-category-empty">
-          <h2>No topics found</h2>
-          <p>Try a broader search or clear the domain filter.</p>
+          <h2>{emptyTitle}</h2>
+          <p>{emptyDescription}</p>
         </div>
       ) : null}
 
