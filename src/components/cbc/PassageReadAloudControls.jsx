@@ -14,6 +14,10 @@ function rateForSpeed(speed) {
   return speed === 'slow' ? 0.72 : 0.9;
 }
 
+function isIntentionalCancelError(error) {
+  return error === 'canceled' || error === 'interrupted';
+}
+
 export default function PassageReadAloudControls({
   sentences = [],
   lang = 'en-US',
@@ -29,6 +33,7 @@ export default function PassageReadAloudControls({
 
   const stoppedRef = useRef(false);
   const speedRef = useRef(speed);
+  const readSessionRef = useRef(0);
 
   useEffect(() => {
     setSupported(Boolean(getSpeechSynthesis() && getUtteranceConstructor()));
@@ -40,18 +45,26 @@ export default function PassageReadAloudControls({
 
   useEffect(() => () => {
     stoppedRef.current = true;
+    readSessionRef.current += 1;
     getSpeechSynthesis()?.cancel?.();
     onActiveSentenceChange?.('');
   }, [onActiveSentenceChange]);
 
-  function speakSentence(index) {
+  function isStaleReadSession(sessionId) {
+    return stoppedRef.current || sessionId !== readSessionRef.current;
+  }
+
+  function speakSentence(index, sessionId) {
     const synth = getSpeechSynthesis();
     const Utterance = getUtteranceConstructor();
     const sentence = sentences[index];
 
     if (!synth || !Utterance || !sentence) {
-      setStatus('idle');
-      onActiveSentenceChange?.('');
+      if (!isStaleReadSession(sessionId)) {
+        setStatus('idle');
+        onActiveSentenceChange?.('');
+      }
+
       return;
     }
 
@@ -78,23 +91,35 @@ export default function PassageReadAloudControls({
     if (voice) utterance.voice = voice;
 
     utterance.onend = () => {
-      if (stoppedRef.current) return;
-      speakSentence(index + 1);
+      if (isStaleReadSession(sessionId)) return;
+      speakSentence(index + 1, sessionId);
     };
 
     utterance.onerror = (event) => {
-      if (stoppedRef.current) return;
+      const error = event?.error || '';
+
+      if (isStaleReadSession(sessionId)) {
+        return;
+      }
+
+      if (isIntentionalCancelError(error)) {
+        setStatus('idle');
+        onActiveSentenceChange?.('');
+        return;
+      }
 
       setStatus('idle');
       onActiveSentenceChange?.('');
 
-      const reason = event?.error ? ` (${event.error})` : '';
+      const reason = error ? ` (${error})` : '';
       setErrorMessage(`Read aloud failed on this browser${reason}.`);
     };
 
     try {
       synth.speak(utterance);
     } catch (error) {
+      if (isStaleReadSession(sessionId)) return;
+
       setStatus('idle');
       onActiveSentenceChange?.('');
       setErrorMessage(`Read aloud failed on this browser: ${error?.message || String(error)}`);
@@ -104,11 +129,17 @@ export default function PassageReadAloudControls({
   function startReading() {
     if (!supported || !sentences.length) return;
 
+    const synth = getSpeechSynthesis();
+    const nextSessionId = readSessionRef.current + 1;
+
+    stoppedRef.current = true;
+    readSessionRef.current = nextSessionId;
+    synth?.cancel?.();
+
     setErrorMessage('');
     stoppedRef.current = false;
-    getSpeechSynthesis()?.cancel?.();
     setStatus('reading');
-    speakSentence(0);
+    speakSentence(0, nextSessionId);
   }
 
   function pauseReading() {
@@ -123,6 +154,7 @@ export default function PassageReadAloudControls({
 
   function stopReading() {
     stoppedRef.current = true;
+    readSessionRef.current += 1;
     getSpeechSynthesis()?.cancel?.();
     setStatus('idle');
     setErrorMessage('');
@@ -141,12 +173,15 @@ export default function PassageReadAloudControls({
         >
           Read Aloud
         </button>
+
         <button type="button" className="cbc-exam-button secondary" onClick={pauseReading} disabled={status !== 'reading'}>
           Pause
         </button>
+
         <button type="button" className="cbc-exam-button secondary" onClick={resumeReading} disabled={status !== 'paused'}>
           Resume
         </button>
+
         <button type="button" className="cbc-exam-button quiet" onClick={stopReading} disabled={status === 'idle'}>
           Stop
         </button>
@@ -161,6 +196,7 @@ export default function PassageReadAloudControls({
         >
           Slow
         </button>
+
         <button
           type="button"
           className={speed === 'normal' ? 'active' : ''}
