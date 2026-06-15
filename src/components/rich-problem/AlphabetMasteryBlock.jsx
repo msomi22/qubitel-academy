@@ -6,6 +6,7 @@ const AUTO_READ_DEFAULT_SECONDS = 5;
 const AUTO_READ_INTERVAL_OPTIONS = [2, 3, 5, 10, 15, 30];
 const MIN_AUTO_READ_SECONDS = 2;
 const MAX_AUTO_READ_SECONDS = 60;
+const AUTO_READ_FOCUS_DELAY_MS = 400;
 
 function normalizeAutoReadSeconds(value) {
   const numericValue = Number(value);
@@ -66,6 +67,7 @@ export default function AlphabetMasteryBlock({ block }) {
   const letters = useMemo(() => safeLetters(block), [block]);
   const audioRef = useRef(null);
   const isMountedRef = useRef(false);
+  const autoReadPlayTimerRef = useRef(null);
 
   const [activeCardId, setActiveCardId] = useState('');
   const [playedCardIds, setPlayedCardIds] = useState(() => new Set());
@@ -109,8 +111,16 @@ export default function AlphabetMasteryBlock({ block }) {
   const isAutoReadActive = autoReadStatus !== 'idle';
   const isAutoReadPaused = autoReadStatus === 'paused';
 
+  const clearAutoReadPlayTimer = useCallback(() => {
+    if (!autoReadPlayTimerRef.current) return;
+
+    window.clearTimeout(autoReadPlayTimerRef.current);
+    autoReadPlayTimerRef.current = null;
+  }, []);
+
   const clearCurrentAudio = useCallback(() => {
     if (!audioRef.current) return;
+
     stopAudio(audioRef.current);
     audioRef.current = null;
   }, []);
@@ -120,9 +130,10 @@ export default function AlphabetMasteryBlock({ block }) {
 
     return () => {
       isMountedRef.current = false;
+      clearAutoReadPlayTimer();
       clearCurrentAudio();
     };
-  }, [clearCurrentAudio]);
+  }, [clearAutoReadPlayTimer, clearCurrentAudio]);
 
   useEffect(() => {
     const nextSeconds = normalizeAutoReadSeconds(block?.autoReadSeconds);
@@ -213,12 +224,13 @@ export default function AlphabetMasteryBlock({ block }) {
   }, [clearCurrentAudio]);
 
   const resetAutoReadState = useCallback(() => {
+    clearAutoReadPlayTimer();
     setAutoReadStatus('idle');
     setAutoReadIndex(-1);
     setAutoReadSeconds(autoReadIntervalSeconds);
     setActiveCardId('');
     clearCurrentAudio();
-  }, [autoReadIntervalSeconds, clearCurrentAudio]);
+  }, [autoReadIntervalSeconds, clearAutoReadPlayTimer, clearCurrentAudio]);
 
   const finishAutoRead = useCallback(() => {
     resetAutoReadState();
@@ -234,6 +246,7 @@ export default function AlphabetMasteryBlock({ block }) {
   function handleStartAutoRead() {
     if (!flattenedCards.length) return;
 
+    clearAutoReadPlayTimer();
     setAudioMessage('');
     setAutoReadIndex(0);
     setAutoReadSeconds(autoReadIntervalSeconds);
@@ -250,6 +263,7 @@ export default function AlphabetMasteryBlock({ block }) {
   function handlePauseAutoRead() {
     if (!isAutoReadActive || isAutoReadPaused) return;
 
+    clearAutoReadPlayTimer();
     clearCurrentAudio();
     setActiveCardId('');
     setAutoReadStatus('paused');
@@ -273,6 +287,7 @@ export default function AlphabetMasteryBlock({ block }) {
 
   useEffect(() => {
     if (autoReadStatus === 'idle') return;
+
     if (!flattenedCards.length) {
       resetAutoReadState();
       return;
@@ -284,14 +299,38 @@ export default function AlphabetMasteryBlock({ block }) {
   }, [autoReadIndex, autoReadStatus, finishAutoRead, flattenedCards.length, resetAutoReadState]);
 
   useEffect(() => {
-    if (autoReadStatus !== 'running' || autoReadIndex < 0) return;
+    if (autoReadStatus !== 'running' || autoReadIndex < 0) return undefined;
 
     const item = flattenedCards[autoReadIndex];
-    if (!item?.card) return;
+    if (!item?.card) return undefined;
+
+    clearAutoReadPlayTimer();
 
     focusItem(autoReadIndex);
-    playAlphabetCard(item.card);
-  }, [autoReadIndex, autoReadStatus, flattenedCards, focusItem, playAlphabetCard]);
+    setActiveCardId(item.card.id);
+
+    const cardToRead = item.card;
+    const indexToRead = autoReadIndex;
+
+    autoReadPlayTimerRef.current = window.setTimeout(() => {
+      if (!isMountedRef.current) return;
+      if (autoReadStatus !== 'running') return;
+      if (indexToRead !== autoReadIndex) return;
+
+      playAlphabetCard(cardToRead);
+    }, AUTO_READ_FOCUS_DELAY_MS);
+
+    return () => {
+      clearAutoReadPlayTimer();
+    };
+  }, [
+    autoReadIndex,
+    autoReadStatus,
+    clearAutoReadPlayTimer,
+    flattenedCards,
+    focusItem,
+    playAlphabetCard
+  ]);
 
   useEffect(() => {
     if (autoReadStatus !== 'running' || !flattenedCards.length) return undefined;
