@@ -334,26 +334,29 @@ export default function AlphabetMasteryBlock({ block }) {
 
   useEffect(() => {
     if (autoReadStatus !== 'running' || !flattenedCards.length) return undefined;
-
-    const timeout = window.setTimeout(() => {
-      if (!isMountedRef.current) return;
-
-      if (autoReadSeconds > 1) {
-        setAutoReadSeconds((current) => Math.max(1, current - 1));
-        return;
-      }
-
+  
+    if (autoReadSeconds <= 0) {
+      if (activeCardId) return undefined;
+  
       if (autoReadIndex < flattenedCards.length - 1) {
         setAutoReadIndex((current) => Math.min(current + 1, flattenedCards.length - 1));
         setAutoReadSeconds(autoReadIntervalSeconds);
-        return;
+        return undefined;
       }
-
+  
       finishAutoRead();
+      return undefined;
+    }
+  
+    const timeout = window.setTimeout(() => {
+      if (!isMountedRef.current) return;
+  
+      setAutoReadSeconds((current) => Math.max(0, current - 1));
     }, 1000);
-
+  
     return () => window.clearTimeout(timeout);
   }, [
+    activeCardId,
     autoReadIndex,
     autoReadIntervalSeconds,
     autoReadSeconds,
