@@ -56,6 +56,7 @@ export default function NumberAudioGridBlock({ block }) {
   const numbers = useMemo(() => safeNumbers(block), [block]);
   const audioRef = useRef(null);
   const isMountedRef = useRef(false);
+  const autoReadAudioInProgressRef = useRef(false);
 
   const [activeNumberId, setActiveNumberId] = useState('');
   const [playedNumberIds, setPlayedNumberIds] = useState(() => new Set());
@@ -94,6 +95,7 @@ export default function NumberAudioGridBlock({ block }) {
 
     return () => {
       isMountedRef.current = false;
+      autoReadAudioInProgressRef.current = false;
       clearCurrentAudio();
     };
   }, [clearCurrentAudio]);
@@ -104,7 +106,16 @@ export default function NumberAudioGridBlock({ block }) {
     setAutoReadSeconds(nextSeconds);
   }, [block?.autoReadSeconds]);
 
-  const playNumber = useCallback((item) => {
+  const playNumber = useCallback((item, options = {}) => {
+    const { onDone } = options;
+    let hasCompleted = false;
+
+    function completePlayback() {
+      if (hasCompleted) return;
+      hasCompleted = true;
+      onDone?.();
+    }
+
     clearCurrentAudio();
 
     if (!item?.audioSrc) {
@@ -120,6 +131,7 @@ export default function NumberAudioGridBlock({ block }) {
         setAudioMessage(`Audio is not available for ${item?.label || 'this number'}.`);
       }
 
+      completePlayback();
       return;
     }
 
@@ -135,6 +147,7 @@ export default function NumberAudioGridBlock({ block }) {
 
       audioRef.current = null;
       setActiveNumberId((current) => (current === item.id ? '' : current));
+      completePlayback();
     }, { once: true });
 
     audio.addEventListener('error', () => {
@@ -152,6 +165,7 @@ export default function NumberAudioGridBlock({ block }) {
 
       setActiveNumberId((current) => (current === item.id ? '' : current));
       setAudioMessage(`Audio is not available for ${item.label}.`);
+      completePlayback();
     }, { once: true });
 
     audio.load();
@@ -183,10 +197,12 @@ export default function NumberAudioGridBlock({ block }) {
 
         setActiveNumberId('');
         setAudioMessage(`Audio could not play for ${item.label}.`);
+        completePlayback();
       });
   }, [clearCurrentAudio]);
 
   const resetAutoReadState = useCallback(() => {
+    autoReadAudioInProgressRef.current = false;
     setAutoReadStatus('idle');
     setAutoReadIndex(-1);
     setAutoReadSeconds(autoReadIntervalSeconds);
@@ -206,6 +222,7 @@ export default function NumberAudioGridBlock({ block }) {
   }
 
   function handleStartAutoRead() {
+    autoReadAudioInProgressRef.current = false;
     setAudioMessage('');
     setAutoReadIndex(0);
     setAutoReadSeconds(autoReadIntervalSeconds);
@@ -222,8 +239,8 @@ export default function NumberAudioGridBlock({ block }) {
     if (!isAutoReadActive || isAutoReadPaused) return;
 
     clearCurrentAudio();
-
-    // Keep activeNumberId so Resume at 0s cannot skip the current number.
+    autoReadAudioInProgressRef.current = false;
+    setActiveNumberId('');
     setAutoReadStatus('paused');
     setAudioMessage('Auto Read paused.');
   }
@@ -249,15 +266,21 @@ export default function NumberAudioGridBlock({ block }) {
     const item = numbers[autoReadIndex];
     if (!item) return;
 
+    autoReadAudioInProgressRef.current = true;
+
     focusItem(autoReadIndex);
-    playNumber(item);
+    playNumber(item, {
+      onDone: () => {
+        autoReadAudioInProgressRef.current = false;
+      }
+    });
   }, [autoReadIndex, autoReadStatus, focusItem, numbers, playNumber]);
 
   useEffect(() => {
     if (autoReadStatus !== 'running' || !numbers.length) return undefined;
 
     if (autoReadSeconds <= 0) {
-      if (activeNumberId) return undefined;
+      if (autoReadAudioInProgressRef.current || activeNumberId) return undefined;
 
       if (autoReadIndex < numbers.length - 1) {
         setAutoReadIndex((current) => Math.min(current + 1, numbers.length - 1));
