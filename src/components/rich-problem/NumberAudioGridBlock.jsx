@@ -56,36 +56,46 @@ export default function NumberAudioGridBlock({ block }) {
   const numbers = useMemo(() => safeNumbers(block), [block]);
   const audioRef = useRef(null);
   const isMountedRef = useRef(false);
+  const autoReadAudioInProgressRef = useRef(false);
+
   const [activeNumberId, setActiveNumberId] = useState('');
   const [playedNumberIds, setPlayedNumberIds] = useState(() => new Set());
   const [audioMessage, setAudioMessage] = useState('');
+
   const [autoReadStatus, setAutoReadStatus] = useState('idle');
   const [autoReadIndex, setAutoReadIndex] = useState(-1);
   const [autoReadIntervalSeconds, setAutoReadIntervalSeconds] = useState(() => normalizeAutoReadSeconds(block?.autoReadSeconds));
   const [autoReadSeconds, setAutoReadSeconds] = useState(autoReadIntervalSeconds);
+
   const autoReadIntervalOptions = useMemo(() => {
     return Array.from(new Set([...AUTO_READ_INTERVAL_OPTIONS, autoReadIntervalSeconds])).sort((a, b) => a - b);
   }, [autoReadIntervalSeconds]);
+
   const totalCards = numbers.length;
   const progress = totalCards ? Math.round((playedNumberIds.size / totalCards) * 100) : 0;
+
   const { focusItem, getItemRef, gridProps } = useGridRemoteNavigation({
     itemCount: totalCards,
     initialIndex: 0
   });
+
   const activeAutoReadItem = autoReadStatus !== 'idle' && autoReadIndex >= 0 ? numbers[autoReadIndex] : null;
   const isAutoReadActive = autoReadStatus !== 'idle';
   const isAutoReadPaused = autoReadStatus === 'paused';
 
   const clearCurrentAudio = useCallback(() => {
     if (!audioRef.current) return;
+
     stopAudio(audioRef.current);
     audioRef.current = null;
   }, []);
 
   useEffect(() => {
     isMountedRef.current = true;
+
     return () => {
       isMountedRef.current = false;
+      autoReadAudioInProgressRef.current = false;
       clearCurrentAudio();
     };
   }, [clearCurrentAudio]);
@@ -96,7 +106,16 @@ export default function NumberAudioGridBlock({ block }) {
     setAutoReadSeconds(nextSeconds);
   }, [block?.autoReadSeconds]);
 
-  const playNumber = useCallback((item) => {
+  const playNumber = useCallback((item, options = {}) => {
+    const { onDone } = options;
+    let hasCompleted = false;
+
+    function completePlayback() {
+      if (hasCompleted) return;
+      hasCompleted = true;
+      onDone?.();
+    }
+
     clearCurrentAudio();
 
     if (!item?.audioSrc) {
@@ -106,28 +125,36 @@ export default function NumberAudioGridBlock({ block }) {
         audioFile: item?.audioFile,
         item
       });
+
       if (isMountedRef.current) {
         setActiveNumberId('');
         setAudioMessage(`Audio is not available for ${item?.label || 'this number'}.`);
       }
+
+      completePlayback();
       return;
     }
 
     const audio = new Audio(item.audioSrc);
     audio.preload = 'auto';
     audioRef.current = audio;
+
     setActiveNumberId(item.id);
     setAudioMessage('');
 
     audio.addEventListener('ended', () => {
       if (!isMountedRef.current || audioRef.current !== audio) return;
+
       audioRef.current = null;
       setActiveNumberId((current) => (current === item.id ? '' : current));
+      completePlayback();
     }, { once: true });
 
     audio.addEventListener('error', () => {
       if (!isMountedRef.current || audioRef.current !== audio) return;
+
       audioRef.current = null;
+
       console.warn('Number audio element error', {
         numberId: item.id,
         label: item.label,
@@ -135,8 +162,10 @@ export default function NumberAudioGridBlock({ block }) {
         audioSrc: item.audioSrc,
         mediaError: audio.error
       });
+
       setActiveNumberId((current) => (current === item.id ? '' : current));
       setAudioMessage(`Audio is not available for ${item.label}.`);
+      completePlayback();
     }, { once: true });
 
     audio.load();
@@ -144,6 +173,7 @@ export default function NumberAudioGridBlock({ block }) {
     audio.play()
       .then(() => {
         if (!isMountedRef.current) return;
+
         setPlayedNumberIds((current) => {
           const next = new Set(current);
           next.add(item.id);
@@ -152,7 +182,9 @@ export default function NumberAudioGridBlock({ block }) {
       })
       .catch((error) => {
         if (!isMountedRef.current || audioRef.current !== audio || error?.name === 'AbortError') return;
+
         audioRef.current = null;
+
         console.warn('Number audio playback failed', {
           numberId: item.id,
           label: item.label,
@@ -162,12 +194,15 @@ export default function NumberAudioGridBlock({ block }) {
           errorMessage: error?.message,
           error
         });
+
         setActiveNumberId('');
         setAudioMessage(`Audio could not play for ${item.label}.`);
+        completePlayback();
       });
   }, [clearCurrentAudio]);
 
   const resetAutoReadState = useCallback(() => {
+    autoReadAudioInProgressRef.current = false;
     setAutoReadStatus('idle');
     setAutoReadIndex(-1);
     setAutoReadSeconds(autoReadIntervalSeconds);
@@ -187,6 +222,7 @@ export default function NumberAudioGridBlock({ block }) {
   }
 
   function handleStartAutoRead() {
+    autoReadAudioInProgressRef.current = false;
     setAudioMessage('');
     setAutoReadIndex(0);
     setAutoReadSeconds(autoReadIntervalSeconds);
@@ -201,7 +237,9 @@ export default function NumberAudioGridBlock({ block }) {
 
   function handlePauseAutoRead() {
     if (!isAutoReadActive || isAutoReadPaused) return;
+
     clearCurrentAudio();
+    autoReadAudioInProgressRef.current = false;
     setActiveNumberId('');
     setAutoReadStatus('paused');
     setAudioMessage('Auto Read paused.');
@@ -209,12 +247,14 @@ export default function NumberAudioGridBlock({ block }) {
 
   function handleResumeAutoRead() {
     if (!isAutoReadPaused) return;
+
     setAudioMessage('');
     setAutoReadStatus('running');
   }
 
   function handleStopAutoRead() {
     const focusIndex = autoReadIndex >= 0 ? autoReadIndex : 0;
+
     resetAutoReadState();
     setAudioMessage('Auto Read stopped.');
     window.requestAnimationFrame(() => focusItem(focusIndex));
@@ -222,34 +262,52 @@ export default function NumberAudioGridBlock({ block }) {
 
   useEffect(() => {
     if (autoReadStatus !== 'running' || autoReadIndex < 0) return;
+
     const item = numbers[autoReadIndex];
     if (!item) return;
 
+    autoReadAudioInProgressRef.current = true;
+
     focusItem(autoReadIndex);
-    playNumber(item);
+    playNumber(item, {
+      onDone: () => {
+        autoReadAudioInProgressRef.current = false;
+      }
+    });
   }, [autoReadIndex, autoReadStatus, focusItem, numbers, playNumber]);
 
   useEffect(() => {
     if (autoReadStatus !== 'running' || !numbers.length) return undefined;
 
-    const timeout = window.setTimeout(() => {
-      if (!isMountedRef.current) return;
-      if (autoReadSeconds > 1) {
-        setAutoReadSeconds((current) => Math.max(1, current - 1));
-        return;
-      }
+    if (autoReadSeconds <= 0) {
+      if (autoReadAudioInProgressRef.current || activeNumberId) return undefined;
 
       if (autoReadIndex < numbers.length - 1) {
         setAutoReadIndex((current) => Math.min(current + 1, numbers.length - 1));
         setAutoReadSeconds(autoReadIntervalSeconds);
-        return;
+        return undefined;
       }
 
       finishAutoRead();
+      return undefined;
+    }
+
+    const timeout = window.setTimeout(() => {
+      if (!isMountedRef.current) return;
+
+      setAutoReadSeconds((current) => Math.max(0, current - 1));
     }, 1000);
 
     return () => window.clearTimeout(timeout);
-  }, [autoReadIndex, autoReadIntervalSeconds, autoReadSeconds, autoReadStatus, finishAutoRead, numbers.length]);
+  }, [
+    activeNumberId,
+    autoReadIndex,
+    autoReadIntervalSeconds,
+    autoReadSeconds,
+    autoReadStatus,
+    finishAutoRead,
+    numbers.length
+  ]);
 
   if (!numbers.length) {
     return (
@@ -272,7 +330,9 @@ export default function NumberAudioGridBlock({ block }) {
           <h4 id="number-audio-heading">{block.title || 'Numbers 1–100'}</h4>
           {block.subtitle ? <p>{block.subtitle}</p> : null}
         </div>
+
         <div className="number-audio-mascot" aria-hidden="true">123</div>
+
         <div className="number-audio-progress" aria-label={`${progress}% complete`}>
           <span>My Progress</span>
           <strong>{progress}%</strong>
@@ -284,6 +344,7 @@ export default function NumberAudioGridBlock({ block }) {
         <span className="number-audio-tab is-active">1-100</span>
         <span className="number-audio-toolbar-count">{totalCards} cards</span>
         <span className="number-audio-sound-status">Sound on</span>
+
         <div className="number-audio-auto-controls" aria-label="Auto Read controls">
           <label className="number-audio-interval-control">
             <span>Every</span>
@@ -293,6 +354,7 @@ export default function NumberAudioGridBlock({ block }) {
               ))}
             </select>
           </label>
+
           {!isAutoReadActive ? (
             <button className="number-audio-auto-button" onClick={handleStartAutoRead} type="button">
               Auto Read
@@ -303,6 +365,7 @@ export default function NumberAudioGridBlock({ block }) {
                 <strong>{isAutoReadPaused ? `Paused: ${autoReadSeconds}s` : `Auto Read: ${autoReadSeconds}s`}</strong>
                 <small>Next number in {autoReadSeconds} seconds</small>
               </span>
+
               <button
                 className="number-audio-auto-button number-audio-auto-button--secondary"
                 onClick={isAutoReadPaused ? handleResumeAutoRead : handlePauseAutoRead}
@@ -310,6 +373,7 @@ export default function NumberAudioGridBlock({ block }) {
               >
                 {isAutoReadPaused ? 'Resume' : 'Pause'}
               </button>
+
               <button className="number-audio-auto-button number-audio-auto-button--secondary" onClick={handleStopAutoRead} type="button">
                 Stop
               </button>
