@@ -6,6 +6,7 @@ const AUTO_READ_DEFAULT_SECONDS = 5;
 const AUTO_READ_INTERVAL_OPTIONS = [2, 3, 5, 10, 15, 30];
 const MIN_AUTO_READ_SECONDS = 2;
 const MAX_AUTO_READ_SECONDS = 60;
+const AUTO_READ_FOCUS_DELAY_MS = 400;
 
 function normalizeAutoReadSeconds(value) {
   const numericValue = Number(value);
@@ -57,6 +58,7 @@ export default function NumberAudioGridBlock({ block }) {
   const audioRef = useRef(null);
   const isMountedRef = useRef(false);
   const autoReadAudioInProgressRef = useRef(false);
+  const autoReadPlayTimerRef = useRef(null);
 
   const [activeNumberId, setActiveNumberId] = useState('');
   const [playedNumberIds, setPlayedNumberIds] = useState(() => new Set());
@@ -83,6 +85,13 @@ export default function NumberAudioGridBlock({ block }) {
   const isAutoReadActive = autoReadStatus !== 'idle';
   const isAutoReadPaused = autoReadStatus === 'paused';
 
+  const clearAutoReadPlayTimer = useCallback(() => {
+    if (!autoReadPlayTimerRef.current) return;
+
+    window.clearTimeout(autoReadPlayTimerRef.current);
+    autoReadPlayTimerRef.current = null;
+  }, []);
+
   const clearCurrentAudio = useCallback(() => {
     if (!audioRef.current) return;
 
@@ -96,9 +105,10 @@ export default function NumberAudioGridBlock({ block }) {
     return () => {
       isMountedRef.current = false;
       autoReadAudioInProgressRef.current = false;
+      clearAutoReadPlayTimer();
       clearCurrentAudio();
     };
-  }, [clearCurrentAudio]);
+  }, [clearAutoReadPlayTimer, clearCurrentAudio]);
 
   useEffect(() => {
     const nextSeconds = normalizeAutoReadSeconds(block?.autoReadSeconds);
@@ -202,13 +212,14 @@ export default function NumberAudioGridBlock({ block }) {
   }, [clearCurrentAudio]);
 
   const resetAutoReadState = useCallback(() => {
+    clearAutoReadPlayTimer();
     autoReadAudioInProgressRef.current = false;
     setAutoReadStatus('idle');
     setAutoReadIndex(-1);
     setAutoReadSeconds(autoReadIntervalSeconds);
     setActiveNumberId('');
     clearCurrentAudio();
-  }, [autoReadIntervalSeconds, clearCurrentAudio]);
+  }, [autoReadIntervalSeconds, clearAutoReadPlayTimer, clearCurrentAudio]);
 
   const finishAutoRead = useCallback(() => {
     resetAutoReadState();
@@ -222,6 +233,7 @@ export default function NumberAudioGridBlock({ block }) {
   }
 
   function handleStartAutoRead() {
+    clearAutoReadPlayTimer();
     autoReadAudioInProgressRef.current = false;
     setAudioMessage('');
     setAutoReadIndex(0);
@@ -238,6 +250,7 @@ export default function NumberAudioGridBlock({ block }) {
   function handlePauseAutoRead() {
     if (!isAutoReadActive || isAutoReadPaused) return;
 
+    clearAutoReadPlayTimer();
     clearCurrentAudio();
     autoReadAudioInProgressRef.current = false;
     setActiveNumberId('');
@@ -261,20 +274,43 @@ export default function NumberAudioGridBlock({ block }) {
   }
 
   useEffect(() => {
-    if (autoReadStatus !== 'running' || autoReadIndex < 0) return;
+    if (autoReadStatus !== 'running' || autoReadIndex < 0) return undefined;
 
     const item = numbers[autoReadIndex];
-    if (!item) return;
+    if (!item) return undefined;
+
+    clearAutoReadPlayTimer();
+
+    focusItem(autoReadIndex);
+    setActiveNumberId(item.id);
+
+    const numberToRead = item;
+    const indexToRead = autoReadIndex;
 
     autoReadAudioInProgressRef.current = true;
 
-    focusItem(autoReadIndex);
-    playNumber(item, {
-      onDone: () => {
-        autoReadAudioInProgressRef.current = false;
-      }
-    });
-  }, [autoReadIndex, autoReadStatus, focusItem, numbers, playNumber]);
+    autoReadPlayTimerRef.current = window.setTimeout(() => {
+      if (!isMountedRef.current) return;
+      if (indexToRead !== autoReadIndex) return;
+
+      playNumber(numberToRead, {
+        onDone: () => {
+          autoReadAudioInProgressRef.current = false;
+        }
+      });
+    }, AUTO_READ_FOCUS_DELAY_MS);
+
+    return () => {
+      clearAutoReadPlayTimer();
+    };
+  }, [
+    autoReadIndex,
+    autoReadStatus,
+    clearAutoReadPlayTimer,
+    focusItem,
+    numbers,
+    playNumber
+  ]);
 
   useEffect(() => {
     if (autoReadStatus !== 'running' || !numbers.length) return undefined;
