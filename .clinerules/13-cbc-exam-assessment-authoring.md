@@ -124,3 +124,20 @@ If a proposed answer exists only as a distractor in another exam, Cline may stil
 If Cline cannot inspect all relevant existing registered exam files, it must stop and ask for review before creating or editing files.
 
 This duplicate inspection rule applies to all CBC grades and subjects.
+
+
+## Assessment folder rule
+
+CBC exams must be grouped by learning area inside `assessments`.
+
+Use this pattern:
+
+```text
+src/academies/cbc/<grade>/<subject>/assessments/<learning-area-id>/<exam-file>.js
+
+Examples:
+
+src/academies/cbc/grade-1/english/assessments/reading-readiness/reading-word-mastery-exam-006.js
+src/academies/cbc/grade-1/english/assessments/writing-readiness/writing-missing-letters-exam-001.js
+
+Do not place new exams directly under assessments/ unless the existing architecture for that exact learning area already uses that pattern.

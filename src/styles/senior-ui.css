@@ -60,6 +60,10 @@
   --sidebar-width: 220px;
   --footer-height: 36px;
   --page-padding: 32px;
+  --word-chip-bg: #eaf8f0;
+  --word-chip-border: #a7d7bc;
+  --word-chip-text: #1f5c3f;
+  --word-chip-missing: #b45309;
 }
 
 :root[data-theme="dark"] {
@@ -114,6 +118,10 @@
   --code-text: #f5f2ec;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 10px 26px rgba(0, 0, 0, 0.24);
   --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --word-chip-bg: #163328;
+  --word-chip-border: #2f6b52;
+  --word-chip-text: #ddf7e8;
+  --word-chip-missing: #facc15;
 }
 
 html,

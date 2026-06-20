@@ -1,3 +1,28 @@
+.cbc-word-pattern-chip {
+  display: inline-flex;
+  justify-content: center;
+  padding: 10px 24px;
+  border: 2px solid var(--word-chip-border);
+  border-radius: 16px;
+  background: var(--word-chip-bg);
+  justify-self: center;
+}
+
+.cbc-word-pattern-text {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+}
+
+.cbc-word-pattern-letter {
+  color: var(--word-chip-text);
+}
+
+.cbc-word-pattern-missing {
+  color: var(--word-chip-missing);
+}
+
 .cbc-grade-one-card {
   display: grid;
   gap: clamp(7px, 1.8vw, 12px);

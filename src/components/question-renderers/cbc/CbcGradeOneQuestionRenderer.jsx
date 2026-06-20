@@ -22,6 +22,35 @@ function friendlyPrompt(question) {
   return question?.question || question?.prompt || question?.readAloudText || question?.title || 'Choose the correct answer.';
 }
 
+function WordPatternChip({ question }) {
+  const wordPattern = question?.rendering?.wordPattern;
+  
+  // Only show chip when rendering.wordPattern is explicitly set
+  if (!wordPattern) return null;
+
+  const tokens = wordPattern.split(' ').map((token, i) => {
+    if (token === '_') {
+      return { char: '_', isMissing: true, key: `m-${i}` };
+    }
+    return { char: token, isMissing: false, key: `c-${i}` };
+  });
+
+  return (
+    <div className="cbc-word-pattern-chip">
+      <span className="cbc-word-pattern-text">
+        {tokens.map(({ char, isMissing, key }) => (
+          <span
+            key={key}
+            className={isMissing ? 'cbc-word-pattern-missing' : 'cbc-word-pattern-letter'}
+          >
+            {char}
+          </span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 function navigationState(navigation) {
   return {
     ...(navigation?.returnToCategory ? { returnToCategory: navigation.returnToCategory } : {}),
@@ -104,8 +133,15 @@ export default function CbcGradeOneQuestionRenderer({
       <div className="cbc-grade-one-body-scroll">
         <header className="cbc-grade-one-header">
           <p>Grade 1 Practice</p>
-          <h1 id="grade-one-question-title">{friendlyPrompt(question)}</h1>
+          <h1
+            id="grade-one-question-title"
+            className={question?.rendering?.suppressPromptHeading ? 'sr-only' : undefined}
+          >
+            {friendlyPrompt(question)}
+          </h1>
         </header>
+
+        <WordPatternChip question={question} />
 
         <ReadAloudButton question={{ ...question, autoReadAloud: false }} className="cbc-grade-one-read-aloud" />
 
