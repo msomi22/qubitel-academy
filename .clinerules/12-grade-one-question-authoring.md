@@ -440,3 +440,14 @@ No duplicate will be created: confirmed
 ```
 
 If Cline cannot confidently determine whether the item already exists, it must stop and ask for review before creating files.
+
+
+## Missing-letter position rule
+
+Writing Readiness missing-letter exams must include missing letters from different positions where appropriate:
+
+- beginning: `_ow` -> cow
+- middle: `c_w` -> cow
+- ending: `co_` -> cow
+
+Do not make every question a missing-middle-letter question unless the exam title specifically says “Missing Middle Letters”.
