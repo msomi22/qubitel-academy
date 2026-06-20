@@ -7,7 +7,7 @@ function emoji(value) {
 const examId = 'grade-1-reading-word-mastery-exam-003';
 const examTitle = 'Exam 3: Beginning Sounds F, G and H';
 const learningAreaId = 'reading-readiness';
-const questionTimeSeconds = 30;
+const questionTimeSeconds = 60;
 const sequenceBase = 1020;
 
 const questions = [

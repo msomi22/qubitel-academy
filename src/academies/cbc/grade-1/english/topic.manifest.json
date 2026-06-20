@@ -58,6 +58,11 @@
   ],
   "assessments": [
     {
+      "id": "writing-missing-letters-exam-001",
+      "file": "assessments/writing-readiness/writing-missing-letters-exam-001.js",
+      "learningAreaId": "writing-readiness"
+    },
+    {
       "id": "object-matching-exam-001",
       "file": "assessments/reading-readiness/object-matching-exam-001.js",
       "learningAreaId": "reading-readiness"

@@ -316,7 +316,7 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
   assert.deepEqual(english.lessons.map((item) => item.id), ['alphabet-mastery-lesson-001']);
   assert.equal(english.lessons[0].learningAreaId, 'alphabet-mastery');
   assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-002']);
-  assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001', 'reading-word-mastery-exam-002', 'reading-word-mastery-exam-003', 'reading-word-mastery-exam-004', 'reading-word-mastery-exam-005', 'reading-word-mastery-exam-006']);
+  assert.deepEqual(english.assessments.map((item) => item.id), ['writing-missing-letters-exam-001', 'object-matching-exam-001', 'reading-word-mastery-exam-002', 'reading-word-mastery-exam-003', 'reading-word-mastery-exam-004', 'reading-word-mastery-exam-005', 'reading-word-mastery-exam-006']);
   assert.equal(english.learningAreas.some((area) => area.id === 'parts-of-speech'), false);
   assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);
   assert.deepEqual(mathematics.lessons.map((item) => item.id), ['numbers-1-100-lesson-001']);

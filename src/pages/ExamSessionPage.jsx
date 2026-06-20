@@ -40,6 +40,35 @@ function optionVisualFor(question, index) {
   return question?.optionVisuals?.[index] || question?.metadata?.optionVisuals?.[index] || null;
 }
 
+function WordPatternChip({ question }) {
+  const wordPattern = question?.rendering?.wordPattern;
+  
+  // Only show chip when rendering.wordPattern is explicitly set
+  if (!wordPattern) return null;
+
+  const tokens = wordPattern.split(' ').map((token, i) => {
+    if (token === '_') {
+      return { char: '_', isMissing: true, key: `m-${i}` };
+    }
+    return { char: token, isMissing: false, key: `c-${i}` };
+  });
+
+  return (
+    <div className="cbc-word-pattern-chip">
+      <span className="cbc-word-pattern-text">
+        {tokens.map(({ char, isMissing, key }) => (
+          <span
+            key={key}
+            className={isMissing ? 'cbc-word-pattern-missing' : 'cbc-word-pattern-letter'}
+          >
+            {char}
+          </span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 function hasVisualMcq(question) {
   return Boolean(
     question?.interactionType === 'visual-mcq'
@@ -820,6 +849,7 @@ export default function ExamSessionPage() {
         <div className="cbc-exam-question-scroll">
           <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
           <h2>{currentQuestion.question}</h2>
+          <WordPatternChip question={currentQuestion} />
           <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
           {promptVisual ? (
             <div className="cbc-exam-prompt-visual" aria-label="Question visual">
