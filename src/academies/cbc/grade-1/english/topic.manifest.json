@@ -59,7 +59,27 @@
   "assessments": [
     {
       "id": "object-matching-exam-001",
-      "file": "assessments/object-matching-exam-001.js",
+      "file": "assessments/reading-readiness/object-matching-exam-001.js",
+      "learningAreaId": "reading-readiness"
+    },
+    {
+      "id": "reading-word-mastery-exam-001",
+      "file": "assessments/reading-readiness/reading-word-mastery-exam-001.js",
+      "learningAreaId": "reading-readiness"
+    },
+    {
+      "id": "reading-word-mastery-exam-002",
+      "file": "assessments/reading-readiness/reading-word-mastery-exam-002.js",
+      "learningAreaId": "reading-readiness"
+    },
+    {
+      "id": "reading-word-mastery-exam-003",
+      "file": "assessments/reading-readiness/reading-word-mastery-exam-003.js",
+      "learningAreaId": "reading-readiness"
+    },
+    {
+      "id": "reading-word-mastery-exam-004",
+      "file": "assessments/reading-readiness/reading-word-mastery-exam-004.js",
       "learningAreaId": "reading-readiness"
     }
   ]
