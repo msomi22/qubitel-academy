@@ -33,6 +33,21 @@ Use the actual diff and changed files to generate:
 * skipped validation notes, if any
 * issue references only when provided or clearly present in the task
 
+## No-command PR generation mode
+
+If the user explicitly says:
+
+- do not run commands
+- generate from known context only
+- commands are blocked
+- commands were skipped
+
+then Cline must not run git commands.
+
+Cline must generate the PR title and description from the known task context and clearly mark validation as unconfirmed if needed.
+
+Cline must stop after producing the PR title and description.
+
 ## GitHub CLI availability check
 
 Before attempting to create a GitHub pull request, check whether GitHub CLI is installed and authenticated:
@@ -75,6 +90,9 @@ PR Description:
 - <change 1>
 - <change 2>
 
+## Issue
+- Closes #<issue-number>
+
 ## Files Changed
 - `<path>` — <short reason>
 - `<path>` — <short reason>
@@ -98,6 +116,14 @@ If validation was already run successfully, mark it as checked:
 ```
 
 If validation was skipped, keep it unchecked and explain why.
+
+If no issue number is available, use:
+
+```text
+## Issue
+- TODO: Add issue reference, for example `Closes #<issue-number>`.
+```
+
 
 ## Issue references
 
