@@ -5,171 +5,171 @@ function emoji(value) {
 }
 
 const examId = 'grade-1-reading-word-mastery-exam-002';
-const examTitle = 'Exam 2: Beginning Sounds F, G and H';
+const examTitle = 'Exam 2: Beginning Sounds B, C and D';
 const learningAreaId = 'reading-readiness';
-const questionTimeSeconds = 30;
-const sequenceBase = 1020;
+const questionTimeSeconds = 60;
+const sequenceBase = 1000;
 
 const questions = [
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word fan.',
-    visualHint: '🪭',
-    options: ['hug', 'run', 'fan', 'fix'],
-    correctAnswer: 'fan',
-    explanation: 'fan is the word you heard.'
+    readAloudText: 'Tap the word bat.',
+    visualHint: '🦇',
+    options: ['bed', 'fit', 'bat', 'top'],
+    correctAnswer: 'bat',
+    explanation: 'bat is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word gum.',
-    visualHint: '🍬',
-    options: ['gum', 'jug', 'ram', 'tin'],
-    correctAnswer: 'gum',
-    explanation: 'gum is the word for the picture.'
+    readAloudText: 'Find the word cat.',
+    visualHint: '🐱',
+    options: ['cat', 'log', 'pen', 'mop'],
+    correctAnswer: 'cat',
+    explanation: 'cat is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word hat.',
-    visualHint: '🎩',
-    options: ['got', 'keg', 'big', 'hat'],
-    correctAnswer: 'hat',
-    explanation: 'hat is the word you heard.'
+    readAloudText: 'Tap the word dog.',
+    visualHint: '🐶',
+    options: ['nod', 'van', 'mop', 'dog'],
+    correctAnswer: 'dog',
+    explanation: 'dog is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word fox.',
-    visualHint: '🦊',
-    options: ['pen', 'fox', 'ham', 'sad'],
-    correctAnswer: 'fox',
-    explanation: 'fox is the word for the picture.'
+    readAloudText: 'Find the word bed.',
+    visualHint: '🛏️',
+    options: ['leg', 'bed', 'tag', 'fog'],
+    correctAnswer: 'bed',
+    explanation: 'bed is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word gap.',
-    visualHint: '↔️',
-    options: ['toy', 'gap', 'jug', 'zip'],
-    correctAnswer: 'gap',
-    explanation: 'gap is the word you heard.'
+    readAloudText: 'Tap the word cup.',
+    visualHint: '☕',
+    options: ['hug', 'cup', 'wax', 'pig'],
+    correctAnswer: 'cup',
+    explanation: 'cup is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word hen.',
-    visualHint: '🐔',
-    options: ['lap', 'box', 'zoo', 'hen'],
-    correctAnswer: 'hen',
-    explanation: 'hen is the word for the picture.'
+    readAloudText: 'Find the word dad.',
+    visualHint: '👨',
+    options: ['sat', 'cab', 'new', 'dad'],
+    correctAnswer: 'dad',
+    explanation: 'dad is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word fin.',
-    visualHint: '🐟',
-    options: ['fin', 'war', 'pet', 'cod'],
-    correctAnswer: 'fin',
-    explanation: 'fin is the word you heard.'
+    readAloudText: 'Tap the word bib.',
+    visualHint: '👶',
+    options: ['bib', 'tag', 'net', 'mop'],
+    correctAnswer: 'bib',
+    explanation: 'bib is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word gas.',
-    visualHint: '⛽',
-    options: ['jar', 'van', 'gas', 'ten'],
-    correctAnswer: 'gas',
-    explanation: 'gas is the word for the picture.'
+    readAloudText: 'Find the word cow.',
+    visualHint: '🐄',
+    options: ['web', 'bib', 'cow', 'fig'],
+    correctAnswer: 'cow',
+    explanation: 'cow is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word hop.',
-    visualHint: '🐰',
-    options: ['nod', 'bat', 'dig', 'hop'],
-    correctAnswer: 'hop',
-    explanation: 'hop is the word you heard.'
+    readAloudText: 'Tap the word den.',
+    visualHint: '🏠',
+    options: ['new', 'rat', 'wet', 'den'],
+    correctAnswer: 'den',
+    explanation: 'den is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word fun.',
-    visualHint: '🎈',
-    options: ['tub', 'fun', 'kid', 'wet'],
-    correctAnswer: 'fun',
-    explanation: 'fun is the word for the picture.'
+    readAloudText: 'Find the word bug.',
+    visualHint: '🐞',
+    options: ['mat', 'bug', 'hug', 'pup'],
+    correctAnswer: 'bug',
+    explanation: 'bug is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word get.',
-    visualHint: '✋',
-    options: ['hut', 'yap', 'get', 'mad'],
-    correctAnswer: 'get',
-    explanation: 'get is the word you heard.'
+    readAloudText: 'Tap the word car.',
+    visualHint: '🚗',
+    options: ['jam', 'fin', 'car', 'job'],
+    correctAnswer: 'car',
+    explanation: 'car is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word hot.',
-    visualHint: '🔥',
-    options: ['hot', 'win', 'mat', 'wig'],
-    correctAnswer: 'hot',
-    explanation: 'hot is the word for the picture.'
+    readAloudText: 'Find the word dig.',
+    visualHint: '⛏️',
+    options: ['dig', 'pop', 'was', 'wig'],
+    correctAnswer: 'dig',
+    explanation: 'dig is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word fog.',
-    visualHint: '🌫️',
-    options: ['fog', 'box', 'net', 'top'],
-    correctAnswer: 'fog',
-    explanation: 'fog is the word you heard.'
+    readAloudText: 'Tap the word bus.',
+    visualHint: '🚌',
+    options: ['bus', 'zip', 'run', 'rip'],
+    correctAnswer: 'bus',
+    explanation: 'bus is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word got.',
-    visualHint: '✅',
-    options: ['day', 'fix', 'got', 'boy'],
-    correctAnswer: 'got',
-    explanation: 'got is the word for the picture.'
+    readAloudText: 'Find the word cap.',
+    visualHint: '🧢',
+    options: ['net', 'yap', 'cap', 'get'],
+    correctAnswer: 'cap',
+    explanation: 'cap is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word hug.',
-    visualHint: '🤗',
-    options: ['him', 'hug', 'car', 'hot'],
-    correctAnswer: 'hug',
-    explanation: 'hug is the word you heard.'
+    readAloudText: 'Tap the word dot.',
+    visualHint: '⚫',
+    options: ['wet', 'dot', 'dam', 'zip'],
+    correctAnswer: 'dot',
+    explanation: 'dot is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word fat.',
-    visualHint: '🐷',
-    options: ['jam', 'cat', 'get', 'fat'],
-    correctAnswer: 'fat',
-    explanation: 'fat is the word for the picture.'
+    readAloudText: 'Find the word boy.',
+    visualHint: '👦',
+    options: ['van', 'fix', 'hug', 'boy'],
+    correctAnswer: 'boy',
+    explanation: 'boy is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word hog.',
-    visualHint: '🐖',
-    options: ['sit', 'jet', 'hog', 'red'],
-    correctAnswer: 'hog',
-    explanation: 'hog is the word you heard.'
+    readAloudText: 'Tap the word can.',
+    visualHint: '🥫',
+    options: ['got', 'gum', 'can', 'was'],
+    correctAnswer: 'can',
+    explanation: 'can is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word hut.',
-    visualHint: '🛖',
-    options: ['cot', 'new', 'sip', 'hut'],
-    correctAnswer: 'hut',
-    explanation: 'hut is the word for the picture.'
+    readAloudText: 'Find the word cab.',
+    visualHint: '🚕',
+    options: ['six', 'van', 'jam', 'cab'],
+    correctAnswer: 'cab',
+    explanation: 'cab is the word for the picture.'
   },
   {
     question: 'Tap the word you hear.',
-    readAloudText: 'Tap the word fig.',
-    visualHint: '🫒',
-    options: ['fig', 'yes', 'was', 'bug'],
-    correctAnswer: 'fig',
-    explanation: 'fig is the word you heard.'
+    readAloudText: 'Tap the word bun.',
+    visualHint: '🥯',
+    options: ['bun', 'wig', 'fox', 'sit'],
+    correctAnswer: 'bun',
+    explanation: 'bun is the word you heard.'
   },
   {
     question: 'Which word names the picture?',
-    readAloudText: 'Find the word ham.',
-    visualHint: '🍖',
-    options: ['him', 'ham', 'win', 'mat'],
-    correctAnswer: 'ham',
-    explanation: 'ham is the word for the picture.'
+    readAloudText: 'Find the word bag.',
+    visualHint: '🎒',
+    options: ['him', 'bag', 'hug', 'dad'],
+    correctAnswer: 'bag',
+    explanation: 'bag is the word for the picture.'
   }
 ];
 
@@ -192,7 +192,7 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
     {
       type: 'section',
       title: 'Objective',
-      content: 'I can recognize and read three-letter words with beginning sounds F, G, and H.'
+      content: 'I can recognize and read three-letter words with beginning sounds B, C, and D.'
     }
   ],
   options: item.options,

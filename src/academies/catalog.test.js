@@ -90,8 +90,8 @@ test('CBC Grade 1 declares the shared subject structure with content under learn
   assert.equal(english.learningAreas.find((area) => area.id === 'alphabet-mastery').sequence, 15);
   assert.deepEqual(english.lessons.map((item) => item.id), ['alphabet-mastery-lesson-001']);
   assert.equal(english.lessons[0].learningAreaId, 'alphabet-mastery');
-  assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-001']);
-  assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001', 'reading-word-mastery-exam-001', 'reading-word-mastery-exam-002', 'reading-word-mastery-exam-003', 'reading-word-mastery-exam-004']);
+  assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-002']);
+  assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001', 'reading-word-mastery-exam-002', 'reading-word-mastery-exam-003', 'reading-word-mastery-exam-004', 'reading-word-mastery-exam-005', 'reading-word-mastery-exam-006']);
   assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);
   assert.deepEqual(mathematics.lessons.map((item) => item.id), ['numbers-1-100-lesson-001']);
   assert.equal(mathematics.lessons[0].learningAreaId, 'numbers');

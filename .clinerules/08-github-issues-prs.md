@@ -6,6 +6,30 @@ paths:
   - "docs/**"
 ---
 
+## Highest priority stop rule
+
+If a command is skipped, cancelled, blocked, or not approved, Cline must stop immediately.
+
+Cline must not continue thinking.
+Cline must not try another command.
+Cline must not edit files.
+Cline must not continue validation, commit, push, PR creation, or diff inspection.
+
+Instead, Cline must return:
+
+```text
+Command skipped:
+- <command>
+
+Current status:
+- <what is already known>
+- <what could not be confirmed>
+
+Manual next steps:
+- <commands or user action>
+
+Ready for next instruction.
+
 # GitHub Issues and PR Rules
 
 ## Issue quality
@@ -41,6 +65,7 @@ bugfix/
 hotfix/
 release/
 docs/
+```
 
 Prefer short lowercase hyphenated branch names.
 

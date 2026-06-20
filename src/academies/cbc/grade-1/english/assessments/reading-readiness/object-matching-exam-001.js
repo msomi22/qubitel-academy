@@ -5,7 +5,7 @@ function emoji(value) {
 }
 
 const examId = 'grade-1-reading-readiness-exam-001';
-const examTitle = 'Grade 1 Reading Readiness Exam';
+const examTitle = 'Exam 1: Picture and Object Matching';
 const learningAreaId = 'reading-readiness';
 const questionTimeSeconds = 60;
 const sequenceBase = 200;
