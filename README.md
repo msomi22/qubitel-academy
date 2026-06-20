@@ -421,3 +421,24 @@ During the multi-academy migration:
 * keep Technology Academy content stable;
 * migrate architecture incrementally through the LearningNode epic;
 * validate Cloudflare Pages deployment after app identity, routing, or deployment changes.
+
+
+Best Cline prompt to use with these rules
+
+Read the relevant .clinerules first.
+
+Task:
+<describe the issue>
+
+Repository:
+msomi22/qubitel-academy
+
+Constraints:
+- Keep the change focused.
+- Do not make unrelated refactors.
+- Preserve existing routes and progress behavior.
+- Follow LearningNode and manifest architecture.
+- Run npm run test:unit and npm run build where applicable.
+- Share a clear summary, files changed, validation, and skipped checks.
+
+Before editing, inspect the relevant files and explain the minimal plan.

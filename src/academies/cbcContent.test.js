@@ -11,7 +11,7 @@ import gradeOneMathCountingExam from './cbc/grade-1/mathematics/assessments/coun
 import gradeOneMathNumbersLesson, { NUMBER_WORDS, numbersOneToOneHundred } from './cbc/grade-1/mathematics/lessons/numbers-1-100-lesson-001.js';
 import gradeOneMathNumbersPractice from './cbc/grade-1/mathematics/practice/numbers-practice-001.js';
 import gradeOneMathShapesPractice from './cbc/grade-1/mathematics/practice/shapes-practice-001.js';
-import gradeOneReadingExam from './cbc/grade-1/english/assessments/object-matching-exam-001.js';
+import gradeOneReadingExam from './cbc/grade-1/english/assessments/reading-readiness/object-matching-exam-001.js';
 import readingLesson from './cbc/grade-3/english/lessons/reading-comprehension-school-garden-lesson-001.js';
 import spellingLesson from './cbc/grade-3/english/lessons/spelling-lesson-001.js';
 import partsOfSpeechLesson from './cbc/grade-3/english/lessons/grade-3-english-parts-of-speech-lesson-001.js';
@@ -240,7 +240,7 @@ test('CBC Grade 1 visual exams have 15 four-option question-only read-aloud ques
     assert.equal(question.estimatedTimeSeconds, 60, question.id);
     assert.equal(question.interactionType, 'visual-mcq', question.id);
     assert.equal(question.metadata.assessmentType, 'exam', question.id);
-    assert.ok(['counting-exam-001', 'object-matching-exam-001'].includes(question.metadata.examId), question.id);
+    assert.ok(['grade-1-mathematics-numbers-exam-001', 'grade-1-reading-readiness-exam-001', 'grade-1-reading-word-mastery-exam-001', 'grade-1-reading-word-mastery-exam-002', 'grade-1-reading-word-mastery-exam-003'].includes(question.metadata.examId), question.id);
     assert.ok(question.metadata.examTitle, question.id);
     assert.equal(question.metadata.points, 1, question.id);
     assert.equal(question.readAloud, true, question.id);
@@ -316,7 +316,7 @@ test('CBC Grade 1 exposes matching subject learning areas with content under the
   assert.deepEqual(english.lessons.map((item) => item.id), ['alphabet-mastery-lesson-001']);
   assert.equal(english.lessons[0].learningAreaId, 'alphabet-mastery');
   assert.deepEqual(english.practice.map((item) => item.id), ['listening-speaking-practice-001', 'reading-readiness-practice-001']);
-  assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001']);
+  assert.deepEqual(english.assessments.map((item) => item.id), ['object-matching-exam-001', 'reading-word-mastery-exam-001', 'reading-word-mastery-exam-002', 'reading-word-mastery-exam-003', 'reading-word-mastery-exam-004']);
   assert.equal(english.learningAreas.some((area) => area.id === 'parts-of-speech'), false);
   assert.deepEqual(environmentalActivities.practice.map((item) => item.id), ['home-and-school-practice-001']);
   assert.deepEqual(mathematics.lessons.map((item) => item.id), ['numbers-1-100-lesson-001']);
