@@ -199,6 +199,16 @@ When creating Grade 1 exams:
 * avoid placing the correct answer in the same option index repeatedly
 * ensure every question has a useful explanation
 
+## Exam vs practice routing rules
+
+If the task says `exam`, Cline must create or edit content under the existing Grade 1 exam/assessment structure, not under `practice`.
+
+Do not create files under:
+
+```text
+src/academies/cbc/grade-1/english/practice/
+```
+
 ## Answer distribution
 
 For MCQ exams, distribute correct answers across option positions.
@@ -334,3 +344,99 @@ Do not:
 * rename existing exams broadly unless requested
 * change approved phonics/audio mappings without instruction
 * create new renderers or schemas unless the task requires it
+
+
+## Manifest inspection and duplicate prevention rules
+
+Before creating any Grade 1 lesson, practice item, quiz, assessment, or exam, Cline must inspect the relevant topic manifest first.
+
+For Grade 1 English, inspect:
+
+```text
+src/academies/cbc/grade-1/english/topic.manifest.json
+```
+
+Cline must check the correct manifest section before deciding what to create:
+
+* `lessons` for lessons
+* `practice` for practice content
+* `assessments` for exams, quizzes, and assessments
+
+Do not create a new file if an equivalent item already exists.
+
+Cline must check for duplicates by:
+
+1. `id`
+2. `file`
+3. `learningAreaId`
+4. exam/quiz number
+5. exam/quiz title
+6. nearby existing content purpose
+7. existing source files under the target folder
+
+For exam tasks, Cline must inspect:
+
+```text
+src/academies/cbc/grade-1/english/topic.manifest.json
+src/academies/cbc/grade-1/english/assessments/
+```
+
+and confirm:
+
+* whether the requested exam already exists
+* the next available exam number
+* the correct learning area
+* the correct target folder
+* the correct registration entry
+
+If a matching exam already exists, Cline must not create a duplicate.
+
+Instead, Cline should report:
+
+```text
+A matching exam already appears to exist:
+- id: <existing-id>
+- file: <existing-file>
+- learningAreaId: <learning-area-id>
+
+Recommended action:
+- edit the existing exam, or
+- create a new exam only if the new task has a different scope/title/content.
+```
+
+When adding a new exam, Cline must choose the next available sequence from the manifest and existing files.
+
+Example:
+
+If the manifest already contains:
+
+```text
+reading-word-mastery-exam-001
+reading-word-mastery-exam-002
+reading-word-mastery-exam-003
+reading-word-mastery-exam-004
+```
+
+then Cline must not create another `reading-word-mastery-exam-004`.
+
+The next new exam in that family should normally be:
+
+```text
+reading-word-mastery-exam-005
+```
+
+unless the task requires a different exam family.
+
+Before writing files, Cline must print this confirmation:
+
+```text
+Manifest inspected: yes
+Target section: assessments | practice | lessons
+Existing matching item found: yes/no
+Next available id: <id>
+Target file: <path>
+Registration entry: <json>
+No duplicate will be created: confirmed
+```
+
+If Cline cannot confidently determine whether the item already exists, it must stop and ask for review before creating files.
