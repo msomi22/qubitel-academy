@@ -51,8 +51,8 @@
       "learningAreaId": "listening-speaking"
     },
     {
-      "id": "reading-readiness-practice-001",
-      "file": "practice/reading-readiness-practice-001.js",
+      "id": "reading-readiness-practice-002",
+      "file": "practice/reading-readiness-practice-002.js",
       "learningAreaId": "reading-readiness"
     }
   ],
@@ -60,11 +60,6 @@
     {
       "id": "object-matching-exam-001",
       "file": "assessments/reading-readiness/object-matching-exam-001.js",
-      "learningAreaId": "reading-readiness"
-    },
-    {
-      "id": "reading-word-mastery-exam-001",
-      "file": "assessments/reading-readiness/reading-word-mastery-exam-001.js",
       "learningAreaId": "reading-readiness"
     },
     {
@@ -80,6 +75,11 @@
     {
       "id": "reading-word-mastery-exam-004",
       "file": "assessments/reading-readiness/reading-word-mastery-exam-004.js",
+      "learningAreaId": "reading-readiness"
+    },
+    {
+      "id": "reading-word-mastery-exam-005",
+      "file": "assessments/reading-readiness/reading-word-mastery-exam-005.js",
       "learningAreaId": "reading-readiness"
     }
   ]
