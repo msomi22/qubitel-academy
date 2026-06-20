@@ -81,6 +81,11 @@
       "id": "reading-word-mastery-exam-005",
       "file": "assessments/reading-readiness/reading-word-mastery-exam-005.js",
       "learningAreaId": "reading-readiness"
+    },
+    {
+      "id": "reading-word-mastery-exam-006",
+      "file": "assessments/reading-readiness/reading-word-mastery-exam-006.js",
+      "learningAreaId": "reading-readiness"
     }
   ]
 }
