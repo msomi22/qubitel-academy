@@ -133,9 +133,12 @@ export default function CbcGradeOneQuestionRenderer({
       <div className="cbc-grade-one-body-scroll">
         <header className="cbc-grade-one-header">
           <p>Grade 1 Practice</p>
-          {question?.rendering?.suppressPromptHeading ? null : (
-            <h1 id="grade-one-question-title">{friendlyPrompt(question)}</h1>
-          )}
+          <h1
+            id="grade-one-question-title"
+            className={question?.rendering?.suppressPromptHeading ? 'sr-only' : undefined}
+          >
+            {friendlyPrompt(question)}
+          </h1>
         </header>
 
         <WordPatternChip question={question} />
