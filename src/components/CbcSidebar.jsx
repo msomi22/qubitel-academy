@@ -1,7 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import SupportButton from './SupportButton.jsx';
 import { siteConfig } from '../config/siteConfig.js';
+import { detectAcademyIdFromLocation } from '../config/detectAcademy.ts';
+import { getAcademyRootNodeById } from '../learning/academies/index.ts';
+import { getChildren } from '../learning/registry/index.ts';
+import { createLearningNodeRegistry } from '../learning/registry/index.ts';
+import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
 
 const ICON_PATHS = {
   dashboard: (
@@ -44,7 +49,7 @@ const ICON_PATHS = {
 
 const NAV_ITEMS = [
   { to: '/', icon: 'dashboard', label: 'Dashboard', end: true },
-  { to: '/categories', icon: 'categories', label: 'Categories' },
+  { to: '/categories', icon: 'categories', label: 'Grades' },
   { to: '/recent', icon: 'recent', label: 'Recent' },
   { to: '/progress', icon: 'progress', label: 'Progress' },
   { to: '/settings', icon: 'settings', label: 'Settings' }
@@ -74,9 +79,25 @@ function NavItem({ to, icon, end, children, onNavigate }) {
   );
 }
 
-export default function Sidebar() {
+export default function CbcSidebar() {
   const [isTabletSidebarOpen, setIsTabletSidebarOpen] = useState(false);
   const { pathname } = useLocation();
+  const activeAcademyId = detectAcademyIdFromLocation();
+  
+  const gradeNodes = useMemo(() => {
+    if (activeAcademyId !== 'cbc') return [];
+    
+    const academyNode = getAcademyRootNodeById('cbc-academy');
+    if (!academyNode) return [];
+    
+    const cbcGradesSource = createCbcGradesRegistrySource();
+    const registry = createLearningNodeRegistry({
+      nodes: [academyNode, ...cbcGradesSource.nodes]
+    });
+    
+    const children = getChildren(registry, academyNode.id);
+    return children.filter(child => child.kind === 'grade');
+  }, [activeAcademyId]);
 
   useEffect(() => {
     setIsTabletSidebarOpen(false);

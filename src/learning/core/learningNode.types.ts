@@ -42,7 +42,9 @@ export type ContainerNodeKind =
   | 'category'
   | 'grade'
   | 'learningArea'
+  | 'theme'
   | 'strand'
+  | 'subStrand'
   | 'topic';
 
 export type ContentNodeKind =
@@ -50,4 +52,7 @@ export type ContentNodeKind =
   | 'question'
   | 'practice'
   | 'assessment'
-  | 'exam';
+  | 'exam'
+  | 'notes'
+  | 'revision'
+  | 'activity';

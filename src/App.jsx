@@ -11,6 +11,7 @@ import { Suspense, lazy, useEffect, useRef } from 'react';
 import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Sidebar from './components/Sidebar.jsx';
+import CbcSidebar from './components/CbcSidebar.jsx';
 import StatusBar from './components/StatusBar.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import OnboardingOverlay from './components/OnboardingOverlay.jsx';
@@ -19,6 +20,7 @@ import { siteConfig } from './config/siteConfig.js';
 import { useContentProtection } from './hooks/useContentProtection.js';
 import { usePreferences } from './hooks/usePreferences.js';
 import useTvRemoteNavigation from './hooks/useTvRemoteNavigation.js';
+import { detectAcademyIdFromLocation } from './config/detectAcademy.ts';
 
 const Home = lazy(() => import('./pages/Home.jsx'));
 const CategoriesPage = lazy(() => import('./pages/CategoriesPage.jsx'));
@@ -31,6 +33,7 @@ const ProgressPage = lazy(() => import('./pages/ProgressPage.jsx'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage.jsx'));
 const ProblemPage = lazy(() => import('./pages/ProblemPage.jsx'));
 const ExamSessionPage = lazy(() => import('./pages/ExamSessionPage.jsx'));
+const LearningNodePage = lazy(() => import('./pages/LearningNodePage.jsx'));
 
 function isProblemRoute(pathname = '') {
   return pathname.startsWith('/problem/');
@@ -84,6 +87,8 @@ export default function App() {
   const { theme } = usePreferences();
   const { pathname } = useLocation();
   const isExamRoute = pathname.startsWith('/exam/');
+  const activeAcademyId = detectAcademyIdFromLocation();
+  const isCbcAcademy = activeAcademyId === 'cbc';
 
   useEffect(() => {
     document.title = `${siteConfig.appName} | Learning Dashboard`;
@@ -98,7 +103,7 @@ export default function App() {
 
       {!isExamRoute ? <Navbar /> : null}
       <div className={`layout ${isExamRoute ? 'exam-route-layout' : ''}`}>
-        {!isExamRoute ? <Sidebar /> : null}
+        {!isExamRoute ? (isCbcAcademy ? <CbcSidebar /> : <Sidebar />) : null}
         <main className="page-wrap protect-content">
           {/* PageSkeleton replaces the blank LoadingCard for a better
               perceived-performance experience on route transitions */}
@@ -115,6 +120,7 @@ export default function App() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/problem/:questionId" element={<ProblemPage />} />
               <Route path="/exam/:examId" element={<ExamSessionPage />} />
+              <Route path="/learn/:nodeId" element={<LearningNodePage />} />
               <Route
                 path="*"
                 element={

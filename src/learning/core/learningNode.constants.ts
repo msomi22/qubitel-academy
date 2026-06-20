@@ -4,13 +4,18 @@ export const LEARNING_NODE_KINDS = {
   category: 'category',
   grade: 'grade',
   learningArea: 'learningArea',
+  theme: 'theme',
   strand: 'strand',
+  subStrand: 'subStrand',
   topic: 'topic',
   lesson: 'lesson',
   question: 'question',
   practice: 'practice',
   assessment: 'assessment',
-  exam: 'exam'
+  exam: 'exam',
+  notes: 'notes',
+  revision: 'revision',
+  activity: 'activity'
 } as const;
 
 export const LEARNING_NODE_FEATURES = {

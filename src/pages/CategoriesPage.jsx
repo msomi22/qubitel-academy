@@ -1,69 +1,75 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import CategoryLibrary from '../components/CategoryLibrary.jsx';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
-import { getCategorySummaries } from '../services/questionBankService.js';
-import { storageService } from '../services/storageService.js';
-import { usePreferences } from '../hooks/usePreferences.js';
-import {
-  buildCbcGradeDestinationPath,
-  readCbcGradeSelectionIntent
-} from '../utils/cbcGradeSelectionRouting.js';
-
-const defaultCategoryCopy = {
-  title: 'Topics',
-  description: 'Choose a topic to start learning.'
-};
-
-const gradeSelectionCopy = {
-  title: 'Grades',
-  description: 'Choose a grade to continue.',
-  searchLabel: 'Search grades',
-  searchPlaceholder: 'Search grades...',
-  controlsLabel: 'Grade filters',
-  libraryLabel: 'Grade categories',
-  emptyTitle: 'No grades found',
-  emptyDescription: 'Try a broader search or clear the domain filter.'
-};
+import { getAcademyRootNodeById } from '../learning/academies/index.ts';
+import { getChildren } from '../learning/registry/index.ts';
+import { createLearningNodeRegistry } from '../learning/registry/index.ts';
+import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
 
 export default function CategoriesPage() {
-  const { completed } = usePreferences();
-  const [searchParams] = useSearchParams();
-  const [categories, setCategories] = useState([]);
-  const isCbcAcademy = getActiveAcademy().id === 'cbc';
-  const gradeSelectionIntent = isCbcAcademy
-    ? readCbcGradeSelectionIntent(searchParams)
-    : null;
-  const copy = gradeSelectionIntent ? gradeSelectionCopy : defaultCategoryCopy;
-  const getCategoryRoute = gradeSelectionIntent
-    ? (category) => buildCbcGradeDestinationPath(category, gradeSelectionIntent, {
-      continueTopicId: storageService.getSelectedTopic(category.id)
-    })
-    : null;
+  const navigate = useNavigate();
+  const activeAcademy = getActiveAcademy();
+  const [grades, setGrades] = useState([]);
+
+  const gradeNodes = useMemo(() => {
+    if (activeAcademy.id !== 'cbc') return [];
+    
+    const academyNode = getAcademyRootNodeById('cbc-academy');
+    if (!academyNode) return [];
+    
+    const cbcGradesSource = createCbcGradesRegistrySource();
+    const registry = createLearningNodeRegistry({
+      nodes: [academyNode, ...cbcGradesSource.nodes]
+    });
+    
+    const children = getChildren(registry, academyNode.id);
+    return children.filter(child => child.kind === 'grade');
+  }, [activeAcademy.id]);
 
   useEffect(() => {
-    let alive = true;
+    if (gradeNodes.length > 0) {
+      setGrades(gradeNodes);
+    }
+  }, [gradeNodes]);
 
-    getCategorySummaries().then((nextCategories) => {
-      if (alive) setCategories(nextCategories);
-    });
+  const handleGradeClick = (gradeId) => {
+    navigate(`/learn/${gradeId}`);
+  };
 
-    return () => { alive = false; };
-  }, []);
+  if (activeAcademy.id !== 'cbc') {
+    return (
+      <main className="page category-page premium-categories-page">
+        <section className="categories-page-intro" aria-labelledby="categories-page-title">
+          <h1 id="categories-page-title">Topics</h1>
+          <p>Choose a topic to start learning.</p>
+        </section>
+        <p>Categories are being updated. Please use the sidebar to navigate.</p>
+      </main>
+    );
+  }
 
   return (
     <main className="page category-page premium-categories-page">
       <section className="categories-page-intro" aria-labelledby="categories-page-title">
-        <h1 id="categories-page-title">{copy.title}</h1>
-        <p>{copy.description}</p>
+        <h1 id="categories-page-title">{activeAcademy.displayName}</h1>
+        <p>Choose a grade to start learning.</p>
       </section>
 
-      <CategoryLibrary
-        categories={categories}
-        completed={completed}
-        copy={copy}
-        getCategoryRoute={getCategoryRoute}
-      />
+      <div className="grade-grid">
+        {grades.map((grade) => (
+          <button
+            key={grade.id}
+            className="grade-card"
+            onClick={() => handleGradeClick(grade.id)}
+          >
+            <div className="grade-card-icon">🎒</div>
+            <div className="grade-card-content">
+              <h3>{grade.label}</h3>
+              <p>{grade.summary}</p>
+            </div>
+          </button>
+        ))}
+      </div>
     </main>
   );
 }

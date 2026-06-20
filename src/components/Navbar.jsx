@@ -5,6 +5,7 @@ import SupportButton from './SupportButton.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import { categories } from '../services/questionBankService.js';
+import { detectAcademyIdFromLocation, getActiveAcademy } from '../config/detectAcademy.ts';
 
 const MOBILE_NAV_ITEMS = [
   { to: '/', label: 'Dashboard', end: true },
@@ -14,9 +15,9 @@ const MOBILE_NAV_ITEMS = [
   { to: '/settings', label: 'Settings' }
 ];
 
-function pageTitle(pathname) {
-  if (pathname === '/') return 'Learning Dashboard';
-  if (pathname === '/categories') return 'Categories';
+function pageTitle(pathname, academyName) {
+  if (pathname === '/') return `${academyName} Dashboard`;
+  if (pathname === '/categories') return 'Grades';
   if (pathname === '/dsa') return 'DSA Practice';
   if (pathname === '/random') return 'Random Practice';
   if (pathname === '/recent') return 'Recent';
@@ -30,7 +31,11 @@ function pageTitle(pathname) {
     return category?.name || 'Category Practice';
   }
 
-  return siteConfig.appName;
+  if (pathname.startsWith('/learn/')) {
+    return academyName;
+  }
+
+  return academyName;
 }
 
 function ThemeIcon({ theme }) {
@@ -62,6 +67,8 @@ export default function Navbar() {
   const { theme, setTheme } = usePreferences();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const activeAcademy = getActiveAcademy();
+  const displayName = activeAcademy.displayName || siteConfig.appName;
 
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -83,13 +90,13 @@ export default function Navbar() {
           <span />
         </button>
 
-        <span className="topbar-title">{pageTitle(location.pathname)}</span>
+        <span className="topbar-title">{pageTitle(location.pathname, displayName)}</span>
 
-        <Link to="/" className="topbar-brand" aria-label={`${siteConfig.appName} dashboard`}>
+        <Link to="/" className="topbar-brand" aria-label={`${displayName} dashboard`}>
           <img
             className="topbar-brand-logo topbar-brand-logo-light"
             src={siteConfig.brand.logoLight}
-            alt={siteConfig.appName}
+            alt={displayName}
           />
           <img
             className="topbar-brand-logo topbar-brand-logo-dark"
