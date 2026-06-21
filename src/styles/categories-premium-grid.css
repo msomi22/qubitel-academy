@@ -1,4 +1,5 @@
 /* Issue #242: compact premium topics grid */
+/* Shared by both premium category library and CBC grades page */
 
 .premium-categories-page {
   width: 100%;
@@ -293,58 +294,25 @@
   border-radius: 12px;
 }
 
-.premium-category-card.category-card--aptitude {
-  --category-accent: #2dd4bf;
-}
-
-.premium-category-card.category-card--dsa {
-  --category-accent: #60a5fa;
-}
-
-.premium-category-card.category-card--kubernetes-ckad {
-  --category-accent: #3b82f6;
-}
-
-.premium-category-card.category-card--ml-ai {
-  --category-accent: #c084fc;
-}
-
-.premium-category-card.category-card--system {
-  --category-accent: #7dd56f;
-}
-
-.premium-category-card.category-card--java {
-  --category-accent: #fb8500;
-}
-
-.premium-category-card.category-card--engineering-leadership {
-  --category-accent: #67e8f9;
-}
-
+/* Accent color variants */
 .premium-category-card.accent-sky {
   --category-accent: #60a5fa;
 }
-
 .premium-category-card.accent-violet {
   --category-accent: #c084fc;
 }
-
 .premium-category-card.accent-amber {
   --category-accent: #f59e0b;
 }
-
 .premium-category-card.accent-emerald {
   --category-accent: #34d399;
 }
-
 .premium-category-card.accent-rose {
   --category-accent: #fb7185;
 }
-
 .premium-category-card.accent-indigo {
   --category-accent: #818cf8;
 }
-
 .premium-category-card.accent-cyan {
   --category-accent: #22d3ee;
 }
@@ -362,82 +330,6 @@
 }
 
 @media (max-width: 760px) {
-  .app-shell .status-bar,
-  .app-shell.light .status-bar,
-  .app-shell.dark .status-bar {
-    display: none !important;
-  }
-
-  .premium-categories-page {
-    width: 100%;
-    gap: 12px;
-    padding-inline: 0;
-    padding-bottom: calc(var(--bottom-nav-height, 64px) + env(safe-area-inset-bottom, 0px) + 34px);
-  }
-
-  .premium-categories-page .categories-page-intro {
-    gap: 3px;
-  }
-
-  .premium-categories-page .categories-page-intro h1 {
-    font-size: clamp(1.95rem, 9vw, 2.35rem);
-  }
-
-  .premium-categories-page .categories-page-intro p {
-    font-size: 0.96rem;
-  }
-
-  .premium-category-library {
-    gap: 12px;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls {
-    display: flex;
-    grid-template-columns: none;
-    flex-wrap: nowrap;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 1px;
-    scrollbar-width: none;
-    width: 100%;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls::-webkit-scrollbar {
-    display: none;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls label {
-    flex: 0 0 104px;
-    min-width: 0;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls .premium-category-controls__search {
-    flex-basis: 124px;
-    flex-grow: 1;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls label:last-child {
-    flex-basis: 120px;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls input,
-  .premium-category-library .premium-category-controls.category-library-controls select {
-    min-height: 36px;
-    height: 36px;
-    border-radius: 10px;
-    font-size: 0.68rem;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls input {
-    min-width: 0;
-    padding-inline: 10px;
-  }
-
-  .premium-category-library .premium-category-controls.category-library-controls select {
-    min-width: 0;
-    padding-inline: 10px 24px;
-  }
-
   .premium-category-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px;
@@ -490,24 +382,6 @@
     line-height: 1.34;
     max-height: 2.68em;
   }
-
-  .premium-category-card .premium-category-card__meta {
-    gap: 2px;
-    width: 134%;
-    overflow: visible;
-    font-size: 0.46rem;
-    font-weight: 850;
-    transform: scaleX(0.745);
-    transform-origin: left center;
-  }
-
-  .premium-category-card .premium-category-card__separator {
-    margin-inline: 2px;
-  }
-
-  .premium-category-card .premium-category-card__meta span {
-    flex: 0 0 auto;
-  }
 }
 
 @media (max-width: 400px) {
@@ -534,24 +408,6 @@
     font-size: 0.78rem;
     line-height: 1.3;
   }
-
-  .premium-category-card .premium-category-card__meta {
-    gap: 4px;
-    width: auto;
-    overflow: visible;
-    font-size: 0.76rem;
-    transform: none;
-  }
-
-  .premium-category-card .premium-category-card__separator {
-    margin-inline: 0;
-  }
-}
-
-@media (min-width: 500px) and (max-width: 760px) {
-  .premium-category-card .premium-category-card__meta {
-    gap: 4px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -563,4 +419,39 @@
   .premium-category-card:focus-visible {
     transform: none;
   }
+}
+
+/* ==============================
+   CBC Grades Page (Categories)
+   ============================== */
+
+.grades-page {
+  /* Inherits max-width from .progress-page-focused (1180px) */
+}
+
+.grades-card {
+  /* Matches .progress-table-card padding/border-radius from progress-table.css */
+}
+
+/* Disabled grade picker card — visible but muted */
+.grade-picker-card.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+
+.grade-picker-card.is-disabled:hover,
+.grade-picker-card.is-disabled:focus-visible {
+  transform: none;
+  border-color: color-mix(in srgb, var(--line, var(--border)) 76%, var(--category-accent) 18%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent),
+    0 14px 32px rgb(0 0 0 / 0.14);
+}
+
+.grade-picker-card.is-disabled .premium-category-card__badge {
+  border-color: color-mix(in srgb, var(--muted) 48%, transparent);
+  background: color-mix(in srgb, var(--muted) 16%, transparent);
+  color: var(--muted);
 }

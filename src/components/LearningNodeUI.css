@@ -1,9 +1,11 @@
 /* LearningNode UI Components - Mobile-first styles */
 
 .learning-node-page {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0.5rem;
+  /* Uses .page + .progress-page-focused layout from global.css */
+}
+
+.learning-node-card {
+  /* Extends .glass .progress-table-card from progress-table.css */
 }
 
 .learning-node-header {
@@ -162,161 +164,11 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0 0 1rem 0;
-  color: #333;
+  color: var(--text, var(--text-primary));
 }
 
-.child-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-}
-
-.child-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 1rem;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.75rem;
-  text-decoration: none;
-  color: inherit;
-  transition: box-shadow 0.2s, transform 0.1s;
-}
-
-.child-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.child-card:active {
-  transform: scale(0.98);
-}
-
-.child-card-disabled {
-  background: #f5f5f5;
-  color: #999;
-  border-color: #ddd;
-  cursor: not-allowed;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-:root[data-theme="dark"] .child-card-disabled {
-  background: #1a1a2e;
-  color: #64748b;
-  border-color: #1e293b;
-  opacity: 0.5;
-}
-
-.child-card-disabled:hover {
-  box-shadow: none;
-  transform: none;
-}
-
-.child-card-disabled .child-card-label {
-  color: #999;
-}
-
-:root[data-theme="dark"] .child-card-disabled .child-card-label {
-  color: #64748b;
-}
-
-.child-card-disabled .child-card-kind {
-  color: #aaa;
-}
-
-:root[data-theme="dark"] .child-card-disabled .child-card-kind {
-  color: #475569;
-}
-
-.child-card-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-.child-card-label {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: #1a1a1a;
-  margin-bottom: 0.25rem;
-}
-
-.child-card-kind {
-  font-size: 0.75rem;
-  color: #666;
-  text-transform: capitalize;
-}
-
-/* Grade Card Specific Styles */
-.grade-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 0.75rem;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.75rem;
-  text-decoration: none;
-  color: inherit;
-  transition: box-shadow 0.2s, transform 0.1s;
-  cursor: pointer;
-  width: 100%; /* Make cards take full width in grid */
-  max-width: 180px; /* Limit max width for compactness */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
-}
-
-.grade-card:hover:not(.disabled) {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.grade-card:active:not(.disabled) {
-  transform: scale(0.98);
-}
-
-:root[data-theme="dark"] .grade-card {
-  background: #1e293b;
-  border-color: #334155;
-}
-
-:root[data-theme="dark"] .grade-card:hover:not(.disabled) {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.grade-card.disabled {
-  background: #f5f5f5;
-  color: #999;
-  border-color: #ddd;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-:root[data-theme="dark"] .grade-card.disabled {
-  background: #1a1a2e;
-  color: #64748b;
-  border-color: #1e293b;
-  opacity: 0.5;
-}
-
-.grade-card-icon {
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.grade-card-content h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 0.125rem 0;
-  color: inherit;
-}
-
-.grade-card-content p {
-  font-size: 0.75rem;
-  color: inherit;
-  margin: 0;
+:root[data-theme="dark"] .child-group-title {
+  color: var(--text, var(--text-primary));
 }
 
 .learning-node-content {
@@ -326,10 +178,18 @@
   border-radius: 0.75rem;
 }
 
+:root[data-theme="dark"] .learning-node-content {
+  background: rgba(30, 41, 59, 0.6);
+}
+
 .learning-node-footer {
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid #e0e0e0;
+}
+
+:root[data-theme="dark"] .learning-node-footer {
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 .learning-node-sibling-nav {
@@ -357,8 +217,18 @@
   transition: background-color 0.2s;
 }
 
+:root[data-theme="dark"] .sibling-nav-button {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--line, rgba(255, 255, 255, 0.15));
+  color: var(--text, #eef7ff);
+}
+
 .sibling-nav-button:hover:not(.sibling-disabled) {
   background: #f5f5f5;
+}
+
+:root[data-theme="dark"] .sibling-nav-button:hover:not(.sibling-disabled) {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .sibling-disabled {
@@ -369,6 +239,10 @@
 .sibling-nav-info {
   font-size: 0.875rem;
   color: #666;
+}
+
+:root[data-theme="dark"] .sibling-nav-info {
+  color: var(--muted, #94a3b8);
 }
 
 .learning-node-jump-menu {
@@ -417,6 +291,12 @@
   padding: 0.5rem 0;
 }
 
+:root[data-theme="dark"] .jump-menu-dropdown {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
 .jump-menu-item {
   display: block;
   padding: 0.75rem 1rem;
@@ -426,8 +306,16 @@
   transition: background-color 0.2s;
 }
 
+:root[data-theme="dark"] .jump-menu-item {
+  color: #e2e8f0;
+}
+
 .jump-menu-item:hover {
   background: #f5f5f5;
+}
+
+:root[data-theme="dark"] .jump-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .content-renderer-notes,
@@ -566,7 +454,7 @@
   color: #666;
 }
 
-/* Book Reader Styles - Real page turning experience */
+/* Book Reader Styles */
 .book-reader {
   margin-top: 0.5rem;
   display: flex;
@@ -588,7 +476,6 @@
   color: #94a3b8;
 }
 
-/* Progress Bar */
 .book-progress-bar {
   width: 100%;
   max-width: 1200px;
@@ -609,7 +496,6 @@
   transition: width 0.3s ease;
 }
 
-/* Fixed Page Container */
 .book-page-container {
   position: relative;
   width: 100%;
@@ -647,7 +533,6 @@
     0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-/* Page turning animation */
 .book-page.turning-forward {
   animation: pageFlipForward 0.6s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
 }
@@ -657,42 +542,19 @@
 }
 
 @keyframes pageFlipForward {
-  0% {
-    transform: rotateY(0deg);
-    z-index: 2;
-  }
-  50% {
-    transform: rotateY(-90deg);
-    z-index: 2;
-  }
-  51% {
-    z-index: 1;
-  }
-  100% {
-    transform: rotateY(-180deg);
-    z-index: 1;
-  }
+  0% { transform: rotateY(0deg); z-index: 2; }
+  50% { transform: rotateY(-90deg); z-index: 2; }
+  51% { z-index: 1; }
+  100% { transform: rotateY(-180deg); z-index: 1; }
 }
 
 @keyframes pageFlipBackward {
-  0% {
-    transform: rotateY(-180deg);
-    z-index: 1;
-  }
-  50% {
-    transform: rotateY(-90deg);
-    z-index: 2;
-  }
-  51% {
-    z-index: 2;
-  }
-  100% {
-    transform: rotateY(0deg);
-    z-index: 2;
-  }
+  0% { transform: rotateY(-180deg); z-index: 1; }
+  50% { transform: rotateY(-90deg); z-index: 2; }
+  51% { z-index: 2; }
+  100% { transform: rotateY(0deg); z-index: 2; }
 }
 
-/* Page styling to look like real paper */
 .book-page::before {
   content: '';
   position: absolute;
@@ -755,7 +617,6 @@
   color: #64748b;
 }
 
-/* Chapter Page */
 .book-chapter-page {
   justify-content: center;
   align-items: center;
@@ -835,7 +696,6 @@
   color: #64748b;
 }
 
-/* Content Page */
 .book-content-section {
   flex: 1;
   overflow: hidden;
@@ -843,7 +703,6 @@
   flex-direction: column;
 }
 
-/* Content scroll - allows vertical scrolling within a page when content overflows */
 .book-content-scroll {
   flex: 1;
   overflow-y: auto;
@@ -856,23 +715,10 @@
   min-height: 100%;
 }
 
-/* Page visibility classes for split pages */
-.book-page-active {
-  visibility: visible;
-  z-index: 2;
-}
+.book-page-active { visibility: visible; z-index: 2; }
+.book-page-left { visibility: hidden; z-index: 0; }
+.book-page-right { visibility: hidden; z-index: 0; }
 
-.book-page-left {
-  visibility: hidden;
-  z-index: 0;
-}
-
-.book-page-right {
-  visibility: hidden;
-  z-index: 0;
-}
-
-/* Sub-page indicator */
 .book-page-sub {
   font-size: 0.8rem;
   color: #667eea;
@@ -967,7 +813,6 @@
   margin-bottom: 0;
 }
 
-/* Review Page */
 .book-review-section {
   flex: 1;
   overflow-y: auto;
@@ -1012,7 +857,6 @@
   color: #94a3b8;
 }
 
-/* Navigation */
 .book-navigation {
   display: flex;
   align-items: center;
@@ -1110,7 +954,6 @@
   color: #94a3b8;
 }
 
-/* Mobile Responsive */
 @media (max-width: 640px) {
   .book-page {
     padding: 1.5rem;
@@ -1145,42 +988,5 @@
   
   .book-page-indicator {
     padding: 0.625rem 1rem;
-  }
-}
-
-/* Tablet and up */
-@media (min-width: 768px) {
-  .learning-node-page {
-    padding: 2rem;
-  }
-
-  .learning-node-title h1 {
-    font-size: 2rem;
-  }
-
-  .child-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.25rem;
-  }
-
-  .jump-menu-toggle {
-    width: 4rem;
-    height: 4rem;
-    font-size: 1rem;
-  }
-
-  .jump-menu-dropdown {
-    min-width: 300px;
-  }
-}
-
-/* Desktop */
-@media (min-width: 1024px) {
-  .child-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-
-  .sibling-nav-buttons {
-    gap: 2rem;
   }
 }

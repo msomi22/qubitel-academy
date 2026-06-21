@@ -23,7 +23,7 @@ export default function LearningNodePageShell({
   const currentNode = navigation.current;
   if (!currentNode) {
     return (
-      <section className="learning-node-page">
+      <section className="page learning-node-page">
         <h1>Content not found</h1>
         <p>The requested learning content could not be found.</p>
         <NavLink className="btn" to="/">
@@ -48,63 +48,67 @@ export default function LearningNodePageShell({
   const isGreetingsTheme = currentNode.id === 'grade-1-english-activities-theme-greetings';
   const shouldShowBookView = isGreetingsTheme && currentNode.kind === 'theme';
 
+  const headingId = `learning-node-heading-${currentNode.id}`;
+
   return (
-    <div className="learning-node-page">
-      <header className="learning-node-header">
-        <div className="learning-node-breadcrumbs">
-          <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
-        </div>
-
-        <div className="learning-node-title-row">
-          <div className="learning-node-title">
-            <span className="learning-node-kind">{kindLabel}</span>
-            <h1>{currentNode.label}</h1>
-            {currentNode.summary && <p className="learning-node-summary">{currentNode.summary}</p>}
+    <div className="page progress-page-focused learning-node-page">
+      <section className="glass progress-table-card learning-node-card" aria-labelledby={headingId}>
+        <header className="learning-node-header">
+          <div className="learning-node-breadcrumbs">
+            <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
           </div>
-        </div>
 
-        {showParentBackButton && parentPath && (
-          <div className="learning-node-parent-action">
-            <NavLink className="btn btn-secondary" to={parentPath}>
-              ← Back to {navigation.parent?.label || 'previous'}
-            </NavLink>
+          <div className="progress-card-head">
+            <div>
+              <p className="eyebrow">{kindLabel}</p>
+              <h1 id={headingId}>{currentNode.label}</h1>
+              {currentNode.summary && <p>{currentNode.summary}</p>}
+            </div>
           </div>
+
+          {showParentBackButton && parentPath && (
+            <div className="learning-node-parent-action" style={{ marginTop: '10px' }}>
+              <NavLink className="btn ghost" to={parentPath}>
+                ← Back to {navigation.parent?.label || 'previous'}
+              </NavLink>
+            </div>
+          )}
+        </header>
+
+        <main className="learning-node-main">
+          {children}
+
+          {shouldShowBookView ? (
+            <section className="learning-node-book-view-section">
+              <LearningNodeBookView registry={registry} nodeId={currentNode.id} />
+            </section>
+          ) : (
+            <>
+              {navigation.children.length > 0 && (
+                <section className="learning-node-children">
+                  <LearningNodeChildGrid registry={registry} nodeId={currentNode.id} />
+                </section>
+              )}
+
+              {currentNode.contentRef && (
+                <section className="learning-node-content">
+                  <LearningNodeContentRenderer
+                    registry={registry}
+                    node={currentNode}
+                    {...contentRendererProps}
+                  />
+                </section>
+              )}
+            </>
+          )}
+        </main>
+
+        {showSiblingNav && navigation.siblings.length > 1 && (
+          <footer className="learning-node-footer">
+            <LearningNodeSiblingNav registry={registry} nodeId={currentNode.id} />
+          </footer>
         )}
-      </header>
-
-      <main className="learning-node-main">
-        {children}
-
-        {shouldShowBookView ? (
-          <section className="learning-node-book-view-section">
-            <LearningNodeBookView registry={registry} nodeId={currentNode.id} />
-          </section>
-        ) : (
-          <>
-            {navigation.children.length > 0 && (
-              <section className="learning-node-children">
-                <LearningNodeChildGrid registry={registry} nodeId={currentNode.id} />
-              </section>
-            )}
-
-            {currentNode.contentRef && (
-              <section className="learning-node-content">
-                <LearningNodeContentRenderer
-                  registry={registry}
-                  node={currentNode}
-                  {...contentRendererProps}
-                />
-              </section>
-            )}
-          </>
-        )}
-      </main>
-
-      {showSiblingNav && navigation.siblings.length > 1 && (
-        <footer className="learning-node-footer">
-          <LearningNodeSiblingNav registry={registry} nodeId={currentNode.id} />
-        </footer>
-      )}
+      </section>
     </div>
   );
 }
