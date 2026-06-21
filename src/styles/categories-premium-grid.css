@@ -433,16 +433,16 @@
   /* Matches .progress-table-card padding/border-radius from progress-table.css */
 }
 
-/* Disabled grade picker card — visible but muted */
-.grade-picker-card.is-disabled {
+/* Disabled premium category card — visible but muted */
+.premium-category-card.is-disabled {
   cursor: not-allowed;
   opacity: 0.65;
   filter: grayscale(0.5);
   pointer-events: none;
 }
 
-.grade-picker-card.is-disabled:hover,
-.grade-picker-card.is-disabled:focus-visible {
+.premium-category-card.is-disabled:hover,
+.premium-category-card.is-disabled:focus-visible {
   transform: none;
   border-color: color-mix(in srgb, var(--line, var(--border)) 76%, var(--category-accent) 18%);
   box-shadow:
@@ -450,7 +450,7 @@
     0 14px 32px rgb(0 0 0 / 0.14);
 }
 
-.grade-picker-card.is-disabled .premium-category-card__badge {
+.premium-category-card.is-disabled .premium-category-card__badge {
   border-color: color-mix(in srgb, var(--muted) 48%, transparent);
   background: color-mix(in srgb, var(--muted) 16%, transparent);
   color: var(--muted);

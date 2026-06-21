@@ -101,7 +101,7 @@ export default function LearningNodeChildGrid({ registry, nodeId }) {
                 return (
                   <div
                     key={child.id}
-                    className="premium-category-card child-card-disabled"
+                    className="premium-category-card is-disabled"
                     aria-label={`${child.label} - ${kindLabel} (disabled)`}
                     aria-disabled="true"
                   >
