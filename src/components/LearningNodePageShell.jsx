@@ -3,16 +3,15 @@ import { NavLink } from 'react-router-dom';
 import { getNavigationContext } from '../learning/navigation/index.ts';
 import LearningNodeBreadcrumbs from './LearningNodeBreadcrumbs.jsx';
 import LearningNodeChildGrid from './LearningNodeChildGrid.jsx';
-import LearningNodeJumpMenu from './LearningNodeJumpMenu.jsx';
 import LearningNodeSiblingNav from './LearningNodeSiblingNav.jsx';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
+import LearningNodeBookView from './LearningNodeBookView.jsx';
 import './LearningNodeUI.css';
 
 export default function LearningNodePageShell({
   registry,
   nodeId,
   children,
-  showJumpMenu = true,
   showSiblingNav = true,
   contentRendererProps = {}
 }) {
@@ -45,6 +44,10 @@ export default function LearningNodePageShell({
 
   const kindLabel = getKindLabel(currentNode.kind);
 
+  // Check if this is the Greetings theme that should show book view
+  const isGreetingsTheme = currentNode.id === 'grade-1-english-activities-theme-greetings';
+  const shouldShowBookView = isGreetingsTheme && currentNode.kind === 'theme';
+
   return (
     <div className="learning-node-page">
       <header className="learning-node-header">
@@ -72,20 +75,28 @@ export default function LearningNodePageShell({
       <main className="learning-node-main">
         {children}
 
-        {navigation.children.length > 0 && (
-          <section className="learning-node-children">
-            <LearningNodeChildGrid registry={registry} nodeId={currentNode.id} />
+        {shouldShowBookView ? (
+          <section className="learning-node-book-view-section">
+            <LearningNodeBookView registry={registry} nodeId={currentNode.id} />
           </section>
-        )}
+        ) : (
+          <>
+            {navigation.children.length > 0 && (
+              <section className="learning-node-children">
+                <LearningNodeChildGrid registry={registry} nodeId={currentNode.id} />
+              </section>
+            )}
 
-        {currentNode.contentRef && (
-          <section className="learning-node-content">
-            <LearningNodeContentRenderer
-              registry={registry}
-              node={currentNode}
-              {...contentRendererProps}
-            />
-          </section>
+            {currentNode.contentRef && (
+              <section className="learning-node-content">
+                <LearningNodeContentRenderer
+                  registry={registry}
+                  node={currentNode}
+                  {...contentRendererProps}
+                />
+              </section>
+            )}
+          </>
         )}
       </main>
 
@@ -93,10 +104,6 @@ export default function LearningNodePageShell({
         <footer className="learning-node-footer">
           <LearningNodeSiblingNav registry={registry} nodeId={currentNode.id} />
         </footer>
-      )}
-
-      {showJumpMenu && navigation.parent?.kind !== 'academy' && navigation.parent?.kind !== 'platform' && (
-        <LearningNodeJumpMenu registry={registry} nodeId={currentNode.id} />
       )}
     </div>
   );

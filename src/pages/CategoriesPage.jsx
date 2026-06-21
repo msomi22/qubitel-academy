@@ -55,12 +55,13 @@ export default function CategoriesPage() {
         <p>Choose a grade to start learning.</p>
       </section>
 
-      <div className="grade-grid">
+      <div className="category-grid">
         {grades.map((grade) => (
           <button
             key={grade.id}
-            className="grade-card"
-            onClick={() => handleGradeClick(grade.id)}
+            onClick={() => grade.id === 'grade-1' ? handleGradeClick(grade.id) : null}
+            className={`grade-card ${grade.id !== 'grade-1' ? 'disabled' : ''}`}
+            disabled={grade.id !== 'grade-1'}
           >
             <div className="grade-card-icon">🎒</div>
             <div className="grade-card-content">

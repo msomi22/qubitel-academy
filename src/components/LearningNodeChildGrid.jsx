@@ -58,6 +58,29 @@ export default function LearningNodeChildGrid({ registry, nodeId }) {
               const path = `/learn/${child.id}`;
               const icon = getChildIcon(child.kind);
               const kindLabel = getKindLabel(child.kind);
+              // Only enable Grade 1 English Activities; all other learning areas across all grades are disabled
+              const isActiveLearningArea =
+                child.kind === 'learningArea' &&
+                child.id === 'grade-1-english-activities';
+              const hasActions = child.actions && child.actions.length > 0;
+              const isDisabled = !hasActions || (child.kind === 'learningArea' && !isActiveLearningArea);
+
+              if (isDisabled) {
+                return (
+                  <div
+                    key={child.id}
+                    className="child-card child-card-disabled"
+                    aria-label={`${child.label} - ${kindLabel} (disabled)`}
+                    aria-disabled="true"
+                  >
+                    <span className="child-card-icon" aria-hidden="true">
+                      {icon}
+                    </span>
+                    <span className="child-card-label">{child.label}</span>
+                    <span className="child-card-kind">{kindLabel}</span>
+                  </div>
+                );
+              }
 
               return (
                 <NavLink

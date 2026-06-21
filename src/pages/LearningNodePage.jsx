@@ -58,7 +58,6 @@ export default function LearningNodePage() {
     <LearningNodePageShell
       registry={registry}
       nodeId={nodeId}
-      showJumpMenu={true}
       showSiblingNav={true}
     />
   );

@@ -17,7 +17,7 @@ const pp1 = createLearningNode({
     { key: 'gradeName', value: 'PP1' }
   ],
   features: [{ kind: 'guidedContent' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [],
   appearances: [
     { key: 'icon', value: '🎒' },
     { key: 'tone', value: 'childFriendly' }
@@ -37,7 +37,7 @@ const pp2 = createLearningNode({
     { key: 'gradeName', value: 'PP2' }
   ],
   features: [{ kind: 'guidedContent' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [{ intent: 'openContent' }],
   appearances: [
     { key: 'icon', value: '🎒' },
     { key: 'tone', value: 'childFriendly' }
@@ -330,7 +330,7 @@ const grade1Kiswahili = createLearningNode({
     { key: 'gradeName', value: 'Grade 1' }
   ],
   features: [{ kind: 'guidedContent' }, { kind: 'readAloud' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [],
   appearances: [
     { key: 'icon', value: '💬' },
     { key: 'tone', value: 'childFriendly' }
@@ -352,7 +352,7 @@ const grade1Math = createLearningNode({
     { key: 'gradeName', value: 'Grade 1' }
   ],
   features: [{ kind: 'guidedContent' }, { kind: 'practice' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [],
   appearances: [
     { key: 'icon', value: '🔢' },
     { key: 'tone', value: 'childFriendly' }
@@ -374,7 +374,7 @@ const grade1Science = createLearningNode({
     { key: 'gradeName', value: 'Grade 1' }
   ],
   features: [{ kind: 'guidedContent' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [],
   appearances: [
     { key: 'icon', value: '🌍' },
     { key: 'tone', value: 'childFriendly' }
@@ -396,7 +396,7 @@ const grade1Hygiene = createLearningNode({
     { key: 'gradeName', value: 'Grade 1' }
   ],
   features: [{ kind: 'guidedContent' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [],
   appearances: [
     { key: 'icon', value: '🧼' },
     { key: 'tone', value: 'childFriendly' }
@@ -418,7 +418,7 @@ const grade1Movement = createLearningNode({
     { key: 'gradeName', value: 'Grade 1' }
   ],
   features: [{ kind: 'guidedContent' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [],
   appearances: [
     { key: 'icon', value: '🎨' },
     { key: 'tone', value: 'childFriendly' }
@@ -440,7 +440,7 @@ const grade1Religious = createLearningNode({
     { key: 'gradeName', value: 'Grade 1' }
   ],
   features: [{ kind: 'guidedContent' }],
-  actions: [{ intent: 'openChildren' }],
+  actions: [],
   appearances: [
     { key: 'icon', value: '🕌' },
     { key: 'tone', value: 'childFriendly' }
@@ -848,7 +848,7 @@ const grade1EnglishPracticePronunciation = createLearningNode({
   id: 'grade-1-english-activities-greetings-pronunciation-practice',
   kind: LEARNING_NODE_KINDS.practice,
   label: 'Pronunciation Practice',
-  summary: 'Practice pronouncing greeting words.',
+  summary: 'Practice pronouncing greeting words: Hello, Good morning, Good afternoon, Good evening, Good night. Say each greeting clearly and practice with your friends!',
   parentId: grade1EnglishSubStrandPronunciation.id,
   attributes: [
     { key: 'routeSegment', value: 'pronunciation-practice' },

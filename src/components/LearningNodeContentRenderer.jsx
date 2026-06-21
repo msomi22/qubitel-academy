@@ -51,7 +51,8 @@ function NotesRenderer({ node }) {
           <li>With definitions and examples</li>
         </ul>
         <h4>Examples</h4>
-        <p>Examples and illustrations will be provided here.</p>
+        <p>Examples and illustrations will be provided here..........</p>
+        <p>Examples2 and illustrations will be provided here.</p>
       </div>
     </div>
   );

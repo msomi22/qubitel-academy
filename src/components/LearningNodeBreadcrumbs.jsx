@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getBreadcrumbs } from '../learning/navigation/index.ts';
+import { CBC_ACADEMY_NODE_ID } from '../learning/academies/cbc/cbcGrades.registry.ts';
+
+function isPlainTextBreadcrumb(nodeId) {
+  return nodeId === CBC_ACADEMY_NODE_ID;
+}
 
 export default function LearningNodeBreadcrumbs({ registry, nodeId }) {
   const breadcrumbs = useMemo(
@@ -20,6 +25,7 @@ export default function LearningNodeBreadcrumbs({ registry, nodeId }) {
       <ol className="breadcrumb-list">
         {breadcrumbs.map((node, index) => {
           const isLast = index === breadcrumbs.length - 1;
+          const isPlainText = isPlainTextBreadcrumb(node.id);
           const path = `/learn/${node.id}`;
 
           return (
@@ -28,19 +34,23 @@ export default function LearningNodeBreadcrumbs({ registry, nodeId }) {
                 <span className="breadcrumb-current" aria-current="page">
                   {node.label}
                 </span>
+              ) : isPlainText ? (
+                <span className="breadcrumb-text" aria-hidden="true">
+                  {node.label}
+                </span>
               ) : (
-                <>
-                  <NavLink
-                    to={path}
-                    className="breadcrumb-link"
-                    aria-label={`Go to ${node.label}`}
-                  >
-                    {node.label}
-                  </NavLink>
-                  <span className="breadcrumb-separator" aria-hidden="true">
-                    →
-                  </span>
-                </>
+                <NavLink
+                  to={path}
+                  className="breadcrumb-link"
+                  aria-label={`Go to ${node.label}`}
+                >
+                  {node.label}
+                </NavLink>
+              )}
+              {!isLast && (
+                <span className="breadcrumb-separator" aria-hidden="true">
+                  →
+                </span>
               )}
             </li>
           );
