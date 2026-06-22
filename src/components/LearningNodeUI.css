@@ -1477,9 +1477,9 @@
 }
 
 .progress-card-learning-area-mode .learning-node-main {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   margin-top: 0;
@@ -1487,9 +1487,51 @@
 }
 
 .progress-card-learning-area-mode .learning-area-tabbed-view {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-height: 0;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.progress-card-learning-area-mode .learning-area-section {
+  flex: 0 1 auto;
+  min-height: 0;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  border-radius: 1rem;
+  padding: 0.65rem;
+}
+
+.progress-card-learning-area-mode .learning-area-action-row {
+  margin-bottom: 0.75rem;
+}
+
+.progress-card-learning-area-mode .learning-area-empty-state {
+  min-height: 4.75rem;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 0.35rem;
+  color: rgba(226, 232, 240, 0.82);
+}
+
+.progress-card-learning-area-mode .learning-area-assessments-section {
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.08), transparent 32%),
+    rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(34, 197, 94, 0.18);
+}
+
+.progress-card-learning-area-mode .learning-area-tabbed-view {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -1535,7 +1577,7 @@
 }
 
 .progress-card-learning-area-mode .learning-area-section {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-height: 0;
   margin-top: 0;
   display: flex;
@@ -1584,8 +1626,9 @@
 }
 
 .progress-card-learning-area-mode .learning-area-scroll-panel {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   min-height: 0;
+  max-height: min(54vh, 32rem);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
@@ -1594,12 +1637,40 @@
 }
 
 .learning-area-empty-state {
-  padding: 2rem;
+  padding: 0.9rem 1rem;
   text-align: center;
   color: var(--text-muted);
   background: var(--bg-secondary);
   border-radius: var(--radius-lg);
-  margin-top: 1rem;
+  margin-top: 0;
+}
+
+.progress-card-learning-area-mode .learning-area-section.is-empty {
+  padding: 0.55rem;
+}
+
+.progress-card-learning-area-mode .learning-area-section.is-empty.learning-area-assessments-section {
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.12), transparent 36%),
+    rgba(236, 253, 245, 0.82);
+  border: 1px solid rgba(34, 197, 94, 0.28);
+}
+
+.progress-card-learning-area-mode .learning-area-section.is-empty .learning-area-empty-state {
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px dashed rgba(34, 197, 94, 0.3);
+}
+
+:root[data-theme="dark"] .progress-card-learning-area-mode .learning-area-section.is-empty.learning-area-assessments-section {
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.16), transparent 36%),
+    rgba(13, 31, 27, 0.62);
+  border-color: rgba(34, 197, 94, 0.24);
+}
+
+:root[data-theme="dark"] .progress-card-learning-area-mode .learning-area-section.is-empty .learning-area-empty-state {
+  background: rgba(15, 23, 42, 0.42);
+  border-color: rgba(34, 197, 94, 0.22);
 }
 
 :root[data-theme="dark"] .learning-area-empty-state {
@@ -1682,6 +1753,90 @@
 
 .progress-card-learning-area-mode .learning-node-footer {
   display: none;
+}
+
+/* Emergency learning-area flow reset: keep controls and active panel together. */
+.progress-card-learning-area-mode {
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.progress-card-learning-area-mode .progress-card-head {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.progress-card-learning-area-mode .learning-node-header {
+  flex: 0 0 auto;
+}
+
+.progress-card-learning-area-mode .learning-node-main {
+  flex: 0 1 auto;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  overflow: visible;
+}
+
+.progress-card-learning-area-mode .learning-area-tabbed-view {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  overflow: visible;
+}
+
+.progress-card-learning-area-mode .learning-area-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+.progress-card-learning-area-mode .learning-area-section {
+  flex: 0 1 auto;
+  margin: 0;
+  padding: 0.65rem;
+  border-radius: 1rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.progress-card-learning-area-mode .learning-area-section.is-empty {
+  min-height: auto;
+}
+
+.progress-card-learning-area-mode .learning-area-section.is-empty .learning-area-scroll-panel {
+  min-height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.progress-card-learning-area-mode .learning-area-empty-state {
+  min-height: 7rem;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.progress-card-learning-area-mode .learning-area-assessments-section {
+  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(34, 197, 94, 0.16);
+}
+
+.progress-card-learning-area-mode .learning-area-section:not(.is-empty) .learning-area-scroll-panel {
+  max-height: 31rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding-right: 0.25rem;
 }
 
 @media (max-width: 900px) {

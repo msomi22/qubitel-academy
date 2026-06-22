@@ -104,42 +104,9 @@ export default function LearningNodePageShell({
               {currentNode.label}
             </h1>
           ) : shouldUseLearningAreaLayout ? (
-            <>
-              <h1 id={headingId} className="sr-only">
-                {currentNode.label}
-              </h1>
-
-              <div className="learning-area-action-row">
-                {showParentBackButton && parentPath && (
-                  <NavLink className="btn ghost learning-area-back-button" to={parentPath}>
-                    ← Back to {navigation.parent?.label || 'previous'}
-                  </NavLink>
-                )}
-                <div className="learning-area-tab-list" role="tablist" aria-label="English Activities sections">
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={learningAreaPanel === 'themes'}
-                    className={`learning-area-tab ${learningAreaPanel === 'themes' ? 'is-active' : ''}`}
-                    onClick={() => setLearningAreaPanel('themes')}
-                  >
-                    <span>📚 Themes</span>
-                    <strong>{themeChildren.length}</strong>
-                  </button>
-
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={learningAreaPanel === 'assessments'}
-                    className={`learning-area-tab ${learningAreaPanel === 'assessments' ? 'is-active' : ''}`}
-                    onClick={() => setLearningAreaPanel('assessments')}
-                  >
-                    <span>✅ Assessments</span>
-                    <strong>{assessmentChildren.length}</strong>
-                  </button>
-                </div>
-              </div>
-            </>
+            <h1 id={headingId} className="sr-only">
+              {currentNode.label}
+            </h1>
           ) : (
             <div className="progress-card-head">
               <div>
@@ -173,17 +140,47 @@ export default function LearningNodePageShell({
             </section>
           ) : shouldUseLearningAreaLayout ? (
             <div className="learning-area-tabbed-view">
-              <section className={`learning-area-section ${selectedLearningAreaSectionClassName}`}>
-                {selectedLearningAreaChildren.length > 0 ? (
-                  <div className="learning-area-scroll-panel">
-                    <LearningNodeChildGrid registry={registry} nodeId={currentNode.id} nodes={selectedLearningAreaChildren} hideSectionHeadings />
-                  </div>
-                ) : (
-                  <div className="learning-area-empty-state">
-                    <strong>No {isAssessmentPanel ? 'assessments' : 'themes'} available yet.</strong>
-                    <span>{isAssessmentPanel ? 'Assessment cards' : 'Theme cards'} will appear here when they are added.</span>
-                  </div>
+              <div className="learning-area-action-row">
+                {showParentBackButton && parentPath && (
+                  <NavLink className="btn ghost learning-area-back-button" to={parentPath}>
+                    ← Back to {navigation.parent?.label || 'previous'}
+                  </NavLink>
                 )}
+                <div className="learning-area-tab-list" role="tablist" aria-label="English Activities sections">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={learningAreaPanel === 'themes'}
+                    className={`learning-area-tab ${learningAreaPanel === 'themes' ? 'is-active' : ''}`}
+                    onClick={() => setLearningAreaPanel('themes')}
+                  >
+                    <span>📚 Themes</span>
+                    <strong>{themeChildren.length}</strong>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={learningAreaPanel === 'assessments'}
+                    className={`learning-area-tab ${learningAreaPanel === 'assessments' ? 'is-active' : ''}`}
+                    onClick={() => setLearningAreaPanel('assessments')}
+                  >
+                    <span>✅ Assessments</span>
+                    <strong>{assessmentChildren.length}</strong>
+                  </button>
+                </div>
+              </div>
+              <section className={`learning-area-section ${selectedLearningAreaSectionClassName} ${selectedLearningAreaChildren.length === 0 ? 'is-empty' : ''}`}>
+                <div className="learning-area-scroll-panel">
+                  {selectedLearningAreaChildren.length > 0 ? (
+                    <LearningNodeChildGrid key={learningAreaPanel} registry={registry} nodeId={currentNode.id} nodes={selectedLearningAreaChildren} hideSectionHeadings />
+                  ) : (
+                    <div className="learning-area-empty-state">
+                      <strong>No {isAssessmentPanel ? 'assessments' : 'themes'} available yet.</strong>
+                      <span>{isAssessmentPanel ? 'Assessment cards' : 'Theme cards'} will appear here when they are added.</span>
+                    </div>
+                  )}
+                </div>
               </section>
             </div>
           ) : (
