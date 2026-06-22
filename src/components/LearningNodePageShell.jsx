@@ -51,6 +51,7 @@ export default function LearningNodePageShell({
   // Check if this is a learning area page that should use tabbed layout
   const isLearningAreaPage = currentNode.kind === 'learningArea';
   const shouldUseLearningAreaLayout = isLearningAreaPage && !shouldShowBookView;
+  const isGradePage = currentNode.kind === 'grade';
 
   const headingId = `learning-node-heading-${currentNode.id}`;
 
@@ -91,6 +92,8 @@ export default function LearningNodePageShell({
           shouldShowBookView ? 'progress-card-book-mode' : ''
         } ${
           shouldUseLearningAreaLayout ? 'progress-card-learning-area-mode' : ''
+        } ${
+          isGradePage ? 'progress-card-grade-mode' : ''
         }`}
         aria-labelledby={headingId}
       >
@@ -104,6 +107,10 @@ export default function LearningNodePageShell({
               {currentNode.label}
             </h1>
           ) : shouldUseLearningAreaLayout ? (
+            <h1 id={headingId} className="sr-only">
+              {currentNode.label}
+            </h1>
+          ) : isGradePage ? (
             <h1 id={headingId} className="sr-only">
               {currentNode.label}
             </h1>

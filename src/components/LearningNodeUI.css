@@ -1391,6 +1391,20 @@
   gap: 1rem;
 }
 
+/* Shared breadcrumb separator for non-book learning pages. Keep book mode unchanged. */
+.learning-node-card:not(.progress-card-book-mode) > .learning-node-header > .learning-node-breadcrumbs,
+.progress-card-learning-area-mode > .learning-node-header > .learning-node-breadcrumbs {
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(99, 241, 226, 0.38);
+}
+
+.learning-node-card:not(.progress-card-book-mode) .progress-card-head,
+.progress-card-learning-area-mode .progress-card-head,
+.progress-card-learning-area-mode .learning-node-header {
+  border-bottom: 0;
+}
+
 @media (max-width: 640px) {
   .progress-card-book-mode .book-toolbar {
     flex-wrap: wrap;
@@ -1867,6 +1881,52 @@
   padding-right: 0.25rem;
 }
 
+/* Grade pages: breadcrumb is the visible page identity; keep one separator only. */
+.progress-card-grade-mode > .learning-node-header > .learning-node-breadcrumbs {
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(99, 241, 226, 0.38);
+}
+
+.progress-card-grade-mode .learning-node-header,
+.progress-card-grade-mode .progress-card-head {
+  border-bottom: 0;
+  box-shadow: none;
+}
+
+.progress-card-grade-mode .learning-node-breadcrumbs nav.learning-node-breadcrumbs {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.progress-card-grade-mode .progress-card-head::before,
+.progress-card-grade-mode .progress-card-head::after,
+.progress-card-grade-mode .learning-node-header::before,
+.progress-card-grade-mode .learning-node-header::after,
+.progress-card-grade-mode .learning-node-breadcrumbs nav.learning-node-breadcrumbs::before,
+.progress-card-grade-mode .learning-node-breadcrumbs nav.learning-node-breadcrumbs::after {
+  content: none;
+  display: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.progress-card-grade-mode .progress-card-head {
+  display: none;
+  margin: 0;
+  padding: 0;
+}
+
+.progress-card-grade-mode .learning-node-main {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.progress-card-grade-mode .learning-node-children {
+  margin-top: 0;
+}
+
 @media (max-width: 900px) {
   .progress-card-learning-area-mode {
     height: auto;
@@ -1895,4 +1955,36 @@
   .progress-card-learning-area-mode .learning-node-child-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Final breadcrumb separator spacing normalization across learning pages. */
+.learning-node-card > .learning-node-header > .learning-node-breadcrumbs,
+.progress-card-grade-mode > .learning-node-header > .learning-node-breadcrumbs,
+.progress-card-learning-area-mode > .learning-node-header > .learning-node-breadcrumbs,
+.progress-card-book-mode > .learning-node-header > .learning-node-breadcrumbs {
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(99, 241, 226, 0.38) !important;
+}
+
+.learning-node-card .learning-node-breadcrumbs nav.learning-node-breadcrumbs {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.learning-node-card .learning-node-header,
+.learning-node-card .progress-card-head {
+  border-bottom: 0;
+  box-shadow: none;
+}
+
+.learning-node-card .learning-node-header::before,
+.learning-node-card .learning-node-header::after,
+.learning-node-card .progress-card-head::before,
+.learning-node-card .progress-card-head::after {
+  content: none;
+  display: none;
 }
