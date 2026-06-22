@@ -5,7 +5,7 @@ import SupportButton from './SupportButton.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { usePreferences } from '../hooks/usePreferences.js';
 import { categories } from '../services/questionBankService.js';
-import { detectAcademyIdFromLocation, getActiveAcademy } from '../config/detectAcademy.ts';
+import { getActiveAcademy } from '../config/detectAcademy.ts';
 
 const MOBILE_NAV_ITEMS = [
   { to: '/', label: 'Dashboard', end: true },
@@ -15,9 +15,9 @@ const MOBILE_NAV_ITEMS = [
   { to: '/settings', label: 'Settings' }
 ];
 
-function pageTitle(pathname, academyName) {
+function pageTitle(pathname, academyName, academyId) {
   if (pathname === '/') return `${academyName} Dashboard`;
-  if (pathname === '/categories') return 'Grades';
+  if (pathname === '/categories') return academyId === 'cbc' ? 'Grades' : 'Categories';
   if (pathname === '/dsa') return 'DSA Practice';
   if (pathname === '/random') return 'Random Practice';
   if (pathname === '/recent') return 'Recent';
@@ -90,7 +90,7 @@ export default function Navbar() {
           <span />
         </button>
 
-        <span className="topbar-title">{pageTitle(location.pathname, displayName)}</span>
+        <span className="topbar-title">{pageTitle(location.pathname, displayName, activeAcademy.id)}</span>
 
         <Link to="/" className="topbar-brand" aria-label={`${displayName} dashboard`}>
           <img

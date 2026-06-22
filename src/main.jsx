@@ -65,7 +65,7 @@ import './styles/cbc-grade-one-wide-screen-fix.css';
 import './styles/cbc-exam-start-button-fix.css';
 import './styles/alphabet-mastery.css';
 import './styles/number-audio-grid.css';
-import './styles/sidebar-nav-state-fix.css';
+import './styles/interaction-state-fix.css';
 
 function loadCloudflareAnalytics() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {

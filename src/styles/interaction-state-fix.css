@@ -1,0 +1,70 @@
+/* ========================================================================== 
+   Shared interaction state fix
+   --------------------------------------------------------------------------
+   Strong selected styling must belong only to explicit selected states:
+   .active, .selected, aria-current="page", or aria-selected="true".
+
+   Hover and keyboard focus are intentionally weaker and visually distinct so
+   buttons, nav links, pagination controls, and answer options do not look
+   selected just because the pointer or focus is on them.
+   ========================================================================== */
+
+.app-shell :where(
+  .nav-item,
+  .bottom-nav-item,
+  .btn,
+  .mark,
+  .page-btn,
+  .clear-search,
+  .option-btn,
+  .question-nav-button,
+  .cbc-exam-button,
+  .cbc-grade-one-nav-button,
+  button,
+  [role="button"]
+):where(:not(.active):not(.selected):not([aria-current="page"]):not([aria-selected="true"])):where(:hover, :focus, :focus-visible, :focus-within) {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.app-shell :where(
+  .nav-item,
+  .bottom-nav-item,
+  .btn,
+  .mark,
+  .page-btn,
+  .clear-search,
+  .option-btn,
+  .question-nav-button,
+  .cbc-exam-button,
+  .cbc-grade-one-nav-button,
+  button,
+  [role="button"]
+):where(:not(.active):not(.selected):not([aria-current="page"]):not([aria-selected="true"])):focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--text-sidebar-muted, var(--theme-text-soft, var(--muted, currentColor))) 34%, transparent) !important;
+  outline-offset: 2px !important;
+}
+
+.app-shell aside.sidebar.app-sidebar .nav-item:where(:not(.active):not([aria-current="page"])):where(:hover, :focus, :focus-visible, :focus-within) {
+  border-color: transparent !important;
+  background: color-mix(in srgb, var(--text-sidebar-muted, var(--theme-text-soft, currentColor)) 8%, transparent) !important;
+  color: var(--text-sidebar, var(--theme-text, currentColor)) !important;
+}
+
+.app-shell.dark aside.sidebar.app-sidebar .nav-item:where(:not(.active):not([aria-current="page"])):where(:hover, :focus, :focus-visible, :focus-within) {
+  background: color-mix(in srgb, var(--text-secondary, var(--text-sidebar-muted, #9aa3b5)) 10%, transparent) !important;
+  color: var(--text-primary, var(--text-sidebar, #eef0f5)) !important;
+}
+
+.app-shell aside.sidebar.app-sidebar .nav-item:where(.active, [aria-current="page"]),
+.app-shell aside.sidebar.app-sidebar .nav-item:where(.active, [aria-current="page"]):where(:hover, :focus, :focus-visible, :focus-within) {
+  border-color: var(--sidebar-active-border, var(--theme-accent, var(--accent))) !important;
+  background: var(--sidebar-active-bg, var(--theme-active-bg, var(--accent-light))) !important;
+  color: var(--sidebar-active-text, var(--theme-accent-strong, var(--accent))) !important;
+  font-weight: 700 !important;
+}
+
+.app-shell.dark aside.sidebar.app-sidebar .nav-item:where(.active, [aria-current="page"]),
+.app-shell.dark aside.sidebar.app-sidebar .nav-item:where(.active, [aria-current="page"]):where(:hover, :focus, :focus-visible, :focus-within) {
+  border-color: transparent !important;
+}
