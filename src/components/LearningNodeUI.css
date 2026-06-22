@@ -9,11 +9,29 @@
 }
 
 .learning-node-header {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
 }
 
 .learning-node-breadcrumbs {
   margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line, #e0e0e0);
+}
+
+:root[data-theme="dark"] .learning-node-breadcrumbs {
+  border-bottom-color: var(--line, rgba(255, 255, 255, 0.1));
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .breadcrumb-list {
@@ -1395,21 +1413,35 @@
   display: none;
 }
 
-.learning-area-top-action-row {
+.learning-area-action-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-}
-
-.learning-area-info-panel {
-  margin-bottom: 1.5rem;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .progress-card-learning-area-mode .learning-area-back-row {
   display: flex;
   justify-content: flex-start;
   margin-bottom: 0;
+}
+
+.progress-card-learning-area-mode .learning-area-compact-head {
+  display: none;
+  margin: 0;
+  padding: 0;
+}
+
+.progress-card-learning-area-mode .learning-area-top-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.progress-card-learning-area-mode .learning-area-info-panel {
+  margin-bottom: 1.5rem;
 }
 
 .progress-card-learning-area-mode .learning-area-back-button {
@@ -1448,16 +1480,21 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .progress-card-learning-area-mode .learning-area-tabbed-view {
   flex: 1 1 auto;
   min-height: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
-  overflow: hidden;
-  margin-top: 0.5rem;
+  gap: 0;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .progress-card-learning-area-mode .learning-area-tab-list {
@@ -1500,6 +1537,7 @@
 .progress-card-learning-area-mode .learning-area-section {
   flex: 1 1 auto;
   min-height: 0;
+  margin-top: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1546,15 +1584,13 @@
 }
 
 .progress-card-learning-area-mode .learning-area-scroll-panel {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-height: 0;
-  max-height: calc(96px * 4 + 0.55rem * 3);
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
-  padding-right: 0.2rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  scrollbar-gutter: stable;
+  padding-right: 0.25rem;
 }
 
 .learning-area-empty-state {
@@ -1578,8 +1614,10 @@
 }
 
 .progress-card-learning-area-mode .learning-node-child-card {
-  min-height: 96px;
-  padding: 0.68rem 0.78rem;
+  min-height: 104px;
+  max-height: none;
+  overflow: visible;
+  padding: 0.7rem 0.85rem;
   border-radius: 0.85rem;
 }
 

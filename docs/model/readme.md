@@ -186,6 +186,8 @@ On your laptop, run:
 
 ```bash
 ssh -i demo-app-2026.pem -L 11434:localhost:11434 ubuntu@34.222.53.239
+
+ssh -i demo-app-2026.pem -N -L 11434:localhost:11434 ubuntu@34.222.53.239
 ```
 
 Keep this terminal open.
@@ -219,6 +221,22 @@ Recommended context window:
 
 sudo journalctl -u ollama -f
 
+
+Test through the Ollama API
+
+
+curl -s http://127.0.0.1:11434/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "qwen2.5-coder:14b",
+    "prompt": "Reply with exactly: Ollama is working.",
+    "stream": false,
+    "options": {
+      "num_predict": 20,
+      "temperature": 0
+    }
+  }' | jq -r '.response'
+
 ---
 
 ## 11. Stop the Instance When Done
@@ -231,7 +249,7 @@ Then stop the instance:
 
 ```bash
 aws ec2 stop-instances \
-  --instance-ids INSTANCE_ID \
+  --instance-ids 34.222.53.239 \
   --region us-west-2
 ```
 

@@ -105,7 +105,11 @@ export default function LearningNodePageShell({
             </h1>
           ) : shouldUseLearningAreaLayout ? (
             <>
-              <div className="learning-area-top-action-row">
+              <h1 id={headingId} className="sr-only">
+                {currentNode.label}
+              </h1>
+
+              <div className="learning-area-action-row">
                 {showParentBackButton && parentPath && (
                   <NavLink className="btn ghost learning-area-back-button" to={parentPath}>
                     ← Back to {navigation.parent?.label || 'previous'}
@@ -134,11 +138,6 @@ export default function LearningNodePageShell({
                     <strong>{assessmentChildren.length}</strong>
                   </button>
                 </div>
-              </div>
-
-              <div className="learning-area-info-panel">
-                <h1 id={headingId}>{currentNode.label}</h1>
-                {currentNode.summary && <p>{currentNode.summary}</p>}
               </div>
             </>
           ) : (
@@ -181,7 +180,8 @@ export default function LearningNodePageShell({
                   </div>
                 ) : (
                   <div className="learning-area-empty-state">
-                    <p>No {isAssessmentPanel ? 'assessments' : 'themes'} found.</p>
+                    <strong>No {isAssessmentPanel ? 'assessments' : 'themes'} available yet.</strong>
+                    <span>{isAssessmentPanel ? 'Assessment cards' : 'Theme cards'} will appear here when they are added.</span>
                   </div>
                 )}
               </section>
