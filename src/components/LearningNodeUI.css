@@ -1963,8 +1963,16 @@
 .progress-card-learning-area-mode > .learning-node-header > .learning-node-breadcrumbs,
 .progress-card-book-mode > .learning-node-header > .learning-node-breadcrumbs {
   padding-bottom: 0.4rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.55rem;
   border-bottom: 1px solid rgba(99, 241, 226, 0.38) !important;
+}
+
+.learning-node-card .progress-card-head,
+.learning-node-card .learning-node-main,
+.learning-node-card .learning-area-tabbed-view,
+.learning-node-card .learning-node-book-view-section {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .learning-node-card .learning-node-breadcrumbs nav.learning-node-breadcrumbs {
