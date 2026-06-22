@@ -1183,7 +1183,7 @@
 }
 
 .progress-card-book-mode .learning-node-header {
-  margin-bottom: 0.15rem;
+  margin-bottom: 0;
 }
 
 .progress-card-book-mode .learning-node-book-view-section {
@@ -1233,7 +1233,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-top: 0.15rem;
+  margin-top: 0;
   margin-bottom: 0.25rem;
 }
 
@@ -1246,7 +1246,7 @@
 
 .progress-card-book-mode .book-progress-bar {
   margin-top: 0;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   height: 4px;
 }
 
