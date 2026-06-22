@@ -58,15 +58,21 @@ export default function LearningNodePageShell({
             <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
           </div>
 
-          <div className="progress-card-head">
-            <div>
-              <p className="eyebrow">{kindLabel}</p>
-              <h1 id={headingId}>{currentNode.label}</h1>
-              {currentNode.summary && <p>{currentNode.summary}</p>}
+          {shouldShowBookView ? (
+            <h1 id={headingId} className="learning-node-sr-only">
+              {currentNode.label}
+            </h1>
+          ) : (
+            <div className="progress-card-head">
+              <div>
+                <p className="eyebrow">{kindLabel}</p>
+                <h1 id={headingId}>{currentNode.label}</h1>
+                {currentNode.summary && <p>{currentNode.summary}</p>}
+              </div>
             </div>
-          </div>
+          )}
 
-          {showParentBackButton && parentPath && (
+          {showParentBackButton && parentPath && !shouldShowBookView && (
             <div className="learning-node-parent-action" style={{ marginTop: '10px' }}>
               <NavLink className="btn ghost" to={parentPath}>
                 ← Back to {navigation.parent?.label || 'previous'}
@@ -80,7 +86,12 @@ export default function LearningNodePageShell({
 
           {shouldShowBookView ? (
             <section className="learning-node-book-view-section">
-              <LearningNodeBookView registry={registry} nodeId={currentNode.id} />
+              <LearningNodeBookView
+                registry={registry}
+                nodeId={currentNode.id}
+                backPath={parentPath}
+                backLabel="Themes"
+              />
             </section>
           ) : (
             <>

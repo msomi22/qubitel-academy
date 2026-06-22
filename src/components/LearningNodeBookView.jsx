@@ -1,16 +1,30 @@
 import { useState, useMemo, useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
 import { getChildren } from '../learning/registry/index.ts';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 
-/**
- * Book-page navigation for learning content - opens like turning pages in a book.
- * Each content item gets its own page. If an item is taller than the page,
- * the user can scroll up/down within that page instead of creating duplicate pages.
- */
-export default function LearningNodeBookView({ registry, nodeId }) {
+const CONTENT_TABS = [
+  { key: 'notes', label: 'Notes', icon: '📖' },
+  { key: 'practice', label: 'Practice', icon: '✏️' },
+  { key: 'assessment', label: 'Assessment', icon: '✅' }
+];
+
+const TAB_GROUPS = {
+  notes: new Set(['lessons', 'notes', 'practice', 'revision', 'assessments']),
+  practice: new Set([]),
+  assessment: new Set(['assessments'])
+};
+
+function filterContentGroups(contentGroups, selectedContentType) {
+  const allowedGroups = TAB_GROUPS[selectedContentType] || new Set();
+  if (allowedGroups.size === 0) return [];
+  return contentGroups.filter((group) => allowedGroups.has(group.type));
+}
+
+export default function LearningNodeBookView({ registry, nodeId, backPath, backLabel }) {
+  const [selectedContentType, setSelectedContentType] = useState('notes');
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
-  // Build pages: one page per content item (plus chapter/review pages)
   const pages = useMemo(() => {
     const children = getChildren(registry, nodeId);
 
@@ -19,7 +33,12 @@ export default function LearningNodeBookView({ registry, nodeId }) {
 
     const pageList = [];
 
-    // Strand-based content
+    const tabCoverStrand = {
+      notes: { label: 'Notes', icon: '📖', summary: 'Lessons and notes for Greetings' },
+      practice: { label: 'Practice', icon: '✏️', summary: 'Practice exercises for Greetings' },
+      assessment: { label: 'Assessment', icon: '✅', summary: 'Assessments for Greetings' }
+    }[selectedContentType] || { label: 'Notes', icon: '📖', summary: '' };
+
     strands.forEach(strand => {
       const strandChildren = getChildren(registry, strand.id);
       const subStrands = strandChildren.filter(child => child.kind === 'subStrand');
@@ -27,7 +46,16 @@ export default function LearningNodeBookView({ registry, nodeId }) {
         child.kind === 'assessment' || child.kind === 'exam'
       );
 
-      pageList.push({ type: 'chapter', strand, subStrandCount: subStrands.length });
+      pageList.push({
+        type: 'chapter',
+        strand: {
+          ...strand,
+          label: tabCoverStrand.label,
+          summary: tabCoverStrand.summary,
+          appearances: [{ key: 'icon', value: tabCoverStrand.icon }]
+        },
+        subStrandCount: subStrands.length
+      });
 
       subStrands.forEach(subStrand => {
         const subStrandChildren = getChildren(registry, subStrand.id);
@@ -44,8 +72,9 @@ export default function LearningNodeBookView({ registry, nodeId }) {
         if (revision.length > 0) contentGroups.push({ type: 'revision', items: revision });
         if (assessments.length > 0) contentGroups.push({ type: 'assessments', items: assessments });
 
-        // One item per page
-        contentGroups.forEach(group => {
+        const filteredStrandGroups = filterContentGroups(contentGroups, selectedContentType);
+
+        filteredStrandGroups.forEach(group => {
           group.items.forEach(item => {
             pageList.push({
               type: 'content',
@@ -56,12 +85,12 @@ export default function LearningNodeBookView({ registry, nodeId }) {
           });
         });
 
-        if (contentGroups.length === 0) {
+        if (filteredStrandGroups.length === 0) {
           pageList.push({ type: 'content', strand, subStrand, items: [] });
         }
       });
 
-      if (strandAssessments.length > 0) {
+      if (strandAssessments.length > 0 && (selectedContentType === 'assessment' || selectedContentType === 'notes')) {
         for (let i = 0; i < strandAssessments.length; i += 2) {
           pageList.push({
             type: 'review',
@@ -72,7 +101,6 @@ export default function LearningNodeBookView({ registry, nodeId }) {
       }
     });
 
-    // LearningArea-based content (Grade 1)
     learningAreas.forEach(learningArea => {
       const areaChildren = getChildren(registry, learningArea.id);
       const lessons = areaChildren.filter(child => child.kind === 'lesson');
@@ -83,9 +111,20 @@ export default function LearningNodeBookView({ registry, nodeId }) {
         child.kind === 'assessment' || child.kind === 'exam'
       );
 
+      const tabCover = {
+        notes: { label: 'Notes', icon: '📖', summary: 'Lessons and notes for Greetings' },
+        practice: { label: 'Practice', icon: '✏️', summary: 'Practice exercises for Greetings' },
+        assessment: { label: 'Assessment', icon: '✅', summary: 'Assessments for Greetings' }
+      }[selectedContentType] || { label: 'Notes', icon: '📖', summary: learningArea.summary || '' };
+
       pageList.push({
         type: 'chapter',
-        strand: learningArea,
+        strand: {
+          ...learningArea,
+          label: tabCover.label,
+          summary: tabCover.summary,
+          appearances: [{ key: 'icon', value: tabCover.icon }]
+        },
         subStrandCount: lessons.length + practice.length + notes.length + revision.length
       });
 
@@ -95,8 +134,9 @@ export default function LearningNodeBookView({ registry, nodeId }) {
       if (practice.length > 0) contentGroups.push({ type: 'practice', items: practice });
       if (revision.length > 0) contentGroups.push({ type: 'revision', items: revision });
 
-      // One item per page
-      contentGroups.forEach(group => {
+      const filteredContentGroups = filterContentGroups(contentGroups, selectedContentType);
+
+      filteredContentGroups.forEach(group => {
         group.items.forEach(item => {
           pageList.push({
             type: 'content',
@@ -107,7 +147,7 @@ export default function LearningNodeBookView({ registry, nodeId }) {
         });
       });
 
-      if (assessments.length > 0) {
+      if (assessments.length > 0 && (selectedContentType === 'assessment' || selectedContentType === 'notes')) {
         for (let i = 0; i < assessments.length; i += 2) {
           pageList.push({
             type: 'review',
@@ -116,14 +156,22 @@ export default function LearningNodeBookView({ registry, nodeId }) {
           });
         }
       }
+
+      if (selectedContentType === 'practice') {
+        pageList.push({ type: 'placeholder', title: 'More practice coming soon' });
+        pageList.push({ type: 'placeholder', title: 'Practice exercises coming soon' });
+      }
+      if (selectedContentType === 'assessment') {
+        pageList.push({ type: 'placeholder', title: 'More assessments coming soon' });
+        pageList.push({ type: 'placeholder', title: 'Assessments coming soon' });
+      }
     });
 
     return pageList;
-  }, [registry, nodeId]);
+  }, [registry, nodeId, selectedContentType]);
 
   const totalPages = pages.length;
 
-  // Clamp page index when pages change
   useEffect(() => {
     if (currentPageIndex >= totalPages && totalPages > 0) {
       setCurrentPageIndex(totalPages - 1);
@@ -133,7 +181,6 @@ export default function LearningNodeBookView({ registry, nodeId }) {
     }
   }, [totalPages, currentPageIndex]);
 
-  // Reset to first page when node changes
   useEffect(() => {
     setCurrentPageIndex(0);
   }, [nodeId]);
@@ -144,11 +191,11 @@ export default function LearningNodeBookView({ registry, nodeId }) {
   const canGoNext = currentPageIndex < totalPages - 1;
 
   const goToPrevious = () => {
-    if (canGoPrevious) setCurrentPageIndex(currentPageIndex - 1);
+    if (canGoPrevious) setCurrentPageIndex(prev => prev - 1);
   };
 
   const goToNext = () => {
-    if (canGoNext) setCurrentPageIndex(currentPageIndex + 1);
+    if (canGoNext) setCurrentPageIndex(prev => prev + 1);
   };
 
   if (pages.length === 0) {
@@ -159,64 +206,93 @@ export default function LearningNodeBookView({ registry, nodeId }) {
     );
   }
 
+  const progressPercentage =
+    totalPages > 0 ? ((currentPageIndex + 1) / totalPages) * 100 : 0;
+
+  const selectContentType = (contentType) => {
+    if (contentType !== selectedContentType) {
+      setSelectedContentType(contentType);
+      setCurrentPageIndex(0);
+    }
+  };
+
   return (
     <div className="book-reader">
-      <div className="book-progress-bar">
+      <div className="book-toolbar">
+        {backPath && (
+          <NavLink className="book-toolbar-back" to={backPath}>
+            ← Back to {backLabel || 'Themes'}
+          </NavLink>
+        )}
+
+        <div className="book-content-tabs" role="tablist" aria-label="Choose content type">
+          {CONTENT_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              role="tab"
+              aria-selected={selectedContentType === tab.key}
+              className={`book-content-tab ${selectedContentType === tab.key ? 'book-content-tab-active' : ''}`}
+              onClick={() => selectContentType(tab.key)}
+            >
+              <span>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="book-progress-bar" aria-hidden="true">
         <div
           className="book-progress-fill"
-          style={{ width: `${totalPages > 0 ? ((currentPageIndex + 1) / totalPages) * 100 : 0}%` }}
+          style={{ width: `${progressPercentage}%` }}
         />
       </div>
 
       <div className="book-page-container">
         <div
-          key={currentPageIndex}
+          key={`${selectedContentType}-${currentPageIndex}`}
           className="book-page book-page-active"
         >
-          <BookPageContent
-            page={currentPage}
-            pageNumber={currentPageIndex + 1}
-            totalPages={totalPages}
-            registry={registry}
-          />
+          <div className="book-page-body">
+            <BookPageContent
+              page={currentPage}
+              pageNumber={currentPageIndex + 1}
+              totalPages={totalPages}
+              registry={registry}
+            />
+          </div>
+
+          {totalPages > 0 && (
+            <div className="book-page-footer-nav">
+              <button
+                className="book-page-nav-button"
+                onClick={goToPrevious}
+                disabled={!canGoPrevious}
+              >
+                ← <span className="book-page-nav-label">Previous</span>
+              </button>
+
+              <div className="book-page-footer-indicator">
+                <strong>{currentPageIndex + 1}</strong>
+                <span>/</span>
+                <span>{totalPages}</span>
+              </div>
+
+              <button
+                className="book-page-nav-button book-page-nav-button-primary"
+                onClick={goToNext}
+                disabled={!canGoNext}
+              >
+                <span className="book-page-nav-label">Next</span> →
+              </button>
+            </div>
+          )}
         </div>
-      </div>
-
-      <div className="book-navigation">
-        <button
-          className="book-nav-button book-nav-previous"
-          onClick={goToPrevious}
-          disabled={!canGoPrevious}
-          aria-label="Previous page"
-        >
-          <span className="book-nav-icon">←</span>
-          <span className="book-nav-label">Previous</span>
-        </button>
-
-        <div className="book-page-indicator">
-          <span className="book-current-page">{currentPageIndex + 1}</span>
-          <span className="book-page-separator">/</span>
-          <span className="book-total-pages">{totalPages}</span>
-        </div>
-
-        <button
-          className="book-nav-button book-nav-next"
-          onClick={goToNext}
-          disabled={!canGoNext}
-          aria-label="Next page"
-        >
-          <span className="book-nav-label">Next</span>
-          <span className="book-nav-icon">→</span>
-        </button>
       </div>
     </div>
   );
 }
 
-/**
- * Renders page content. For content pages, uses a scrollable container
- * so overflowing content can be scrolled up/down within the same page.
- */
 function BookPageContent({ page, pageNumber, totalPages, registry }) {
   if (page.type === 'chapter') {
     return <ChapterPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
@@ -234,7 +310,26 @@ function BookPageContent({ page, pageNumber, totalPages, registry }) {
   if (page.type === 'review') {
     return <ReviewPage page={page} pageNumber={pageNumber} totalPages={totalPages} registry={registry} />;
   }
+  if (page.type === 'placeholder') {
+    return <PlaceholderPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
+  }
   return null;
+}
+
+function PlaceholderPage({ page, pageNumber, totalPages }) {
+  return (
+    <>
+      <div className="book-page-header">
+        <span className="book-page-breadcrumb">Coming soon</span>
+        <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
+      </div>
+      <div className="book-placeholder-content">
+        <div className="book-placeholder-icon">🚧</div>
+        <h3 className="book-placeholder-title">{page.title}</h3>
+        <p className="book-placeholder-text">This section is being prepared. Please check back later.</p>
+      </div>
+    </>
+  );
 }
 
 function ChapterPage({ page, pageNumber, totalPages }) {
@@ -276,7 +371,6 @@ function ContentPage({ page, pageNumber, totalPages, registry }) {
     lessons: 'Lessons', notes: 'Notes', practice: 'Practice', revision: 'Revision', assessments: 'Assessments'
   };
 
-  // Group items by kind
   const groupedItems = {
     lessons: items.filter(item => item.kind === 'lesson'),
     notes: items.filter(item => item.kind === 'notes'),
