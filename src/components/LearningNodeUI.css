@@ -13,7 +13,7 @@
 }
 
 .learning-node-breadcrumbs {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .breadcrumb-list {
@@ -1362,5 +1362,316 @@
   .progress-card-book-mode .learning-node-footer {
     margin-top: 0.7rem;
     padding-top: 0.7rem;
+  }
+}
+
+/* Learning area landing page — tabbed layout */
+.progress-card-learning-area-mode {
+  height: calc(100vh - 7rem);
+  height: calc(100dvh - 7rem);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.75rem;
+}
+
+.progress-card-learning-area-mode .learning-node-breadcrumbs {
+  flex: 0 0 auto;
+  padding-bottom: 0.55rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(99, 241, 226, 0.28);
+}
+
+.progress-card-learning-area-mode .learning-node-header {
+  border-bottom: 0;
+}
+
+.progress-card-learning-area-mode .learning-node-breadcrumbs nav.learning-node-breadcrumbs {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.progress-card-learning-area-mode .progress-card-head {
+  display: none;
+}
+
+.learning-area-top-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.learning-area-info-panel {
+  margin-bottom: 1.5rem;
+}
+
+.progress-card-learning-area-mode .learning-area-back-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0;
+}
+
+.progress-card-learning-area-mode .learning-area-back-button {
+  width: fit-content;
+}
+
+.progress-card-learning-area-mode .learning-area-compact-head {
+  display: block;
+  margin-bottom: 0.75rem;
+  flex: 0 0 auto;
+}
+
+.progress-card-learning-area-mode .learning-area-compact-copy h1 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.15;
+  color: #1a1a1a;
+}
+
+:root[data-theme="dark"] .progress-card-learning-area-mode .learning-area-compact-copy h1 {
+  color: #f8fafc;
+}
+
+.progress-card-learning-area-mode .learning-area-compact-copy p {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: #666;
+}
+
+:root[data-theme="dark"] .progress-card-learning-area-mode .learning-area-compact-copy p {
+  color: #94a3b8;
+}
+
+.progress-card-learning-area-mode .learning-node-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.progress-card-learning-area-mode .learning-area-tabbed-view {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-card-learning-area-mode .learning-area-tab-list {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.progress-card-learning-area-mode .learning-area-tab {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(99, 241, 226, 0.22);
+  background: rgba(15, 23, 42, 0.58);
+  color: rgba(226, 232, 240, 0.86);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.progress-card-learning-area-mode .learning-area-tab strong {
+  font-size: 0.75rem;
+  line-height: 1;
+  padding: 0.18rem 0.42rem;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.progress-card-learning-area-mode .learning-area-tab.is-active {
+  border-color: rgba(99, 241, 226, 0.68);
+  color: #63f1e2;
+  background:
+    linear-gradient(135deg, rgba(45, 212, 191, 0.18), transparent 70%),
+    rgba(20, 184, 166, 0.1);
+  box-shadow: 0 0 0 1px rgba(99, 241, 226, 0.16);
+}
+
+.progress-card-learning-area-mode .learning-area-section {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 1rem;
+  padding: 0.65rem;
+}
+
+.progress-card-learning-area-mode .learning-area-themes-section {
+  background:
+    radial-gradient(circle at top left, rgba(45, 212, 191, 0.12), transparent 34%),
+    rgba(15, 30, 39, 0.74);
+  border: 1px solid rgba(99, 241, 226, 0.18);
+}
+
+.progress-card-learning-area-mode .learning-area-assessments-section {
+  background:
+    radial-gradient(circle at top left, rgba(34, 197, 94, 0.13), transparent 34%),
+    rgba(13, 31, 27, 0.74);
+  border: 1px solid rgba(34, 197, 94, 0.22);
+}
+
+
+
+.progress-card-learning-area-mode .learning-area-section-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #1a1a1a;
+}
+
+:root[data-theme="dark"] .progress-card-learning-area-mode .learning-area-section-header h2 {
+  color: #f8fafc;
+}
+
+.progress-card-learning-area-mode .learning-area-section-header span {
+  font-size: 0.8rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+:root[data-theme="dark"] .progress-card-learning-area-mode .learning-area-section-header span {
+  color: #94a3b8;
+}
+
+.progress-card-learning-area-mode .learning-area-scroll-panel {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: calc(96px * 4 + 0.55rem * 3);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  padding-right: 0.2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.learning-area-empty-state {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  margin-top: 1rem;
+}
+
+:root[data-theme="dark"] .learning-area-empty-state {
+  background: var(--dark-bg-secondary);
+  color: var(--dark-text-muted);
+}
+
+.progress-card-learning-area-mode .learning-node-child-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.progress-card-learning-area-mode .learning-node-child-card {
+  min-height: 96px;
+  padding: 0.68rem 0.78rem;
+  border-radius: 0.85rem;
+}
+
+.progress-card-learning-area-mode .learning-node-child-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.progress-card-learning-area-mode .learning-node-child-card-icon {
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  border-radius: 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.progress-card-learning-area-mode .learning-node-child-card-title {
+  font-size: 0.95rem;
+  line-height: 1.12;
+  margin: 0;
+}
+
+.progress-card-learning-area-mode .learning-node-child-card-summary {
+  margin-top: 0.55rem;
+  font-size: 0.82rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #666;
+}
+
+:root[data-theme="dark"] .progress-card-learning-area-mode .learning-node-child-card-summary {
+  color: #94a3b8;
+}
+
+.progress-card-learning-area-mode .learning-node-child-card-badge,
+.progress-card-learning-area-mode .learning-node-child-card-status {
+  font-size: 0.65rem;
+  padding: 0.12rem 0.4rem;
+}
+
+.learning-area-assessments-section .learning-node-child-card {
+  min-height: 92px;
+  border-color: rgba(34, 197, 94, 0.26);
+}
+
+.learning-area-assessments-section .learning-node-child-card-icon {
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.learning-area-assessments-section .learning-node-child-card.is-disabled,
+.learning-area-assessments-section .learning-node-child-card[aria-disabled="true"] {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.progress-card-learning-area-mode .learning-node-footer {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .progress-card-learning-area-mode {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .progress-card-learning-area-mode .learning-area-tabbed-view,
+  .progress-card-learning-area-mode .learning-area-section,
+  .progress-card-learning-area-mode .learning-area-scroll-panel {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .progress-card-learning-area-mode .learning-node-child-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .progress-card-learning-area-mode .learning-node-footer {
+    display: block;
+  }
+}
+
+@media (max-width: 560px) {
+  .progress-card-learning-area-mode .learning-node-child-grid {
+    grid-template-columns: 1fr;
   }
 }

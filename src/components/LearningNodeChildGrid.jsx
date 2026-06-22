@@ -47,9 +47,9 @@ const KIND_GROUPS = {
   questions: { kinds: ['question'], label: 'Questions' }
 };
 
-export default function LearningNodeChildGrid({ registry, nodeId }) {
+export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSectionHeadings = false }) {
   const groupedChildren = useMemo(() => {
-    const children = getChildren(registry, nodeId);
+    const children = nodes || getChildren(registry, nodeId);
     const groups = [];
 
     for (const [groupKey, groupConfig] of Object.entries(KIND_GROUPS)) {
@@ -74,7 +74,7 @@ export default function LearningNodeChildGrid({ registry, nodeId }) {
     }
 
     return groups;
-  }, [registry, nodeId]);
+  }, [registry, nodeId, nodes]);
 
   if (groupedChildren.length === 0) {
     return null;
@@ -84,13 +84,12 @@ export default function LearningNodeChildGrid({ registry, nodeId }) {
     <div className="learning-node-children" aria-label="Child nodes">
       {groupedChildren.map((group) => (
         <div key={group.key} className="child-group">
-          <h2 className="child-group-title">{group.label}</h2>
+          {!hideSectionHeadings && <h2 className="child-group-title">{group.label}</h2>}
           <div className="premium-category-grid child-grid-inner">
             {group.children.map((child) => {
               const path = `/learn/${child.id}`;
               const icon = ICON_BY_KIND[child.kind] || '📄';
               const kindLabel = LABEL_BY_KIND[child.kind] || child.kind;
-              // Only enable Grade 1 English Activities; all other learning areas across all grades are disabled
               const isActiveLearningArea =
                 child.kind === 'learningArea' &&
                 child.id === 'grade-1-english-activities';

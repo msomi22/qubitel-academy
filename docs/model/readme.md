@@ -53,7 +53,7 @@ aws cloudformation deploy \
     InstanceType=g5.2xlarge \
     VolumeSizeGb=100 \
     ModelName=qwen2.5-coder:14b \
-    AllowedSshCidr=41.90.187.218/32
+    AllowedSshCidr=41.90.185.174/32
 ```
 
 Example:
@@ -100,7 +100,7 @@ PublicDnsName
 Use the `PublicDnsName` from the stack outputs.
 
 ```bash
-ssh -i demo-app-2026.pem ubuntu@EC2_PUBLIC_DNS
+ssh -i demo-app-2026.pem ubuntu@34.222.53.239
 ```
 
 Example:
@@ -185,7 +185,7 @@ To exit Ollama chat mode:
 On your laptop, run:
 
 ```bash
-ssh -i demo-app-2026.pem -L 11434:localhost:11434 ubuntu@EC2_PUBLIC_DNS
+ssh -i demo-app-2026.pem -L 11434:localhost:11434 ubuntu@34.222.53.239
 ```
 
 Keep this terminal open.
@@ -216,6 +216,8 @@ Recommended context window:
 ```text
 32768 or higher
 ```
+
+sudo journalctl -u ollama -f
 
 ---
 
