@@ -35,6 +35,41 @@
   line-height: 1.35;
 }
 
+.grades-page .grades-overview-header {
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(99, 241, 226, 0.38);
+}
+
+.grades-page .grades-overview-header h1 {
+  margin: 0;
+  color: var(--text, var(--text-primary));
+  font-family: var(--font-sans);
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.grades-page .grades-overview-content {
+  margin: 0 0 1rem;
+  padding: 0;
+}
+
+.grades-page .grades-overview-content h2 {
+  margin: 0 0 0.25rem;
+  color: var(--text, var(--text-primary));
+  font-size: clamp(1.25rem, 2vw, 1.55rem);
+  font-weight: 850;
+  line-height: 1.1;
+}
+
+.grades-page .grades-overview-content p:not(.sr-only) {
+  margin: 0;
+  color: var(--muted, var(--text-secondary));
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  line-height: 1.35;
+}
+
 .premium-category-library {
   display: grid;
   gap: 14px;

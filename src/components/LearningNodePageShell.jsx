@@ -124,6 +124,14 @@ export default function LearningNodePageShell({
             </div>
           )}
 
+          {isGradePage && currentNode.parentId && (
+            <div className="grade-page-action-row">
+              <NavLink className="btn ghost learning-area-back-button grade-page-back-button" to="/categories">
+                ← Back to Grades
+              </NavLink>
+            </div>
+          )}
+
           {showParentBackButton && parentPath && !shouldShowBookView && !shouldUseLearningAreaLayout && (
             <div className="learning-node-parent-action" style={{ marginTop: '10px' }}>
               <NavLink className="btn ghost" to={parentPath}>

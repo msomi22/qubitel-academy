@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
+import CategoryLibrary from '../components/CategoryLibrary.jsx';
 import { getAcademyRootNodeById } from '../learning/academies/index.ts';
+import { getAcademyCatalog } from '../academies/catalog.js';
 import { getChildren } from '../learning/registry/index.ts';
 import { createLearningNodeRegistry } from '../learning/registry/index.ts';
 import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
+import { usePreferences } from '../hooks/usePreferences.js';
 
 import '../styles/progress-table.css';
 import '../styles/categories-premium-grid.css';
@@ -12,7 +15,13 @@ import '../styles/categories-premium-grid.css';
 export default function CategoriesPage() {
   const navigate = useNavigate();
   const activeAcademy = getActiveAcademy();
+  const { completed } = usePreferences();
   const [grades, setGrades] = useState([]);
+
+  const activeCatalog = useMemo(
+    () => getAcademyCatalog(activeAcademy.id),
+    [activeAcademy.id]
+  );
 
   const gradeNodes = useMemo(() => {
     if (activeAcademy.id !== 'cbc') return [];
@@ -41,17 +50,24 @@ export default function CategoriesPage() {
 
   if (activeAcademy.id !== 'cbc') {
     return (
-      <main className="page progress-page-focused grades-page">
-        <section className="glass progress-table-card grades-card" aria-labelledby="grades-heading">
-          <div className="progress-card-head">
-            <div>
-              <p className="eyebrow">Topics</p>
-              <h1 id="grades-heading">Topics</h1>
-              <p>Choose a topic to start learning.</p>
-            </div>
-          </div>
-          <p>Categories are being updated. Please use the sidebar to navigate.</p>
+      <main className="page progress-page-focused premium-categories-page">
+        <section className="categories-page-intro" aria-labelledby="categories-heading">
+          <h1 id="categories-heading">Categories</h1>
+          <p>Choose a learning category to start practicing.</p>
         </section>
+
+        <CategoryLibrary
+          categories={activeCatalog.categories}
+          completed={completed}
+          copy={{
+            searchLabel: 'Search categories',
+            searchPlaceholder: 'Search categories...',
+            controlsLabel: 'Category filters',
+            libraryLabel: 'Learning categories',
+            emptyTitle: 'No categories found',
+            emptyDescription: 'Try a broader search or clear the domain filter.'
+          }}
+        />
       </main>
     );
   }
@@ -59,13 +75,15 @@ export default function CategoriesPage() {
   return (
     <main className="page progress-page-focused grades-page">
       <section className="glass progress-table-card grades-card" aria-labelledby="grades-heading">
-        <div className="progress-card-head">
-          <div>
-            <p className="eyebrow">Grades</p>
-            <h1 id="grades-heading">{activeAcademy.displayName}</h1>
-            <p>Choose a grade to start learning.</p>
-          </div>
-        </div>
+        <header className="grades-overview-header">
+          <h1>{activeAcademy.displayName}</h1>
+        </header>
+
+        <section className="grades-overview-content" aria-labelledby="grades-heading">
+          <p className="sr-only">Grades</p>
+          <h2 id="grades-heading">Grades</h2>
+          <p>Choose a grade to start learning.</p>
+        </section>
 
         <div className="premium-category-grid">
           {grades.map((grade) => {

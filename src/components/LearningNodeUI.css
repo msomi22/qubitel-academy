@@ -1996,3 +1996,13 @@
   content: none;
   display: none;
 }
+
+.progress-card-grade-mode .grade-page-action-row {
+  display: flex;
+  justify-content: flex-start;
+  margin: 0 0 0.75rem;
+}
+
+.progress-card-grade-mode .grade-page-back-button {
+  width: fit-content;
+}
