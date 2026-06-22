@@ -52,7 +52,7 @@ export default function LearningNodePageShell({
 
   return (
     <div className="page progress-page-focused learning-node-page">
-      <section className="glass progress-table-card learning-node-card" aria-labelledby={headingId}>
+      <section className={`glass progress-table-card learning-node-card ${shouldShowBookView ? 'progress-card-book-mode' : ''}`} aria-labelledby={headingId}>
         <header className="learning-node-header">
           <div className="learning-node-breadcrumbs">
             <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />

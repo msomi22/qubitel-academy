@@ -1164,3 +1164,55 @@
 :root[data-theme="dark"] .book-placeholder-text {
   color: #94a3b8;
 }
+
+/* Book mode — reduce outer spacing only, keep book card size */
+.progress-card-book-mode {
+  padding-top: 1rem;
+}
+
+.progress-card-book-mode .learning-node-header {
+  margin-bottom: 0;
+}
+
+.progress-card-book-mode .learning-node-breadcrumbs {
+  margin-bottom: 0;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(99, 241, 226, 0.28);
+}
+
+.progress-card-book-mode .learning-node-main {
+  margin-top: 0.6rem;
+  margin-bottom: 0;
+}
+
+.progress-card-book-mode .learning-node-book-view-section {
+  margin-top: 0;
+}
+
+.progress-card-book-mode .book-reader {
+  gap: 0.6rem;
+}
+
+.progress-card-book-mode .book-toolbar {
+  margin-top: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.progress-card-book-mode .book-progress-bar {
+  margin-bottom: 0.55rem;
+}
+
+.progress-card-book-mode .book-page-container {
+  height: 560px;
+}
+
+.progress-card-book-mode .book-page-footer-nav {
+  min-height: 34px;
+  padding-top: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.progress-card-book-mode .learning-node-footer {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+}
