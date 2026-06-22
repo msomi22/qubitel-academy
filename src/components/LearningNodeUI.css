@@ -1363,6 +1363,34 @@
   font-size: 0.82rem;
 }
 
+/* Greetings book page width alignment: use the same full content rail as landing pages. */
+.progress-card-book-mode .learning-node-main {
+  width: 100%;
+  max-width: none;
+}
+
+.progress-card-book-mode .learning-node-book-view-section {
+  align-self: stretch;
+}
+
+.progress-card-book-mode .learning-node-book-view-section,
+.progress-card-book-mode .book-reader,
+.progress-card-book-mode .book-toolbar,
+.progress-card-book-mode .book-progress-bar,
+.progress-card-book-mode .book-page-container {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.progress-card-book-mode .book-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
 @media (max-width: 640px) {
   .progress-card-book-mode .book-toolbar {
     flex-wrap: wrap;
