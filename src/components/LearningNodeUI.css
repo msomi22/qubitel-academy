@@ -1165,23 +1165,45 @@
   color: #94a3b8;
 }
 
-/* Book mode — reduce outer spacing only, keep book card size */
+/* Book mode — compact layout for Greetings book view */
 .progress-card-book-mode {
-  padding-top: 1rem;
+  padding-top: 0.85rem;
+  padding-bottom: 0.75rem;
 }
 
-.progress-card-book-mode .learning-node-header {
+.progress-card-book-mode > .learning-node-header > .learning-node-breadcrumbs {
   margin-bottom: 0;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(99, 241, 226, 0.28) !important;
 }
 
-.progress-card-book-mode .learning-node-breadcrumbs {
-  margin-bottom: 0;
-  padding-bottom: 0.85rem;
-  border-bottom: 1px solid rgba(99, 241, 226, 0.28);
+.progress-card-book-mode .learning-node-breadcrumbs nav.learning-node-breadcrumbs {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.progress-card-book-mode .learning-node-breadcrumbs,
+.progress-card-book-mode .learning-node-breadcrumbs ol,
+.progress-card-book-mode .learning-node-breadcrumbs li,
+.progress-card-book-mode .learning-node-breadcrumbs a,
+.progress-card-book-mode .learning-node-breadcrumbs span,
+.progress-card-book-mode .progress-card-head,
+.progress-card-book-mode .progress-card-head > *,
+.progress-card-book-mode .learning-node-header-inner,
+.progress-card-book-mode .learning-node-title-row,
+.progress-card-book-mode .breadcrumb-list,
+.progress-card-book-mode .breadcrumb-item,
+.progress-card-book-mode .breadcrumb-link,
+.progress-card-book-mode .breadcrumb-separator,
+.progress-card-book-mode .breadcrumb-current {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .progress-card-book-mode .learning-node-main {
-  margin-top: 0.6rem;
+  margin-top: 0.5rem;
   margin-bottom: 0;
 }
 
@@ -1190,29 +1212,109 @@
 }
 
 .progress-card-book-mode .book-reader {
-  gap: 0.6rem;
+  gap: 0.45rem;
 }
 
 .progress-card-book-mode .book-toolbar {
-  margin-top: 0.5rem;
-  margin-bottom: 0.6rem;
+  margin-top: 0.55rem;
+  margin-bottom: 0.45rem;
+}
+
+.progress-card-book-mode .book-toolbar-back,
+.progress-card-book-mode .book-content-tab {
+  min-height: 36px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.9rem;
 }
 
 .progress-card-book-mode .book-progress-bar {
-  margin-bottom: 0.55rem;
+  margin-top: 0;
+  margin-bottom: 0.45rem;
+  height: 4px;
 }
 
 .progress-card-book-mode .book-page-container {
   height: 560px;
 }
 
+.progress-card-book-mode .book-page {
+  padding: 1rem 1.35rem;
+}
+
+.progress-card-book-mode .book-page-header {
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.55rem;
+}
+
+.progress-card-book-mode .book-chapter-content {
+  gap: 0.55rem;
+}
+
+.progress-card-book-mode .book-chapter-icon {
+  font-size: 2.4rem;
+  margin-bottom: 0.1rem;
+}
+
+.progress-card-book-mode .book-chapter-title {
+  font-size: clamp(2rem, 3.2vw, 2.7rem);
+  margin: 0;
+}
+
+.progress-card-book-mode .book-chapter-summary {
+  margin: 0;
+}
+
+.progress-card-book-mode .book-chapter-badge {
+  margin-top: 0.15rem;
+}
+
+.progress-card-book-mode .book-page-hint {
+  margin-top: 0.2rem;
+}
+
 .progress-card-book-mode .book-page-footer-nav {
-  min-height: 34px;
-  padding-top: 0.35rem;
-  margin-top: 0.35rem;
+  min-height: 30px;
+  padding-top: 0.25rem;
+  margin-top: 0.25rem;
+  gap: 0.35rem;
+}
+
+.progress-card-book-mode .book-page-nav-button {
+  min-height: 28px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.85rem;
+}
+
+.progress-card-book-mode .book-page-footer-indicator {
+  min-height: 28px;
+  min-width: 50px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.85rem;
 }
 
 .progress-card-book-mode .learning-node-footer {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+}
+
+.progress-card-book-mode .learning-node-sibling-nav a,
+.progress-card-book-mode .learning-node-sibling-nav button {
+  min-height: 34px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .progress-card-book-mode .book-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .progress-card-book-mode .book-content-tabs {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .progress-card-book-mode .book-page {
+    padding: 0.9rem;
+  }
 }
