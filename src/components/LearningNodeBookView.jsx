@@ -15,6 +15,34 @@ const TAB_GROUPS = {
   assessment: new Set(['assessments'])
 };
 
+const TAB_COVER_FALLBACKS = {
+  notes: { label: 'Notes', icon: '📖', summary: 'Lessons and notes' },
+  practice: { label: 'Practice', icon: '✏️', summary: 'Practice exercises' },
+  assessment: { label: 'Assessment', icon: '✅', summary: 'Assessments' }
+};
+
+const TAB_SUMMARY_KEYS = {
+  notes: ['notesSummary', 'lessonSummary', 'lessonsSummary'],
+  practice: ['practiceSummary'],
+  assessment: ['assessmentSummary', 'assessmentsSummary']
+};
+
+function getNodeMetadataValue(node, key) {
+  return node?.metadata?.[key] || node?.attributes?.find((attr) => attr.key === key)?.value || '';
+}
+
+function getTabCover(tabKey, sourceNode) {
+  const fallback = TAB_COVER_FALLBACKS[tabKey] || TAB_COVER_FALLBACKS.notes;
+  const tabSummary = TAB_SUMMARY_KEYS[tabKey]
+    ?.map((key) => getNodeMetadataValue(sourceNode, key))
+    .find((value) => typeof value === 'string' && value.trim().length > 0);
+
+  return {
+    ...fallback,
+    summary: tabSummary || fallback.summary
+  };
+}
+
 function filterContentGroups(contentGroups, selectedContentType) {
   const allowedGroups = TAB_GROUPS[selectedContentType] || new Set();
   if (allowedGroups.size === 0) return [];
@@ -33,13 +61,8 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
 
     const pageList = [];
 
-    const tabCoverStrand = {
-      notes: { label: 'Notes', icon: '📖', summary: 'Lessons and notes for Greetings' },
-      practice: { label: 'Practice', icon: '✏️', summary: 'Practice exercises for Greetings' },
-      assessment: { label: 'Assessment', icon: '✅', summary: 'Assessments for Greetings' }
-    }[selectedContentType] || { label: 'Notes', icon: '📖', summary: '' };
-
     strands.forEach(strand => {
+      const tabCoverStrand = getTabCover(selectedContentType, strand);
       const strandChildren = getChildren(registry, strand.id);
       const subStrands = strandChildren.filter(child => child.kind === 'subStrand');
       const strandAssessments = strandChildren.filter(child =>
@@ -111,11 +134,7 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
         child.kind === 'assessment' || child.kind === 'exam'
       );
 
-      const tabCover = {
-        notes: { label: 'Notes', icon: '📖', summary: 'Lessons and notes for Greetings' },
-        practice: { label: 'Practice', icon: '✏️', summary: 'Practice exercises for Greetings' },
-        assessment: { label: 'Assessment', icon: '✅', summary: 'Assessments for Greetings' }
-      }[selectedContentType] || { label: 'Notes', icon: '📖', summary: learningArea.summary || '' };
+      const tabCover = getTabCover(selectedContentType, learningArea);
 
       pageList.push({
         type: 'chapter',
