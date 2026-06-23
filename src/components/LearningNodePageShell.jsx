@@ -8,6 +8,40 @@ import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 import LearningNodeBookView from './LearningNodeBookView.jsx';
 import './LearningNodeUI.css';
 
+function getNodeAttributeValue(node, key) {
+  return node?.attributes?.find((attribute) => attribute.key === key)?.value;
+}
+
+function getNodeAppearanceValue(node, key) {
+  return node?.appearances?.find((appearance) => appearance.key === key)?.value;
+}
+
+function getNodeRenderingValue(node, key) {
+  return (
+    node?.rendering?.[key] ??
+    node?.metadata?.[key] ??
+    getNodeAttributeValue(node, key) ??
+    getNodeAppearanceValue(node, key)
+  );
+}
+
+function isInAcademy(navigation, academyNodeId) {
+  return navigation?.breadcrumbs?.some((node) => node.id === academyNodeId);
+}
+
+function shouldRenderBookView(currentNode, navigation) {
+  if (!currentNode || currentNode.kind !== 'theme') return false;
+
+  const explicitViewMode = getNodeRenderingValue(currentNode, 'viewMode');
+  const explicitLayout = getNodeRenderingValue(currentNode, 'layout');
+
+  if (explicitViewMode === 'book' || explicitLayout === 'book') {
+    return true;
+  }
+
+  return isInAcademy(navigation, 'cbc-academy');
+}
+
 export default function LearningNodePageShell({
   registry,
   nodeId,
@@ -44,9 +78,7 @@ export default function LearningNodePageShell({
 
   const kindLabel = getKindLabel(currentNode.kind);
 
-  // Check if this is the Greetings theme that should show book view
-  const isGreetingsTheme = currentNode.id === 'grade-1-english-activities-theme-greetings';
-  const shouldShowBookView = isGreetingsTheme && currentNode.kind === 'theme';
+  const shouldShowBookView = shouldRenderBookView(currentNode, navigation);
 
   // Check if this is a learning area page that should use tabbed layout
   const isLearningAreaPage = currentNode.kind === 'learningArea';
@@ -161,7 +193,7 @@ export default function LearningNodePageShell({
                     ← Back to {navigation.parent?.label || 'previous'}
                   </NavLink>
                 )}
-                <div className="learning-area-tab-list" role="tablist" aria-label="English Activities sections">
+                <div className="learning-area-tab-list" role="tablist" aria-label="Learning area sections">
                   <button
                     type="button"
                     role="tab"
