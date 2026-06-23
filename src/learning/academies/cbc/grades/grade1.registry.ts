@@ -1,6 +1,7 @@
 import type { LearningNode } from '../../../core/index.ts';
 import { createLearningNode } from '../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../core/learningNode.constants.ts';
+import { grade1EnglishActivitiesNodes } from './grade1/englishActivities.registry.ts';
 
 export const grade1English = createLearningNode({
   id: 'grade-1-english-activities',
@@ -164,4 +165,9 @@ export const grade1LearningAreaNodes: LearningNode[] = [
   grade1Hygiene,
   grade1Movement,
   grade1Religious
+];
+
+export const grade1Nodes: LearningNode[] = [
+  ...grade1LearningAreaNodes,
+  ...grade1EnglishActivitiesNodes
 ];
