@@ -1,6 +1,7 @@
 import type { LearningNode } from '../../core/index.ts';
 import { createLearningNode } from '../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../core/learningNode.constants.ts';
+import { grade1LearningAreaNodes } from './grades/grade1.registry.ts';
 
 export const CBC_ACADEMY_NODE_ID = 'cbc-academy';
 
@@ -294,167 +295,13 @@ const pp2Math = createLearningNode({
   version: 1
 });
 
-const grade1English = createLearningNode({
-  id: 'grade-1-english-activities',
-  kind: LEARNING_NODE_KINDS.learningArea,
-  label: 'English Activities',
-  summary: 'Grade 1 English Activities for listening, speaking, reading, and early writing.',
-  parentId: grade1.id,
-  attributes: [
-    { key: 'routeSegment', value: 'english-activities' },
-    { key: 'learningAreaId', value: 'english-activities' },
-    { key: 'learningAreaName', value: 'English Activities' },
-    { key: 'gradeId', value: 'grade-1' },
-    { key: 'gradeName', value: 'Grade 1' }
-  ],
-  features: [{ kind: 'guidedContent' }, { kind: 'readAloud' }, { kind: 'assessment' }],
-  actions: [{ intent: 'openChildren' }],
-  appearances: [
-    { key: 'icon', value: '📚' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1Kiswahili = createLearningNode({
-  id: 'grade-1-kiswahili-activities',
-  kind: LEARNING_NODE_KINDS.learningArea,
-  label: 'Kiswahili Activities',
-  summary: 'Grade 1 Kiswahili language learning.',
-  parentId: grade1.id,
-  attributes: [
-    { key: 'routeSegment', value: 'kiswahili-activities' },
-    { key: 'learningAreaId', value: 'kiswahili-activities' },
-    { key: 'learningAreaName', value: 'Kiswahili Activities' },
-    { key: 'gradeId', value: 'grade-1' },
-    { key: 'gradeName', value: 'Grade 1' }
-  ],
-  features: [{ kind: 'guidedContent' }, { kind: 'readAloud' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '💬' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1Math = createLearningNode({
-  id: 'grade-1-mathematical-activities',
-  kind: LEARNING_NODE_KINDS.learningArea,
-  label: 'Mathematical Activities',
-  summary: 'Grade 1 Mathematics for numbers, shapes, and basic operations.',
-  parentId: grade1.id,
-  attributes: [
-    { key: 'routeSegment', value: 'mathematical-activities' },
-    { key: 'learningAreaId', value: 'mathematical-activities' },
-    { key: 'learningAreaName', value: 'Mathematical Activities' },
-    { key: 'gradeId', value: 'grade-1' },
-    { key: 'gradeName', value: 'Grade 1' }
-  ],
-  features: [{ kind: 'guidedContent' }, { kind: 'practice' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '🔢' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1Science = createLearningNode({
-  id: 'grade-1-environmental-activities',
-  kind: LEARNING_NODE_KINDS.learningArea,
-  label: 'Environmental Activities',
-  summary: 'Grade 1 Environmental Activities for science and social studies.',
-  parentId: grade1.id,
-  attributes: [
-    { key: 'routeSegment', value: 'environmental-activities' },
-    { key: 'learningAreaId', value: 'environmental-activities' },
-    { key: 'learningAreaName', value: 'Environmental Activities' },
-    { key: 'gradeId', value: 'grade-1' },
-    { key: 'gradeName', value: 'Grade 1' }
-  ],
-  features: [{ kind: 'guidedContent' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '🌍' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1Hygiene = createLearningNode({
-  id: 'grade-1-hygiene-nutrition-activities',
-  kind: LEARNING_NODE_KINDS.learningArea,
-  label: 'Hygiene and Nutrition Activities',
-  summary: 'Grade 1 Hygiene and Nutrition for healthy living.',
-  parentId: grade1.id,
-  attributes: [
-    { key: 'routeSegment', value: 'hygiene-nutrition-activities' },
-    { key: 'learningAreaId', value: 'hygiene-nutrition-activities' },
-    { key: 'learningAreaName', value: 'Hygiene and Nutrition Activities' },
-    { key: 'gradeId', value: 'grade-1' },
-    { key: 'gradeName', value: 'Grade 1' }
-  ],
-  features: [{ kind: 'guidedContent' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '🧼' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1Movement = createLearningNode({
-  id: 'grade-1-movement-creative-activities',
-  kind: LEARNING_NODE_KINDS.learningArea,
-  label: 'Movement and Creative Activities',
-  summary: 'Grade 1 Movement and Creative Arts.',
-  parentId: grade1.id,
-  attributes: [
-    { key: 'routeSegment', value: 'movement-creative-activities' },
-    { key: 'learningAreaId', value: 'movement-creative-activities' },
-    { key: 'learningAreaName', value: 'Movement and Creative Activities' },
-    { key: 'gradeId', value: 'grade-1' },
-    { key: 'gradeName', value: 'Grade 1' }
-  ],
-  features: [{ kind: 'guidedContent' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '🎨' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1Religious = createLearningNode({
-  id: 'grade-1-religious-education-activities',
-  kind: LEARNING_NODE_KINDS.learningArea,
-  label: 'Religious Education Activities',
-  summary: 'Grade 1 Religious Education.',
-  parentId: grade1.id,
-  attributes: [
-    { key: 'routeSegment', value: 'religious-education-activities' },
-    { key: 'learningAreaId', value: 'religious-education-activities' },
-    { key: 'learningAreaName', value: 'Religious Education Activities' },
-    { key: 'gradeId', value: 'grade-1' },
-    { key: 'gradeName', value: 'Grade 1' }
-  ],
-  features: [{ kind: 'guidedContent' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '🕌' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
 // English Activities - All 15 Themes (only Greetings is clickable)
 const grade1EnglishThemeGreetings = createLearningNode({
   id: 'grade-1-english-activities-theme-greetings',
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Greetings',
   summary: 'Learn how to greet people in different situations.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'greetings' },
     { key: 'themeId', value: 'greetings' },
@@ -476,7 +323,7 @@ const grade1EnglishThemeSchool = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'School',
   summary: 'Learn about school environment and activities.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'school' },
     { key: 'themeId', value: 'school' },
@@ -498,7 +345,7 @@ const grade1EnglishThemeFamily = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Family',
   summary: 'Learn about family members and relationships.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'family' },
     { key: 'themeId', value: 'family' },
@@ -520,7 +367,7 @@ const grade1EnglishThemeHome = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Home',
   summary: 'Learn about home and household items.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'home' },
     { key: 'themeId', value: 'home' },
@@ -542,7 +389,7 @@ const grade1EnglishThemeTime = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Time',
   summary: 'Learn about time and daily routines.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'time' },
     { key: 'themeId', value: 'time' },
@@ -564,7 +411,7 @@ const grade1EnglishThemeWeather = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Weather and our Environment',
   summary: 'Learn about weather and our environment.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'weather-environment' },
     { key: 'themeId', value: 'weather-environment' },
@@ -586,7 +433,7 @@ const grade1EnglishThemeHygiene = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Hygiene',
   summary: 'Learn about personal hygiene and cleanliness.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'hygiene' },
     { key: 'themeId', value: 'hygiene' },
@@ -608,7 +455,7 @@ const grade1EnglishThemeBodyParts = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Parts of the Body',
   summary: 'Learn about different parts of the body.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'body-parts' },
     { key: 'themeId', value: 'body-parts' },
@@ -630,7 +477,7 @@ const grade1EnglishThemeFriends = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'My Friends',
   summary: 'Learn about friendship and social skills.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'friends' },
     { key: 'themeId', value: 'friends' },
@@ -652,7 +499,7 @@ const grade1EnglishThemeSafety = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Safety',
   summary: 'Learn about personal safety and rules.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'safety' },
     { key: 'themeId', value: 'safety' },
@@ -674,7 +521,7 @@ const grade1EnglishThemeCommunityLeaders = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Community Leaders',
   summary: 'Learn about leaders in our community.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'community-leaders' },
     { key: 'themeId', value: 'community-leaders' },
@@ -696,7 +543,7 @@ const grade1EnglishThemeLivingTogether = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Living Together',
   summary: 'Learn about living together in harmony.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'living-together' },
     { key: 'themeId', value: 'living-together' },
@@ -718,7 +565,7 @@ const grade1EnglishThemeTechnology = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Technology',
   summary: 'Learn about technology in our lives.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'technology' },
     { key: 'themeId', value: 'technology' },
@@ -740,7 +587,7 @@ const grade1EnglishThemeNumbers = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Numbers',
   summary: 'Learn about numbers and counting.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'numbers' },
     { key: 'themeId', value: 'numbers' },
@@ -762,7 +609,7 @@ const grade1EnglishThemeConservingResources = createLearningNode({
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Conserving Resources',
   summary: 'Learn about conserving our resources.',
-  parentId: grade1English.id,
+  parentId: 'grade-1-english-activities',
   attributes: [
     { key: 'routeSegment', value: 'conserving-resources' },
     { key: 'themeId', value: 'conserving-resources' },
@@ -1230,13 +1077,7 @@ export const cbcGradesNodes: LearningNode[] = [
   pp1Math,
   pp2English,
   pp2Math,
-  grade1English,
-  grade1Kiswahili,
-  grade1Math,
-  grade1Science,
-  grade1Hygiene,
-  grade1Movement,
-  grade1Religious,
+  ...grade1LearningAreaNodes,
   grade2English,
   grade2Math,
   grade3English,
