@@ -50,6 +50,10 @@ function shouldRenderBookView(currentNode, navigation) {
   if (!isInAcademy(navigation, 'cbc-academy')) return false;
 
   const childKinds = navigation?.children?.map((child) => child.kind) || [];
+  const hasDirectBookContentChildren = navigation?.children?.some((child) => isDirectBookContent(child));
+
+  if (hasDirectBookContentChildren) return true;
+
   const hasFlattenedContentChildren = childKinds.some((kind) => FLATTENED_CONTENT_KINDS.has(kind));
 
   if (hasFlattenedContentChildren) return false;

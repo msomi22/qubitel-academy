@@ -28,11 +28,10 @@ const TAB_SUMMARY_KEYS = {
   assessment: ['assessmentSummary', 'assessmentsSummary']
 };
 
-const DIRECT_CONTENT_TAB_ORDER = ['notes', 'practice', 'revision', 'assessment'];
+const DIRECT_CONTENT_TAB_ORDER = ['notes', 'practice', 'assessment'];
 const DIRECT_CONTENT_TAB_META = {
   notes: { label: 'Notes', icon: '📖' },
   practice: { label: 'Practice', icon: '✏️' },
-  revision: { label: 'Revision', icon: '🔄' },
   assessment: { label: 'Assessment', icon: '✅' },
   exam: { label: 'Assessment', icon: '✅' }
 };
@@ -67,6 +66,16 @@ function getContentType(node) {
   return getNodeMetadataValue(node, 'contentType') || node?.kind || '';
 }
 
+function getDirectContentChildren(node, registry) {
+  if (!node) return [];
+
+  return getChildren(registry, node.id)
+    .filter((child) => DIRECT_CONTENT_TAB_ORDER.includes(getContentType(child)))
+    .sort((a, b) => (
+      DIRECT_CONTENT_TAB_ORDER.indexOf(getContentType(a)) - DIRECT_CONTENT_TAB_ORDER.indexOf(getContentType(b))
+    ));
+}
+
 function getDirectSiblingContentTabs(registry, node) {
   if (!isDirectBookContent(node) || !node.parentId) return [];
 
@@ -94,6 +103,22 @@ function getDirectSiblingContentTabs(registry, node) {
     });
 }
 
+function getDirectChildContentTabs(registry, node) {
+  return getDirectContentChildren(node, registry).map((child) => {
+    const contentType = getContentType(child);
+    const tabMeta = DIRECT_CONTENT_TAB_META[contentType] || {
+      label: child.label,
+      icon: '📄'
+    };
+
+    return {
+      key: contentType,
+      label: tabMeta.label,
+      icon: tabMeta.icon
+    };
+  });
+}
+
 function createDirectBookPages(node) {
   return node.content.pages.map((bookPage, index) => ({
     type: 'directBookContent',
@@ -104,21 +129,53 @@ function createDirectBookPages(node) {
   }));
 }
 
+function createDirectContentPages(node, parentNode) {
+  if (isDirectBookContent(node)) {
+    return createDirectBookPages(node);
+  }
+
+  return [{
+    type: 'content',
+    strand: parentNode || node,
+    subStrand: node,
+    items: [{ ...node, groupType: getContentType(node) }]
+  }];
+}
+
 export default function LearningNodeBookView({ registry, nodeId, backPath, backLabel }) {
   const [selectedContentType, setSelectedContentType] = useState('notes');
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const currentNode = registry.nodesById.get(nodeId);
   const isDirectBookNode = isDirectBookContent(currentNode);
+  const directContentChildren = useMemo(
+    () => getDirectContentChildren(currentNode, registry),
+    [currentNode, registry]
+  );
+  const selectedDirectContentChild = directContentChildren.find(
+    (child) => getContentType(child) === selectedContentType
+  ) || directContentChildren[0];
   const directContentTabs = useMemo(
     () => getDirectSiblingContentTabs(registry, currentNode),
     [registry, currentNode]
   );
-  const visibleContentTabs = directContentTabs.length > 0 ? directContentTabs : CONTENT_TABS;
+  const directChildContentTabs = useMemo(
+    () => getDirectChildContentTabs(registry, currentNode),
+    [registry, currentNode]
+  );
+  const visibleContentTabs = directContentTabs.length > 0
+    ? directContentTabs
+    : directChildContentTabs.length > 0
+      ? directChildContentTabs
+      : CONTENT_TABS;
   const activeContentType = isDirectBookNode ? getContentType(currentNode) : selectedContentType;
 
   const pages = useMemo(() => {
     if (isDirectBookContent(currentNode)) {
       return createDirectBookPages(currentNode);
+    }
+
+    if (selectedDirectContentChild) {
+      return createDirectContentPages(selectedDirectContentChild, currentNode);
     }
 
     const children = getChildren(registry, nodeId);
@@ -254,7 +311,7 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
     });
 
     return pageList;
-  }, [registry, nodeId, selectedContentType, currentNode]);
+  }, [registry, nodeId, selectedContentType, currentNode, selectedDirectContentChild]);
 
   const totalPages = pages.length;
 
