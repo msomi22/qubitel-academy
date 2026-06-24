@@ -1009,6 +1009,134 @@
   }
 }
 
+@media (max-width: 640px) {
+  .learning-node-page,
+  .learning-node-card,
+  .learning-node-header,
+  .learning-node-main,
+  .learning-node-book-view-section,
+  .learning-node-content,
+  .learning-node-children,
+  .child-group,
+  .child-grid-inner,
+  .premium-category-grid,
+  .book-reader,
+  .book-toolbar,
+  .book-progress-bar,
+  .book-page-container,
+  .book-page,
+  .book-page-body,
+  .book-content-scroll,
+  .book-content-inner,
+  .book-page-footer-nav,
+  .learning-area-tabbed-view,
+  .learning-area-action-row,
+  .learning-area-tab-list,
+  .learning-area-section,
+  .learning-area-scroll-panel {
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .learning-node-page,
+  .learning-node-card,
+  .learning-node-main,
+  .book-reader,
+  .book-page-container,
+  .book-page {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .learning-node-breadcrumbs,
+  .breadcrumb-list,
+  .breadcrumb-item,
+  .breadcrumb-link,
+  .breadcrumb-current,
+  .breadcrumb-text {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .breadcrumb-list {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+  }
+
+  .book-toolbar,
+  .progress-card-book-mode .book-toolbar,
+  .learning-area-action-row,
+  .sibling-nav-buttons,
+  .book-page-footer-nav {
+    flex-wrap: wrap;
+  }
+
+  .book-toolbar-back,
+  .book-content-tab,
+  .learning-area-back-button,
+  .learning-area-tab,
+  .sibling-nav-button,
+  .book-page-nav-button,
+  .book-page-footer-indicator {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .book-content-tabs,
+  .progress-card-book-mode .book-content-tabs,
+  .learning-area-tab-list {
+    justify-content: flex-start;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .book-page-container,
+  .progress-card-book-mode .book-page-container {
+    height: min(560px, calc(100vh - 13rem));
+    min-height: 420px;
+  }
+
+  .book-page,
+  .progress-card-book-mode .book-page {
+    padding: 1rem;
+  }
+
+  .book-page-header {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .book-content-inner,
+  .book-content-inner p,
+  .book-content-inner li,
+  .book-content-group,
+  .book-content-group-title,
+  .book-review-section,
+  .book-assessment-group,
+  .content-renderer-notes,
+  .content-renderer-practice,
+  .content-renderer-revision,
+  .content-renderer-assessment,
+  .content-renderer-exam,
+  .content-renderer-generic {
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: normal;
+    box-sizing: border-box;
+  }
+
+  .premium-category-grid,
+  .child-grid-inner,
+  .progress-card-learning-area-mode .learning-node-child-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .learning-node-sr-only {
   position: absolute;
   width: 1px;
