@@ -19,6 +19,14 @@ function getIncludeRoot(options: LearningNodeRoutingOptions): boolean {
   return options.includeRoot ?? LEARNING_NODE_ROUTING_DEFAULTS.includeRoot;
 }
 
+function getIncludeAcademyRoot(options: LearningNodeRoutingOptions): boolean {
+  return options.includeAcademyRoot ?? LEARNING_NODE_ROUTING_DEFAULTS.includeAcademyRoot;
+}
+
+function isAcademyRootNode(node: LearningNode): boolean {
+  return node.kind === 'academy' || String(node.id || '').endsWith('-academy');
+}
+
 function cleanPathParts(path: string): string[] {
   return String(path || '')
     .trim()
@@ -46,6 +54,39 @@ function slugifySegment(value: string): string {
     .join('-');
 }
 
+function normalizeRouteSegment(value: unknown): string {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-');
+}
+
+function getAttributeValue(node: LearningNode, key: string): unknown | undefined {
+  return node.attributes?.find((attribute) => attribute.key === key)?.value;
+}
+
+function getSemanticRouteSegment(node: LearningNode): string {
+  if (node.kind === 'grade') {
+    const gradeCode = getAttributeValue(node, 'gradeCode');
+    if (gradeCode) return normalizeRouteSegment(gradeCode);
+
+    const routeSegment = getAttributeValue(node, 'routeSegment');
+    if (typeof routeSegment === 'string' && routeSegment.match(/^grade-\d+$/)) {
+      return normalizeRouteSegment(routeSegment.replace('grade-', 'gd'));
+    }
+  }
+
+  if (node.kind === 'learningArea') {
+    const learningAreaCode = getAttributeValue(node, 'learningAreaCode');
+    if (learningAreaCode) return normalizeRouteSegment(learningAreaCode);
+  }
+
+  const routeSegment = getAttributeValue(node, 'routeSegment');
+  if (routeSegment) return normalizeRouteSegment(routeSegment);
+
+  return normalizeRouteSegment(node.id);
+}
+
 export function createRouteSegment(node: LearningNode, options: LearningNodeRoutingOptions = {}): string {
   const segmentAttributeKey = options.segmentAttributeKey ?? LEARNING_NODE_ROUTING_DEFAULTS.segmentAttributeKey;
   const configuredSegment = segmentAttributeKey ? getAttribute<unknown>(node, segmentAttributeKey) : undefined;
@@ -67,7 +108,10 @@ export function createNodeRoutePath(
   const baseSegments = splitRoutePath(options.basePath ?? LEARNING_NODE_ROUTING_DEFAULTS.basePath);
   const breadcrumbs = getBreadcrumbs(registry, node.id, { includeCurrentInBreadcrumbs: true });
   const routeNodes = getIncludeRoot(options) ? breadcrumbs : breadcrumbs.slice(1);
-  const routeSegments = routeNodes.map((routeNode) => createRouteSegment(routeNode, options));
+  const visibleRouteNodes = getIncludeAcademyRoot(options)
+    ? routeNodes
+    : routeNodes.filter((routeNode) => !isAcademyRootNode(routeNode));
+  const routeSegments = visibleRouteNodes.map((routeNode) => getSemanticRouteSegment(routeNode));
 
   return normalizeRoutePath([...baseSegments, ...routeSegments].join('/'));
 }

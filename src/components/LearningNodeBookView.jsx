@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getChildren } from '../learning/registry/index.ts';
+import { createNodeRoutePath } from '../learning/routing';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 
 const CONTENT_TABS = [
@@ -27,6 +28,15 @@ const TAB_SUMMARY_KEYS = {
   assessment: ['assessmentSummary', 'assessmentsSummary']
 };
 
+const DIRECT_CONTENT_TAB_ORDER = ['notes', 'practice', 'revision', 'assessment'];
+const DIRECT_CONTENT_TAB_META = {
+  notes: { label: 'Notes', icon: '📖' },
+  practice: { label: 'Practice', icon: '✏️' },
+  revision: { label: 'Revision', icon: '🔄' },
+  assessment: { label: 'Assessment', icon: '✅' },
+  exam: { label: 'Assessment', icon: '✅' }
+};
+
 function getNodeMetadataValue(node, key) {
   return node?.metadata?.[key] || node?.attributes?.find((attr) => attr.key === key)?.value || '';
 }
@@ -49,11 +59,68 @@ function filterContentGroups(contentGroups, selectedContentType) {
   return contentGroups.filter((group) => allowedGroups.has(group.type));
 }
 
+function isDirectBookContent(node) {
+  return node?.content?.type === 'book' && Array.isArray(node.content.pages);
+}
+
+function getContentType(node) {
+  return getNodeMetadataValue(node, 'contentType') || node?.kind || '';
+}
+
+function getDirectSiblingContentTabs(registry, node) {
+  if (!isDirectBookContent(node) || !node.parentId) return [];
+
+  return getChildren(registry, node.parentId)
+    .filter((sibling) => DIRECT_CONTENT_TAB_ORDER.includes(getContentType(sibling)))
+    .sort((a, b) => (
+      DIRECT_CONTENT_TAB_ORDER.indexOf(getContentType(a)) - DIRECT_CONTENT_TAB_ORDER.indexOf(getContentType(b))
+    ))
+    .map((sibling) => {
+      const contentType = getContentType(sibling);
+      const tabMeta = DIRECT_CONTENT_TAB_META[contentType] || {
+        label: sibling.label,
+        icon: '📄'
+      };
+
+      return {
+        key: contentType,
+        label: tabMeta.label,
+        icon: tabMeta.icon,
+        path: createNodeRoutePath(registry, sibling.id, {
+          includeRoot: false,
+          includeAcademyRoot: false
+        })
+      };
+    });
+}
+
+function createDirectBookPages(node) {
+  return node.content.pages.map((bookPage, index) => ({
+    type: 'directBookContent',
+    title: bookPage.title || `Page ${index + 1}`,
+    subtitle: bookPage.subtitle || '',
+    description: bookPage.description || '',
+    content: Array.isArray(bookPage.blocks) ? bookPage.blocks : []
+  }));
+}
+
 export default function LearningNodeBookView({ registry, nodeId, backPath, backLabel }) {
   const [selectedContentType, setSelectedContentType] = useState('notes');
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const currentNode = registry.nodesById.get(nodeId);
+  const isDirectBookNode = isDirectBookContent(currentNode);
+  const directContentTabs = useMemo(
+    () => getDirectSiblingContentTabs(registry, currentNode),
+    [registry, currentNode]
+  );
+  const visibleContentTabs = directContentTabs.length > 0 ? directContentTabs : CONTENT_TABS;
+  const activeContentType = isDirectBookNode ? getContentType(currentNode) : selectedContentType;
 
   const pages = useMemo(() => {
+    if (isDirectBookContent(currentNode)) {
+      return createDirectBookPages(currentNode);
+    }
+
     const children = getChildren(registry, nodeId);
 
     const strands = children.filter(child => child.kind === 'strand');
@@ -187,7 +254,7 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
     });
 
     return pageList;
-  }, [registry, nodeId, selectedContentType]);
+  }, [registry, nodeId, selectedContentType, currentNode]);
 
   const totalPages = pages.length;
 
@@ -245,17 +312,30 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
         )}
 
         <div className="book-content-tabs" role="tablist" aria-label="Choose content type">
-          {CONTENT_TABS.map((tab) => (
-            <button
-              key={tab.key}
-              role="tab"
-              aria-selected={selectedContentType === tab.key}
-              className={`book-content-tab ${selectedContentType === tab.key ? 'book-content-tab-active' : ''}`}
-              onClick={() => selectContentType(tab.key)}
-            >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
+          {visibleContentTabs.map((tab) => (
+            tab.path ? (
+              <NavLink
+                key={tab.key}
+                role="tab"
+                aria-selected={activeContentType === tab.key}
+                className={`book-content-tab ${activeContentType === tab.key ? 'book-content-tab-active' : ''}`}
+                to={tab.path}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </NavLink>
+            ) : (
+              <button
+                key={tab.key}
+                role="tab"
+                aria-selected={selectedContentType === tab.key}
+                className={`book-content-tab ${selectedContentType === tab.key ? 'book-content-tab-active' : ''}`}
+                onClick={() => selectContentType(tab.key)}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            )
           ))}
         </div>
       </div>
@@ -332,7 +412,42 @@ function BookPageContent({ page, pageNumber, totalPages, registry }) {
   if (page.type === 'placeholder') {
     return <PlaceholderPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
   }
+  if (page.type === 'directBookContent') {
+    return <DirectBookContentPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
+  }
   return null;
+}
+
+function DirectBookContentPage({ page, pageNumber, totalPages }) {
+  return (
+    <>
+      <div className="book-page-header">
+        <span className="book-page-breadcrumb">{page.title}</span>
+        <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
+      </div>
+
+      <div className="book-content-scroll">
+        <div className="book-content-inner">
+          {page.subtitle && <p>{page.subtitle}</p>}
+          {page.description && <p>{page.description}</p>}
+          {page.content.map((block, index) => (
+            <section key={block.id || block.title || index} className="book-content-group">
+              {block.title && <h4 className="book-content-group-title">{block.title}</h4>}
+              {block.text && <p>{block.text}</p>}
+              {block.content && <p>{block.content}</p>}
+              {Array.isArray(block.items) && block.items.length > 0 && (
+                <ul>
+                  {block.items.map((item, itemIndex) => (
+                    <li key={`${item}-${itemIndex}`}>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+      </div>
+    </>
+  );
 }
 
 function PlaceholderPage({ page, pageNumber, totalPages }) {

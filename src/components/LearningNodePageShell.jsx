@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { createNodeRoutePath } from '../learning/routing';
 import { getNavigationContext } from '../learning/navigation/index.ts';
 import LearningNodeBreadcrumbs from './LearningNodeBreadcrumbs.jsx';
 import LearningNodeChildGrid from './LearningNodeChildGrid.jsx';
@@ -29,6 +30,13 @@ function isInAcademy(navigation, academyNodeId) {
   return navigation?.breadcrumbs?.some((node) => node.id === academyNodeId);
 }
 
+function isDirectBookContent(node) {
+  return node?.content?.type === 'book' && Array.isArray(node.content.pages);
+}
+
+const FLATTENED_CONTENT_KINDS = new Set(['notes', 'practice', 'revision', 'assessment', 'exam']);
+const BOOK_STYLE_CHILD_KINDS = new Set(['strand', 'subStrand', 'learningArea']);
+
 function shouldRenderBookView(currentNode, navigation) {
   if (!currentNode || currentNode.kind !== 'theme') return false;
 
@@ -39,7 +47,14 @@ function shouldRenderBookView(currentNode, navigation) {
     return true;
   }
 
-  return isInAcademy(navigation, 'cbc-academy');
+  if (!isInAcademy(navigation, 'cbc-academy')) return false;
+
+  const childKinds = navigation?.children?.map((child) => child.kind) || [];
+  const hasFlattenedContentChildren = childKinds.some((kind) => FLATTENED_CONTENT_KINDS.has(kind));
+
+  if (hasFlattenedContentChildren) return false;
+
+  return childKinds.some((kind) => BOOK_STYLE_CHILD_KINDS.has(kind));
 }
 
 export default function LearningNodePageShell({
@@ -72,13 +87,18 @@ export default function LearningNodePageShell({
     navigation.parent?.kind !== 'academy' && 
     navigation.parent?.kind !== 'platform';
   
-  const parentPath = showParentBackButton
-    ? `/learn/${currentNode.parentId}`
-    : null;
+  const parentPath =
+    showParentBackButton && currentNode.parentId
+      ? createNodeRoutePath(registry, currentNode.parentId, {
+        includeRoot: false,
+        includeAcademyRoot: false
+      })
+      : null;
 
   const kindLabel = getKindLabel(currentNode.kind);
 
   const shouldShowBookView = shouldRenderBookView(currentNode, navigation);
+  const shouldShowDirectBookView = isDirectBookContent(currentNode);
 
   // Check if this is a learning area page that should use tabbed layout
   const isLearningAreaPage = currentNode.kind === 'learningArea';
@@ -230,6 +250,15 @@ export default function LearningNodePageShell({
                 </div>
               </section>
             </div>
+          ) : shouldShowDirectBookView ? (
+            <section className="learning-node-book-view-section">
+              <LearningNodeBookView
+                registry={registry}
+                nodeId={currentNode.id}
+                backPath={parentPath}
+                backLabel={navigation.parent?.label || 'previous'}
+              />
+            </section>
           ) : (
             <>
               {navigation.children.length > 0 && (
@@ -238,7 +267,7 @@ export default function LearningNodePageShell({
                 </section>
               )}
 
-              {currentNode.contentRef && (
+              {(currentNode.contentRef || currentNode.content) && (
                 <section className="learning-node-content">
                   <LearningNodeContentRenderer
                     registry={registry}

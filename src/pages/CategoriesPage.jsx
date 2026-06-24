@@ -45,6 +45,11 @@ export default function CategoriesPage() {
   }, [gradeNodes]);
 
   const handleGradeClick = (gradeId) => {
+    if (activeAcademy.id === 'cbc' && gradeId === 'grade-1') {
+      navigate('/gd1');
+      return;
+    }
+
     navigate(`/learn/${gradeId}`);
   };
 

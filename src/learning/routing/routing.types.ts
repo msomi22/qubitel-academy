@@ -3,6 +3,7 @@ import type { LearningNode } from '../core/index.ts';
 export type LearningNodeRoutingOptions = {
   basePath?: string;
   includeRoot?: boolean;
+  includeAcademyRoot?: boolean;
   segmentAttributeKey?: string;
 };
 

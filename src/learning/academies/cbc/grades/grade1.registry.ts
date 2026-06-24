@@ -11,6 +11,7 @@ export const grade1English = createLearningNode({
   parentId: 'grade-1',
   attributes: [
     { key: 'routeSegment', value: 'english-activities' },
+    { key: 'learningAreaCode', value: 'ENG' },
     { key: 'learningAreaId', value: 'english-activities' },
     { key: 'learningAreaName', value: 'English Activities' },
     { key: 'gradeId', value: 'grade-1' },

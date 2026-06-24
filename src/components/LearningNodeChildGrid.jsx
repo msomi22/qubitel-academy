@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
+import { createNodeRoutePath } from '../learning/routing';
 import { getChildren } from '../learning/registry/index.ts';
 
 const ICON_BY_KIND = {
@@ -87,7 +88,10 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
           {!hideSectionHeadings && <h2 className="child-group-title">{group.label}</h2>}
           <div className="premium-category-grid child-grid-inner">
             {group.children.map((child) => {
-              const path = `/learn/${child.id}`;
+              const path = createNodeRoutePath(registry, child, {
+                includeRoot: false,
+                includeAcademyRoot: false
+              });
               const icon = ICON_BY_KIND[child.kind] || '📄';
               const kindLabel = LABEL_BY_KIND[child.kind] || child.kind;
               const isActiveLearningArea =

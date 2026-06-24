@@ -120,6 +120,10 @@ export default function App() {
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/problem/:questionId" element={<ProblemPage />} />
               <Route path="/exam/:examId" element={<ExamSessionPage />} />
+              <Route path="/:grade/:learningArea/:theme/:contentType" element={<LearningNodePage semanticRoute />} />
+              <Route path="/:grade/:learningArea/:theme" element={<LearningNodePage semanticRoute />} />
+              <Route path="/:grade/:learningArea" element={<LearningNodePage semanticRoute />} />
+              <Route path="/:grade" element={<LearningNodePage semanticRoute />} />
               <Route path="/learn/:nodeId" element={<LearningNodePage />} />
               <Route
                 path="*"

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
+import { createNodeRoutePath } from '../learning/routing';
 import { getBreadcrumbs } from '../learning/navigation/index.ts';
 import { CBC_ACADEMY_NODE_ID } from '../learning/academies/cbc/cbcGrades.registry.ts';
 
@@ -26,7 +27,10 @@ export default function LearningNodeBreadcrumbs({ registry, nodeId }) {
         {breadcrumbs.map((node, index) => {
           const isLast = index === breadcrumbs.length - 1;
           const isPlainText = isPlainTextBreadcrumb(node.id);
-          const path = `/learn/${node.id}`;
+          const path = createNodeRoutePath(registry, node.id, {
+            includeRoot: false,
+            includeAcademyRoot: false
+          });
 
           return (
             <li key={node.id} className="breadcrumb-item">

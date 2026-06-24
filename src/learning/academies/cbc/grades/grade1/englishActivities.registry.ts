@@ -1,28 +1,7 @@
 import type { LearningNode } from '../../../../core/index.ts';
 import { createLearningNode } from '../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../core/learningNode.constants.ts';
-
-const grade1EnglishThemeGreetings = createLearningNode({
-  id: 'grade-1-english-activities-theme-greetings',
-  kind: LEARNING_NODE_KINDS.theme,
-  label: 'Greetings',
-  summary: 'Learn how to greet people in different situations.',
-  parentId: 'grade-1-english-activities',
-  attributes: [
-    { key: 'routeSegment', value: 'greetings' },
-    { key: 'themeId', value: 'greetings' },
-    { key: 'themeName', value: 'Greetings' },
-    { key: 'learningAreaId', value: 'english-activities' },
-    { key: 'learningAreaName', value: 'English Activities' }
-  ],
-  features: [{ kind: 'guidedContent' }, { kind: 'readAloud' }],
-  actions: [{ intent: 'openChildren' }],
-  appearances: [
-    { key: 'icon', value: '👋' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
+import { grade1EnglishGreetingsNodes } from './english-activities/themes/greetings/greetings.registry.ts';
 
 const grade1EnglishThemeSchool = createLearningNode({
   id: 'grade-1-english-activities-theme-school',
@@ -332,136 +311,8 @@ const grade1EnglishThemeConservingResources = createLearningNode({
   version: 1
 });
 
-const grade1EnglishStrandListeningSpeaking = createLearningNode({
-  id: 'grade-1-english-activities-greetings-listening-speaking',
-  kind: LEARNING_NODE_KINDS.strand,
-  label: 'Listening and Speaking',
-  summary: 'Listen carefully, answer simple questions, and speak clearly.',
-  parentId: grade1EnglishThemeGreetings.id,
-  attributes: [
-    { key: 'routeSegment', value: 'listening-speaking' },
-    { key: 'strandId', value: 'listening-speaking' },
-    { key: 'strandName', value: 'Listening and Speaking' },
-    { key: 'themeId', value: 'greetings' },
-    { key: 'themeName', value: 'Greetings' }
-  ],
-  features: [{ kind: 'readAloud' }, { kind: 'guidedContent' }],
-  actions: [{ intent: 'openChildren' }],
-  appearances: [
-    { key: 'icon', value: '👂' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1EnglishSubStrandPronunciation = createLearningNode({
-  id: 'grade-1-english-activities-greetings-pronunciation-vocabulary',
-  kind: LEARNING_NODE_KINDS.subStrand,
-  label: 'Pronunciation and Vocabulary',
-  summary: 'Learn correct pronunciation and new words for greetings.',
-  parentId: grade1EnglishStrandListeningSpeaking.id,
-  attributes: [
-    { key: 'routeSegment', value: 'pronunciation-vocabulary' },
-    { key: 'subStrandId', value: 'pronunciation-vocabulary' },
-    { key: 'subStrandName', value: 'Pronunciation and Vocabulary' },
-    { key: 'strandId', value: 'listening-speaking' },
-    { key: 'strandName', value: 'Listening and Speaking' }
-  ],
-  features: [{ kind: 'readAloud' }, { kind: 'practice' }],
-  actions: [{ intent: 'openChildren' }],
-  appearances: [
-    { key: 'icon', value: '🗣️' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1EnglishNotesPronunciation = createLearningNode({
-  id: 'grade-1-english-activities-greetings-pronunciation-notes',
-  kind: LEARNING_NODE_KINDS.notes,
-  label: 'Pronunciation Notes',
-  summary: 'Learn how to pronounce common greetings correctly.',
-  parentId: grade1EnglishSubStrandPronunciation.id,
-  attributes: [
-    { key: 'routeSegment', value: 'pronunciation-notes' },
-    { key: 'contentType', value: 'notes' },
-    { key: 'subStrandId', value: 'pronunciation-vocabulary' },
-    { key: 'subStrandName', value: 'Pronunciation and Vocabulary' }
-  ],
-  features: [{ kind: 'readAloud' }, { kind: 'guidedContent' }],
-  actions: [{ intent: 'startPractice' }],
-  appearances: [
-    { key: 'icon', value: '📒' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1EnglishPracticePronunciation = createLearningNode({
-  id: 'grade-1-english-activities-greetings-pronunciation-practice',
-  kind: LEARNING_NODE_KINDS.practice,
-  label: 'Pronunciation Practice',
-  summary: 'Practice pronouncing greeting words: Hello, Good morning, Good afternoon, Good evening, Good night. Say each greeting clearly and practice with your friends!',
-  parentId: grade1EnglishSubStrandPronunciation.id,
-  attributes: [
-    { key: 'routeSegment', value: 'pronunciation-practice' },
-    { key: 'contentType', value: 'practice' },
-    { key: 'subStrandId', value: 'pronunciation-vocabulary' },
-    { key: 'subStrandName', value: 'Pronunciation and Vocabulary' }
-  ],
-  features: [{ kind: 'practice' }, { kind: 'readAloud' }],
-  actions: [{ intent: 'startPractice' }],
-  appearances: [
-    { key: 'icon', value: '✏️' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1EnglishRevisionPronunciation = createLearningNode({
-  id: 'grade-1-english-activities-greetings-pronunciation-revision',
-  kind: LEARNING_NODE_KINDS.revision,
-  label: 'Pronunciation Revision',
-  summary: 'Review and reinforce pronunciation skills.',
-  parentId: grade1EnglishSubStrandPronunciation.id,
-  attributes: [
-    { key: 'routeSegment', value: 'pronunciation-revision' },
-    { key: 'contentType', value: 'revision' },
-    { key: 'subStrandId', value: 'pronunciation-vocabulary' },
-    { key: 'subStrandName', value: 'Pronunciation and Vocabulary' }
-  ],
-  features: [{ kind: 'revision' }, { kind: 'practice' }],
-  actions: [{ intent: 'startPractice' }],
-  appearances: [
-    { key: 'icon', value: '🔄' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1EnglishAssessmentPronunciation = createLearningNode({
-  id: 'grade-1-english-activities-greetings-pronunciation-assessment',
-  kind: LEARNING_NODE_KINDS.assessment,
-  label: 'Pronunciation Assessment',
-  summary: 'Test your pronunciation skills.',
-  parentId: grade1EnglishSubStrandPronunciation.id,
-  attributes: [
-    { key: 'routeSegment', value: 'pronunciation-assessment' },
-    { key: 'contentType', value: 'assessment' },
-    { key: 'subStrandId', value: 'pronunciation-vocabulary' },
-    { key: 'subStrandName', value: 'Pronunciation and Vocabulary' }
-  ],
-  features: [{ kind: 'assessment' }, { kind: 'timed' }],
-  actions: [{ intent: 'takeAssessment' }],
-  appearances: [
-    { key: 'icon', value: '✅' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
 export const grade1EnglishActivitiesNodes: LearningNode[] = [
-  grade1EnglishThemeGreetings,
+  ...grade1EnglishGreetingsNodes,
   grade1EnglishThemeSchool,
   grade1EnglishThemeFamily,
   grade1EnglishThemeHome,
@@ -475,11 +326,5 @@ export const grade1EnglishActivitiesNodes: LearningNode[] = [
   grade1EnglishThemeLivingTogether,
   grade1EnglishThemeTechnology,
   grade1EnglishThemeNumbers,
-  grade1EnglishThemeConservingResources,
-  grade1EnglishStrandListeningSpeaking,
-  grade1EnglishSubStrandPronunciation,
-  grade1EnglishNotesPronunciation,
-  grade1EnglishPracticePronunciation,
-  grade1EnglishRevisionPronunciation,
-  grade1EnglishAssessmentPronunciation
+  grade1EnglishThemeConservingResources
 ];

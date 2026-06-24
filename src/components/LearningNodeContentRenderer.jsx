@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-
-function createNodeRoutePath(registry, nodeId) {
-  return `/learn/${nodeId}`;
-}
+import { createNodeRoutePath } from '../learning/routing';
 
 function getAttributeValue(node, key) {
   return node?.attributes?.find((attr) => attr.key === key)?.value || '';
@@ -32,6 +29,8 @@ function getNodeText(node, keys, fallback = '') {
 }
 
 function hasRenderableContent(node) {
+  if (isBookContent(node?.content)) return true;
+
   const textFields = ['content', 'body', 'description', 'summary', 'instructions'];
   const listFields = ['sections', 'items', 'questions'];
 
@@ -39,6 +38,10 @@ function hasRenderableContent(node) {
   const hasList = listFields.some((key) => Array.isArray(node?.[key]) && node[key].length > 0);
 
   return hasText || hasList;
+}
+
+function isBookContent(content) {
+  return content?.type === 'book' && Array.isArray(content.pages);
 }
 
 function renderTextBlock(value) {
@@ -83,6 +86,57 @@ function renderContentList(items) {
   return <ul>{renderedItems}</ul>;
 }
 
+function renderBookBlock(block, index) {
+  if (!block || typeof block !== 'object') return null;
+
+  const bodyText = [block.text, block.content, block.body]
+    .find((value) => typeof value === 'string' && value.trim().length > 0);
+  const items = Array.isArray(block.items) ? block.items : [];
+  const hasTitle = typeof block.title === 'string' && block.title.trim().length > 0;
+  const hasBody = typeof bodyText === 'string' && bodyText.trim().length > 0;
+  const hasItems = items.length > 0;
+
+  if (!hasTitle && !hasBody && !hasItems) return null;
+
+  return (
+    <section key={block.id || block.title || index} className="book-content-block">
+      {hasTitle && <h5>{block.title}</h5>}
+      {hasBody && renderTextBlock(bodyText)}
+      {hasItems && renderContentList(items)}
+    </section>
+  );
+}
+
+function BookContentRenderer({ content }) {
+  const pages = Array.isArray(content?.pages) ? content.pages : [];
+
+  return (
+    <div className="content-renderer-book">
+      <h3>{content.title}</h3>
+      {renderTextBlock(content.description)}
+      {pages.length === 0 ? (
+        <p className="book-content-empty">Notes content is being prepared.</p>
+      ) : (
+        <div className="book-content-pages">
+          {pages.map((page, pageIndex) => {
+            if (!page || typeof page !== 'object') return null;
+
+            const blocks = Array.isArray(page.blocks) ? page.blocks : [];
+
+            return (
+              <section key={page.id || page.title || pageIndex} className="book-content-page">
+                <h4>{page.title || `Page ${pageIndex + 1}`}</h4>
+                {renderTextBlock(page.subtitle)}
+                {blocks.map((block, blockIndex) => renderBookBlock(block, blockIndex))}
+              </section>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function LearningNodeContentRenderer({ registry, node, contentRendererProps = {} }) {
   const contentType = useMemo(() => {
     return (
@@ -97,6 +151,10 @@ export default function LearningNodeContentRenderer({ registry, node, contentRen
 
   if (legacyPath && legacyManifestId) {
     return <LegacyContentRenderer legacyPath={legacyPath} legacyManifestId={legacyManifestId} node={node} />;
+  }
+
+  if (isBookContent(node?.content)) {
+    return <BookContentRenderer content={node.content} />;
   }
 
   switch (contentType) {
@@ -232,7 +290,10 @@ function AssessmentRenderer({ node, registry }) {
       <h3>Assessment</h3>
       {parent && (
         <p className="assessment-parent">
-          Part of: <NavLink to={`/learn/${parent.id}`}>{parent.label}</NavLink>
+          Part of: <NavLink to={createNodeRoutePath(registry, parent.id, {
+            includeRoot: false,
+            includeAcademyRoot: false
+          })}>{parent.label}</NavLink>
         </p>
       )}
       <div className="assessment-content">
@@ -272,7 +333,10 @@ function ExamRenderer({ node, registry }) {
       <h3>Exam</h3>
       {parent && (
         <p className="exam-parent">
-          Exam for: <NavLink to={`/learn/${parent.id}`}>{parent.label}</NavLink>
+          Exam for: <NavLink to={createNodeRoutePath(registry, parent.id, {
+            includeRoot: false,
+            includeAcademyRoot: false
+          })}>{parent.label}</NavLink>
         </p>
       )}
       <div className="exam-content">
