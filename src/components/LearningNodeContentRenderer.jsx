@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { createNodeRoutePath } from '../learning/routing';
 
 function getAttributeValue(node, key) {
@@ -42,6 +42,25 @@ function hasRenderableContent(node) {
 
 function isBookContent(content) {
   return content?.type === 'book' && Array.isArray(content.pages);
+}
+
+function getAssessmentExamCards(node) {
+  if (Array.isArray(node?.content?.exams)) return node.content.exams;
+  if (Array.isArray(node?.exams)) return node.exams;
+  return [];
+}
+
+function getExamQuestionCount(exam) {
+  const metadataCount = Number(exam?.metadata?.questionCount ?? exam?.questionCount);
+  if (Number.isFinite(metadataCount) && metadataCount > 0) return metadataCount;
+  return Array.isArray(exam?.questions) ? exam.questions.length : 0;
+}
+
+function formatExamCardMetadata(exam) {
+  return [
+    `${getExamQuestionCount(exam)} ${getExamQuestionCount(exam) === 1 ? 'question' : 'questions'}`,
+    exam?.estimatedTime
+  ].filter(Boolean).join(' • ');
 }
 
 function renderTextBlock(value) {
@@ -274,16 +293,41 @@ function RevisionRenderer({ node }) {
 }
 
 function AssessmentRenderer({ node, registry }) {
+  const navigate = useNavigate();
   const parent = node.parentId ? registry.nodesById.get(node.parentId) : null;
   const instructions = getNodeText(node, 'instructions');
   const questions = Array.isArray(node?.questions) ? node.questions : [];
   const items = Array.isArray(node?.items) ? node.items : [];
+  const examCards = getAssessmentExamCards(node);
   const content = getNodeText(node, 'content');
   const body = getNodeText(node, 'body');
   const sections = Array.isArray(node?.sections) ? node.sections : [];
   const description = getNodeText(node, 'description');
   const summary = getNodeText(node, 'summary');
-  const hasContent = hasRenderableContent(node);
+  const hasContent = hasRenderableContent(node) || examCards.length > 0;
+
+  if (examCards.length > 0) {
+    return (
+      <div className="topic-assessment-grid">
+        {examCards.map((exam) => (
+          <button
+            key={exam.id}
+            type="button"
+            className="topic-assessment-card"
+            aria-label={`${exam.title}. ${exam.description || ''}`.trim()}
+            onClick={() => navigate(`/exam/${exam.id}`)}
+          >
+            <span className="topic-assessment-icon" aria-hidden="true">📝</span>
+            <span className="topic-assessment-copy">
+              <strong>{exam.title}</strong>
+              <small>{[exam.description, formatExamCardMetadata(exam)].filter(Boolean).join(' • ')}</small>
+            </span>
+            <span className="topic-assessment-status">Ready</span>
+          </button>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="content-renderer-assessment">
@@ -299,6 +343,34 @@ function AssessmentRenderer({ node, registry }) {
       <div className="assessment-content">
         {hasContent ? (
           <>
+            {examCards.length > 0 && (
+              <section className="topic-assessment-panel" aria-labelledby={`${node.id}-exam-card-heading`}>
+                <div className="topic-assessment-head">
+                  <div>
+                    <p className="eyebrow">Assessment</p>
+                    <h3 id={`${node.id}-exam-card-heading`}>Exams</h3>
+                  </div>
+                  <span>{examCards.length} available</span>
+                </div>
+                <div className="topic-assessment-grid">
+                  {examCards.map((exam) => (
+                    <button
+                      key={exam.id}
+                      type="button"
+                      className="topic-assessment-card"
+                      aria-label={`${exam.title}. ${exam.description || ''}`.trim()}
+                    >
+                      <span className="topic-assessment-icon" aria-hidden="true">📝</span>
+                      <span className="topic-assessment-copy">
+                        <strong>{exam.title}</strong>
+                        <small>{[exam.description, formatExamCardMetadata(exam)].filter(Boolean).join(' • ')}</small>
+                      </span>
+                      <span className="topic-assessment-status">Ready</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            )}
             {renderTextBlock(instructions)}
             {renderContentList(questions)}
             {renderContentList(items)}

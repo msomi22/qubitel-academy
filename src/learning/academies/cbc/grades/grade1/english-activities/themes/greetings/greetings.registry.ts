@@ -109,12 +109,66 @@ const grade1EnglishGreetingsLessonPlan = createLearningNode({
   version: 1
 });
 
+const greetingsAssessmentExam = {
+  id: 'gd1-eng-greetings-exam-001',
+  title: 'Exam 1: Greetings Check',
+  description: 'Check if you can choose polite greeting words and responses.',
+  estimatedTime: '5 min',
+  questions: [
+    {
+      question: 'Which greeting do we use in the morning?',
+      options: ['Good morning', 'Good evening', 'Good night', 'Goodbye'],
+      correctAnswer: 'Good morning',
+      explanation: 'Good morning is the greeting we use in the morning.'
+    },
+    {
+      question: 'What do you say when you meet a friend?',
+      options: ['Hello', 'Sleep', 'Run', 'Book'],
+      correctAnswer: 'Hello',
+      explanation: 'Hello is a polite greeting.'
+    },
+    {
+      question: 'What can you say when someone asks “How are you?”',
+      options: ['Fine, thank you', 'Good night', 'Good afternoon', 'Goodbye'],
+      correctAnswer: 'Fine, thank you',
+      explanation: 'Fine, thank you is a polite response.'
+    },
+    {
+      question: 'Which greeting can we use after lunch?',
+      options: ['Good afternoon', 'Good morning', 'Good night', 'Thank you'],
+      correctAnswer: 'Good afternoon',
+      explanation: 'Good afternoon is used after midday.'
+    },
+    {
+      question: 'Which greeting can we use in the evening?',
+      options: ['Good evening', 'Good morning', 'Hello book', 'Fine chair'],
+      correctAnswer: 'Good evening',
+      explanation: 'Good evening is used in the evening.'
+    }
+  ],
+  metadata: {
+    gradeCode: 'GD1',
+    gradeName: 'Grade 1',
+    learningAreaCode: 'ENG',
+    learningAreaName: 'English Activities',
+    themeName: 'Greetings',
+    examId: 'gd1-eng-greetings-exam-001',
+    examTitle: 'Exam 1: Greetings Check',
+    assessmentType: 'exam',
+    questionCount: 5
+  }
+};
+
 const grade1EnglishGreetingsAssessment = createLearningNode({
   id: 'gd1-eng-greetings-assessment',
   kind: LEARNING_NODE_KINDS.assessment,
   label: 'Assessment',
   summary: 'Check your understanding of greetings.',
   parentId: grade1EnglishThemeGreetings.id,
+  content: {
+    type: 'assessmentExamList',
+    exams: [greetingsAssessmentExam]
+  },
   attributes: [
     { key: 'gradeCode', value: 'GD1' },
     { key: 'gradeName', value: 'Grade 1' },
