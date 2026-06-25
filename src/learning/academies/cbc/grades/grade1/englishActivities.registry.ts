@@ -2,28 +2,8 @@ import type { LearningNode } from '../../../../core/index.ts';
 import { createLearningNode } from '../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../core/learningNode.constants.ts';
 import { grade1EnglishGreetingsNodes } from './english-activities/themes/greetings/greetings.registry.ts';
-
-const grade1EnglishThemeSchool = createLearningNode({
-  id: 'grade-1-english-activities-theme-school',
-  kind: LEARNING_NODE_KINDS.theme,
-  label: 'School',
-  summary: 'Learn about school environment and activities.',
-  parentId: 'grade-1-english-activities',
-  attributes: [
-    { key: 'routeSegment', value: 'school' },
-    { key: 'themeId', value: 'school' },
-    { key: 'themeName', value: 'School' },
-    { key: 'learningAreaId', value: 'english-activities' },
-    { key: 'learningAreaName', value: 'English Activities' }
-  ],
-  features: [{ kind: 'guidedContent' }, { kind: 'readAloud' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '🏫' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
+import { grade1EnglishNumbersNodes } from './english-activities/themes/numbers/numbers.registry.ts';
+import { grade1EnglishSchoolNodes } from './english-activities/themes/school/school.registry.ts';
 
 const grade1EnglishThemeFamily = createLearningNode({
   id: 'grade-1-english-activities-theme-family',
@@ -267,28 +247,6 @@ const grade1EnglishThemeTechnology = createLearningNode({
   version: 1
 });
 
-const grade1EnglishThemeNumbers = createLearningNode({
-  id: 'grade-1-english-activities-theme-numbers',
-  kind: LEARNING_NODE_KINDS.theme,
-  label: 'Numbers',
-  summary: 'Learn about numbers and counting.',
-  parentId: 'grade-1-english-activities',
-  attributes: [
-    { key: 'routeSegment', value: 'numbers' },
-    { key: 'themeId', value: 'numbers' },
-    { key: 'themeName', value: 'Numbers' },
-    { key: 'learningAreaId', value: 'english-activities' },
-    { key: 'learningAreaName', value: 'English Activities' }
-  ],
-  features: [{ kind: 'guidedContent' }, { kind: 'readAloud' }],
-  actions: [],
-  appearances: [
-    { key: 'icon', value: '🔢' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
 const grade1EnglishThemeConservingResources = createLearningNode({
   id: 'grade-1-english-activities-theme-conserving-resources',
   kind: LEARNING_NODE_KINDS.theme,
@@ -313,7 +271,7 @@ const grade1EnglishThemeConservingResources = createLearningNode({
 
 export const grade1EnglishActivitiesNodes: LearningNode[] = [
   ...grade1EnglishGreetingsNodes,
-  grade1EnglishThemeSchool,
+  ...grade1EnglishSchoolNodes,
   grade1EnglishThemeFamily,
   grade1EnglishThemeHome,
   grade1EnglishThemeTime,
@@ -325,6 +283,6 @@ export const grade1EnglishActivitiesNodes: LearningNode[] = [
   grade1EnglishThemeCommunityLeaders,
   grade1EnglishThemeLivingTogether,
   grade1EnglishThemeTechnology,
-  grade1EnglishThemeNumbers,
+  ...grade1EnglishNumbersNodes,
   grade1EnglishThemeConservingResources
 ];

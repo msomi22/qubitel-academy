@@ -2,6 +2,7 @@ import type { LearningNode } from '../../../core/index.ts';
 import { createLearningNode } from '../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../core/learningNode.constants.ts';
 import { grade1EnglishActivitiesNodes } from './grade1/englishActivities.registry.ts';
+import { grade1MathematicalActivitiesNodes } from './grade1/mathematical-activities/mathematicalActivities.registry.ts';
 
 export const grade1English = createLearningNode({
   id: 'grade-1-english-activities',
@@ -54,6 +55,7 @@ export const grade1Math = createLearningNode({
   label: 'Mathematical Activities',
   summary: 'Grade 1 Mathematics for numbers, shapes, and basic operations.',
   parentId: 'grade-1',
+  childIds: ['grade-1-mathematical-activities-theme-numbers'],
   attributes: [
     { key: 'routeSegment', value: 'mathematical-activities' },
     { key: 'learningAreaId', value: 'mathematical-activities' },
@@ -61,8 +63,8 @@ export const grade1Math = createLearningNode({
     { key: 'gradeId', value: 'grade-1' },
     { key: 'gradeName', value: 'Grade 1' }
   ],
-  features: [{ kind: 'guidedContent' }, { kind: 'practice' }],
-  actions: [],
+  features: [{ kind: 'guidedContent' }, { kind: 'practice' }, { kind: 'assessment' }],
+  actions: [{ intent: 'openChildren' }],
   appearances: [
     { key: 'icon', value: '🔢' },
     { key: 'tone', value: 'childFriendly' }
@@ -170,5 +172,6 @@ export const grade1LearningAreaNodes: LearningNode[] = [
 
 export const grade1Nodes: LearningNode[] = [
   ...grade1LearningAreaNodes,
-  ...grade1EnglishActivitiesNodes
+  ...grade1EnglishActivitiesNodes,
+  ...grade1MathematicalActivitiesNodes
 ];
