@@ -1,7 +1,8 @@
 import type { LearningNode } from '../../../../../../../core/index.ts';
 import { createLearningNode } from '../../../../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../../../../core/learningNode.constants.ts';
-import { greetingsNotesBook } from './notes/greetingsNotes.book.ts';
+import { greetingsLearningMaterialBook } from './notes/greetingsLearningMaterial.book.ts';
+import { greetingsLessonPlanBook } from './notes/greetingsLessonPlan.book.ts';
 
 const grade1EnglishThemeGreetings = createLearningNode({
   id: 'grade-1-english-activities-theme-greetings',
@@ -10,10 +11,10 @@ const grade1EnglishThemeGreetings = createLearningNode({
   summary: 'Learn how to greet people in different situations.',
   parentId: 'grade-1-english-activities',
   childIds: [
-    'gd1-eng-greetings-notes',
+    'gd1-eng-greetings-learning-material',
     'gd1-eng-greetings-practice',
-    'gd1-eng-greetings-revision',
-    'gd1-eng-greetings-assessment'
+    'gd1-eng-greetings-assessment',
+    'gd1-eng-greetings-lesson-plan'
   ],
   attributes: [
     { key: 'routeSegment', value: 'greetings' },
@@ -31,21 +32,21 @@ const grade1EnglishThemeGreetings = createLearningNode({
   version: 1
 });
 
-const grade1EnglishGreetingsNotes = createLearningNode({
-  id: 'gd1-eng-greetings-notes',
-  kind: LEARNING_NODE_KINDS.notes,
-  label: 'Notes',
+const grade1EnglishGreetingsLearningMaterial = createLearningNode({
+  id: 'gd1-eng-greetings-learning-material',
+  kind: 'learningMaterial',
+  label: 'Learning Material',
   summary: 'Learn how to greet people politely at different times and in different situations.',
   parentId: grade1EnglishThemeGreetings.id,
-  content: greetingsNotesBook,
+  content: greetingsLearningMaterialBook,
   attributes: [
     { key: 'gradeCode', value: 'GD1' },
     { key: 'gradeName', value: 'Grade 1' },
     { key: 'learningAreaCode', value: 'ENG' },
     { key: 'learningAreaName', value: 'English Activities' },
     { key: 'themeName', value: 'Greetings' },
-    { key: 'routeSegment', value: 'notes' },
-    { key: 'contentType', value: 'notes' },
+    { key: 'routeSegment', value: 'learning-material' },
+    { key: 'contentType', value: 'learningMaterial' },
     { key: 'themeId', value: 'greetings' }
   ],
   features: [{ kind: 'readAloud' }, { kind: 'guidedContent' }],
@@ -82,27 +83,28 @@ const grade1EnglishGreetingsPractice = createLearningNode({
   version: 1
 });
 
-const grade1EnglishGreetingsRevision = createLearningNode({
-  id: 'gd1-eng-greetings-revision',
-  kind: LEARNING_NODE_KINDS.revision,
-  label: 'Revision',
-  summary: 'Review greetings words and when to use them.',
+const grade1EnglishGreetingsLessonPlan = createLearningNode({
+  id: 'gd1-eng-greetings-lesson-plan',
+  kind: 'lessonPlan',
+  label: 'Lesson Plan',
+  summary: 'Teacher-facing lesson plan for the Greetings theme.',
   parentId: grade1EnglishThemeGreetings.id,
+  content: greetingsLessonPlanBook,
   attributes: [
     { key: 'gradeCode', value: 'GD1' },
     { key: 'gradeName', value: 'Grade 1' },
     { key: 'learningAreaCode', value: 'ENG' },
     { key: 'learningAreaName', value: 'English Activities' },
     { key: 'themeName', value: 'Greetings' },
-    { key: 'routeSegment', value: 'revision' },
-    { key: 'contentType', value: 'revision' },
+    { key: 'routeSegment', value: 'lesson-plan' },
+    { key: 'contentType', value: 'lessonPlan' },
     { key: 'themeId', value: 'greetings' }
   ],
-  features: [{ kind: 'revision' }, { kind: 'practice' }],
-  actions: [{ intent: 'startPractice' }],
+  features: [{ kind: 'guidedContent' }],
+  actions: [{ intent: 'resume' }],
   appearances: [
-    { key: 'icon', value: '🔄' },
-    { key: 'tone', value: 'childFriendly' }
+    { key: 'icon', value: '🧑‍🏫' },
+    { key: 'tone', value: 'teacherFacing' }
   ],
   version: 1
 });
@@ -134,8 +136,8 @@ const grade1EnglishGreetingsAssessment = createLearningNode({
 
 export const grade1EnglishGreetingsNodes: LearningNode[] = [
   grade1EnglishThemeGreetings,
-  grade1EnglishGreetingsNotes,
+  grade1EnglishGreetingsLearningMaterial,
   grade1EnglishGreetingsPractice,
-  grade1EnglishGreetingsRevision,
-  grade1EnglishGreetingsAssessment
+  grade1EnglishGreetingsAssessment,
+  grade1EnglishGreetingsLessonPlan
 ];

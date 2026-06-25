@@ -5,35 +5,44 @@ import { createNodeRoutePath } from '../learning/routing';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 
 const CONTENT_TABS = [
-  { key: 'notes', label: 'Notes', icon: '📖' },
+  { key: 'learningMaterial', label: 'Learning Material', icon: '📖' },
   { key: 'practice', label: 'Practice', icon: '✏️' },
-  { key: 'assessment', label: 'Assessment', icon: '✅' }
+  { key: 'assessment', label: 'Assessment', icon: '✅' },
+  { key: 'lessonPlan', label: 'Lesson Plan', icon: '🧑‍🏫' }
 ];
 
 const TAB_GROUPS = {
+  learningMaterial: new Set(['lessons', 'notes', 'learningMaterial']),
   notes: new Set(['lessons', 'notes', 'practice', 'revision', 'assessments']),
   practice: new Set([]),
-  assessment: new Set(['assessments'])
+  assessment: new Set(['assessments']),
+  lessonPlan: new Set(['lessonPlan'])
 };
 
 const TAB_COVER_FALLBACKS = {
+  learningMaterial: { label: 'Learning Material', icon: '📖', summary: 'Student learning material' },
   notes: { label: 'Notes', icon: '📖', summary: 'Lessons and notes' },
   practice: { label: 'Practice', icon: '✏️', summary: 'Practice exercises' },
-  assessment: { label: 'Assessment', icon: '✅', summary: 'Assessments' }
+  assessment: { label: 'Assessment', icon: '✅', summary: 'Assessments' },
+  lessonPlan: { label: 'Lesson Plan', icon: '🧑‍🏫', summary: 'Teacher lesson plan' }
 };
 
 const TAB_SUMMARY_KEYS = {
+  learningMaterial: ['learningMaterialSummary', 'notesSummary', 'lessonSummary', 'lessonsSummary'],
   notes: ['notesSummary', 'lessonSummary', 'lessonsSummary'],
   practice: ['practiceSummary'],
-  assessment: ['assessmentSummary', 'assessmentsSummary']
+  assessment: ['assessmentSummary', 'assessmentsSummary'],
+  lessonPlan: ['lessonPlanSummary']
 };
 
-const DIRECT_CONTENT_TAB_ORDER = ['notes', 'practice', 'assessment'];
+const DIRECT_CONTENT_TAB_ORDER = ['learningMaterial', 'notes', 'practice', 'assessment', 'lessonPlan'];
 const DIRECT_CONTENT_TAB_META = {
+  learningMaterial: { label: 'Learning Material', icon: '📖' },
   notes: { label: 'Notes', icon: '📖' },
   practice: { label: 'Practice', icon: '✏️' },
   assessment: { label: 'Assessment', icon: '✅' },
-  exam: { label: 'Assessment', icon: '✅' }
+  exam: { label: 'Assessment', icon: '✅' },
+  lessonPlan: { label: 'Lesson Plan', icon: '🧑‍🏫' }
 };
 
 function getNodeMetadataValue(node, key) {
@@ -143,7 +152,7 @@ function createDirectContentPages(node, parentNode) {
 }
 
 export default function LearningNodeBookView({ registry, nodeId, backPath, backLabel }) {
-  const [selectedContentType, setSelectedContentType] = useState('notes');
+  const [selectedContentType, setSelectedContentType] = useState('learningMaterial');
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const currentNode = registry.nodesById.get(nodeId);
   const isDirectBookNode = isDirectBookContent(currentNode);
