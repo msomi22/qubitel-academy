@@ -1,5 +1,5 @@
-import { useState, useMemo, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import { getChildren } from '../learning/registry/index.ts';
 import { createNodeRoutePath } from '../learning/routing';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
@@ -73,6 +73,11 @@ function isDirectBookContent(node) {
 
 function getContentType(node) {
   return getNodeMetadataValue(node, 'contentType') || node?.kind || '';
+}
+
+function getRequestedContentType(searchParams) {
+  const requestedTab = searchParams.get('tab') || '';
+  return DIRECT_CONTENT_TAB_ORDER.includes(requestedTab) ? requestedTab : '';
 }
 
 function getDirectContentChildren(node, registry) {
@@ -152,8 +157,11 @@ function createDirectContentPages(node, parentNode) {
 }
 
 export default function LearningNodeBookView({ registry, nodeId, backPath, backLabel }) {
-  const [selectedContentType, setSelectedContentType] = useState('learningMaterial');
+  const [searchParams] = useSearchParams();
+  const requestedContentType = getRequestedContentType(searchParams);
+  const [selectedContentType, setSelectedContentType] = useState(requestedContentType || 'learningMaterial');
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const initializedTabNodeIdRef = useRef(nodeId);
   const currentNode = registry.nodesById.get(nodeId);
   const isDirectBookNode = isDirectBookContent(currentNode);
   const directContentChildren = useMemo(
@@ -336,6 +344,16 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
   useEffect(() => {
     setCurrentPageIndex(0);
   }, [nodeId]);
+
+  useEffect(() => {
+    if (initializedTabNodeIdRef.current !== nodeId) {
+      initializedTabNodeIdRef.current = nodeId;
+      if (requestedContentType && requestedContentType !== selectedContentType) {
+        setSelectedContentType(requestedContentType);
+      }
+      setCurrentPageIndex(0);
+    }
+  }, [nodeId, requestedContentType, selectedContentType]);
 
   const currentPage = pages[currentPageIndex];
 

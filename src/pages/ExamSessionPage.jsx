@@ -87,9 +87,9 @@ function topicDisplayName(exam) {
   return exam?.topic?.name || 'English';
 }
 
-function examBackLabel(exam) {
+function examBackButtonText(exam) {
   const firstQuestion = exam?.questions?.[0];
-  return firstQuestion?.metadata?.backLabel || topicDisplayName(exam);
+  return firstQuestion?.metadata?.backLabel || `Back to ${topicDisplayName(exam)}`;
 }
 
 function skillDisplayName(exam) {
@@ -246,7 +246,7 @@ function RecoveryView({ exam, session, onContinue, onStartAgain, onBack }) {
         <div className="cbc-exam-result-actions">
           <button type="button" className="cbc-exam-button primary" onClick={onContinue}>Continue exam</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onStartAgain}>Start again</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {examBackLabel(exam)}</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>{examBackButtonText(exam)}</button>
         </div>
       </section>
     </main>
@@ -281,7 +281,7 @@ function TimedComprehensionReadingView({
         </div>
         <div className="cbc-exam-result-actions">
           <button type="button" className="cbc-exam-button primary" onClick={onStartQuestions}>Start Questions</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {examBackLabel(exam)}</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>{examBackButtonText(exam)}</button>
         </div>
       </section>
       
@@ -334,7 +334,7 @@ function ResultView({ attempt, exam, onRetake, onHistory, onBack }) {
           <button type="button" className="cbc-exam-button primary" onClick={downloadPdf}>Download PDF</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onRetake}>Retake exam</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onHistory}>Attempt history</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {examBackLabel(exam)}</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>{examBackButtonText(exam)}</button>
         </div>
       </section>
 
@@ -799,7 +799,7 @@ export default function ExamSessionPage() {
             <button type="button" className="cbc-exam-button primary" onClick={hasTimedComprehension ? startReading : startExam}>
               {hasTimedComprehension ? 'Start Reading' : 'Start exam'}
             </button>
-            <button type="button" className="cbc-exam-button quiet" onClick={() => navigate(examReturnPath)}>Back to {examBackLabel(exam)}</button>
+            <button type="button" className="cbc-exam-button quiet" onClick={() => navigate(examReturnPath)}>{examBackButtonText(exam)}</button>
           </div>
         </section>
         <AttemptHistory attempts={history} onViewResult={showResult} />

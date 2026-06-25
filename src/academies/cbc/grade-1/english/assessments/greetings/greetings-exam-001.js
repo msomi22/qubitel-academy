@@ -84,8 +84,8 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
     questionTimeSeconds,
     totalTimeSeconds: questions.length * questionTimeSeconds,
     points: 1,
-    backPath: '/gd1/eng/greetings/assessment',
-    backLabel: 'Assessment',
+    backPath: '/gd1/eng/greetings?tab=assessment',
+    backLabel: 'Back to Assessment',
     sequence: sequenceBase + index
   }
 }));
