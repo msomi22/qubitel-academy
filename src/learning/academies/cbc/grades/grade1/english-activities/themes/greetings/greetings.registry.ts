@@ -64,6 +64,19 @@ const grade1EnglishGreetingsPractice = createLearningNode({
   label: 'Practice',
   summary: 'Practice using greetings politely.',
   parentId: grade1EnglishThemeGreetings.id,
+  content: {
+    type: 'practiceCardList',
+    cards: [
+      {
+        id: 'gd1-eng-greetings-pronunciation-vocabulary-practice',
+        title: 'Pronunciation and Vocabulary',
+        description: 'Practise greeting words, letter sounds, and polite responses.',
+        targetProblemId: 'alphabet-mastery-lesson-001',
+        href: '/problem/alphabet-mastery-lesson-001',
+        status: 'Ready'
+      }
+    ]
+  },
   attributes: [
     { key: 'gradeCode', value: 'GD1' },
     { key: 'gradeName', value: 'Grade 1' },

@@ -225,15 +225,46 @@ function NotesRenderer({ node }) {
 }
 
 function PracticeRenderer({ node }) {
+  const navigate = useNavigate();
   const instructions = getNodeText(node, 'instructions');
   const questions = Array.isArray(node?.questions) ? node.questions : [];
   const items = Array.isArray(node?.items) ? node.items : [];
+  const practiceCards = node?.content?.type === 'practiceCardList' && Array.isArray(node.content.cards)
+    ? node.content.cards
+    : [];
   const content = getNodeText(node, 'content');
   const body = getNodeText(node, 'body');
   const sections = Array.isArray(node?.sections) ? node.sections : [];
   const description = getNodeText(node, 'description');
   const summary = getNodeText(node, 'summary');
-  const hasContent = hasRenderableContent(node);
+  const hasContent = hasRenderableContent(node) || practiceCards.length > 0;
+
+  if (practiceCards.length > 0) {
+    return (
+      <div className="topic-assessment-grid">
+        {practiceCards.map((card) => {
+          const targetPath = card.href || `/problem/${card.targetProblemId}`;
+
+          return (
+            <button
+              key={card.id}
+              type="button"
+              className="topic-assessment-card"
+              aria-label={`${card.title}. ${card.description || ''}`.trim()}
+              onClick={() => navigate(targetPath)}
+            >
+              <span className="topic-assessment-icon" aria-hidden="true">✏️</span>
+              <span className="topic-assessment-copy">
+                <strong>{card.title}</strong>
+                <small>{card.description}</small>
+              </span>
+              <span className="topic-assessment-status">{card.status || 'Ready'}</span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  }
 
   return (
     <div className="content-renderer-practice">
