@@ -446,32 +446,34 @@ export default function AlphabetMasteryBlock({ block }) {
         </div>
       </div>
 
-      <div className="alphabet-mastery-grid" aria-label="Alphabet sound cards" {...gridProps}>
-        {letters.map((item, index) => (
-          <div className="alphabet-mastery-letter-row" style={{ '--alphabet-card-accent': item.color }} key={item.id}>
-            <AlphabetCard
-              card={item.identifier}
-              cardType="identifier"
-              color={item.color}
-              display={item.display}
-              isActive={activeCardId === item.identifier.id}
-              isAutoReading={activeAutoReadItem?.card?.id === item.identifier.id}
-              itemRef={getItemRef(index * 2)}
-              onPlay={handleManualPlay}
-            />
+      <div className="alphabet-mastery-card-scroll">
+        <div className="alphabet-mastery-grid" aria-label="Alphabet sound cards" {...gridProps}>
+          {letters.map((item, index) => (
+            <div className="alphabet-mastery-letter-row" style={{ '--alphabet-card-accent': item.color }} key={item.id}>
+              <AlphabetCard
+                card={item.identifier}
+                cardType="identifier"
+                color={item.color}
+                display={item.display}
+                isActive={activeCardId === item.identifier.id}
+                isAutoReading={activeAutoReadItem?.card?.id === item.identifier.id}
+                itemRef={getItemRef(index * 2)}
+                onPlay={handleManualPlay}
+              />
 
-            <AlphabetCard
-              card={item.phonetic}
-              cardType="phonetic"
-              color={item.color}
-              display={item.display}
-              isActive={activeCardId === item.phonetic.id}
-              isAutoReading={activeAutoReadItem?.card?.id === item.phonetic.id}
-              itemRef={getItemRef(index * 2 + 1)}
-              onPlay={handleManualPlay}
-            />
-          </div>
-        ))}
+              <AlphabetCard
+                card={item.phonetic}
+                cardType="phonetic"
+                color={item.color}
+                display={item.display}
+                isActive={activeCardId === item.phonetic.id}
+                isAutoReading={activeAutoReadItem?.card?.id === item.phonetic.id}
+                itemRef={getItemRef(index * 2 + 1)}
+                onPlay={handleManualPlay}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="alphabet-mastery-status" role="status" aria-live="polite">

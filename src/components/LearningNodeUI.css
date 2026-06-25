@@ -611,6 +611,37 @@
   flex-shrink: 0;
 }
 
+.learning-node-problem-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.learning-node-problem-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.learning-node-problem-back,
+.learning-node-problem-done {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: max-content;
+  min-height: 32px;
+  white-space: nowrap;
+}
+
+.learning-node-problem-done {
+  cursor: pointer;
+}
+
+.learning-node-problem-progress {
+  margin: 0;
+}
+
 :root[data-theme="dark"] .book-page-header {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }

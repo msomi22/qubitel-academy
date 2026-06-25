@@ -19,6 +19,7 @@ import {
   buildCategoryReturnPath,
   categoryPath
 } from '../services/categoryNavigationService.js';
+import '../components/LearningNodeUI.css';
 
 function uniqueItems(items = []) {
   const seen = new Set();
@@ -206,6 +207,11 @@ export default function ProblemPage() {
         ...location.state.returnToCategory
       })
     : categoryPath(categoryId);
+  const explicitBackPath = searchParams.get('backPath') || '';
+  const explicitBackLabel = searchParams.get('backLabel') || '';
+  const hasExplicitBackTarget = explicitBackPath.trim().length > 0;
+  const problemBackPath = hasExplicitBackTarget ? explicitBackPath : categoryBackPath;
+  const problemBackLabel = explicitBackLabel || 'Back to topic';
   const topicName = entry.topic?.name || entry.categoryName || 'Topic';
   const categoryName = entry.category?.name || entry.categoryName || entry.topic?.category || 'Learning';
   const primaryPattern = entry.question.finalPattern || topicName;
@@ -253,58 +259,62 @@ export default function ProblemPage() {
 
   return (
     <main className="page problem-detail-shell focused-problem-page premium-problem-page stable-problem-page">
-      <div className="problem-breadcrumb compact-problem-breadcrumb">
-        <NavLink to="/">Dashboard</NavLink>
-        <span>/</span>
-        <NavLink to={categoryBackPath}>{topicName}</NavLink>
-        <span>/</span>
-        <span>{entry.question.title}</span>
-      </div>
-
-      <section className="reference-problem-intro premium-problem-intro">
-        <div className="premium-problem-title-area">
-          <div className="premium-problem-context-row">
-            <NavLink to={categoryBackPath}>Back to topic</NavLink>
-            <span>{categoryName}</span>
-            <span>{topicName}</span>
+      {!hasExplicitBackTarget ? (
+        <>
+          <div className="problem-breadcrumb compact-problem-breadcrumb">
+            <NavLink to="/">Dashboard</NavLink>
+            <span>/</span>
+            <NavLink to={problemBackPath}>{topicName}</NavLink>
+            <span>/</span>
+            <span>{entry.question.title}</span>
           </div>
 
-          {scopeLabel ? (
-            <div className="premium-problem-context-row" aria-label="Learning area scope">
-              <span>{scopeLabel}</span>
-              {scopedQuestionNumber ? <span>{scopedQuestionNumber}</span> : null}
+          <section className="reference-problem-intro premium-problem-intro">
+            <div className="premium-problem-title-area">
+              <div className="premium-problem-context-row">
+                <NavLink to={problemBackPath}>{problemBackLabel}</NavLink>
+                <span>{categoryName}</span>
+                <span>{topicName}</span>
+              </div>
+
+              {scopeLabel ? (
+                <div className="premium-problem-context-row" aria-label="Learning area scope">
+                  <span>{scopeLabel}</span>
+                  {scopedQuestionNumber ? <span>{scopedQuestionNumber}</span> : null}
+                </div>
+              ) : null}
+
+              <h1>{entry.question.title}</h1>
+
+              <div className="problem-meta-pills" aria-label="Problem metadata">
+                {problemTags.map(({ label, type }) => (
+                  <span key={label} className={pillClass(type, label, entry.question.difficulty)}>
+                    {label}
+                  </span>
+                ))}
+              </div>
+
+              {introText ? <p className="premium-problem-summary">{introText}</p> : null}
             </div>
-          ) : null}
 
-          <h1>{entry.question.title}</h1>
+            <aside className="premium-problem-progress-card" aria-label="Focused problem actions">
+              <span className="mini-label">Current state</span>
+              <strong>{isComplete ? 'Completed' : 'Ready to solve'}</strong>
+              <small>{isMcq ? 'Select an answer, then review the explanation.' : 'Read, draft mentally, then compare with the solution.'}</small>
 
-          <div className="problem-meta-pills" aria-label="Problem metadata">
-            {problemTags.map(({ label, type }) => (
-              <span key={label} className={pillClass(type, label, entry.question.difficulty)}>
-                {label}
-              </span>
-            ))}
-          </div>
+              <div className="reference-action-group premium-problem-actions">
+                <NavLink className="btn ghost" to={problemBackPath}>{problemBackLabel}</NavLink>
 
-          {introText ? <p className="premium-problem-summary">{introText}</p> : null}
-        </div>
-
-        <aside className="premium-problem-progress-card" aria-label="Focused problem actions">
-          <span className="mini-label">Current state</span>
-          <strong>{isComplete ? 'Completed' : 'Ready to solve'}</strong>
-          <small>{isMcq ? 'Select an answer, then review the explanation.' : 'Read, draft mentally, then compare with the solution.'}</small>
-
-          <div className="reference-action-group premium-problem-actions">
-            <NavLink className="btn ghost" to={categoryBackPath}>Back to topic</NavLink>
-
-            {!isComplexSystemDesign ? (
-              <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
-                {isComplete ? 'Reset' : 'Done'}
-              </button>
-            ) : null}
-          </div>
-        </aside>
-      </section>
+                {!isComplexSystemDesign ? (
+                  <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
+                    {isComplete ? 'Reset' : 'Done'}
+                  </button>
+                ) : null}
+              </div>
+            </aside>
+          </section>
+        </>
+      ) : null}
 
       <section className="stable-question-shell" aria-busy={loading ? 'true' : 'false'}>
         {isComplexSystemDesign ? (
@@ -321,6 +331,20 @@ export default function ProblemPage() {
             onToggle={handleCompletionClick}
             onMarkComplete={handleMarkComplete}
             navigation={questionNavigation}
+            problemHeader={hasExplicitBackTarget ? (
+              <div className="learning-node-problem-header" aria-label="Problem navigation">
+                <div className="learning-node-problem-header-row">
+                  <NavLink className="book-toolbar-back learning-node-problem-back" to={problemBackPath}>← {problemBackLabel}</NavLink>
+
+                  <button className="book-content-tab book-content-tab-active learning-node-problem-done" onClick={() => handleCompletionClick(entry.question.id)} type="button">
+                    {isComplete ? 'Reset' : 'Done'}
+                  </button>
+                </div>
+                <div className="book-progress-bar learning-node-problem-progress" aria-hidden="true">
+                  <div className="book-progress-fill" style={{ width: isComplete ? '100%' : '12%' }} />
+                </div>
+              </div>
+            ) : null}
             hideTopline
           />
         )}
