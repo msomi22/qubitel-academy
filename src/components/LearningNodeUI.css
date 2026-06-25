@@ -612,17 +612,11 @@
 }
 
 .learning-node-problem-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0;
 }
 
-.learning-node-problem-header-row {
-  display: flex;
+.learning-node-problem-tabs {
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
 }
 
 .learning-node-problem-back,
@@ -634,12 +628,20 @@
   white-space: nowrap;
 }
 
+.learning-node-problem-back:hover,
+.learning-node-problem-back:focus-visible {
+  border-color: color-mix(in srgb, var(--accent, #63f1e2) 50%, var(--line, rgba(99, 241, 226, 0.28)) 50%);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #63f1e2) 14%, transparent);
+  outline: none;
+}
+
 .learning-node-problem-done {
   cursor: pointer;
 }
 
 .learning-node-problem-progress {
   margin: 0;
+  max-width: none;
 }
 
 :root[data-theme="dark"] .book-page-header {

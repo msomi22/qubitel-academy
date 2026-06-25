@@ -433,9 +433,11 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
     }
   }
 
+  const headerControls = problemHeader && typeof problemHeader === 'object' && !problemHeader.type ? problemHeader : null;
+
   return (
     <article className={`focused-problem-workspace glass-lite ${completed ? 'done' : ''} ${focusMode ? 'focus-mode' : ''}`}>
-      {problemHeader}
+      {!headerControls ? problemHeader : null}
 
       {!hideTopline ? (
         <div className="focused-problem-topline">
@@ -446,13 +448,15 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
           <button className="mark" onClick={() => onToggle?.(question.id)}>{completed ? 'Reset progress' : 'Mark complete'}</button>
         </div>
       ) : null}
-      <div className="focused-tabs-wrap">
-        <div className="focused-tabs" role="tablist" aria-label="Problem learning sections">{displayTabs.map(([id, label]) => <button key={id} type="button" className={`focused-tab-btn ${activeTab === id ? 'active' : ''}`} role="tab" aria-selected={activeTab === id} onClick={() => setActiveTab(id)}>{label}</button>)}</div>
+      <div className="focused-tabs-wrap learning-node-problem-header" aria-label={headerControls ? 'Problem navigation' : undefined}>
+        <div className="focused-tabs learning-node-problem-tabs" role="tablist" aria-label="Problem learning sections">{headerControls?.backControl}{displayTabs.map(([id, label]) => <button key={id} type="button" className={`focused-tab-btn ${activeTab === id ? 'active' : ''}`} role="tab" aria-selected={activeTab === id} onClick={() => setActiveTab(id)}>{label}</button>)}</div>
         <div className="focused-tabs-actions">
           {isTimedMcq ? <TimedQuizStatus seconds={remainingSeconds} locked={quizLocked} /> : null}
           <button type="button" className={`focus-mode-toggle ${focusMode ? 'active' : ''}`} aria-pressed={focusMode} onClick={() => setFocusMode((current) => !current)}>{focusMode ? 'Exit focus' : 'Focus mode'}</button>
+          {headerControls?.doneControl}
         </div>
       </div>
+      {headerControls?.progressControl}
 
       <div className="focused-workspace-layout">
         <div className="focused-tab-content">

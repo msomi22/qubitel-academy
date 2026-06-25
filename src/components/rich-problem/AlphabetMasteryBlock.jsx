@@ -382,7 +382,6 @@ export default function AlphabetMasteryBlock({ block }) {
     <section className="workspace-block problem-rich-block alphabet-mastery-board" aria-labelledby="alphabet-mastery-heading">
       <div className="alphabet-mastery-hero">
         <div className="alphabet-mastery-heading">
-          <span className="alphabet-mastery-back">English</span>
           <h4 id="alphabet-mastery-heading">{block?.title || 'Alphabet Mastery'}</h4>
           {block?.subtitle ? <p>{block.subtitle}</p> : null}
         </div>

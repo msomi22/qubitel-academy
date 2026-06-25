@@ -331,20 +331,19 @@ export default function ProblemPage() {
             onToggle={handleCompletionClick}
             onMarkComplete={handleMarkComplete}
             navigation={questionNavigation}
-            problemHeader={hasExplicitBackTarget ? (
-              <div className="learning-node-problem-header" aria-label="Problem navigation">
-                <div className="learning-node-problem-header-row">
-                  <NavLink className="book-toolbar-back learning-node-problem-back" to={problemBackPath}>← {problemBackLabel}</NavLink>
-
-                  <button className="book-content-tab book-content-tab-active learning-node-problem-done" onClick={() => handleCompletionClick(entry.question.id)} type="button">
-                    {isComplete ? 'Reset' : 'Done'}
-                  </button>
-                </div>
+            problemHeader={hasExplicitBackTarget ? {
+              backControl: <NavLink className="book-toolbar-back learning-node-problem-back" to={problemBackPath}>← {problemBackLabel}</NavLink>,
+              doneControl: (
+                <button className="book-content-tab book-content-tab-active learning-node-problem-done" onClick={() => handleCompletionClick(entry.question.id)} type="button">
+                  {isComplete ? 'Reset' : 'Done'}
+                </button>
+              ),
+              progressControl: (
                 <div className="book-progress-bar learning-node-problem-progress" aria-hidden="true">
                   <div className="book-progress-fill" style={{ width: isComplete ? '100%' : '12%' }} />
                 </div>
-              </div>
-            ) : null}
+              )
+            } : null}
             hideTopline
           />
         )}

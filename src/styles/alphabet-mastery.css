@@ -24,8 +24,8 @@
   grid-template-columns: minmax(0, 1fr) 74px;
   align-items: center;
   gap: 10px;
-  min-height: 164px;
-  padding: 22px 18px;
+  min-height: 74px;
+  padding: 9px 14px;
   overflow: hidden;
   background:
     radial-gradient(circle at 23% 40%, rgba(255, 255, 255, 0.96) 0 20px, transparent 21px),
@@ -39,8 +39,8 @@
   position: absolute;
   right: 4%;
   bottom: 0;
-  width: 62px;
-  height: 112px;
+  width: 38px;
+  height: 62px;
   border-radius: 34px 34px 0 0;
   background: linear-gradient(180deg, #97da3c, #6fb92f);
   content: "";
@@ -49,8 +49,8 @@
 .alphabet-mastery-hero::after {
   right: auto;
   left: -28px;
-  width: 78px;
-  height: 86px;
+  width: 46px;
+  height: 46px;
   border-radius: 50% 50% 0 0;
 }
 
@@ -61,24 +61,10 @@
   z-index: 1;
 }
 
-.alphabet-mastery-back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #0b56d0;
-  font-size: 0.9rem;
-  font-weight: 800;
-}
-
-.alphabet-mastery-back::before {
-  content: "←";
-  font-size: 1.05rem;
-}
-
 .alphabet-mastery-heading h4 {
-  margin: 20px 0 4px;
+  margin: 0 0 4px;
   color: #12165c;
-  font-size: 2.28rem;
+  font-size: 1.55rem;
   font-weight: 900;
   letter-spacing: 0;
   line-height: 1;
@@ -89,7 +75,7 @@
 .alphabet-mastery-heading p {
   margin: 0;
   color: #1d3175;
-  font-size: 0.98rem;
+  font-size: 0.84rem;
   font-weight: 800;
   overflow-wrap: normal;
   word-break: normal;
@@ -103,7 +89,7 @@
 .alphabet-mastery-mascot {
   align-self: end;
   justify-self: center;
-  font-size: 4.1rem;
+  font-size: 2.5rem;
   line-height: 1;
   filter: drop-shadow(0 12px 12px rgba(123, 80, 34, 0.16));
 }
@@ -112,8 +98,8 @@
   display: none;
   justify-items: center;
   gap: 3px;
-  min-width: 136px;
-  padding: 18px 14px;
+  min-width: 104px;
+  padding: 8px 10px;
   border: 1px solid rgba(20, 33, 95, 0.08);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.92);
@@ -130,13 +116,13 @@
 .alphabet-mastery-progress strong {
   display: grid;
   place-items: center;
-  width: 68px;
-  height: 68px;
-  border: 9px solid #e6e3ed;
+  width: 42px;
+  height: 42px;
+  border: 6px solid #e6e3ed;
   border-top-color: #8c50ee;
   border-radius: 50%;
   color: #8c50ee;
-  font-size: 1.3rem;
+  font-size: 0.92rem;
   line-height: 1;
 }
 
@@ -626,16 +612,16 @@
 @media (min-width: 640px) {
   .alphabet-mastery-hero {
     grid-template-columns: minmax(0, 1fr) auto auto;
-    min-height: 210px;
-    padding: 30px 34px;
+    min-height: 90px;
+    padding: 11px 20px;
   }
 
   .alphabet-mastery-heading h4 {
-    font-size: 3.35rem;
+    font-size: 1.95rem;
   }
 
   .alphabet-mastery-mascot {
-    font-size: 6.8rem;
+    font-size: 3.35rem;
   }
 
   .alphabet-mastery-progress {
