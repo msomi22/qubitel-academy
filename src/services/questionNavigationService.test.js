@@ -150,9 +150,9 @@ test('getQuestionsForNavigationScope returns no navigation when scope cannot be 
   assert.deepEqual(getQuestionsForNavigationScope(questions, null), []);
 });
 
-test('buildProblemPath preserves learning area scope in the problem URL', () => {
+test('buildProblemPath preserves learning area scope in the practice URL', () => {
   assert.equal(
     buildProblemPath('reading q1', { learningAreaId: 'reading-comprehension' }),
-    '/problem/reading%20q1?scope=reading-comprehension'
+    '/practice/reading%20q1?scope=reading-comprehension'
   );
 });
