@@ -45,29 +45,22 @@
 }
 
 .topic-assessment-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 300px));
+  justify-content: start;
+  align-items: start;
   gap: 10px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  overscroll-behavior-inline: contain;
-  padding: 2px 2px 8px;
-  scroll-padding-inline: 2px;
-  scroll-snap-type: x proximity;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 2px;
   -webkit-overflow-scrolling: touch;
 }
 
-.topic-assessment-grid::-webkit-scrollbar {
-  height: 8px;
-}
-
-.topic-assessment-grid::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 42%, var(--line, var(--border)) 58%);
-}
-
-.topic-assessment-grid::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--card, var(--bg-card)) 70%, transparent);
+.learning-node-tab-card-grid {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 300px));
+  justify-content: start;
+  align-items: start;
 }
 
 .topic-assessment-card {
@@ -76,7 +69,8 @@
   grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  flex: 0 0 min(360px, calc(100vw - 54px));
+  width: 100%;
+  min-width: 0;
   min-height: 72px;
   padding: 10px 12px;
   border: 1px solid color-mix(in srgb, var(--line, var(--border)) 72%, var(--accent) 18%);
@@ -87,7 +81,6 @@
   font: inherit;
   text-align: left;
   cursor: pointer;
-  scroll-snap-align: start;
   box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 7%, transparent);
 }
 
@@ -173,8 +166,15 @@
     flex-direction: column;
   }
 
+  .topic-assessment-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-node-tab-card-grid {
+    grid-template-columns: 1fr;
+  }
+
   .topic-assessment-card {
-    flex-basis: min(320px, calc(100vw - 48px));
     min-height: 66px;
     padding: 9px 10px;
   }

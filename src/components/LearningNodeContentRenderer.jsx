@@ -241,7 +241,7 @@ function PracticeRenderer({ node }) {
 
   if (practiceCards.length > 0) {
     return (
-      <div className="topic-assessment-grid">
+      <div className="topic-assessment-grid learning-node-tab-card-grid">
         {practiceCards.map((card) => {
           const targetPath = card.href || `/practice/${card.targetProblemId}`;
 
@@ -344,7 +344,7 @@ function AssessmentRenderer({ node, registry }) {
 
   if (examCards.length > 0) {
     return (
-      <div className="topic-assessment-grid">
+      <div className="topic-assessment-grid learning-node-tab-card-grid">
         {examCards.map((exam) => (
           <button
             key={exam.id}
@@ -389,7 +389,7 @@ function AssessmentRenderer({ node, registry }) {
                   </div>
                   <span>{examCards.length} available</span>
                 </div>
-                <div className="topic-assessment-grid">
+                <div className="topic-assessment-grid learning-node-tab-card-grid">
                   {examCards.map((exam) => (
                     <button
                       key={exam.id}
