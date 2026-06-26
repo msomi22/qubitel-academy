@@ -126,7 +126,7 @@ export async function hydrateRecentQuestions(recentEntries = getRecentQuestions(
           title: currentQuestion.title,
           topic: currentEntry.topic?.name || currentEntry.categoryName || 'Unavailable',
           difficulty: currentQuestion.difficulty || '—',
-          route: `/problem/${encodeURIComponent(currentQuestion.id)}`,
+          route: `/practice/${encodeURIComponent(currentQuestion.id)}`,
           available: true
         };
       }

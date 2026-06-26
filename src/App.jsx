@@ -36,7 +36,7 @@ const ExamSessionPage = lazy(() => import('./pages/ExamSessionPage.jsx'));
 const LearningNodePage = lazy(() => import('./pages/LearningNodePage.jsx'));
 
 function isProblemRoute(pathname = '') {
-  return pathname.startsWith('/problem/');
+  return pathname.startsWith('/problem/') || pathname.startsWith('/practice/');
 }
 
 function RouteScrollReset() {
@@ -118,6 +118,7 @@ export default function App() {
               <Route path="/recent" element={<RecentPage />} />
               <Route path="/progress" element={<ProgressPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/practice/:questionId" element={<ProblemPage />} />
               <Route path="/problem/:questionId" element={<ProblemPage />} />
               <Route path="/exam/:examId" element={<ExamSessionPage />} />
               <Route path="/:grade/:learningArea/:theme/:contentType" element={<LearningNodePage semanticRoute />} />

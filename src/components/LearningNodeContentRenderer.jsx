@@ -243,7 +243,7 @@ function PracticeRenderer({ node }) {
     return (
       <div className="topic-assessment-grid">
         {practiceCards.map((card) => {
-          const targetPath = card.href || `/problem/${card.targetProblemId}`;
+          const targetPath = card.href || `/practice/${card.targetProblemId}`;
 
           return (
             <button
@@ -326,6 +326,11 @@ function RevisionRenderer({ node }) {
 function AssessmentRenderer({ node, registry }) {
   const navigate = useNavigate();
   const parent = node.parentId ? registry.nodesById.get(node.parentId) : null;
+  const parentPath = parent ? createNodeRoutePath(registry, parent.id, {
+    includeRoot: false,
+    includeAcademyRoot: false
+  }) : '';
+  const assessmentBackPath = parentPath ? `${parentPath}?tab=assessment` : '';
   const instructions = getNodeText(node, 'instructions');
   const questions = Array.isArray(node?.questions) ? node.questions : [];
   const items = Array.isArray(node?.items) ? node.items : [];
@@ -346,7 +351,8 @@ function AssessmentRenderer({ node, registry }) {
             type="button"
             className="topic-assessment-card"
             aria-label={`${exam.title}. ${exam.description || ''}`.trim()}
-            onClick={() => navigate(`/exam/${exam.id}`)}
+            onClick={() => navigate(`/exam/${exam.id}${assessmentBackPath ? `?backPath=${encodeURIComponent(assessmentBackPath)}&backLabel=Back` : ''}`)}
+            // Passes explicit backPath/backLabel so ExamSessionPage can prefer the LearningNode return target
           >
             <span className="topic-assessment-icon" aria-hidden="true">📝</span>
             <span className="topic-assessment-copy">

@@ -197,7 +197,7 @@ function QuestionCard({ question, completed, onToggle, disableCardNavigation = f
   const showHints = activePanel === 'hints';
   const showThinking = activePanel === 'thinking';
   const showSolution = activePanel === 'solution';
-  const typeLabel = TYPE_LABELS[question.type] || 'Problem';
+  const typeLabel = TYPE_LABELS[question.type] || 'Practice';
   const typeClass = `type-${question.type || 'learning'}`;
   const difficultyClass = getDifficultyClass(question.difficulty);
   const primaryPattern = getPrimaryPattern(question);
@@ -223,7 +223,7 @@ function QuestionCard({ question, completed, onToggle, disableCardNavigation = f
   }
 
   function openFocusedProblem() {
-    if (!disableCardNavigation && question?.id) navigate(`/problem/${question.id}`);
+    if (!disableCardNavigation && question?.id) navigate(`/practice/${question.id}`);
   }
 
   function handleCardClick(event) {
@@ -247,7 +247,7 @@ function QuestionCard({ question, completed, onToggle, disableCardNavigation = f
 
   if (compact) {
     return (
-      <article className={`question-card problem-workspace compact-problem-card glass-lite ${completed ? 'done' : ''} ${disableCardNavigation ? '' : 'clickable-problem-card'}`} role={disableCardNavigation ? undefined : 'button'} tabIndex={disableCardNavigation ? undefined : 0} onClick={handleCardClick} onKeyDown={handleCardKeyDown} aria-label={disableCardNavigation ? undefined : `Open ${question.title} in focused workspace`}>
+      <article className={`question-card practice-workspace compact-practice-card glass-lite ${completed ? 'done' : ''} ${disableCardNavigation ? '' : 'clickable-practice-card'}`} role={disableCardNavigation ? undefined : 'button'} tabIndex={disableCardNavigation ? undefined : 0} onClick={handleCardClick} onKeyDown={handleCardKeyDown} aria-label={disableCardNavigation ? undefined : `Open ${question.title} practice`}>
         <div className="q-top">
           <div className="meta-strip">
             <span className={`pill ${difficultyClass}`}>{question.difficulty || 'Practice'}</span>
@@ -257,13 +257,13 @@ function QuestionCard({ question, completed, onToggle, disableCardNavigation = f
         </div>
         <h3>{question.title}</h3>
         {summary ? <p className="question-text">{summary}</p> : null}
-        <div className="meta-strip" aria-label="Problem type"><span className="time-pill">{typeLabel}</span></div>
+        <div className="meta-strip" aria-label="Practice type"><span className="time-pill">{typeLabel}</span></div>
       </article>
     );
   }
 
   return (
-    <article className={`question-card problem-workspace glass-lite ${completed ? 'done' : ''} ${quizLocked ? 'locked' : ''} ${disableCardNavigation ? '' : 'clickable-problem-card'}`} role={disableCardNavigation ? undefined : 'button'} tabIndex={disableCardNavigation ? undefined : 0} onClick={handleCardClick} onKeyDown={handleCardKeyDown} aria-label={disableCardNavigation ? undefined : `Open ${question.title} in focused workspace`}>
+    <article className={`question-card practice-workspace glass-lite ${completed ? 'done' : ''} ${quizLocked ? 'locked' : ''} ${disableCardNavigation ? '' : 'clickable-practice-card'}`} role={disableCardNavigation ? undefined : 'button'} tabIndex={disableCardNavigation ? undefined : 0} onClick={handleCardClick} onKeyDown={handleCardKeyDown} aria-label={disableCardNavigation ? undefined : `Open ${question.title} practice`}>
       <div className="q-top">
         <div className="meta-strip">
           <span className={`pill type-pill ${typeClass}`}>{typeLabel}</span>
@@ -275,7 +275,7 @@ function QuestionCard({ question, completed, onToggle, disableCardNavigation = f
 
       <h3>{question.title}</h3>
       <TextBlock title="Scenario" className="scenario-box">{question.scenario}</TextBlock>
-      <TextBlock title="Problem" className="question-prompt">{question.question}</TextBlock>
+      <TextBlock title="Practice" className="question-prompt">{question.question}</TextBlock>
       <ProblemBodyRenderer body={question.body} rendering={question.rendering} />
       <VisualWalkthrough question={question} />
       <TextBlock title="Think first" className="think-box">{question.starterThought}</TextBlock>

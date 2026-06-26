@@ -23,7 +23,7 @@ function pageTitle(pathname, academyName, academyId) {
   if (pathname === '/recent') return 'Recent';
   if (pathname === '/progress') return 'Progress';
   if (pathname === '/settings') return 'Settings';
-  if (pathname.startsWith('/problem/')) return 'Focused Problem';
+  if (pathname.startsWith('/problem/') || pathname.startsWith('/practice/')) return 'Practice';
 
   if (pathname.startsWith('/category/')) {
     const categoryId = pathname.split('/')[2];

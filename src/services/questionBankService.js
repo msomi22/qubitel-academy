@@ -493,6 +493,41 @@ export async function findExamById(examId) {
   return null;
 }
 
+export async function findPracticeSetById(practiceId) {
+  if (!practiceId) return null;
+
+  const topics = await getVisibleTopics();
+
+  for (const topic of topics) {
+    const bank = await loadTopicBank(topic.id, { categoryId: topic.category });
+    const matchingQuestions = (bank?.questions || []).filter(
+      (question) => question?.metadata?.practiceId === practiceId
+    );
+
+    if (matchingQuestions.length > 0) {
+      const firstQuestion = matchingQuestions[0];
+      const sortedQuestions = matchingQuestions
+        .slice()
+        .sort((a, b) => {
+          const seqA = Number(a.metadata?.sequence || a.sequence || 0);
+          const seqB = Number(b.metadata?.sequence || b.sequence || 0);
+          return seqA - seqB;
+        });
+
+      return {
+        practiceId,
+        practiceTitle: bank?.metadata?.practiceTitle || firstQuestion?.metadata?.practiceTitle || bank?.name || topic.name || practiceId,
+        topicId: topic.id,
+        topicName: topic.name,
+        learningAreaId: bank?.metadata?.learningAreaId || firstQuestion?.metadata?.learningAreaId || topic.id,
+        questions: sortedQuestions
+      };
+    }
+  }
+
+  return null;
+}
+
 export async function progressSummary(completed = {}, options = {}) {
   const topicsWithCounts = await getAllTopicsWithCounts(options);
   const total = topicsWithCounts.reduce((sum, topic) => sum + topic.count, 0);

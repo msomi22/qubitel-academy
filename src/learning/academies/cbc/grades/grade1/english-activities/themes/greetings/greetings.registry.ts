@@ -72,7 +72,7 @@ const grade1EnglishGreetingsPractice = createLearningNode({
         title: 'Pronunciation and Vocabulary',
         description: 'Practise greeting words, letter sounds, and polite responses.',
         targetProblemId: 'alphabet-mastery-lesson-001',
-        href: '/problem/alphabet-mastery-lesson-001?backPath=/gd1/eng/greetings%3Ftab%3Dpractice&backLabel=Back',
+        href: '/practice/alphabet-mastery-lesson-001?backPath=/gd1/eng/greetings%3Ftab%3Dpractice&backLabel=Back',
         status: 'Ready'
       }
     ]

@@ -106,7 +106,7 @@ const grade1EnglishNumbersPractice = createLearningNode({
         title: 'Counting Numbers',
         description: 'Practise reading, hearing, and recognising numbers.',
         targetProblemId: 'numbers-1-100-lesson-001',
-        href: '/problem/numbers-1-100-lesson-001?backPath=/gd1/eng/numbers%3Ftab%3Dpractice&backLabel=Back',
+        href: '/practice/numbers-1-100-lesson-001?backPath=/gd1/eng/numbers%3Ftab%3Dpractice&backLabel=Back',
         status: 'Ready'
       }
     ]

@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 import { buildProblemPath } from '../../../services/questionNavigationService.js';
 
@@ -10,16 +10,31 @@ function navStateFor(navigation = {}) {
 }
 
 function QuestionNavLink({ question, direction, navigation }) {
+  const location = useLocation();
+
   if (!question) return <span className="question-nav-placeholder" aria-hidden="true" />;
 
   const label = direction === 'previous' ? 'Previous question' : 'Next question';
   const arrow = direction === 'previous' ? '←' : '→';
   const shortTitle = question.title || question.id;
 
+  const basePath = buildProblemPath(question.id, navigation?.scope);
+  const currentParams = new URLSearchParams(location.search);
+  const backPath = currentParams.get('backPath');
+  const backLabel = currentParams.get('backLabel');
+
+  const extraParams = new URLSearchParams();
+  if (backPath) extraParams.set('backPath', backPath);
+  if (backLabel) extraParams.set('backLabel', backLabel);
+  const extraString = extraParams.toString();
+  const to = extraString
+    ? (basePath.includes('?') ? `${basePath}&${extraString}` : `${basePath}?${extraString}`)
+    : basePath;
+
   return (
     <NavLink
       className={`question-nav-button ${direction}`}
-      to={buildProblemPath(question.id, navigation?.scope)}
+      to={to}
       state={navStateFor(navigation)}
       preventScrollReset
       aria-label={`${label}: ${shortTitle}`}

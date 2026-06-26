@@ -106,7 +106,7 @@ const grade1MathNumbersPractice = createLearningNode({
         title: 'Counting Numbers',
         description: 'Practise counting and recognising numbers.',
         targetProblemId: 'numbers-practice-001',
-        href: '/problem/numbers-practice-001?backPath=/gd1/mathematical-activities/numbers%3Ftab%3Dpractice&backLabel=Back',
+        href: '/practice/numbers-practice-001?backPath=/gd1/mathematical-activities/numbers%3Ftab%3Dpractice&backLabel=Back',
         status: 'Ready'
       }
     ]

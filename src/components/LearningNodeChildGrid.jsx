@@ -96,7 +96,7 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
               const kindLabel = LABEL_BY_KIND[child.kind] || child.kind;
               const isActiveLearningArea =
                 child.kind === 'learningArea' &&
-                child.id === 'grade-1-english-activities';
+                ['grade-1-english-activities', 'grade-1-mathematical-activities'].includes(child.id);
               const hasActions = child.actions && child.actions.length > 0;
               const isDisabled = !hasActions || (child.kind === 'learningArea' && !isActiveLearningArea);
 

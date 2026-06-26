@@ -68,3 +68,451 @@
 .app-shell.dark aside.sidebar.app-sidebar .nav-item:where(.active, [aria-current="page"]):where(:hover, :focus, :focus-visible, :focus-within) {
   border-color: transparent !important;
 }
+
+/* Phase 1 Practice naming aliases for top-level practice page/workspace shells. */
+.focused-practice-page {
+  gap: 18px;
+  padding-top: 18px;
+}
+
+.focused-practice-page .practice-breadcrumb,
+.compact-practice-breadcrumb,
+.focused-problem-page .problem-breadcrumb,
+.compact-problem-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.compact-practice-breadcrumb a,
+.compact-problem-breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.compact-practice-breadcrumb a:hover,
+.compact-problem-breadcrumb a:hover {
+  color: var(--accent);
+}
+
+.reference-practice-intro,
+.reference-problem-intro {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.reference-practice-intro h1,
+.reference-problem-intro h1 {
+  margin: 0 0 10px;
+  font-size: clamp(2rem, 3vw, 3.4rem);
+  line-height: 1.05;
+}
+
+.reference-practice-intro p,
+.reference-problem-intro p {
+  max-width: 920px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  line-height: 1.55;
+}
+
+.practice-meta-pills,
+.problem-meta-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.practice-meta-pills span,
+.problem-meta-pills span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.practice-meta-pills .meta-pill,
+.problem-meta-pills .meta-pill {
+  background: rgba(255,255,255,0.035);
+  color: var(--accent);
+}
+
+.practice-meta-pills .difficulty-pill,
+.problem-meta-pills .difficulty-pill {
+  border-color: transparent;
+}
+
+.practice-meta-pills .difficulty-easy,
+.problem-meta-pills .difficulty-easy {
+  background: rgba(34, 197, 94, 0.18);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.32);
+}
+
+.practice-meta-pills .difficulty-medium,
+.problem-meta-pills .difficulty-medium {
+  background: rgba(245, 158, 11, 0.18);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.34);
+}
+
+.practice-meta-pills .difficulty-hard,
+.problem-meta-pills .difficulty-hard {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.34);
+}
+
+.focused-practice-workspace,
+.focused-problem-workspace {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+}
+
+.focused-practice-topline,
+.focused-problem-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.focused-practice-workspace.focus-mode .focused-workspace-layout,
+.focused-problem-workspace.focus-mode .focused-workspace-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.focused-practice-workspace .workspace-block,
+.focused-practice-workspace .learning-panel,
+.focused-problem-workspace .workspace-block,
+.focused-problem-workspace .learning-panel {
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+}
+
+.practice-support-panel,
+.problem-support-panel {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.practice-support-panel section,
+.problem-support-panel section {
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 82%, var(--accent) 10%);
+  border-radius: 16px;
+  padding: 13px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 90%, transparent);
+}
+
+.practice-workspace,
+.problem-workspace {
+  gap: 11px;
+}
+
+.practice-workspace h3,
+.problem-workspace h3 {
+  margin: 0;
+}
+
+.clickable-practice-card:hover,
+.clickable-problem-card:hover,
+.question-card:hover {
+  transform: translateY(-1px);
+}
+
+.clickable-practice-card:focus-visible,
+.clickable-problem-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.compact-practice-card,
+.compact-problem-card {
+  min-height: auto;
+}
+
+.compact-practice-card .q-top,
+.compact-problem-card .q-top {
+  align-items: center;
+}
+
+.compact-practice-card h3,
+.compact-problem-card h3 {
+  font-size: 1rem;
+}
+
+.compact-practice-card .question-text,
+.compact-problem-card .question-text {
+  margin: 0;
+}
+
+.compact-practice-card .meta-strip,
+.compact-problem-card .meta-strip {
+  min-width: 0;
+}
+
+.compact-practice-card .pill,
+.compact-practice-card .time-pill,
+.compact-practice-card .type-pill,
+.compact-problem-card .pill,
+.compact-problem-card .time-pill,
+.compact-problem-card .type-pill {
+  max-width: 100%;
+}
+
+.compact-practice-card .mark,
+.compact-problem-card .mark {
+  flex: 0 0 auto;
+}
+
+.stable-practice-page,
+.stable-problem-page {
+  scroll-margin-top: 0;
+}
+
+.premium-practice-page,
+.premium-problem-page {
+  width: 100%;
+}
+
+.premium-practice-title-area,
+.premium-problem-title-area {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.premium-practice-context-row,
+.premium-problem-context-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  color: var(--muted, var(--text-secondary));
+  font-size: 0.82rem;
+  font-weight: 800;
+  scrollbar-width: none;
+}
+
+.premium-practice-context-row::-webkit-scrollbar,
+.premium-problem-context-row::-webkit-scrollbar {
+  display: none;
+}
+
+.premium-practice-context-row a,
+.premium-practice-context-row span,
+.premium-problem-context-row a,
+.premium-problem-context-row span {
+  flex: 0 0 auto;
+}
+
+.premium-practice-context-row a,
+.premium-problem-context-row a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.premium-practice-summary,
+.premium-problem-summary {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.premium-practice-progress-card,
+.premium-problem-progress-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: min(260px, 100%);
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 78%, var(--accent) 14%);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--card, var(--bg-card)) 86%, transparent);
+}
+
+.premium-practice-progress-card strong,
+.premium-problem-progress-card strong {
+  color: var(--text, var(--text-primary));
+}
+
+.premium-practice-progress-card small,
+.premium-problem-progress-card small {
+  color: var(--muted, var(--text-secondary));
+}
+
+.premium-practice-actions.reference-action-group,
+.premium-problem-actions.reference-action-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(96px, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.premium-practice-actions .btn,
+.premium-practice-actions .mark,
+.premium-problem-actions .btn,
+.premium-problem-actions .mark {
+  width: 100%;
+  justify-content: center;
+}
+
+.premium-practice-page .focused-practice-workspace,
+.premium-problem-page .focused-problem-workspace {
+  border-color: color-mix(in srgb, var(--line, var(--border)) 76%, var(--accent) 18%);
+}
+
+.premium-practice-page .focused-tabs-wrap,
+.premium-problem-page .focused-tabs-wrap {
+  display: grid;
+}
+
+.premium-practice-page .focused-tabs,
+.premium-practice-page .focused-tabs-wrap .focused-tabs,
+.premium-problem-page .focused-tabs,
+.premium-problem-page .focused-tabs-wrap .focused-tabs {
+  gap: 7px;
+}
+
+.premium-practice-page .focused-tab-btn,
+.premium-practice-page .focused-tabs-wrap .focused-tab-btn,
+.premium-problem-page .focused-tab-btn,
+.premium-problem-page .focused-tabs-wrap .focused-tab-btn {
+  min-height: 34px;
+}
+
+.premium-practice-page .focused-tabs-actions,
+.premium-problem-page .focused-tabs-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.premium-practice-page .focus-mode-toggle,
+.premium-practice-page .quiz-timer-pill,
+.premium-problem-page .focus-mode-toggle,
+.premium-problem-page .quiz-timer-pill {
+  min-height: 34px;
+}
+
+.premium-practice-page .focused-tab-content,
+.premium-problem-page .focused-tab-content {
+  padding: 12px;
+}
+
+.premium-practice-page .focused-panel-stack,
+.premium-practice-page .focused-rich-body-stack,
+.premium-problem-page .focused-panel-stack,
+.premium-problem-page .focused-rich-body-stack {
+  gap: 10px;
+}
+
+.premium-practice-page .workspace-block,
+.premium-practice-page .learning-panel,
+.premium-practice-page .focused-mcq-panel,
+.premium-practice-page .workspace-empty-state,
+.premium-practice-page .practice-support-panel section,
+.premium-problem-page .workspace-block,
+.premium-problem-page .learning-panel,
+.premium-problem-page .focused-mcq-panel,
+.premium-problem-page .workspace-empty-state,
+.premium-problem-page .problem-support-panel section {
+  border: 1px solid color-mix(in srgb, var(--line, var(--border)) 78%, var(--accent) 12%);
+}
+
+.premium-practice-page .workspace-block,
+.premium-practice-page .focused-mcq-panel,
+.premium-practice-page .workspace-empty-state,
+.premium-practice-page .practice-support-panel section,
+.premium-problem-page .workspace-block,
+.premium-problem-page .focused-mcq-panel,
+.premium-problem-page .workspace-empty-state,
+.premium-problem-page .problem-support-panel section {
+  padding: 11px;
+}
+
+:root[data-theme="light"] .practice-meta-pills .meta-pill,
+:root[data-theme="light"] .problem-meta-pills .meta-pill {
+  background: #fff7e8;
+}
+
+:root[data-theme="light"] .focused-practice-workspace,
+:root[data-theme="light"] .focused-problem-workspace {
+  background: var(--card);
+}
+
+@media (max-width: 920px) {
+  .reference-practice-intro,
+  .reference-problem-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .focused-practice-page,
+  .focused-problem-page {
+    gap: 10px;
+  }
+
+  .premium-practice-page,
+  .premium-problem-page {
+    gap: 9px;
+  }
+
+  .premium-practice-progress-card,
+  .premium-problem-progress-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .premium-practice-progress-card .mini-label,
+  .premium-practice-progress-card small,
+  .premium-problem-progress-card .mini-label,
+  .premium-problem-progress-card small {
+    grid-column: 1 / -1;
+  }
+
+  .premium-practice-actions.reference-action-group,
+  .premium-problem-actions.reference-action-group {
+    grid-column: 1 / -1;
+  }
+
+  .focused-practice-workspace .workspace-block,
+  .focused-practice-workspace .learning-panel,
+  .focused-problem-workspace .workspace-block,
+  .focused-problem-workspace .learning-panel,
+  .practice-support-panel section,
+  .problem-support-panel section {
+    padding: 11px;
+  }
+}

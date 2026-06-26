@@ -98,7 +98,7 @@ export function getQuestionsForNavigationScope(questions = [], scope = null) {
 }
 
 export function buildProblemPath(questionId = '', scope = null) {
-  const path = `/problem/${encodeURIComponent(questionId)}`;
+  const path = `/practice/${encodeURIComponent(questionId)}`;
   const learningAreaId = scope?.learningAreaId || '';
   if (!learningAreaId) return path;
 
