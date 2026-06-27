@@ -280,6 +280,7 @@ const useLearningNode = (nodeId: string) => {
 - **NO unused imports** or variables
 - **Consistent formatting** (use Prettier with project config)
 - **MAX line length:** 100 characters
+- **MAX lines per file:** 400 lines
 
 ### Commit Message Format (Conventional Commits)
 - **Format:** `<type>(<scope>): <subject>`
