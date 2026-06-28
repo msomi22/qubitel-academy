@@ -16,6 +16,135 @@ function ShapeVisual({ shape }) {
   return <span className="cbc-visual-shape square" aria-hidden="true" />;
 }
 
+function ArrayVisual({ visual, label = '' }) {
+  const item = visual.item || '●';
+  const rows = Math.max(1, Number(visual.rows) || 1);
+  const cols = Math.max(1, Number(visual.cols) || 1);
+  const total = rows * cols;
+
+  return (
+    <span
+      className="cbc-visual-array"
+      style={{ '--array-cols': cols }}
+      aria-label={label || `${rows} rows of ${cols}`}
+      role="img"
+    >
+      {Array.from({ length: total }).map((_, index) => (
+        <span key={`array-${index}`} aria-hidden="true">{item}</span>
+      ))}
+    </span>
+  );
+}
+
+const clockNumbers = Array.from({ length: 12 }, (_, index) => index + 1);
+
+function normalizeClockTime(visual) {
+  const clock = visual?.clock || visual || {};
+  const [timeHour, timeMinute] = String(visual?.time || '')
+    .split(':')
+    .map((part) => Number(part));
+
+  const rawHour = Number(clock.hour ?? visual?.hour ?? timeHour);
+  const rawMinute = Number(clock.minute ?? visual?.minute ?? timeMinute);
+  const hour = Number.isFinite(rawHour) ? rawHour : 12;
+  const minute = Number.isFinite(rawMinute) ? rawMinute : 0;
+
+  return {
+    hour,
+    minute: Math.min(59, Math.max(0, minute))
+  };
+}
+
+function polarPoint(angleDeg, radius, center = 50) {
+  const radians = (angleDeg - 90) * (Math.PI / 180);
+
+  return {
+    x: center + radius * Math.cos(radians),
+    y: center + radius * Math.sin(radians)
+  };
+}
+
+function ClockVisual({ visual }) {
+  const { hour, minute } = normalizeClockTime(visual);
+  const minuteAngle = minute * 6;
+  const hourAngle = (hour % 12) * 30 + minute * 0.5;
+  const hourEnd = polarPoint(hourAngle, 24);
+  const minuteEnd = polarPoint(minuteAngle, 34);
+  const displayHour = Number.isInteger(hour) ? hour : String(hour).replace(/\.0$/, '');
+  const displayMinute = String(minute).padStart(2, '0');
+  const label = visual?.ariaLabel || `Analog clock showing ${displayHour}:${displayMinute}.`;
+
+  return (
+    <svg className="cbc-visual-clock" viewBox="0 0 100 100" role="img" aria-label={label}>
+      <circle className="cbc-clock-face" cx="50" cy="50" r="46" aria-hidden="true" />
+      {clockNumbers.map((number) => {
+        const point = polarPoint(number * 30, 36);
+
+        return (
+          <text
+            className="cbc-clock-number"
+            dominantBaseline="middle"
+            key={number}
+            textAnchor="middle"
+            x={point.x}
+            y={point.y}
+            aria-hidden="true"
+          >
+            {number}
+          </text>
+        );
+      })}
+      <line className="cbc-clock-hand hour" x1="50" y1="50" x2={hourEnd.x} y2={hourEnd.y} aria-hidden="true" />
+      <line className="cbc-clock-hand minute" x1="50" y1="50" x2={minuteEnd.x} y2={minuteEnd.y} aria-hidden="true" />
+      <circle className="cbc-clock-center" cx="50" cy="50" r="2.6" aria-hidden="true" />
+    </svg>
+  );
+}
+
+function CompassVisual({ visual }) {
+  const directions = ['N', 'E', 'S', 'W'];
+  const labels = { N: 'North', E: 'East', S: 'South', W: 'West' };
+  const startDir = visual?.startDirection || '';
+  const answerDir = visual?.answerDirection || '';
+  const turn = visual?.turn || '';
+
+  const turnLabel = turn ? `Turn ${turn}.` : '';
+
+  const accessibleLabel = `Compass showing ${directions.map(d => `${d} (${labels[d]})`).join(', ')}. Start direction ${labels[startDir] || ''}. ${turnLabel} Answer direction ${labels[answerDir] || ''}.`;
+
+  return (
+    <span className="cbc-visual-compass" role="img" aria-label={accessibleLabel.trim()}>
+      <span className="cbc-compass-labels">
+        <span className="cbc-compass-north" aria-hidden="true">
+          <span className="cbc-compass-dir">N</span>
+          <span className="cbc-compass-label">North</span>
+          <span className="cbc-compass-arrow">↑</span>
+        </span>
+      </span>
+      <span className="cbc-compass-cross" aria-hidden="true">
+        <span className={`cbc-compass-arm west${startDir === 'W' ? ' start' : ''}${answerDir === 'W' ? ' answer' : ''}`}>
+          <span className="cbc-compass-dir">W</span>
+          <span className="cbc-compass-label">West</span>
+          <span className="cbc-compass-arrow">←</span>
+        </span>
+        <span className="cbc-compass-center">●</span>
+        <span className={`cbc-compass-arm east${startDir === 'E' ? ' start' : ''}${answerDir === 'E' ? ' answer' : ''}`}>
+          <span className="cbc-compass-arrow">→</span>
+          <span className="cbc-compass-dir">E</span>
+          <span className="cbc-compass-label">East</span>
+        </span>
+      </span>
+      <span className="cbc-compass-labels">
+        <span className="cbc-compass-south" aria-hidden="true">
+          <span className="cbc-compass-arrow">↓</span>
+          <span className="cbc-compass-dir">S</span>
+          <span className="cbc-compass-label">South</span>
+        </span>
+      </span>
+    </span>
+  );
+}
+
 export default function CbcVisualAid({ visual, label = '' }) {
   if (!visual) return null;
 
@@ -36,6 +165,18 @@ export default function CbcVisualAid({ visual, label = '' }) {
         ))}
       </span>
     );
+  }
+
+  if (visual.type === 'array') {
+    return <ArrayVisual visual={visual} label={label} />;
+  }
+
+  if (visual.type === 'clock') {
+    return <ClockVisual visual={visual} />;
+  }
+
+  if (visual.type === 'compass') {
+    return <CompassVisual visual={visual} />;
   }
 
   if (visual.type === 'text') {

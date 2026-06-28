@@ -940,7 +940,7 @@ export default function ExamSessionPage() {
                       <CbcVisualAid visual={optionVisual} label={option} />
                     </span>
                   ) : null}
-                  <span>{option}</span>
+                  <span className="cbc-exam-option-text">{option}</span>
                 </button>
               );
             })}

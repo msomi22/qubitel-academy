@@ -800,7 +800,7 @@ test('CBC Grade 3 Mathematics advanced mixed exams use supported visual metadata
     || question.optionVisuals?.length
     || question.metadata.optionVisuals?.length
   ));
-  const supportedTypes = new Set(['emoji', 'objects', 'shape', 'text']);
+  const supportedTypes = new Set(['array', 'clock', 'compass', 'emoji', 'objects', 'shape', 'text']);
 
   assert.ok(visualQuestions.length >= 12);
 
