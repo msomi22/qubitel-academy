@@ -156,6 +156,7 @@ test('CBC English declares the spelling and reading comprehension content', () =
 test('CBC Grade 3 subjects declare learning areas and current content state', () => {
   const subjects = academyCatalogs.cbc.topics.filter((topic) => topic.category === 'grade-3');
   const kiswahili = subjects.find((topic) => topic.id === 'kiswahili');
+  const mathematics = subjects.find((topic) => topic.id === 'mathematics');
 
   assert.deepEqual(subjects.map((topic) => topic.id), [
     ...subjectTopicIds
@@ -163,8 +164,16 @@ test('CBC Grade 3 subjects declare learning areas and current content state', ()
 
   assert.deepEqual(kiswahili.assessments.map((item) => item.id), ['kiswahili-hadithi-exam-001']);
   assert.equal(kiswahili.assessments[0].learningAreaId, 'ufahamu');
+  assert.ok(mathematics.learningAreas.some((area) => area.id === 'mixed-revision'));
+  assert.deepEqual(mathematics.assessments.map((item) => item.id), [
+    'grade-3-mathematics-mixed-exam-001',
+    'grade-3-mathematics-mixed-exam-002',
+    'grade-3-mathematics-mixed-exam-003',
+    'grade-3-mathematics-mixed-exam-004'
+  ]);
+  assert.ok(mathematics.assessments.every((item) => item.learningAreaId === 'mixed-revision'));
 
-  for (const subject of subjects.filter((topic) => !['english', 'kiswahili'].includes(topic.id))) {
+  for (const subject of subjects.filter((topic) => !['english', 'kiswahili', 'mathematics'].includes(topic.id))) {
     assert.equal(subject.questionBank.mode, 'empty');
     assert.ok(subject.learningAreas.length > 0, subject.id);
     assert.deepEqual([...subject.lessons, ...subject.practice, ...subject.assessments], []);

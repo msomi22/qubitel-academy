@@ -47,7 +47,12 @@ import foxAndTheGoatExam from './cbc/grade-3/english/assessments/comprehension/f
 import tomThumbExam from './cbc/grade-3/english/assessments/comprehension/tom-thumb-exam-018.js';
 import someUsefulFindsExam from './cbc/grade-3/english/assessments/comprehension/some-useful-finds-exam-019.js';
 import ramanMeetsTheRockingHorseExam from './cbc/grade-3/english/assessments/comprehension/raman-meets-the-rocking-horse-exam-020.js';
+import mixedMathExamOne from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-001.js';
+import mixedMathExamTwo from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-002.js';
+import mixedMathExamThree from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-003.js';
+import mixedMathExamFour from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-004.js';
 import { getAcademyCatalog } from './catalog.js';
+import { buildVerticalOperationRows } from '../components/question-renderers/cbc/mathLayout.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
 
 const cbcTopics = getAcademyCatalog('cbc').topics;
@@ -60,6 +65,7 @@ const subjectTopicIds = [
   'mathematics'
 ];
 const gradeThreeEnglishTopic = cbcTopics.find((topic) => topic.category === 'grade-3' && topic.id === 'english');
+const gradeThreeMathematicsTopic = cbcTopics.find((topic) => topic.category === 'grade-3' && topic.id === 'mathematics');
 const gradeOneTopics = cbcTopics.filter((topic) => topic.category === 'grade-1');
 const gradeThreeTopics = cbcTopics.filter((topic) => topic.category === 'grade-3');
 const gradeOneLessons = [gradeOneEnglishAlphabetLesson, gradeOneMathNumbersLesson];
@@ -171,7 +177,30 @@ const gradeThreePartsOfSpeechExams = [...partsOfSpeechExamOne, ...partsOfSpeechE
 const gradeThreePartsOfSpeechQuestions = [partsOfSpeechLesson, ...gradeThreePartsOfSpeechExams];
 const gradeThreeEnglishQuestions = [...gradeThreeSpellingQuestions, ...gradeThreeReadingQuestions, ...gradeThreePartsOfSpeechQuestions];
 const gradeThreeKiswahiliQuestions = [...kiswahiliHadithiExam];
-const gradeThreeQuestions = [...gradeThreeEnglishQuestions, ...gradeThreeKiswahiliQuestions];
+const gradeThreeMixedMathExamGroups = [
+  {
+    examId: 'grade-3-mathematics-mixed-exam-001',
+    questions: mixedMathExamOne
+  },
+  {
+    examId: 'grade-3-mathematics-mixed-exam-002',
+    questions: mixedMathExamTwo
+  },
+  {
+    examId: 'grade-3-mathematics-mixed-exam-003',
+    questions: mixedMathExamThree
+  },
+  {
+    examId: 'grade-3-mathematics-mixed-exam-004',
+    questions: mixedMathExamFour
+  }
+];
+const gradeThreeMixedMathQuestions = gradeThreeMixedMathExamGroups.flatMap((group) => group.questions);
+const gradeThreeQuestions = [
+  ...gradeThreeEnglishQuestions,
+  ...gradeThreeKiswahiliQuestions,
+  ...gradeThreeMixedMathQuestions
+];
 const allQuestions = [...gradeOneQuestions, ...gradeThreeQuestions];
 
 test('CBC Grade 1 subject practice keeps the pilot learning-area coverage', () => {
@@ -564,7 +593,14 @@ test('CBC Grade 3 exposes subject learning areas and current content state', () 
   const creativeActivities = gradeThreeTopics.find((topic) => topic.id === 'creative-activities');
   const cre = gradeThreeTopics.find((topic) => topic.id === 'cre');
 
-  assert.deepEqual(mathematics.learningAreas.map((area) => area.id), ['addition', 'subtraction', 'multiplication', 'division']);
+  assert.deepEqual(mathematics.learningAreas.map((area) => area.id), ['addition', 'subtraction', 'multiplication', 'division', 'mixed-revision']);
+  assert.deepEqual(mathematics.assessments.map((reference) => reference.id), [
+    'grade-3-mathematics-mixed-exam-001',
+    'grade-3-mathematics-mixed-exam-002',
+    'grade-3-mathematics-mixed-exam-003',
+    'grade-3-mathematics-mixed-exam-004'
+  ]);
+  assert.ok(mathematics.assessments.every((reference) => reference.learningAreaId === 'mixed-revision'));
   assert.deepEqual(kiswahili.learningAreas.map((area) => area.id), ['ufahamu', 'sarufi', 'insha']);
   assert.deepEqual(kiswahili.assessments.map((reference) => reference.id), ['kiswahili-hadithi-exam-001']);
   assert.equal(kiswahili.assessments[0].learningAreaId, 'ufahamu');
@@ -585,6 +621,137 @@ test('CBC content is valid and includes unique ids', () => {
 
   assert.deepEqual(validation.errors, []);
   assert.equal(new Set(allQuestions.map((question) => question.id)).size, allQuestions.length);
+});
+
+test('CBC Grade 3 Mathematics mixed revision exams are registered and complete', () => {
+  assert.ok(gradeThreeMathematicsTopic.learningAreas.some((area) => area.id === 'mixed-revision'));
+  assert.deepEqual(
+    gradeThreeMathematicsTopic.assessments.map((reference) => reference.id),
+    gradeThreeMixedMathExamGroups.map((group) => group.examId)
+  );
+
+  for (const group of gradeThreeMixedMathExamGroups) {
+    assert.equal(group.questions.length, 20, group.examId);
+  }
+
+  assert.equal(gradeThreeMixedMathQuestions.length, 80);
+});
+
+test('CBC Grade 3 Mathematics mixed revision questions are unique and fully described', () => {
+  const ids = new Set();
+  const questionTexts = new Set();
+  const uniquenessKeys = new Set();
+  const conceptKeys = new Set();
+
+  for (const question of gradeThreeMixedMathQuestions) {
+    const { metadata } = question;
+    const uniquenessKey = `${metadata.subStrandId}:${metadata.skill}:${question.question}:${question.options.join('|')}`;
+
+    assert.equal(question.category, 'grade-3', question.id);
+    assert.equal(question.topicId, 'mathematics', question.id);
+    assert.equal(question.options.length, 4, question.id);
+    assert.equal(new Set(question.options).size, 4, question.id);
+    assert.ok(Number.isInteger(question.correctAnswer), question.id);
+    assert.ok(question.correctAnswer >= 0 && question.correctAnswer < 4, question.id);
+    assert.equal(metadata.assessmentType, 'exam', question.id);
+    assert.equal(metadata.learningAreaId, 'mixed-revision', question.id);
+    assert.equal(metadata.gradeId, 'grade-3', question.id);
+    assert.equal(metadata.subjectId, 'mathematics', question.id);
+    assert.ok(metadata.strandId, question.id);
+    assert.ok(metadata.strandTitle, question.id);
+    assert.ok(metadata.subStrandId, question.id);
+    assert.ok(metadata.subStrandTitle, question.id);
+    assert.ok(metadata.conceptKey, question.id);
+    assert.ok(metadata.skill, question.id);
+
+    assert.equal(ids.has(question.id), false, question.id);
+    assert.equal(questionTexts.has(question.question), false, question.id);
+    assert.equal(uniquenessKeys.has(uniquenessKey), false, question.id);
+    assert.equal(conceptKeys.has(metadata.conceptKey), false, question.id);
+
+    ids.add(question.id);
+    questionTexts.add(question.question);
+    uniquenessKeys.add(uniquenessKey);
+    conceptKeys.add(metadata.conceptKey);
+  }
+});
+
+test('CBC Grade 3 Mathematics mixed revision answer positions and coverage are balanced', () => {
+  const requiredMinimums = {
+    'number-concept': 4,
+    'whole-numbers': 6,
+    addition: 8,
+    subtraction: 8,
+    multiplication: 6,
+    division: 6,
+    fractions: 6,
+    length: 4,
+    mass: 4,
+    capacity: 4,
+    time: 6,
+    money: 6,
+    'position-direction': 4,
+    shapes: 4
+  };
+  const subStrandCounts = Object.fromEntries(Object.keys(requiredMinimums).map((key) => [key, 0]));
+  const strandCounts = { numbers: 0, measurements: 0, geometry: 0 };
+
+  for (const group of gradeThreeMixedMathExamGroups) {
+    const answerCounts = [0, 0, 0, 0];
+    const examStrands = new Set();
+
+    for (const question of group.questions) {
+      answerCounts[question.correctAnswer] += 1;
+      examStrands.add(question.metadata.strandId);
+    }
+
+    assert.ok(
+      answerCounts.every((count) => count >= 4 && count <= 6),
+      `${group.examId} answer counts: ${answerCounts.join(', ')}`
+    );
+    assert.deepEqual([...examStrands].sort(), ['geometry', 'measurements', 'numbers']);
+  }
+
+  for (const question of gradeThreeMixedMathQuestions) {
+    subStrandCounts[question.metadata.subStrandId] += 1;
+    strandCounts[question.metadata.strandId] += 1;
+  }
+
+  for (const [subStrandId, minimum] of Object.entries(requiredMinimums)) {
+    assert.ok(subStrandCounts[subStrandId] >= minimum, `${subStrandId}: ${subStrandCounts[subStrandId]}`);
+  }
+
+  assert.deepEqual(strandCounts, { numbers: 44, measurements: 28, geometry: 8 });
+});
+
+test('CBC Grade 3 Mathematics vertical operation questions include structured rendering metadata', () => {
+  const verticalQuestions = gradeThreeMixedMathQuestions.filter((question) => question.rendering?.mathLayout?.type === 'vertical-operation');
+
+  assert.equal(verticalQuestions.length, 10);
+
+  for (const question of verticalQuestions) {
+    const layout = question.rendering.mathLayout;
+
+    assert.ok(['+', '-', '×'].includes(layout.operator), question.id);
+    assert.ok(Array.isArray(layout.operands), question.id);
+    assert.ok(layout.operands.length >= 2, question.id);
+    assert.equal(layout.underline, true, question.id);
+    assert.doesNotMatch(question.question, /\d+\s*[+\-×]\s*\d+\s*=/, question.id);
+  }
+});
+
+test('CBC vertical operation renderer helper stacks operands, operator, and underline', () => {
+  const layout = {
+    type: 'vertical-operation',
+    operator: '+',
+    operands: ['3567', '566'],
+    underline: true
+  };
+  const rendered = buildVerticalOperationRows(layout);
+
+  assert.deepEqual(rendered.rows, ['  3567', '+  566']);
+  assert.equal(rendered.underline, '______');
+  assert.equal(rendered.ariaLabel, '3567 + 566');
 });
 
 test('CBC spelling collections have the required sizes and unique ids', () => {

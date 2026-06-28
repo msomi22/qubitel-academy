@@ -32,9 +32,36 @@
       "title": "Division",
       "description": "Share items equally and solve simple division problems.",
       "sequence": 40
+    },
+    {
+      "id": "mixed-revision",
+      "title": "Mixed Revision",
+      "description": "Mixed Grade 3 Mathematics questions from Numbers, Measurements, and Geometry.",
+      "sequence": 50
     }
   ],
   "lessons": [],
   "practice": [],
-  "assessments": []
+  "assessments": [
+    {
+      "id": "grade-3-mathematics-mixed-exam-001",
+      "file": "assessments/mixed/mixed-mathematics-exam-001.js",
+      "learningAreaId": "mixed-revision"
+    },
+    {
+      "id": "grade-3-mathematics-mixed-exam-002",
+      "file": "assessments/mixed/mixed-mathematics-exam-002.js",
+      "learningAreaId": "mixed-revision"
+    },
+    {
+      "id": "grade-3-mathematics-mixed-exam-003",
+      "file": "assessments/mixed/mixed-mathematics-exam-003.js",
+      "learningAreaId": "mixed-revision"
+    },
+    {
+      "id": "grade-3-mathematics-mixed-exam-004",
+      "file": "assessments/mixed/mixed-mathematics-exam-004.js",
+      "learningAreaId": "mixed-revision"
+    }
+  ]
 }

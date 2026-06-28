@@ -8,6 +8,7 @@ import PassageDrawer, {
 } from '../components/cbc/PassageDrawer.jsx';
 import PassageReadAloudControls from '../components/cbc/PassageReadAloudControls.jsx';
 import ReadAloudButton from '../components/cbc/ReadAloudButton.jsx';
+import CbcMathLayout from '../components/question-renderers/cbc/CbcMathLayout.jsx';
 import CbcVisualAid from '../components/question-renderers/cbc/CbcVisualAid.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { buildCategoryReturnPath } from '../services/categoryNavigationService.js';
@@ -127,6 +128,9 @@ function startInstructions(exam) {
   }
   if (firstQuestion?.metadata?.learningAreaId === 'parts-of-speech') {
     return `Read each sentence carefully. Choose the answer that matches the part of speech and spelling clue. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  }
+  if (firstQuestion?.metadata?.subjectId === 'mathematics' || firstQuestion?.topicId === 'mathematics') {
+    return `Solve each mathematics question carefully. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
   }
   return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }
@@ -850,6 +854,7 @@ export default function ExamSessionPage() {
           <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
           <h2>{currentQuestion.question}</h2>
           <WordPatternChip question={currentQuestion} />
+          <CbcMathLayout question={currentQuestion} />
           <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
           {promptVisual ? (
             <div className="cbc-exam-prompt-visual" aria-label="Question visual">

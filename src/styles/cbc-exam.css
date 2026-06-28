@@ -142,6 +142,28 @@
   margin: 0;
 }
 
+.cbc-math-layout {
+  display: flex;
+  justify-content: center;
+  margin: 2px 0 6px;
+}
+
+.cbc-vertical-operation {
+  min-width: 8ch;
+  margin: 0;
+  padding: 12px 18px;
+  border: 2px solid color-mix(in srgb, var(--cbc-exam-accent) 32%, var(--cbc-exam-border));
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--cbc-exam-accent-soft) 82%, var(--card, #fff));
+  color: var(--text, var(--text-primary));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-size: clamp(1.35rem, 5vw, 2.05rem);
+  font-weight: 900;
+  line-height: 1.08;
+  text-align: right;
+  white-space: pre;
+}
+
 .cbc-exam-button,
 .cbc-exam-leave,
 .cbc-exam-history button,
