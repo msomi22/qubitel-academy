@@ -721,7 +721,7 @@ test('CBC Grade 3 Mathematics mixed revision answer positions and coverage are b
     assert.ok(subStrandCounts[subStrandId] >= minimum, `${subStrandId}: ${subStrandCounts[subStrandId]}`);
   }
 
-  assert.deepEqual(strandCounts, { numbers: 44, measurements: 28, geometry: 8 });
+  assert.deepEqual(strandCounts, { numbers: 45, measurements: 27, geometry: 8 });
 });
 
 test('CBC Grade 3 Mathematics vertical operation questions include structured rendering metadata', () => {
