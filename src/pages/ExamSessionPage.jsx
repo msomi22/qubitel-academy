@@ -712,7 +712,15 @@ export default function ExamSessionPage() {
     pendingScrollSnapshotRef.current = captureScrollSnapshot();
     setCurrentIndex((index) => {
       const previousIndex = Math.max(0, index - 1);
-      manualPreviousQuestionIdRef.current = exam.questions[previousIndex]?.id || '';
+      const previousQuestion = exam.questions[previousIndex];
+      const previousQuestionSeconds = previousQuestion
+        ? timeLeftByQuestion[previousQuestion.id] ?? questionTimeLimit(previousQuestion)
+        : 0;
+
+      manualPreviousQuestionIdRef.current = previousQuestionSeconds <= 0
+        ? previousQuestion?.id || ''
+        : '';
+
       return previousIndex;
     });
   }
