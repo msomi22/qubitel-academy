@@ -132,7 +132,7 @@ function startInstructions(exam) {
   if (firstQuestion?.metadata?.subjectId === 'mathematics' || firstQuestion?.topicId === 'mathematics') {
     return `Solve each mathematics question carefully. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
   }
-  return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  return `Read each question carefully and choose the correct answer. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }
 
 function passageForExam(exam) {
