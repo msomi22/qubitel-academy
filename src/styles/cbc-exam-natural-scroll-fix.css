@@ -20,7 +20,7 @@
 .stable-exam-page .cbc-exam-question-card {
   height: auto !important;
   max-height: none !important;
-  min-height: clamp(360px, 56vh, 620px) !important;
+  min-height: 0 !important;
   grid-template-rows: auto auto !important;
   overflow: visible !important;
 }
@@ -44,6 +44,6 @@
 
 @media (max-width: 700px) {
   .stable-exam-page .cbc-exam-question-card {
-    min-height: clamp(330px, 54vh, 560px) !important;
+    min-height: 0 !important;
   }
 }
