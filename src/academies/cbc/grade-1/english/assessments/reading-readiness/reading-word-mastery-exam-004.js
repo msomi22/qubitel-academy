@@ -188,6 +188,9 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
   autoReadAloud: false,
   readAloudText: item.readAloudText,
   readOptionsAloud: false,
+  rendering: {
+    suppressObjective: true
+  },
   body: [
     { type: 'section', title: 'Objective', content: 'I can recognize and read three-letter words with beginning sounds J, K, and L.' }
   ],
@@ -210,6 +213,9 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
     questionTimeSeconds, 
     totalTimeSeconds: questions.length * questionTimeSeconds, 
     points: 1, 
+    rendering: {
+      suppressObjective: true
+    },
     readAloudText: item.readAloudText, 
     visualHint: item.visualHint, 
     promptVisual: emoji(item.visualHint), 

@@ -48,6 +48,9 @@ const examQuestions = items.map((item, index) => defineMcqProblem({
   autoReadAloud: false,
   readAloudText: `How many ${item.name} are there?`,
   readOptionsAloud: false,
+  rendering: {
+    suppressObjective: true
+  },
   body: [
     {
       type: 'section',
@@ -77,6 +80,9 @@ const examQuestions = items.map((item, index) => defineMcqProblem({
     questionTimeSeconds,
     totalTimeSeconds: items.length * questionTimeSeconds,
     points: 1,
+    rendering: {
+      suppressObjective: true
+    },
     promptVisual: objects(item.icon, item.count),
     optionVisuals: item.options.map((option) => textVisual(option)),
     readAloudText: `How many ${item.name} are there?`,

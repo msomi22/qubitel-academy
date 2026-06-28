@@ -406,6 +406,7 @@ export default function ExamSessionPage() {
   const exitSavedRef = useRef(false);
   const sessionRef = useRef({});
   const pendingScrollSnapshotRef = useRef(null);
+  const manualPreviousQuestionIdRef = useRef('');
   const passageToggleRef = useRef(null);
 
   activeRef.current = view === 'exam';
@@ -570,6 +571,7 @@ export default function ExamSessionPage() {
 
   useEffect(() => {
     if (view !== 'exam' || !currentQuestion || remainingSeconds !== 0) return;
+    if (manualPreviousQuestionIdRef.current === currentQuestion.id) return;
 
     const nextAnswers = currentAnswer
       ? answers
@@ -698,6 +700,7 @@ export default function ExamSessionPage() {
 
   function nextQuestion() {
     pendingScrollSnapshotRef.current = captureScrollSnapshot();
+    manualPreviousQuestionIdRef.current = '';
     if (currentIndex === exam.questions.length - 1) {
       completeExam(answers);
       return;
@@ -707,7 +710,11 @@ export default function ExamSessionPage() {
 
   function previousQuestion() {
     pendingScrollSnapshotRef.current = captureScrollSnapshot();
-    setCurrentIndex((index) => Math.max(0, index - 1));
+    setCurrentIndex((index) => {
+      const previousIndex = Math.max(0, index - 1);
+      manualPreviousQuestionIdRef.current = exam.questions[previousIndex]?.id || '';
+      return previousIndex;
+    });
   }
 
   function openPassage() {
