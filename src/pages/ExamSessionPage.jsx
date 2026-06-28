@@ -8,6 +8,7 @@ import PassageDrawer, {
 } from '../components/cbc/PassageDrawer.jsx';
 import PassageReadAloudControls from '../components/cbc/PassageReadAloudControls.jsx';
 import ReadAloudButton from '../components/cbc/ReadAloudButton.jsx';
+import CbcMathLayout from '../components/question-renderers/cbc/CbcMathLayout.jsx';
 import CbcVisualAid from '../components/question-renderers/cbc/CbcVisualAid.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { buildCategoryReturnPath } from '../services/categoryNavigationService.js';
@@ -128,7 +129,10 @@ function startInstructions(exam) {
   if (firstQuestion?.metadata?.learningAreaId === 'parts-of-speech') {
     return `Read each sentence carefully. Choose the answer that matches the part of speech and spelling clue. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
   }
-  return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  if (firstQuestion?.metadata?.subjectId === 'mathematics' || firstQuestion?.topicId === 'mathematics') {
+    return `Solve each mathematics question carefully. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  }
+  return `Read each question carefully and choose the correct answer. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }
 
 function passageForExam(exam) {
@@ -810,6 +814,7 @@ export default function ExamSessionPage() {
     visualQuestion ? 'visual-mcq' : '',
     promptVisual ? '' : 'no-prompt-visual'
   ].filter(Boolean).join(' ');
+  const questionObjective = currentQuestion.body?.[0]?.content || '';
 
   return (
     <main className="page cbc-exam-page cbc-exam-active-page stable-exam-page">
@@ -847,9 +852,10 @@ export default function ExamSessionPage() {
 
       <section className={questionCardClass}>
         <div className="cbc-exam-question-scroll">
-          <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
+          {questionObjective ? <p className="cbc-exam-objective">{questionObjective}</p> : null}
           <h2>{currentQuestion.question}</h2>
           <WordPatternChip question={currentQuestion} />
+          <CbcMathLayout question={currentQuestion} />
           <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
           {promptVisual ? (
             <div className="cbc-exam-prompt-visual" aria-label="Question visual">
