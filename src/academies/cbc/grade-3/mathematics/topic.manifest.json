@@ -62,6 +62,26 @@
       "id": "grade-3-mathematics-mixed-exam-004",
       "file": "assessments/mixed/mixed-mathematics-exam-004.js",
       "learningAreaId": "mixed-revision"
+    },
+    {
+      "id": "grade-3-mathematics-mixed-exam-005",
+      "file": "assessments/mixed/mixed-mathematics-exam-005.js",
+      "learningAreaId": "mixed-revision"
+    },
+    {
+      "id": "grade-3-mathematics-mixed-exam-006",
+      "file": "assessments/mixed/mixed-mathematics-exam-006.js",
+      "learningAreaId": "mixed-revision"
+    },
+    {
+      "id": "grade-3-mathematics-mixed-exam-007",
+      "file": "assessments/mixed/mixed-mathematics-exam-007.js",
+      "learningAreaId": "mixed-revision"
+    },
+    {
+      "id": "grade-3-mathematics-mixed-exam-008",
+      "file": "assessments/mixed/mixed-mathematics-exam-008.js",
+      "learningAreaId": "mixed-revision"
     }
   ]
 }
