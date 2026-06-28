@@ -2,7 +2,7 @@ import { defineMcqProblem } from '../../../../../../problems/problemAuthoring.js
 
 const learningAreaId = 'mixed-revision';
 const learningAreaTitle = 'Mixed Revision';
-const questionTimeSeconds = 120;
+const questionTimeSeconds = 60;
 
 const strandTitles = {
   numbers: 'Numbers',
@@ -37,10 +37,6 @@ export function createMixedMathExamQuestions({ examId, examTitle, sequenceBase, 
     estimatedTime: '1 min',
     estimatedTimeSeconds: questionTimeSeconds,
     question: item.question,
-    readAloud: false,
-    autoReadAloud: false,
-    readAloudText: item.readAloudText || item.question,
-    readOptionsAloud: false,
     body: [
       {
         type: 'section',
