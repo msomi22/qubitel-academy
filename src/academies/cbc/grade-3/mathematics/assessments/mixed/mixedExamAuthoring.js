@@ -2,7 +2,7 @@ import { defineMcqProblem } from '../../../../../../problems/problemAuthoring.js
 
 const learningAreaId = 'mixed-revision';
 const learningAreaTitle = 'Mixed Revision';
-const questionTimeSeconds = 60;
+const questionTimeSeconds = 120;
 
 const strandTitles = {
   numbers: 'Numbers',
@@ -34,16 +34,10 @@ export function createMixedMathExamQuestions({ examId, examTitle, sequenceBase, 
     topicId: 'mathematics',
     title: `${examTitle} Question ${index + 1}`,
     difficulty: 'Medium',
-    estimatedTime: '1 min',
+    estimatedTime: '2 min',
     estimatedTimeSeconds: questionTimeSeconds,
     question: item.question,
-    body: [
-      {
-        type: 'section',
-        title: 'Objective',
-        content: 'I can solve mixed Grade 3 mathematics questions.'
-      }
-    ],
+    body: [],
     rendering: item.rendering,
     options: item.options,
     correctAnswer: item.correctAnswer,

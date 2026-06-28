@@ -814,6 +814,7 @@ export default function ExamSessionPage() {
     visualQuestion ? 'visual-mcq' : '',
     promptVisual ? '' : 'no-prompt-visual'
   ].filter(Boolean).join(' ');
+  const questionObjective = currentQuestion.body?.[0]?.content || '';
 
   return (
     <main className="page cbc-exam-page cbc-exam-active-page stable-exam-page">
@@ -851,7 +852,7 @@ export default function ExamSessionPage() {
 
       <section className={questionCardClass}>
         <div className="cbc-exam-question-scroll">
-          <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
+          {questionObjective ? <p className="cbc-exam-objective">{questionObjective}</p> : null}
           <h2>{currentQuestion.question}</h2>
           <WordPatternChip question={currentQuestion} />
           <CbcMathLayout question={currentQuestion} />
