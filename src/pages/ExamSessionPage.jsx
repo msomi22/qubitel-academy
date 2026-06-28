@@ -80,6 +80,31 @@ function hasVisualMcq(question) {
   );
 }
 
+function hasVerticalMathLayout(question) {
+  const layout = question?.rendering?.mathLayout || question?.metadata?.rendering?.mathLayout || null;
+  return layout?.type === 'vertical-operation';
+}
+
+function shouldSuppressObjective(question, exam) {
+  if (question?.rendering?.suppressObjective || question?.metadata?.rendering?.suppressObjective) {
+    return true;
+  }
+
+  const objective = question?.body?.[0]?.content || '';
+  const normalizedObjective = objective.trim().toLowerCase();
+  const normalizedTitle = String(exam?.examTitle || '').trim().toLowerCase();
+  const isMixedMathematics = normalizedTitle.includes('mixed mathematics')
+    || question?.metadata?.examId === 'grade-3-mathematics-mixed-exam-001'
+    || question?.metadata?.subjectId === 'mathematics'
+    || question?.topicId === 'mathematics';
+
+  return isMixedMathematics && [
+    'i can solve mixed grade 3 mathematics questions.',
+    'i can answer grade 3 questions.',
+    'i can solve this exam.'
+  ].includes(normalizedObjective);
+}
+
 function categoryDisplayName(exam) {
   return exam?.categoryName || exam?.category?.name || 'Grade 3';
 }
@@ -177,7 +202,7 @@ function restoreScrollSnapshot(snapshot) {
   window.scrollTo({ top: snapshot.windowY, left: snapshot.windowX, behavior: 'auto' });
 }
 
-function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext }) {
+function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext, placement = 'bottom' }) {
   if (totalQuestions <= 1) return null;
 
   function handlePreviousClick(event) {
@@ -191,7 +216,7 @@ function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext }) {
   }
 
   return (
-    <nav className="cbc-exam-navigation" aria-label="Exam question navigation">
+    <nav className={`cbc-exam-navigation ${placement}`.trim()} aria-label={`${placement} exam question navigation`}>
       <button type="button" className="cbc-exam-button secondary" onClick={handlePreviousClick} disabled={currentIndex === 0}>
         Previous
       </button>
@@ -561,7 +586,7 @@ export default function ExamSessionPage() {
     if (currentIndex === exam.questions.length - 1) completeExam(nextAnswers);
     else {
       pendingScrollSnapshotRef.current = captureScrollSnapshot();
-      setCurrentIndex((index) => index + 1);
+      setCurrentIndex((index) => Math.min(exam.questions.length - 1, index + 1));
     }
   }, [answers, currentAnswer, currentIndex, currentQuestion, exam?.questions?.length, hasTimedComprehension, remainingSeconds, view]);
 
@@ -677,7 +702,7 @@ export default function ExamSessionPage() {
       completeExam(answers);
       return;
     }
-    setCurrentIndex((index) => index + 1);
+    setCurrentIndex((index) => Math.min(exam.questions.length - 1, index + 1));
   }
 
   function previousQuestion() {
@@ -809,12 +834,16 @@ export default function ExamSessionPage() {
   const questionTimedOut = Boolean(currentAnswer?.timedOut);
   const promptVisual = promptVisualFor(currentQuestion);
   const visualQuestion = hasVisualMcq(currentQuestion);
+  const verticalMathQuestion = hasVerticalMathLayout(currentQuestion);
   const questionCardClass = [
     'cbc-exam-question-card',
     visualQuestion ? 'visual-mcq' : '',
+    verticalMathQuestion ? 'vertical-math' : '',
     promptVisual ? '' : 'no-prompt-visual'
   ].filter(Boolean).join(' ');
-  const questionObjective = currentQuestion.body?.[0]?.content || '';
+  const questionObjective = shouldSuppressObjective(currentQuestion, exam)
+    ? ''
+    : currentQuestion.body?.[0]?.content || '';
 
   return (
     <main className="page cbc-exam-page cbc-exam-active-page stable-exam-page">
@@ -837,7 +866,7 @@ export default function ExamSessionPage() {
             View Passage
           </button>
         ) : null}
-        <button type="button" className="cbc-exam-leave" onClick={leaveExam}>Leave exam</button>
+        <button type="button" className="cbc-exam-leave" onClick={leaveExam}>Exit exam</button>
         <div className="cbc-exam-progress" aria-label={`${progress}% through exam`}>
           <span style={{ width: `${progress}%` }} />
         </div>
@@ -848,20 +877,35 @@ export default function ExamSessionPage() {
         totalQuestions={exam.questions.length}
         onPrevious={previousQuestion}
         onNext={nextQuestion}
+        placement="top"
       />
 
       <section className={questionCardClass}>
         <div className="cbc-exam-question-scroll">
-          {questionObjective ? <p className="cbc-exam-objective">{questionObjective}</p> : null}
-          <h2>{currentQuestion.question}</h2>
-          <WordPatternChip question={currentQuestion} />
-          <CbcMathLayout question={currentQuestion} />
-          <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
-          {promptVisual ? (
-            <div className="cbc-exam-prompt-visual" aria-label="Question visual">
-              <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+          {questionObjective ? (
+            <div className="cbc-exam-helper-zone">
+              <p className="cbc-exam-objective">{questionObjective}</p>
             </div>
           ) : null}
+
+          <div className="cbc-exam-question-focus" aria-labelledby="cbc-exam-question-title">
+            <span className="cbc-exam-zone-label">
+              {verticalMathQuestion ? 'Work this out' : `Question ${currentIndex + 1}`}
+            </span>
+            <h2 id="cbc-exam-question-title">{currentQuestion.question}</h2>
+            <CbcMathLayout question={currentQuestion} />
+          </div>
+
+          <div className="cbc-exam-media-zone">
+            <WordPatternChip question={currentQuestion} />
+            <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
+            {promptVisual ? (
+              <div className="cbc-exam-prompt-visual" aria-label="Question visual">
+                <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+              </div>
+            ) : null}
+          </div>
+
           <div className="cbc-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
             {currentQuestion.options.map((option, index) => {
               const selected = currentAnswer?.selectedAnswer === index;
@@ -901,6 +945,7 @@ export default function ExamSessionPage() {
         totalQuestions={exam.questions.length}
         onPrevious={previousQuestion}
         onNext={nextQuestion}
+        placement="bottom"
       />
 
       {hasTimedComprehension ? (
