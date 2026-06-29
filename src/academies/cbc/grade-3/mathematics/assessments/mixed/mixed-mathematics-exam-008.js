@@ -4,7 +4,6 @@ const examId = 'grade-3-mathematics-mixed-exam-008';
 const examTitle = 'Exam 8: Mixed Mathematics';
 
 const textVisual = (value) => ({ type: 'text', value });
-const objects = (item, count) => ({ type: 'objects', item, count });
 const shape = (value) => ({ type: 'shape', shape: value });
 
 const questions = [

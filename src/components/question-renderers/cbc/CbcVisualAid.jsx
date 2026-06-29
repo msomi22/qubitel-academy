@@ -21,11 +21,11 @@ function ArrayVisual({ visual, label = '' }) {
   const rows = Math.max(1, Number(visual.rows) || 1);
   const cols = Math.max(1, Number(visual.cols) || 1);
   const total = rows * cols;
+  const arrayColsClass = [8, 9].includes(cols) ? ` cbc-array-cols-${cols}` : '';
 
   return (
     <span
-      className="cbc-visual-array"
-      style={{ '--array-cols': cols }}
+      className={`cbc-visual-array${arrayColsClass}`}
       aria-label={label || `${rows} rows of ${cols}`}
       role="img"
     >
@@ -104,9 +104,11 @@ function ClockVisual({ visual }) {
 function CompassVisual({ visual }) {
   const directions = ['N', 'E', 'S', 'W'];
   const labels = { N: 'North', E: 'East', S: 'South', W: 'West' };
+  const directionNames = { N: 'north', E: 'east', S: 'south', W: 'west' };
   const startDir = visual?.startDirection || '';
   const answerDir = visual?.answerDirection || '';
   const turn = visual?.turn || '';
+  const getCompassDirectionClass = (direction) => `cbc-compass-arm ${directionNames[direction]}${startDir === direction ? ' start' : ''}${answerDir === direction ? ' answer' : ''}`;
 
   const turnLabel = turn ? `Turn ${turn}.` : '';
 
@@ -115,27 +117,27 @@ function CompassVisual({ visual }) {
   return (
     <span className="cbc-visual-compass" role="img" aria-label={accessibleLabel.trim()}>
       <span className="cbc-compass-labels">
-        <span className="cbc-compass-north" aria-hidden="true">
+        <span className={getCompassDirectionClass('N')} aria-hidden="true">
           <span className="cbc-compass-dir">N</span>
           <span className="cbc-compass-label">North</span>
           <span className="cbc-compass-arrow">↑</span>
         </span>
       </span>
       <span className="cbc-compass-cross" aria-hidden="true">
-        <span className={`cbc-compass-arm west${startDir === 'W' ? ' start' : ''}${answerDir === 'W' ? ' answer' : ''}`}>
+        <span className={getCompassDirectionClass('W')}>
           <span className="cbc-compass-dir">W</span>
           <span className="cbc-compass-label">West</span>
           <span className="cbc-compass-arrow">←</span>
         </span>
         <span className="cbc-compass-center">●</span>
-        <span className={`cbc-compass-arm east${startDir === 'E' ? ' start' : ''}${answerDir === 'E' ? ' answer' : ''}`}>
+        <span className={getCompassDirectionClass('E')}>
           <span className="cbc-compass-arrow">→</span>
           <span className="cbc-compass-dir">E</span>
           <span className="cbc-compass-label">East</span>
         </span>
       </span>
       <span className="cbc-compass-labels">
-        <span className="cbc-compass-south" aria-hidden="true">
+        <span className={getCompassDirectionClass('S')} aria-hidden="true">
           <span className="cbc-compass-arrow">↓</span>
           <span className="cbc-compass-dir">S</span>
           <span className="cbc-compass-label">South</span>

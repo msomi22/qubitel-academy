@@ -584,13 +584,21 @@
 /* Array visual: grid of items in rows and columns */
 .cbc-visual-array {
   display: grid;
-  grid-template-columns: repeat(var(--array-cols, 4), auto);
+  grid-template-columns: repeat(4, auto);
   justify-content: center;
   align-items: center;
   gap: clamp(4px, 1vw, 10px);
   max-width: 100%;
   font-size: clamp(1.4rem, 4vw, 2.8rem);
   line-height: 1.1;
+}
+
+.cbc-visual-array.cbc-array-cols-8 {
+  grid-template-columns: repeat(8, auto);
+}
+
+.cbc-visual-array.cbc-array-cols-9 {
+  grid-template-columns: repeat(9, auto);
 }
 
 .cbc-visual-array > span {
@@ -615,8 +623,8 @@
   justify-items: center;
 }
 
-.cbc-compass-north,
-.cbc-compass-south {
+.cbc-compass-arm.north,
+.cbc-compass-arm.south {
   display: grid;
   justify-items: center;
   gap: 2px;
@@ -684,8 +692,8 @@
   opacity: 0.6;
 }
 
-.cbc-compass-north .cbc-compass-arrow,
-.cbc-compass-south .cbc-compass-arrow {
+.cbc-compass-arm.north .cbc-compass-arrow,
+.cbc-compass-arm.south .cbc-compass-arrow {
   font-size: clamp(0.85rem, 2.2vw, 1.1rem);
 }
 
