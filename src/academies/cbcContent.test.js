@@ -51,6 +51,10 @@ import mixedMathExamOne from './cbc/grade-3/mathematics/assessments/mixed/mixed-
 import mixedMathExamTwo from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-002.js';
 import mixedMathExamThree from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-003.js';
 import mixedMathExamFour from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-004.js';
+import mixedMathExamFive from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-005.js';
+import mixedMathExamSix from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-006.js';
+import mixedMathExamSeven from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-007.js';
+import mixedMathExamEight from './cbc/grade-3/mathematics/assessments/mixed/mixed-mathematics-exam-008.js';
 import { getAcademyCatalog } from './catalog.js';
 import { buildVerticalOperationRows } from '../components/question-renderers/cbc/mathLayout.js';
 import { validateProblemCollection } from '../problems/validateProblem.js';
@@ -193,9 +197,27 @@ const gradeThreeMixedMathExamGroups = [
   {
     examId: 'grade-3-mathematics-mixed-exam-004',
     questions: mixedMathExamFour
+  },
+  {
+    examId: 'grade-3-mathematics-mixed-exam-005',
+    questions: mixedMathExamFive
+  },
+  {
+    examId: 'grade-3-mathematics-mixed-exam-006',
+    questions: mixedMathExamSix
+  },
+  {
+    examId: 'grade-3-mathematics-mixed-exam-007',
+    questions: mixedMathExamSeven
+  },
+  {
+    examId: 'grade-3-mathematics-mixed-exam-008',
+    questions: mixedMathExamEight
   }
 ];
 const gradeThreeMixedMathQuestions = gradeThreeMixedMathExamGroups.flatMap((group) => group.questions);
+const newGradeThreeMixedMathExamGroups = gradeThreeMixedMathExamGroups.slice(4);
+const newGradeThreeMixedMathQuestions = newGradeThreeMixedMathExamGroups.flatMap((group) => group.questions);
 const gradeThreeQuestions = [
   ...gradeThreeEnglishQuestions,
   ...gradeThreeKiswahiliQuestions,
@@ -598,7 +620,11 @@ test('CBC Grade 3 exposes subject learning areas and current content state', () 
     'grade-3-mathematics-mixed-exam-001',
     'grade-3-mathematics-mixed-exam-002',
     'grade-3-mathematics-mixed-exam-003',
-    'grade-3-mathematics-mixed-exam-004'
+    'grade-3-mathematics-mixed-exam-004',
+    'grade-3-mathematics-mixed-exam-005',
+    'grade-3-mathematics-mixed-exam-006',
+    'grade-3-mathematics-mixed-exam-007',
+    'grade-3-mathematics-mixed-exam-008'
   ]);
   assert.ok(mathematics.assessments.every((reference) => reference.learningAreaId === 'mixed-revision'));
   assert.deepEqual(kiswahili.learningAreas.map((area) => area.id), ['ufahamu', 'sarufi', 'insha']);
@@ -634,7 +660,8 @@ test('CBC Grade 3 Mathematics mixed revision exams are registered and complete',
     assert.equal(group.questions.length, 20, group.examId);
   }
 
-  assert.equal(gradeThreeMixedMathQuestions.length, 80);
+  assert.equal(newGradeThreeMixedMathQuestions.length, 80);
+  assert.equal(gradeThreeMixedMathQuestions.length, 160);
 });
 
 test('CBC Grade 3 Mathematics mixed revision questions are unique and fully described', () => {
@@ -721,13 +748,80 @@ test('CBC Grade 3 Mathematics mixed revision answer positions and coverage are b
     assert.ok(subStrandCounts[subStrandId] >= minimum, `${subStrandId}: ${subStrandCounts[subStrandId]}`);
   }
 
+  assert.deepEqual(strandCounts, { numbers: 90, measurements: 54, geometry: 16 });
+});
+
+test('CBC Grade 3 Mathematics advanced mixed exams 005-008 meet issue coverage targets', () => {
+  const requiredMinimums = {
+    'number-concept': 4,
+    'whole-numbers': 6,
+    addition: 8,
+    subtraction: 8,
+    multiplication: 6,
+    division: 6,
+    fractions: 6,
+    length: 4,
+    mass: 4,
+    capacity: 4,
+    time: 6,
+    money: 6,
+    'position-direction': 4,
+    shapes: 4
+  };
+  const subStrandCounts = Object.fromEntries(Object.keys(requiredMinimums).map((key) => [key, 0]));
+  const strandCounts = { numbers: 0, measurements: 0, geometry: 0 };
+
+  assert.deepEqual(newGradeThreeMixedMathExamGroups.map((group) => group.examId), [
+    'grade-3-mathematics-mixed-exam-005',
+    'grade-3-mathematics-mixed-exam-006',
+    'grade-3-mathematics-mixed-exam-007',
+    'grade-3-mathematics-mixed-exam-008'
+  ]);
+  assert.equal(newGradeThreeMixedMathQuestions.length, 80);
+
+  for (const question of newGradeThreeMixedMathQuestions) {
+    subStrandCounts[question.metadata.subStrandId] += 1;
+    strandCounts[question.metadata.strandId] += 1;
+  }
+
+  for (const [subStrandId, minimum] of Object.entries(requiredMinimums)) {
+    assert.ok(subStrandCounts[subStrandId] >= minimum, `${subStrandId}: ${subStrandCounts[subStrandId]}`);
+  }
+
   assert.deepEqual(strandCounts, { numbers: 45, measurements: 27, geometry: 8 });
+});
+
+test('CBC Grade 3 Mathematics advanced mixed exams use supported visual metadata', () => {
+  const visualQuestions = newGradeThreeMixedMathQuestions.filter((question) => (
+    question.interactionType === 'visual-mcq'
+    || question.metadata.interactionType === 'visual-mcq'
+    || question.promptVisual
+    || question.metadata.promptVisual
+    || question.optionVisuals?.length
+    || question.metadata.optionVisuals?.length
+  ));
+  const supportedTypes = new Set(['array', 'clock', 'compass', 'emoji', 'objects', 'shape', 'text']);
+
+  assert.ok(visualQuestions.length >= 12);
+
+  for (const question of visualQuestions) {
+    const promptVisual = question.promptVisual || question.metadata.promptVisual;
+    const optionVisuals = question.optionVisuals || question.metadata.optionVisuals || [];
+
+    assert.equal(question.metadata.interactionType, 'visual-mcq', question.id);
+    assert.ok(promptVisual, question.id);
+    assert.ok(supportedTypes.has(promptVisual.type), question.id);
+
+    for (const optionVisual of optionVisuals) {
+      assert.ok(supportedTypes.has(optionVisual.type), question.id);
+    }
+  }
 });
 
 test('CBC Grade 3 Mathematics vertical operation questions include structured rendering metadata', () => {
   const verticalQuestions = gradeThreeMixedMathQuestions.filter((question) => question.rendering?.mathLayout?.type === 'vertical-operation');
 
-  assert.equal(verticalQuestions.length, 10);
+  assert.equal(verticalQuestions.length, 30);
 
   for (const question of verticalQuestions) {
     const layout = question.rendering.mathLayout;

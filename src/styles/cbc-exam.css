@@ -543,6 +543,160 @@
   background: var(--cbc-exam-accent-soft);
 }
 
+/* Clock visual: analog clock face */
+.cbc-visual-clock {
+  width: clamp(100px, 22vw, 150px);
+  height: clamp(100px, 22vw, 150px);
+  display: block;
+  overflow: visible;
+}
+
+.cbc-clock-face {
+  fill: #fff;
+  stroke: var(--cbc-exam-accent);
+  stroke-width: 4;
+}
+
+.cbc-clock-number {
+  fill: #1f2937;
+  font-weight: 900;
+  font-size: 0.72rem;
+}
+
+.cbc-clock-center {
+  fill: #1f2937;
+}
+
+.cbc-clock-hand {
+  stroke-linecap: round;
+}
+
+.cbc-clock-hand.hour {
+  stroke: #1f2937;
+  stroke-width: 4.8;
+}
+
+.cbc-clock-hand.minute {
+  stroke: #dc2626;
+  stroke-width: 3;
+}
+
+/* Array visual: grid of items in rows and columns */
+.cbc-visual-array {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  justify-content: center;
+  align-items: center;
+  gap: clamp(4px, 1vw, 10px);
+  max-width: 100%;
+  font-size: clamp(1.4rem, 4vw, 2.8rem);
+  line-height: 1.1;
+}
+
+.cbc-visual-array.cbc-array-cols-8 {
+  grid-template-columns: repeat(8, auto);
+}
+
+.cbc-visual-array.cbc-array-cols-9 {
+  grid-template-columns: repeat(9, auto);
+}
+
+.cbc-visual-array > span {
+  display: grid;
+  place-items: center;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+/* Compass visual: centered N/E/S/W layout */
+.cbc-visual-compass {
+  display: grid;
+  justify-items: center;
+  gap: 0;
+  font-size: clamp(0.85rem, 2.4vw, 1.2rem);
+  line-height: 1;
+  user-select: none;
+}
+
+.cbc-compass-labels {
+  display: grid;
+  justify-items: center;
+}
+
+.cbc-compass-arm.north,
+.cbc-compass-arm.south {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 2px 10px;
+}
+
+.cbc-compass-cross {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 0;
+}
+
+.cbc-compass-arm {
+  display: flex;
+  align-items: center;
+  gap: clamp(3px, 1vw, 8px);
+  padding: 4px 6px;
+  border-radius: 8px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.cbc-compass-arm.start {
+  opacity: 1;
+  background: color-mix(in srgb, #eab308 24%, transparent);
+  font-weight: 950;
+}
+
+.cbc-compass-arm.answer {
+  opacity: 1;
+  background: color-mix(in srgb, #22c55e 24%, transparent);
+  font-weight: 950;
+}
+
+.cbc-compass-arm.west {
+  justify-content: flex-end;
+}
+
+.cbc-compass-center {
+  display: grid;
+  width: clamp(14px, 2.5vw, 22px);
+  height: clamp(14px, 2.5vw, 22px);
+  place-items: center;
+  border-radius: 999px;
+  background: #2f7d57;
+  color: #fff;
+  font-size: clamp(0.55rem, 1.2vw, 0.75rem);
+  line-height: 1;
+  z-index: 1;
+}
+
+.cbc-compass-dir {
+  font-weight: 950;
+  font-size: clamp(0.95rem, 2.6vw, 1.35rem);
+}
+
+.cbc-compass-label {
+  font-size: clamp(0.6rem, 1.6vw, 0.82rem);
+  color: var(--muted, var(--text-secondary));
+}
+
+.cbc-compass-arrow {
+  font-size: clamp(0.75rem, 2vw, 1rem);
+  opacity: 0.6;
+}
+
+.cbc-compass-arm.north .cbc-compass-arrow,
+.cbc-compass-arm.south .cbc-compass-arrow {
+  font-size: clamp(0.85rem, 2.2vw, 1.1rem);
+}
+
 .cbc-exam-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -551,7 +705,7 @@
 
 .cbc-exam-options button {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-columns: 42px minmax(auto, 1fr);
   align-items: center;
   gap: 14px;
   min-height: 82px;
@@ -568,15 +722,55 @@
 }
 
 .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
-  grid-template-columns: 34px minmax(64px, auto) minmax(0, 1fr);
+  grid-template-columns: 34px 64px minmax(auto, 1fr);
   min-height: 108px;
+}
+
+.cbc-exam-option-text {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 .cbc-exam-option-visual {
   display: grid;
+  width: 64px;
   min-width: 64px;
+  max-width: 64px;
   min-height: 64px;
   place-items: center;
+  overflow: hidden;
+}
+
+.cbc-exam-option-visual .cbc-visual-shape {
+  max-width: 100%;
+  max-height: 56px;
+}
+
+.cbc-exam-option-visual .cbc-visual-shape.square {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.cbc-exam-option-visual .cbc-visual-shape.circle {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+.cbc-exam-option-visual .cbc-visual-shape.triangle {
+  width: 0 !important;
+  height: 0 !important;
+  border-left-width: 24px !important;
+  border-right-width: 24px !important;
+  border-bottom-width: 42px !important;
+}
+
+.cbc-exam-option-visual .cbc-visual-shape.rectangle {
+  width: 60px !important;
+  height: 34px !important;
 }
 
 .cbc-exam-option-visual .cbc-visual-emoji,
@@ -921,7 +1115,7 @@
   }
 
   .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
-    grid-template-columns: 34px 76px minmax(0, 1fr);
+    grid-template-columns: 34px 64px minmax(auto, 1fr);
     min-height: 86px;
     padding: 10px;
   }

@@ -169,7 +169,11 @@ test('CBC Grade 3 subjects declare learning areas and current content state', ()
     'grade-3-mathematics-mixed-exam-001',
     'grade-3-mathematics-mixed-exam-002',
     'grade-3-mathematics-mixed-exam-003',
-    'grade-3-mathematics-mixed-exam-004'
+    'grade-3-mathematics-mixed-exam-004',
+    'grade-3-mathematics-mixed-exam-005',
+    'grade-3-mathematics-mixed-exam-006',
+    'grade-3-mathematics-mixed-exam-007',
+    'grade-3-mathematics-mixed-exam-008'
   ]);
   assert.ok(mathematics.assessments.every((item) => item.learningAreaId === 'mixed-revision'));
 
