@@ -5,7 +5,7 @@ const problem = defineLearningProblem({
   topicId: 'java-core',
   title: 'Java Memory Model & Garbage Collection: From Zero to Hero',
   difficulty: 'Easy',
-  prompt: 'A rigorous, production-grade masterclass on JVM memory management, dissecting stack vs. heap allocation, object memory layout, reference strength semantics, generational garbage collection theory, G1 and ZGC internals, escape analysis, memory leak patterns, GC tuning, and production diagnostics.',
+  prompt: 'A rigorous, production-grade masterclass on JVM memory management, dissecting stack vs. heap allocation, object memory layout, TLABs, reference strength semantics, generational garbage collection theory, G1 and ZGC internals, escape analysis, memory leak patterns, GC tuning, and production diagnostics.',
   tags: ['java', 'memory-model', 'garbage-collection', 'jvm', 'g1', 'zgc', 'references', 'architecture'],
   rendering: {
     variant: 'deep-dive',
@@ -16,7 +16,7 @@ const problem = defineLearningProblem({
     {
       type: 'section',
       title: 'Architectural Introduction: Memory Is Not Free, Even When It Feels Automatic',
-      content: 'Java\'s automatic memory management liberates developers from manual allocation and deallocation bookkeeping, but it does not eliminate memory as an architectural concern — it relocates it. An engineer who treats the heap as an infinite, cost-free resource will eventually ship an application that stalls under load with multi-second stop-the-world pauses, leaks memory through forgotten collection references, or crashes with a cryptic OutOfMemoryError. Understanding stack versus heap allocation, reference strength, and collector mechanics is what separates code that merely runs from code that scales.'
+      content: 'Java\'s automatic memory management liberates developers from manual allocation and deallocation bookkeeping, but it does not eliminate memory as an architectural concern — it relocates it. An engineer who treats the heap as an infinite, cost-free resource will eventually ship an application that stalls under load with multi-second stop-the-world pauses, leaks memory through forgotten collection references, or crashes with a cryptic OutOfMemoryError. Understanding stack versus heap allocation, reference strength, TLAB mechanics, and collector internals is what separates code that merely runs from code that scales.'
     },
     {
       type: 'section',
@@ -56,6 +56,16 @@ const problem = defineLearningProblem({
     },
     {
       type: 'section',
+      title: '3.1 TLABs: The Secret to Lock-Free Eden Allocation',
+      content: 'If every thread competing to allocate memory in Eden required a global lock, allocation would become a severe bottleneck under high concurrency. To avoid this, each thread reserves a small private chunk of Eden called a Thread-Local Allocation Buffer (TLAB). Allocation within a TLAB is a simple pointer bump with no synchronization whatsoever. When a TLAB is exhausted, the thread requests a new one from the Eden allocator (which does require synchronization, but this happens orders of magnitude less frequently than individual object allocations). Tuning TLAB size (via `-XX:TLABSize`) can reduce contention for applications with unusual allocation patterns, though the JVM automatically adjusts TLAB sizing at runtime based on allocation rates.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Allocation inside a TLAB is lock-free — the JVM just bumps a thread-local pointer\n// View TLAB statistics in GC logs with -Xlog:gc+heap=trace\njava -Xlog:gc+heap=trace -jar service.jar'
+    },
+    {
+      type: 'section',
       title: '4. GC Roots & the Mark-Sweep-Compact Algorithm',
       content: 'Garbage collection is fundamentally a reachability analysis, not a reference-counting scheme. The collector starts from a fixed set of GC Roots and traces every object reachable from them during the Mark phase. Anything left unmarked is garbage by definition, regardless of how many objects still reference each other in an unreachable island. The Sweep phase reclaims unmarked memory, and the Compact phase (used by most modern collectors) slides surviving objects together to eliminate fragmentation and keep future allocation as a simple pointer bump.'
     },
@@ -92,8 +102,8 @@ const problem = defineLearningProblem({
     {
       type: 'callout',
       tone: 'warning',
-      title: 'finalize() Is Deprecated for Removal',
-      content: 'Object.finalize() is unpredictable — no timing guarantee, can resurrect objects, can silently swallow exceptions — and is deprecated for removal. Prefer try-with-resources and AutoCloseable for deterministic cleanup, or the Cleaner API (itself backed by PhantomReference) as a safety net for native-resource cleanup.'
+      title: 'finalize() Is Deprecated for Removal — Use Cleaner Instead',
+      content: 'Object.finalize() is unpredictable — no timing guarantee, can resurrect objects, can silently swallow exceptions — and is deprecated for removal. Prefer try-with-resources and AutoCloseable for deterministic cleanup. For native-resource safety nets, use the `java.lang.ref.Cleaner` API (Java 9+), which is itself backed by PhantomReference and provides a clean, predictable callback mechanism without the pitfalls of finalize().'
     },
     {
       type: 'section',
@@ -106,14 +116,20 @@ const problem = defineLearningProblem({
       content: 'The Garbage-First (G1) collector, the default since Java 9, abandons strictly contiguous Young/Old spaces in favor of dividing the heap into many equally-sized regions (typically 1-32MB), each dynamically labeled Eden, Survivor, or Old as needed. G1 prioritizes collecting the regions containing the most garbage first (hence "Garbage-First"), and targets a configurable pause-time goal rather than a fixed generation size, using concurrent marking to identify mostly-garbage regions before a mixed collection reclaims both young and select old regions within the same pause.'
     },
     {
+      type: 'callout',
+      tone: 'info',
+      title: 'G1 Pitfall: Humongous Objects',
+      content: 'Any object larger than 50% of a G1 region is allocated directly in the Old Generation as a "humongous" object, bypassing Eden and Survivor spaces entirely. Humongous allocations do not benefit from G1\'s normal compaction algorithms and can fragment the heap. If many humongous allocations occur, they can prematurely trigger Full GCs. To mitigate this, you have two main options:\n\n1. **Increase** the region size (via `-XX:G1HeapRegionSize`) to raise the 50% threshold, so your large objects no longer cross the humongous boundary. Region sizes must be a power of two between 1MB and 32MB; the JVM chooses a default based on the heap size.\n2. **Reduce the allocation size** in your application — for example, by splitting large buffers or using more efficient data structures.\n\n**Important:** Reducing the region size does the opposite — it lowers the threshold and makes more objects humongous. Avoid that tuning direction unless you specifically want to reduce the region size for other reasons (e.g., to improve memory footprint), but be aware of the increased humongous allocation risk.\n\nMonitor humongous allocations with `-XX:+PrintAdaptiveSizePolicy` or GC logs.'
+    },
+    {
       type: 'code',
       language: 'java',
-      code: '// Common G1 tuning flags — start with the pause-time goal, resist over-tuning further\njava -XX:+UseG1GC \\\n     -XX:MaxGCPauseMillis=200 \\\n     -Xms4g -Xmx4g \\\n     -jar enterprise-service.jar'
+      code: '// Common G1 tuning flags — start with the pause-time goal, resist over-tuning further\njava -XX:+UseG1GC \\\n     -XX:MaxGCPauseMillis=200 \\\n     -Xms4g -Xmx4g \\\n     -jar enterprise-service.jar\n\n// If you have large objects that routinely become humongous, consider increasing region size:\njava -XX:+UseG1GC -XX:G1HeapRegionSize=16m -Xmx8g ...'
     },
     {
         type: 'section',
         title: '8. ZGC & Low-Latency Collectors',
-        content: 'ZGC targets sub-millisecond pause times regardless of heap size — from a few gigabytes to multiple terabytes — by performing almost all work (marking, relocating, and reference updates) concurrently with running application threads. It achieves this using colored pointers (metadata bits embedded directly in each reference) and load barriers that transparently redirect a thread to the relocated copy of an object it is reading, entirely avoiding the long stop-the-world compaction pauses that even G1 still requires for its old generation. Generational ZGC (introduced as an option in Java 21 and made the default mode for ZGC in JDK 23 via JEP 474) adds a young generation to this design, further reducing overhead by collecting short-lived objects separately from long-lived ones, while keeping ZGC\'s near-zero pause guarantee.'
+        content: 'ZGC targets sub-millisecond pause times regardless of heap size — from a few gigabytes to multiple terabytes — by performing almost all work (marking, relocating, and reference updates) concurrently with running application threads. It achieves this using colored pointers — metadata bits embedded directly in each reference (reserving 4 bits, which limits the maximum addressable heap to 16TB on 64-bit platforms) — and load barriers that transparently redirect a thread to the relocated copy of an object it is reading, entirely avoiding the long stop-the-world compaction pauses that even G1 still requires for its old generation. Generational ZGC was introduced as an experimental feature in Java 18 (JEP 404) and made the default mode for ZGC in JDK 23 (JEP 474), adding a young generation to further reduce overhead by collecting short-lived objects separately from long-lived ones, while keeping ZGC\'s near-zero pause guarantee.'
     },
     {
       type: 'comparison',
@@ -131,7 +147,7 @@ const problem = defineLearningProblem({
     {
       type: 'section',
       title: '9. Escape Analysis & Scalar Replacement',
-      content: 'Not every `new` keyword in source code results in an actual heap allocation at runtime. The JIT compiler performs Escape Analysis to determine whether an object\'s reference ever "escapes" the method or thread that created it — is it returned, stored in a field, or passed to an unanalyzable call? If an object provably does not escape, the JIT may apply Scalar Replacement, decomposing the object into its individual primitive fields and allocating those directly on the stack (or even in CPU registers) instead of the heap, eliminating both the allocation cost and any future GC pressure for that object entirely.'
+      content: 'Not every `new` keyword in source code results in an actual heap allocation at runtime. The JIT compiler performs Escape Analysis to determine whether an object\'s reference ever "escapes" the method or thread that created it — is it returned, stored in a field, or passed to an unanalyzable call? If an object provably does not escape, the JIT may apply Scalar Replacement, decomposing the object into its individual primitive fields and allocating those directly on the stack (or even in CPU registers) instead of the heap. This eliminates both the allocation cost and any future GC pressure for that object entirely — the allocation is effectively removed from the code path.'
     },
     {
       type: 'code',
@@ -171,6 +187,8 @@ const problem = defineLearningProblem({
         ['-Xms / -Xmx', 'Set the initial and maximum heap size; setting them equal avoids resize pauses.'],
         ['-XX:+UseG1GC / -XX:+UseZGC', 'Select the garbage collector implementation.'],
         ['-XX:MaxGCPauseMillis=N', 'Set a soft pause-time goal for G1 (a target, not a hard guarantee).'],
+        ['-XX:+AlwaysPreTouch', 'Map and touch all heap pages at JVM startup. Prevents page-fault latency spikes at runtime when the OS lazily allocates pages under load.'],
+        ['-XX:+DisableExplicitGC', 'Ignore explicit `System.gc()` calls. Prevents third-party libraries from accidentally triggering expensive Full GCs at inopportune moments.'],
         ['-Xlog:gc*:file=gc.log:time,uptime', 'Enable detailed unified GC logging for offline analysis.']
       ]
     },
@@ -210,10 +228,10 @@ const problem = defineLearningProblem({
       type: 'callout',
       tone: 'success',
       title: 'Architectural Summary',
-      content: 'Enterprise-grade memory management means treating the heap as a finite, tiered resource: understand stack vs. heap allocation cost, respect the generational hypothesis when reasoning about GC behavior, choose reference strength deliberately for caches and cleanup hooks, pick G1 or ZGC based on your actual latency requirements rather than habit, and diagnose real problems with GC logs, heap dumps, and JFR before ever reaching for a tuning flag.'
+      content: 'Enterprise-grade memory management means treating the heap as a finite, tiered resource: understand stack vs. heap allocation cost, respect the generational hypothesis when reasoning about GC behavior, leverage TLABs for lock-free allocation, choose reference strength deliberately for caches and cleanup hooks, watch for G1 humongous objects, pick G1 or ZGC based on your actual latency requirements rather than habit, and diagnose real problems with GC logs, heap dumps, and JFR before ever reaching for a tuning flag.'
     }
   ],
-  explanation: 'An enterprise-grade masterclass covering stack vs. heap allocation, object memory layout and compressed oops, the generational heap and Metaspace, GC roots and mark-sweep-compact mechanics, the four reference strengths, minor vs. major GC theory, G1 and ZGC internals, escape analysis and scalar replacement, common memory leak patterns, GC tuning fundamentals, OutOfMemoryError diagnosis, and production diagnostics via heap dumps and JFR.',
+  explanation: 'An enterprise-grade masterclass covering stack vs. heap allocation, object memory layout and compressed oops, the generational heap, TLABs, GC roots and mark-sweep-compact mechanics, the four reference strengths (Soft, Weak, Phantom), minor/major GC theory, G1 (including humongous objects) and ZGC internals (generational ZGC default in JDK 23), escape analysis and scalar replacement, common memory leak patterns, GC tuning fundamentals (AlwaysPreTouch, DisableExplicitGC), OutOfMemoryError variants, and production diagnostics via heap dumps and JFR.',
   metadata: {
     reviewStatus: 'approved',
     visibility: ['dev', 'prod']

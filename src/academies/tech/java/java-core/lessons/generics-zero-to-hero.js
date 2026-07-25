@@ -5,7 +5,7 @@ const problem = defineLearningProblem({
   topicId: 'java-core',
   title: 'Java Generics: From Zero to Hero',
   difficulty: 'Easy',
-  prompt: 'Teach Java Generics comprehensively. Cover basic compile-time safety, naming conventions, generic methods, bounded types, the PECS rule, wildcard capture, type erasure limitations, array covariance vs. generic invariance, and advanced architectural patterns like recursive bounds, super type tokens, and generic singleton factories.',
+  prompt: 'Teach Java Generics comprehensively. Cover basic compile-time safety, naming conventions, generic methods, bounded types, the PECS rule (with Collections.copy), wildcard capture, type erasure limitations, array covariance vs. generic invariance, and advanced architectural patterns like recursive bounds, super type tokens, runtime type tokens, SafeVarargs, and generic singleton factories.',
   tags: ['java', 'generics', 'architecture', 'type-erasure', 'pecs', 'wildcards', 'array-covariance'],
   rendering: {
     variant: 'deep-dive',
@@ -67,17 +67,18 @@ const problem = defineLearningProblem({
     },
     {
       type: 'checklist',
-      title: 'Types of Bounds',
+      title: 'Types of Bounds and Wildcards',
       items: [
         'Upper Bounds (extends): Restricts a generic type to a specific class or its subclasses (e.g., <T extends Number>).',
         'Multiple Bounds: A type can extend one class and multiple interfaces (e.g., <T extends Entity & Serializable>).',
-        'The Wildcard (?): Represents an unknown type. List<?> means a list of some unknown specific type.'
+        'Lower Bounds (super): Restricts a wildcard to a specific class or its superclasses (e.g., <? super Integer>).',
+        'The Unbounded Wildcard (?): Represents an unknown type. List<?> means a list of some unknown specific type — distinct from List<Object> and List<T>.'
       ]
     },
     {
       type: 'code',
       language: 'java',
-      code: '// Multiple bounds: the class bound (if any) must be listed first, followed by interfaces\npublic <T extends Entity & Serializable & Comparable<T>> void persistAndSort(List<T> records) {\n    records.sort(Comparator.naturalOrder());\n    records.forEach(this::persist);\n}'
+      code: '// Multiple bounds: the class bound (if any) must be listed first, followed by interfaces\npublic <T extends Entity & Serializable & Comparable<T>> void persistAndSort(List<T> records) {\n    records.sort(Comparator.naturalOrder());\n    records.forEach(this::persist);\n}\n\n// Unbounded wildcard vs. raw type vs. Object\nvoid printRaw(List l) { }       // Dangerous: raw type, erases all safety\nvoid printObject(List<Object> l) { } // Only accepts List<Object> exactly\nvoid printWildcard(List<?> l) { }    // Accepts any List, but read-only (cannot add)'
     },
     {
       type: 'section',
@@ -121,14 +122,29 @@ const problem = defineLearningProblem({
       ]
     },
     {
+      type: 'code',
+      language: 'java',
+      code: '// The canonical PECS example — java.util.Collections.copy()\npublic static <T> void copy(List<? super T> dest, List<? extends T> src) {\n    // dest is a Consumer of T (we write to it) → super\n    // src is a Producer of T (we read from it) → extends\n    for (int i = 0; i < src.size(); i++) {\n        dest.set(i, src.get(i));\n    }\n}'
+    },
+    {
       type: 'callout',
       tone: 'warning',
       title: 'The Golden Rule of Wildcards',
-      content: 'Use "? extends" when you only intend to read from a collection. Use "? super" when you only intend to write to a collection. If you need to do both, do not use wildcards at all—use a precise type T.'
+      content: 'Use "? extends" when you only intend to read from a collection. Use "? super" when you only intend to write to a collection. If you need to do both (e.g., swapping two elements), do not use wildcards at all—use a precise type T on a generic method.'
     },
     {
       type: 'section',
-      title: '8. The Wildcard Capture Helper Pattern',
+      title: '8. Type Parameter vs. Wildcard in Method Signatures',
+      content: 'A common architectural dilemma: should you declare `<T>` or just use `<?>`? Use a type parameter (`<T>`) when the method needs to **bind** multiple arguments together, or needs to **return** a value of that type. Use an unbounded wildcard (`<?>`) when the method only consumes a collection of unknown type and the exact type is irrelevant to the method\'s behavior or return value.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Use <T> when you need a relationship between input and output\npublic static <T> T getFirst(List<T> list) { return list.get(0); } // T is returned\n\n// Use <?> when you just inspect the collection, regardless of type\npublic static void printSize(List<?> list) { System.out.println(list.size()); }\n\n// Use <T> with multiple bounds for complex relationships\npublic static <T> void swap(List<T> list, int i, int j) {\n    T temp = list.get(i);\n    list.set(i, list.get(j));\n    list.set(j, temp);\n}'
+    },
+    {
+      type: 'section',
+      title: '9. The Wildcard Capture Helper Pattern',
       content: 'Occasionally you must mutate a List<?> whose element type is genuinely unknown to the caller, but the compiler will refuse to call add() or set() on it directly since it cannot prove type safety for an unnamed wildcard. The idiomatic fix is "wildcard capture": delegate to a private generic helper method whose own type parameter captures the unknown type, letting the compiler treat every element consistently within that helper.'
     },
     {
@@ -138,7 +154,7 @@ const problem = defineLearningProblem({
     },
     {
       type: 'section',
-      title: '9. Under the Hood: Type Erasure',
+      title: '10. Under the Hood: Type Erasure',
       content: 'Generics do not exist at runtime. The JVM knows nothing about them. When you compile your code, the compiler implements Type Erasure: it replaces all type parameters with their bounds (or Object) and inserts type casts where necessary.'
     },
     {
@@ -153,14 +169,18 @@ const problem = defineLearningProblem({
       ]
     },
     {
-      type: 'callout',
-      tone: 'info',
-      title: 'Heap Pollution Warning',
-      content: 'Mixing varargs with generic types (e.g., List<String>... lists) can cause heap pollution, where a parameterized variable refers to an object of a different type. Use @SafeVarargs only when verified safe.'
+      type: 'section',
+      title: '11. Heap Pollution & @SafeVarargs',
+      content: 'Mixing varargs with generic types (e.g., List<String>... lists) can cause heap pollution, where a parameterized variable refers to an object of a different type. The compiler generates an unchecked warning for varargs methods with generic parameters. Use @SafeVarargs only when the method does not perform unsafe operations on the varargs array.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Dangerous — heap pollution can occur at runtime\npublic static void unsafeVarargs(List<String>... stringLists) {\n    Object[] array = stringLists; // Allowed (covariant arrays)\n    array[0] = Arrays.asList(42); // Heap pollution: List<Integer> in List<String>[]\n    String s = stringLists[0].get(0); // ClassCastException at runtime!\n}\n\n// Safe — uses @SafeVarargs because it only reads\n@SafeVarargs\npublic static <T> List<T> flatten(List<T>... lists) {\n    List<T> result = new ArrayList<>();\n    for (List<T> list : lists) result.addAll(list);\n    return result;\n}'
     },
     {
       type: 'section',
-      title: '10. Unchecked Warnings, Raw Types & @SuppressWarnings',
+      title: '12. Unchecked Warnings, Raw Types & @SuppressWarnings',
       content: 'When the compiler cannot verify that a cast or operation is fully type-safe — usually because of an unavoidable interaction with erasure or a raw type — it emits an "unchecked" warning rather than a hard error. These warnings should never be silenced blindly. @SuppressWarnings("unchecked") should be applied to the smallest possible scope (a single local variable or return statement, not an entire method or class) and always paired with a comment proving why the operation is actually safe.'
     },
     {
@@ -170,27 +190,17 @@ const problem = defineLearningProblem({
     },
     {
       type: 'section',
-      title: '11. Recursive Type Bounds (Self-Bounding)',
-      content: 'This pattern is frequently used when designing extensible fluent APIs or complex Builder patterns. You solve inheritance breaks by passing the class type into itself.'
+      title: '13. Runtime Type Tokens (Class<T>) vs. Super Type Tokens',
+      content: 'Because of erasure, you cannot get a Class<T> for List<String>. There are two patterns to bypass this: (1) Runtime Type Token — passing the Class<T> object explicitly (as in newArray above), which is great for reifiable types. (2) Super Type Token — using an anonymous subclass to capture the generic superclass signature, which works for non-reifiable types like List<String>. Libraries like Jackson, Gson, and Spring use Super Type Tokens heavily.'
     },
     {
       type: 'code',
       language: 'java',
-      code: '// The generic parameter B represents the concrete subclass\npublic abstract class VehicleBuilder<B extends VehicleBuilder<B>> {\n    protected String color;\n\n    public B withColor(String color) {\n        this.color = color;\n        return self(); // Returns the specific subclass\n    }\n\n    protected abstract B self(); \n}'
+      code: '// Runtime Type Token: pass Class<T> explicitly\npublic static <T> T fromJson(String json, Class<T> type) { /* ... */ }\n\n// Super Type Token: capture via anonymous subclass\nTypeReference<List<UserDTO>> typeRef = new TypeReference<List<UserDTO>>() {};\n\n// Frameworks use reflection to read the preserved signature:\nType superclass = typeRef.getClass().getGenericSuperclass();\nParameterizedType parameterized = (ParameterizedType) superclass;\nSystem.out.println(parameterized.getActualTypeArguments()[0]);'
     },
     {
       type: 'section',
-      title: '12. Bypassing Type Erasure (Super Type Token)',
-      content: 'Libraries like Jackson deserialize JSON arrays into a List<UserDTO> at runtime by exploiting a loophole: while the generic type of an instance is erased, the generic superclass signature of a class is preserved in the compiled bytecode. They use an anonymous inner class to capture this metadata.'
-    },
-    {
-      type: 'code',
-      language: 'java',
-      code: '// The {} creates an anonymous subclass to preserve the signature\nTypeReference<List<UserDTO>> typeRef = new TypeReference<List<UserDTO>>() {};\n\n// Frameworks use reflection to read the preserved signature:\nType superclass = typeRef.getClass().getGenericSuperclass();\nParameterizedType parameterized = (ParameterizedType) superclass;\nSystem.out.println(parameterized.getActualTypeArguments()[0]);'
-    },
-    {
-      type: 'section',
-      title: '13. Bridge Methods',
+      title: '14. Bridge Methods',
       content: 'When you implement a generic interface, type erasure creates a problem for polymorphism. The Java compiler secretly writes a Bridge Method into your .class file to bridge the gap.'
     },
     {
@@ -200,17 +210,27 @@ const problem = defineLearningProblem({
     },
     {
       type: 'section',
-      title: '14. Intersection Types in Casts',
-      content: 'Java allows casting an object to multiple types simultaneously using the & operator. This is highly useful for dynamic proxies or lambdas needing multiple marker interfaces.'
+      title: '15. Intersection Types in Casts & Diamond Operator Nuance',
+      content: 'Java allows casting an object to multiple types simultaneously using the & operator. This is highly useful for dynamic proxies or lambdas needing multiple marker interfaces. Also, the diamond operator (`<>`) works with anonymous inner classes since Java 9; prior to that, you had to specify the raw type explicitly.'
     },
     {
       type: 'code',
       language: 'java',
-      code: '// Forcing a lambda to be both a Runnable and Serializable\nRunnable r = (Runnable & Serializable) () -> System.out.println("Running");'
+      code: '// Forcing a lambda to be both a Runnable and Serializable\nRunnable r = (Runnable & Serializable) () -> System.out.println("Running");\n\n// Pre-Java 9: diamond with anonymous class was illegal\nList<String> list = new ArrayList<>() { // Java 9+ allows this\n    // custom initializer\n};'
     },
     {
       type: 'section',
-      title: '15. The Generic Singleton Factory Pattern',
+      title: '16. Recursive Type Bounds (Self-Bounding)',
+      content: 'This pattern is frequently used when designing extensible fluent APIs or complex Builder patterns. You solve inheritance breaks by passing the class type into itself.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// The generic parameter B represents the concrete subclass\npublic abstract class VehicleBuilder<B extends VehicleBuilder<B>> {\n    protected String color;\n\n    public B withColor(String color) {\n        this.color = color;\n        return self(); // Returns the specific subclass\n    }\n\n    protected abstract B self(); \n}'
+    },
+    {
+      type: 'section',
+      title: '17. The Generic Singleton Factory Pattern',
       content: 'Because erasure means every parameterization of a generic class shares a single .class file at runtime, a single stateless, immutable instance can safely be reused and re-cast for any type argument the caller needs, rather than allocating a fresh instance per type. Collections.emptyList() and Function.identity() are standard-library examples of this pattern.'
     },
     {
@@ -220,21 +240,21 @@ const problem = defineLearningProblem({
     },
     {
       type: 'table',
-      columns: ['Type Concept', 'Definition', 'Allowed Operations'],
+      columns: ['Type Concept', 'Definition', 'Allowed Operations / Reifiability'],
       rows: [
-        ['Reifiable Types', 'Information is fully available at runtime (e.g., int, String, List, List<?>).', 'Can be used with instanceof and generic array creation.'],
-        ['Non-Reifiable Types', 'Information is lost at runtime due to erasure (e.g., List<String>).', 'Cannot be used with instanceof or generic array creation.'],
-        ['Generic Array via Reflection', 'Component type supplied explicitly at runtime through a Class<T> token.', 'Enables safe generic array creation despite erasure — see the newArray pattern above.']
+        ['Reifiable Types', 'Information is fully available at runtime (e.g., int, String, List, List<?>, List[]).', 'Can be used with instanceof and generic array creation.'],
+        ['Non-Reifiable Types', 'Information is lost at runtime due to erasure (e.g., List<String>, Map<Long, User>).', 'Cannot be used with instanceof or generic array creation (except via reflection with a Class token).'],
+        ['Generic Array via Reflection', 'Component type supplied explicitly at runtime through a Class<T> token (Runtime Type Token).', 'Enables safe generic array creation despite erasure — see the newArray pattern above.']
       ]
     },
     {
       type: 'callout',
       tone: 'success',
       title: 'Memory sentence',
-      content: 'Generics are a compile-time illusion for type safety; at runtime, Type Erasure wipes them away, leaving behind raw types, bridge methods, and the strict rules of PECS — while invariance, wildcard capture, and generic singleton factories are the tools that keep the illusion airtight.'
+      content: 'Generics are a compile-time illusion for type safety; at runtime, Type Erasure wipes them away, leaving behind raw types, bridge methods, and the strict rules of PECS — while invariance, wildcard capture, generic singleton factories, and type tokens (runtime and super) are the tools that keep the illusion airtight.'
     }
   ],
-  explanation: 'A strong understanding of generics moves beyond basic syntax to architectural application. Recognizing how Type Erasure affects runtime behavior, when to apply PECS for API flexibility, why generics are invariant while arrays are covariant, how to capture wildcards for safe mutation, and how to utilize recursive bounds and generic singleton factories are critical skills for senior Java development.',
+  explanation: 'A strong understanding of generics moves beyond basic syntax to architectural application. Recognizing how Type Erasure affects runtime behavior, when to apply PECS (especially with Collections.copy) for API flexibility, why generics are invariant while arrays are covariant, how to capture wildcards for safe mutation, the distinction between type parameters and wildcards in method signatures, and how to utilize recursive bounds, generic singleton factories, and both Runtime and Super Type Tokens are critical skills for senior Java development.',
   metadata: {
     reviewStatus: 'approved',
     visibility: ['dev', 'prod']
