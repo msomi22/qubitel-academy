@@ -15,6 +15,10 @@
     {
       "id": "hashmap-behavior",
       "file": "lessons/hashmap-behavior.js"
+    },
+    {
+      "id": "generics-zero-to-hero",
+      "file": "lessons/generics-zero-to-hero.js"
     }
   ],
   "practice": [
