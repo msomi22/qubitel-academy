@@ -111,9 +111,9 @@ const problem = defineLearningProblem({
       code: '// Common G1 tuning flags — start with the pause-time goal, resist over-tuning further\njava -XX:+UseG1GC \\\n     -XX:MaxGCPauseMillis=200 \\\n     -Xms4g -Xmx4g \\\n     -jar enterprise-service.jar'
     },
     {
-      type: 'section',
-      title: '8. ZGC & Low-Latency Collectors',
-      content: 'ZGC targets sub-millisecond pause times regardless of heap size — from a few gigabytes to multiple terabytes — by performing almost all work (marking, relocating, and reference updates) concurrently with running application threads. It achieves this using colored pointers (metadata bits embedded directly in each reference) and load barriers that transparently redirect a thread to the relocated copy of an object it is reading, entirely avoiding the long stop-the-world compaction pauses that even G1 still requires for its old generation. Generational ZGC (the default since Java 21) adds a young generation to this design, further reducing overhead by collecting short-lived objects separately from long-lived ones, while keeping ZGC\'s near-zero pause guarantee.'
+        type: 'section',
+        title: '8. ZGC & Low-Latency Collectors',
+        content: 'ZGC targets sub-millisecond pause times regardless of heap size — from a few gigabytes to multiple terabytes — by performing almost all work (marking, relocating, and reference updates) concurrently with running application threads. It achieves this using colored pointers (metadata bits embedded directly in each reference) and load barriers that transparently redirect a thread to the relocated copy of an object it is reading, entirely avoiding the long stop-the-world compaction pauses that even G1 still requires for its old generation. Generational ZGC (introduced as an option in Java 21 and made the default mode for ZGC in JDK 23 via JEP 474) adds a young generation to this design, further reducing overhead by collecting short-lived objects separately from long-lived ones, while keeping ZGC\'s near-zero pause guarantee.'
     },
     {
       type: 'comparison',

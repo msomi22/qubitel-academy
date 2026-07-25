@@ -177,9 +177,9 @@ const problem = defineLearningProblem({
       code: '# Stream logs from a pod\nkubectl logs -f java-backend-pod -c java-app\n\n# Show logs from a crashed (previous) container instance\nkubectl logs java-backend-pod --previous\n\n# Execute an interactive shell inside a running container\nkubectl exec -it java-backend-pod -- /bin/sh\n\n# Inspect cluster events sorted by timestamp\nkubectl get events --sort-by=.lastTimestamp\n\n# Describe a pod to inspect its status, events, and probe failures\nkubectl describe pod java-backend-pod\n\n# Check resource usage across the cluster\nkubectl top pod --all-namespaces\nkubectl top nodes'
     },
     {
-      type: 'section',
-      title: '3.3 API Deprecations',
-      content: 'Kubernetes evolves its API surface across versions. The CKAD tests awareness of how to detect and respond to deprecated APIs, for example migrating from extensions/v1beta1 Ingress to networking.k8s.io/v1, or batch/v1beta1 CronJob to batch/v1. Use kubectl deprecations or the kube-no-trouble (kubent) tool to scan manifests for deprecated APIs before upgrading a cluster.'
+        type: 'section',
+        title: '3.3 API Deprecations',
+        content: 'Kubernetes evolves its API surface across versions. The CKAD tests awareness of how to detect and respond to deprecated APIs, for example migrating from extensions/v1beta1 Ingress to networking.k8s.io/v1, or batch/v1beta1 CronJob to batch/v1. Use third-party scanners such as kube-no-trouble (kubent) or Pluto to scan live clusters and static manifests for deprecated APIs before upgrading a cluster.'
     },
     {
       type: 'section',
