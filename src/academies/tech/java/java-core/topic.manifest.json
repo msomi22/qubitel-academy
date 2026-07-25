@@ -19,7 +19,23 @@
     {
       "id": "generics-zero-to-hero",
       "file": "lessons/generics-zero-to-hero.js"
-    }
+    },
+     {
+     "id": "java-core-concurrency-zero-to-hero",
+     "file": "lessons/concurrency-zero-to-hero.js"
+    },
+    {
+     "id": "java-core-streams-functional-interfaces-zero-to-hero",
+     "file": "lessons/streams-and-functional-interfaces-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-memory-model-garbage-collection-zero-to-hero",
+    "file": "lessons/memory-model-garbage-collection-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-equals-hashcode-immutability-zero-to-hero",
+    "file": "lessons/equals-hashcode-immutability-zero-to-hero.js"
+   }
   ],
   "practice": [
     {

@@ -11,6 +11,10 @@
     {
       "id": "ckad-preparation-cloud-lab-setup-001",
       "file": "lessons/ckad-preparation-cloud-lab-setup-001.js"
+    },
+    {
+     "id": "java-core-ckad-kubernetes-application-developer-masterclass",
+      "file": "lessons/ckad-kubernetes-application-developer-masterclass.js"
     }
   ],
   "practice": [],
