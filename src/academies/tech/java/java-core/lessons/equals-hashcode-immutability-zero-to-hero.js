@@ -216,7 +216,7 @@ const problem = defineLearningProblem({
     {
       type: 'code',
       language: 'java',
-      code: 'Integer a = 127;\nInteger b = 127;\nSystem.out.println(a == b); // true — both draw from the cached Integer pool (-128 to 127)\n\nInteger c = 128;\nInteger d = 128;\nSystem.out.println(c == d); // false — outside the cache range, two distinct objects\n\n// Always compare value-based classes with equals(), never ==\nSystem.out.println(c.equals(d)); // true, and the only reliable answer\n\n// Float.NaN special case: NaN != NaN, but equals() returns true for NaN\nFloat.NaN == Float.NaN // false\nFloat.NaN.equals(Float.NaN) // true'
+      code: 'Integer a = 127;\nInteger b = 127;\nSystem.out.println(a == b); // true — both draw from the cached Integer pool (-128 to 127)\n\nInteger c = 128;\nInteger d = 128;\nSystem.out.println(c == d); // false — outside the cache range, two distinct objects\n\n// Always compare value-based classes with equals(), never ==\nSystem.out.println(c.equals(d)); // true, and the only reliable answer\n\n// Float.NaN special case: NaN != NaN, but Float.equals() returns true for NaN\nFloat.NaN == Float.NaN // false\nFloat.valueOf(Float.NaN).equals(Float.NaN) // true — boxing is required'
     },
     {
       type: 'callout',

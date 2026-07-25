@@ -142,12 +142,12 @@ const problem = defineLearningProblem({
     {
       type: 'section',
       title: 'Modern Functional Methods: computeIfAbsent, merge, putIfAbsent',
-      content: 'Java 8 added functional methods that simplify common patterns and, when used correctly, are more efficient than manual checks. `computeIfAbsent` atomically computes a value only if the key is absent. `merge` combines existing and new values for a given key. `putIfAbsent` inserts only if the key is not already present, avoiding race conditions in concurrent scenarios (though for true concurrency, use ConcurrentHashMap).'
+      content: 'Java 8 added functional methods that simplify common patterns and reduce boilerplate. Methods like `computeIfAbsent`, `merge`, and `putIfAbsent` are convenient for single‑threaded code, but **they are not atomic** in a `HashMap` — they do not provide any synchronization or concurrency guarantees. In a single‑threaded context they are safe and useful; for concurrent access, always use `ConcurrentHashMap`, which provides atomic versions of these methods (e.g., `computeIfAbsent`, `merge`, `putIfAbsent` are atomic in `ConcurrentHashMap`). Using these methods on a plain `HashMap` in a multi‑threaded environment can lead to corruption, lost updates, and race conditions.'
     },
     {
       type: 'code',
       language: 'java',
-      code: '// Lazy initialization of an entry — compute only once\nMap<String, List<String>> usersByRole = new HashMap<>();\nusersByRole.computeIfAbsent("admin", k -> new ArrayList<>()).add("alice");\n\n// Atomic merge — sum quantities\nMap<String, Integer> inventory = new HashMap<>();\ninventory.merge("SKU-001", 5, Integer::sum); // quantity = 5\ninventory.merge("SKU-001", 3, Integer::sum); // quantity = 8\n\n// putIfAbsent — only insert if absent\nMap<String, Connection> cache = new HashMap<>();\ncache.putIfAbsent("db-primary", createConnection("db-primary"));'
+      code: '// These are convenience methods, not concurrency primitives — use them only in single-threaded code\nMap<String, List<String>> usersByRole = new HashMap<>();\nusersByRole.computeIfAbsent("admin", k -> new ArrayList<>()).add("alice");\n\nMap<String, Integer> inventory = new HashMap<>();\ninventory.merge("SKU-001", 5, Integer::sum); // quantity = 5\ninventory.merge("SKU-001", 3, Integer::sum); // quantity = 8\n\n// putIfAbsent — only insert if absent\nMap<String, Connection> cache = new HashMap<>();\ncache.putIfAbsent("db-primary", createConnection("db-primary"));\n\n// For concurrent use, always switch to ConcurrentHashMap\nConcurrentHashMap<String, Integer> concurrentInventory = new ConcurrentHashMap<>();\nconcurrentInventory.merge("SKU-001", 5, Integer::sum); // Atomic and thread-safe'
     },
     {
       type: 'section',
@@ -193,7 +193,7 @@ const problem = defineLearningProblem({
         'Warn against mutable keys with a concrete example.',
         'Connect equals() and hashCode(): equal objects must have equal hash codes.',
         'Mention null key support and get() ambiguity with getOrDefault().',
-        'Cover modern functional methods: computeIfAbsent, merge, putIfAbsent.',
+        'Cover modern functional methods: computeIfAbsent, merge, putIfAbsent, noting they are not atomic in HashMap.',
         'Mention iteration patterns and ConcurrentModificationException.',
         'Compare with LinkedHashMap, TreeMap, and ConcurrentHashMap.'
       ]
@@ -205,7 +205,7 @@ const problem = defineLearningProblem({
       content: 'A Java HashMap uses hashing to jump near the answer and equality to confirm the exact key. It handles collisions with linked lists, upgrading to balanced trees in Java 8+ when buckets get crowded. It resizes at the load factor (default 0.75) and rehashes all entries. Keys must be immutable or effectively immutable, and equal keys must have equal hash codes. Use ConcurrentHashMap for concurrency, LinkedHashMap for order, and TreeMap for sorting. Set initial capacity when you know the size to avoid expensive resizing.'
     }
   ],
-  explanation: 'A comprehensive masterclass covering HashMap internal structure, hash mixing, bucket selection via bitwise AND, Java 8 treeification for collision resistance, load factor and resizing mechanics, the hash() mixing function, null key handling, key immutability requirements, functional methods (computeIfAbsent, merge, putIfAbsent), iteration patterns, comparisons with alternative maps, and common production anti-patterns.',
+  explanation: 'A comprehensive masterclass covering HashMap internal structure, hash mixing, bucket selection via bitwise AND, Java 8 treeification for collision resistance, load factor and resizing mechanics, the hash() mixing function, null key handling, key immutability requirements, functional methods (computeIfAbsent, merge, putIfAbsent) with clarity that they are not atomic in HashMap, iteration patterns, comparisons with alternative maps, and common production anti-patterns.',
   metadata: {
     reviewStatus: 'approved',
     visibility: ['dev', 'prod']

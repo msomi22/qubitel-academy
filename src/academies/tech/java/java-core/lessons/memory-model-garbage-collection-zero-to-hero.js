@@ -119,12 +119,12 @@ const problem = defineLearningProblem({
       type: 'callout',
       tone: 'info',
       title: 'G1 Pitfall: Humongous Objects',
-      content: 'Any object larger than 50% of a G1 region is allocated directly in the Old Generation as a "humongous" object, bypassing Eden and Survivor spaces entirely. Humongous allocations do not benefit from G1\'s normal compaction algorithms and can fragment the heap. If many humongous allocations occur, they can prematurely trigger Full GCs. Monitor with `-XX:+PrintAdaptiveSizePolicy` and consider reducing `-XX:G1HeapRegionSize` if your application routinely creates large objects.'
+      content: 'Any object larger than 50% of a G1 region is allocated directly in the Old Generation as a "humongous" object, bypassing Eden and Survivor spaces entirely. Humongous allocations do not benefit from G1\'s normal compaction algorithms and can fragment the heap. If many humongous allocations occur, they can prematurely trigger Full GCs. To mitigate this, you have two main options:\n\n1. **Increase** the region size (via `-XX:G1HeapRegionSize`) to raise the 50% threshold, so your large objects no longer cross the humongous boundary. Region sizes must be a power of two between 1MB and 32MB; the JVM chooses a default based on the heap size.\n2. **Reduce the allocation size** in your application — for example, by splitting large buffers or using more efficient data structures.\n\n**Important:** Reducing the region size does the opposite — it lowers the threshold and makes more objects humongous. Avoid that tuning direction unless you specifically want to reduce the region size for other reasons (e.g., to improve memory footprint), but be aware of the increased humongous allocation risk.\n\nMonitor humongous allocations with `-XX:+PrintAdaptiveSizePolicy` or GC logs.'
     },
     {
       type: 'code',
       language: 'java',
-      code: '// Common G1 tuning flags — start with the pause-time goal, resist over-tuning further\njava -XX:+UseG1GC \\\n     -XX:MaxGCPauseMillis=200 \\\n     -Xms4g -Xmx4g \\\n     -jar enterprise-service.jar'
+      code: '// Common G1 tuning flags — start with the pause-time goal, resist over-tuning further\njava -XX:+UseG1GC \\\n     -XX:MaxGCPauseMillis=200 \\\n     -Xms4g -Xmx4g \\\n     -jar enterprise-service.jar\n\n// If you have large objects that routinely become humongous, consider increasing region size:\njava -XX:+UseG1GC -XX:G1HeapRegionSize=16m -Xmx8g ...'
     },
     {
         type: 'section',

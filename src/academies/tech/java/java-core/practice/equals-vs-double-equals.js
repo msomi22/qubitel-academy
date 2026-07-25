@@ -17,7 +17,7 @@ const problem = defineMcqProblem({
   mentalPicture: 'Imagine two separate boxes with the same label inside. == asks whether both variables point to the exact same box. equals() can ask whether the labels inside the boxes mean the same value. String interning is like having a shared box pool: if you ask for "Java", you might get the same shared box every time.',
   visualExplanation: 'Reference vs value meaning, with the interning caveat:\n\na -> String object #1 containing "Java" (from new String())\nb -> String object #2 containing "Java" (from new String())\n\na == b       -> false, because they are different objects\na.equals(b) -> true, because String compares the text value\n\nBut with interned literals:\n\nc -> interned "Java"\nd -> interned "Java"\nc == d       -> true, because both point to the same interned instance\nc.equals(d) -> true, obviously\n\nMoral: == works for interned strings, but never rely on it for content comparison.',
   productionReality: 'In production Java code, using == for object content can create subtle bugs in authentication checks, request validation, cache keys, tests, and business rules. For object meaning, use equals() and make sure domain classes implement equals() and hashCode() consistently. In modern Java, use Objects.equals(a, b) for null‑safe equality checks. For BigDecimal, use compareTo() instead of equals() because equals() also compares scale (2.0 vs 2.00 are not equal).',
-  commonMistake: 'A common mistake is seeing == work for some string literals and assuming it compares text. That happens because of string interning (the JVM caches literal strings), but it is not the rule to rely on for object content. Another mistake is using == on String objects created with new String() and expecting them to be equal, or using == on StringBuffer/StringBuilder (which don\'t override equals()).',
+  commonMistake: 'A common mistake is seeing == work for some string literals and assuming it compares text. That happens because of string interning (the JVM caches literal strings), but it is not the rule to rely on for object content. Another mistake is using == on String objects created with new String() and expecting them to be equal, or using == on StringBuffer/StringBuilder (which don\'t override equals()). For BigDecimal, another common mistake is using equals() when compareTo() is needed for numerical equality.',
   finalTakeaway: 'For objects, == compares identity; equals() compares logical meaning when the class implements it correctly. Use equals() for content, except for BigDecimal where compareTo() is preferred. Use Objects.equals() for null‑safe comparisons. Never rely on == for object content, even if it appears to work due to interning.',
   tags: ['java', 'objects', 'equality', 'string-interning'],
   rendering: {
@@ -76,12 +76,12 @@ const problem = defineMcqProblem({
     {
       type: 'section',
       title: 'Special Cases: BigDecimal, StringBuilder, and Arrays',
-      content: 'Some Java types have surprising equals() behavior:\n- `BigDecimal` compares both value AND scale — `new BigDecimal("2.0").equals(new BigDecimal("2.00"))` returns `false`, even though the values are mathematically equal. Use `compareTo()` for numerical equality.\n- `StringBuilder` and `StringBuffer` do NOT override `equals()` — they inherit from Object, so equals() behaves like ==. Compare their content by converting to String first.\n- Arrays do NOT override equals() — use `Arrays.equals()` for array content.'
+      content: 'Some Java types have surprising equals() behavior:\n- `BigDecimal` compares both value AND scale — `new BigDecimal("2.0").equals(new BigDecimal("2.00"))` returns `false`, even though the values are mathematically equal. Use `compareTo()` for numerical equality (e.g., `a.compareTo(b) == 0`).\n- `StringBuilder` and `StringBuffer` do NOT override `equals()` — they inherit from Object, so equals() behaves like ==. Compare their content by converting to String first.\n- Arrays do NOT override equals() — use `Arrays.equals()` for array content.'
     },
     {
       type: 'code',
       language: 'java',
-      code: '// BigDecimal surprise\nBigDecimal twoPointZero = new BigDecimal("2.0");\nBigDecimal twoPointZeroZero = new BigDecimal("2.00");\n\nSystem.out.println(twoPointZero.equals(twoPointZeroZero)); // false — scale differs!\nSystem.out.println(twoPointZero.compareTo(twoPointZeroZero)); // true — values are equal\n\n// StringBuilder does not override equals()\nStringBuilder sb1 = new StringBuilder("Hello");\nStringBuilder sb2 = new StringBuilder("Hello");\nSystem.out.println(sb1.equals(sb2)); // false — different objects, even with same content\n\n// Arrays do not override equals()\nint[] arr1 = {1, 2, 3};\nint[] arr2 = {1, 2, 3};\nSystem.out.println(arr1.equals(arr2)); // false — Arrays.equals() is needed\nSystem.out.println(Arrays.equals(arr1, arr2)); // true'
+      code: '// BigDecimal surprise\nBigDecimal twoPointZero = new BigDecimal("2.0");\nBigDecimal twoPointZeroZero = new BigDecimal("2.00");\n\nSystem.out.println(twoPointZero.equals(twoPointZeroZero)); // false — scale differs!\nSystem.out.println(twoPointZero.compareTo(twoPointZeroZero) == 0); // true — values are equal\n\n// StringBuilder does not override equals()\nStringBuilder sb1 = new StringBuilder("Hello");\nStringBuilder sb2 = new StringBuilder("Hello");\nSystem.out.println(sb1.equals(sb2)); // false — different objects, even with same content\n\n// Arrays do not override equals()\nint[] arr1 = {1, 2, 3};\nint[] arr2 = {1, 2, 3};\nSystem.out.println(arr1.equals(arr2)); // false — Arrays.equals() is needed\nSystem.out.println(Arrays.equals(arr1, arr2)); // true'
     },
     {
       type: 'callout',
@@ -98,7 +98,7 @@ const problem = defineMcqProblem({
         'For objects, equals() can compare meaning, if the class implemented it properly.',
         'For String content, prefer equals() — not ==, even if == sometimes works due to interning.',
         'Use Objects.equals(a, b) for null‑safe comparisons.',
-        'For BigDecimal, use compareTo() for numerical equality.',
+        'For BigDecimal, use compareTo() == 0 for numerical equality.',
         'For arrays, use Arrays.equals() or Arrays.deepEquals().',
         'StringBuilder and StringBuffer do NOT override equals().',
         'If you override equals(), override hashCode() too.'
@@ -108,7 +108,7 @@ const problem = defineMcqProblem({
       type: 'callout',
       tone: 'success',
       title: 'Interview‑Ready Summary',
-      content: '== compares object references; equals() compares logical content when properly overridden. String literals are interned, so == can appear to work for them — never rely on this. Use Objects.equals() for null‑safe equality. BigDecimal uses compareTo() for numerical equality. Arrays and StringBuilder require special handling. Always override hashCode() when overriding equals().'
+      content: '== compares object references; equals() compares logical content when properly overridden. String literals are interned, so == can appear to work for them — never rely on this. Use Objects.equals() for null‑safe equality. BigDecimal uses compareTo() == 0 for numerical equality. Arrays and StringBuilder require special handling. Always override hashCode() when overriding equals().'
     }
   ],
   metadata: {
