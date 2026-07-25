@@ -61,11 +61,11 @@ const problem = defineLearningProblem({
       type: 'comparison',
       items: [
         {
-          title: 'Producer Extends',
+          label: 'Producer Extends',
           content: 'If your method reads data OUT of a generic structure, that structure is a Producer. Use <? extends T>.'
         },
         {
-          title: 'Consumer Super',
+          label: 'Consumer Super',
           content: 'If your method puts data INTO a generic structure, it is a Consumer. Use <? super T>.'
         }
       ]
