@@ -3,7 +3,7 @@ import { defineLearningProblem } from '../../../../../problems/problemAuthoring.
 const problem = defineLearningProblem({
   id: 'java-core-hashmap-behavior-001',
   topicId: 'java-core',
-  title: 'HashMap Behavior: From Zero to Hero',
+  title: 'HashMap Behavior at a High Level',
   difficulty: 'Medium',
   prompt: 'A rigorous, production-grade masterclass on Java HashMap internals, dissecting hashing, bucket selection, equality checks, collisions, Java 8 treeification, load factor and resizing, null handling, key design principles, functional methods (computeIfAbsent, merge), iteration patterns, and common production anti-patterns.',
   tags: ['java', 'collections', 'hashmap', 'hashing', 'performance'],

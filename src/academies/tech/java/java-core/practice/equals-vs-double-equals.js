@@ -3,7 +3,7 @@ import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
 const problem = defineMcqProblem({
   id: 'java-core-equals-vs-double-equals-001',
   topicId: 'java-core',
-  title: 'equals() vs ==: The Definitive Guide',
+  title: 'equals() vs ==',
   difficulty: 'Easy',
   prompt: 'Two different String objects both contain the text "Java". In Java, what is the best simple explanation of == versus equals() for objects, and why does == sometimes appear to work for strings?',
   options: [

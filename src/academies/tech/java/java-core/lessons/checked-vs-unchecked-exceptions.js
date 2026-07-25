@@ -3,7 +3,7 @@ import { defineLearningProblem } from '../../../../../problems/problemAuthoring.
 const problem = defineLearningProblem({
   id: 'java-core-checked-vs-unchecked-exceptions-001',
   topicId: 'java-core',
-  title: 'Checked vs Unchecked Exceptions: From Zero to Hero',
+  title: 'Checked vs Unchecked Exceptions',
   difficulty: 'Medium',
   prompt: 'A rigorous, production-grade masterclass on Java exception handling, dissecting checked vs unchecked exception contracts, try-catch-finally semantics, suppression, try-with-resources, exception chaining, multi-catch, catch ordering, custom exception design, exception wrapping patterns, handling exceptions in lambdas, performance considerations, and API design best practices.',
   tags: ['java', 'exceptions', 'api-design', 'error-handling', 'try-with-resources'],

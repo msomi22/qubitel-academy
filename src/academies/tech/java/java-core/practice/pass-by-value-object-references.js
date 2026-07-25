@@ -3,7 +3,7 @@ import { defineMcqProblem } from '../../../../../problems/problemAuthoring.js';
 const problem = defineMcqProblem({
   id: 'java-core-pass-by-value-object-references-001',
   topicId: 'java-core',
-  title: 'Java Pass‑by‑Value and Object References',
+  title: 'Java Pass-by-Value and Object References',
   difficulty: 'Medium',
   prompt: 'A method receives a Dog object reference, then reassigns the method parameter to a new Dog. What is printed, and what happens to the caller\'s original dog variable? Explain why reassigning the parameter does not affect the caller, but mutating the object does.',
   options: [
