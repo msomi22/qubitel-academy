@@ -10,7 +10,7 @@ const problem = defineLearningProblem({
   rendering: {
     variant: 'deep-dive',
     density: 'detailed',
-    accent: 'emerald'
+    accent: 'green'
   },
   body: [
     {
