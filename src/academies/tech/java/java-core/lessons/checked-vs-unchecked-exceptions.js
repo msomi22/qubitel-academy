@@ -5,8 +5,8 @@ const problem = defineLearningProblem({
   topicId: 'java-core',
   title: 'Checked vs Unchecked Exceptions',
   difficulty: 'Medium',
-  prompt: 'A rigorous, production-grade masterclass on Java exception handling, dissecting checked vs unchecked exception contracts, try-catch-finally semantics, suppression, try-with-resources, exception chaining, multi-catch, catch ordering, custom exception design, exception wrapping patterns, handling exceptions in lambdas, performance considerations, and API design best practices.',
-  tags: ['java', 'exceptions', 'api-design', 'error-handling', 'try-with-resources'],
+  prompt: 'A rigorous, production-grade masterclass on Java exception handling, dissecting checked vs unchecked exception contracts, try-catch-finally semantics, suppression, try-with-resources, exception chaining, multi-catch, catch ordering, custom exception design, exception wrapping patterns, handling exceptions in lambdas, uncaught exception handlers, performance considerations, and API design best practices.',
+  tags: ['java', 'exceptions', 'api-design', 'error-handling', 'try-with-resources', 'threads'],
   rendering: {
     variant: 'deep-dive',
     density: 'detailed',
@@ -90,6 +90,17 @@ const problem = defineLearningProblem({
       code: '// Before Java 7 — manual resource cleanup with loss of the original exception\nInputStream in = null;\ntry {\n    in = new FileInputStream("data.txt");\n    // ... use in, may throw\n} finally {\n    if (in != null) {\n        in.close(); // If THIS throws, the original exception from the try block is LOST\n    }\n}\n// The original exception is gone — only the close() exception is thrown\n\n// Manual preservation pattern (pre-Java 7)\nThrowable saved = null;\ntry {\n    // ... use resource\n} catch (Throwable t) {\n    saved = t;\n    throw t;\n} finally {\n    try {\n        if (in != null) in.close();\n    } catch (Throwable t) {\n        if (saved != null) {\n            saved.addSuppressed(t); // Preserve the close exception as suppressed\n        } else {\n            throw t;\n        }\n    }\n}\n\n// Modern try-with-resources — suppresses correctly, the original exception is always primary\ntry (InputStream in = new FileInputStream("data.txt")) {\n    // ... use in\n} catch (IOException e) {\n    // The primary exception is from the try block, but close() exceptions are SUPPRESSED\n    for (Throwable suppressed : e.getSuppressed()) {\n        logger.error("Suppressed: ", suppressed);\n    }\n}'
     },
     {
+      type: 'callout',
+      tone: 'warning',
+      title: 'The `finally` `return` Trap',
+      content: 'If a `finally` block contains a `return` statement, it overrides any `return` or exception from the `try` block. This can silently swallow exceptions and return unexpected values. Never put a `return` in a `finally` block unless you have an extremely specific reason and fully understand the consequences.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Dangerous — swallows the exception\nint divide(int a, int b) {\n    try {\n        return a / b;\n    } finally {\n        return 0; // If b == 0, ArithmeticException is thrown, but this return overrides it!\n    }\n}\n\n// Result: divide(10, 0) returns 0, no exception!\n\n// Correct — never return from finally\nint divideSafe(int a, int b) {\n    try {\n        return a / b;\n    } finally {\n        // Clean up resources, but never return or throw\n    }\n}'
+    },
+    {
       type: 'section',
       title: 'Try-With-Resources: The Modern Standard',
       content: 'Java 7 introduced try-with-resources, which automatically closes any resource that implements `AutoCloseable`. The resources are closed in reverse order of declaration. If a resource throws an exception during closing, it is added as a suppressed exception to the primary exception. This is the only correct way to manage resources like streams, connections, or files in modern Java.'
@@ -138,6 +149,16 @@ const problem = defineLearningProblem({
       type: 'code',
       language: 'java',
       code: '// Acceptable: catch Exception at an outer boundary to log and then rethrow\npublic void processRequest(Request req) {\n    try {\n        // ... business logic that throws various exceptions\n    } catch (Exception e) {\n        logger.error("Request processing failed", e);\n        throw new ServiceException("Processing error", e);\n    }\n}\n\n// Dangerous: catching Throwable hides severe JVM errors\n/*\ntry {\n    // ... operation\n} catch (Throwable t) {\n    // This catches OutOfMemoryError, StackOverflowError, etc.\n    // The JVM is likely in an unstable state — catching this is usually a mistake\n}\n*/'
+    },
+    {
+      type: 'section',
+      title: 'Uncaught Exception Handlers: Don\'t Let Threads Die Silently',
+      content: 'When an exception propagates to the top of a thread and is not caught, the thread terminates and the exception is printed to `System.err` — but in a production environment with thread pools, that output is often lost or ignored. To capture every unhandled exception across the entire application, set a `Thread.UncaughtExceptionHandler` at the thread or global level. This is especially critical in server environments where a single failed request should never vanish without a trace.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Global handler for all threads\nThread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {\n    logger.error("Unhandled exception in thread: {}", thread.getName(), throwable);\n    // Optionally: send alert, write to dead-letter queue, etc.\n});\n\n// Handler for a specific thread pool\nExecutorService executor = Executors.newFixedThreadPool(4);\nThreadFactory factory = Thread.ofVirtual()\n    .uncaughtExceptionHandler((thread, throwable) -> {\n        logger.error("Virtual thread failed: {}", thread.getName(), throwable);\n    })\n    .factory();\n\n// Without a handler, an uncaught exception would silently kill the thread\n// With the handler, it\'s logged and the thread is cleaned up gracefully.'
     },
     {
       type: 'comparison',
@@ -219,17 +240,19 @@ const problem = defineLearningProblem({
         'Multi-catch reduces duplication; catch order is specific to general.',
         'Never catch Throwable or Error in application code without a very specific reason.',
         'Preserve exception causes via chaining to maintain debugging context.',
-        'Do not use exceptions for flow control — they are expensive.'
+        'Do not use exceptions for flow control — they are expensive.',
+        'Set uncaught exception handlers for production threads to log failures that would otherwise vanish.',
+        'Never return from a finally block — it swallows exceptions and overrides return values.'
       ]
     },
     {
       type: 'callout',
       tone: 'success',
       title: 'Memory sentence',
-      content: 'Checked means the compiler says, "Handle this or declare it." Unchecked means the compiler says, "This may happen, but I will not force every caller to catch it." Use checked for recoverable failures, unchecked for programming errors, and always preserve the cause for debugging.'
+      content: 'Checked means the compiler says, "Handle this or declare it." Unchecked means the compiler says, "This may happen, but I will not force every caller to catch it." Use checked for recoverable failures, unchecked for programming errors, and always preserve the cause for debugging. In production, capture every unhandled thread exception with a handler, and never return from `finally`.'
     }
   ],
-  explanation: 'A comprehensive, enterprise-grade masterclass covering the checked vs unchecked exception contract, throw vs throws distinction, try-catch-finally semantics, exception suppression, try-with-resources with multiple resources and suppressed exceptions, exception chaining via cause, multi-catch, catch ordering, custom exception design with cause constructors, exception wrapping and translation patterns, handling exceptions in lambdas, performance considerations, and API design best practices.',
+  explanation: 'A comprehensive, enterprise-grade masterclass covering the checked vs unchecked exception contract, throw vs throws distinction, try-catch-finally semantics, exception suppression, try-with-resources with multiple resources and suppressed exceptions, exception chaining via cause, multi-catch, catch ordering, custom exception design with cause constructors, exception wrapping and translation patterns, handling exceptions in lambdas, uncaught exception handlers for threads, performance considerations, and API design best practices.',
   metadata: {
     reviewStatus: 'approved',
     visibility: ['dev', 'prod']

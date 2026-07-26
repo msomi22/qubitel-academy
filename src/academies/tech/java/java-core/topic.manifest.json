@@ -35,6 +35,10 @@
    {
     "id": "java-core-equals-hashcode-immutability-zero-to-hero",
     "file": "lessons/equals-hashcode-immutability-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-design-patterns-zero-to-hero",
+    "file": "lessons/design-patterns-zero-to-hero.js"
    }
   ],
   "practice": [
