@@ -39,6 +39,14 @@
    {
     "id": "java-core-design-patterns-zero-to-hero",
     "file": "lessons/design-patterns-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-java-21-zero-to-hero",
+    "file": "lessons/java-21-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-java-26-zero-to-hero",
+    "file": "lessons/java-26-zero-to-hero.js"
    }
   ],
   "practice": [
