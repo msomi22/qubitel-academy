@@ -17,7 +17,8 @@ export const academyRegistry: Record<AcademyId, AcademyConfig> = {
       'kubernetes-ckad',
       'aptitude',
       'ml-ai',
-      'engineering-leadership'
+      'engineering-leadership',
+      'itil'
     ]
   },
 

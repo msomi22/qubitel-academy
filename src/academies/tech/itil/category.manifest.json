@@ -1,0 +1,21 @@
+{
+    "id": "itil",
+    "shortName": "ITIL",
+    "description": "ITIL 5 Foundation certification and IT service management practice covering digital product and service management, the ITIL Value System, AI governance, and modern service operations.",
+    "domain": "IT Service Management",
+    "tags": [
+      "itil",
+      "itsm",
+      "service-management",
+      "certification",
+      "governance",
+      "ai-governance"
+    ],
+    "route": "/category/itil",
+    "featured": true,
+    "displayName": "ITIL / ITSM",
+    "academy": "tech",
+    "topics": [
+      "itil-foundation"
+    ]
+  }

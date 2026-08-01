@@ -1,0 +1,14 @@
+{
+    "id": "itil-foundation",
+    "category": "itil",
+    "displayName": "ITIL Foundation",
+    "academy": "tech",
+    "lessons": [
+      {
+        "id": "itil-5-foundation-certification-guide",
+        "file": "lessons/foundation-certification-guide.js"
+      }
+    ],
+    "practice": [],
+    "assessments": []
+  }
