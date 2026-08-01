@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { tokenizeGlossaryText } from '../../utils/glossary/glossaryTokenizer.js';
 import GlossaryTerm from './GlossaryTerm.jsx';
 
-export default function GlossaryProvider({ enabled = true, text }) {
+export default function GlossaryProvider({ enabled = false, text }) {
   const tokens = useMemo(() => tokenizeGlossaryText(text, { enabled }), [enabled, text]);
 
   if (typeof text !== 'string') return null;
