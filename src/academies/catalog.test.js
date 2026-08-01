@@ -37,8 +37,8 @@ function walk(directory) {
 
 test('academy manifests build a valid active tech catalog', () => {
   assert.equal(manifestValidation.valid, true);
-  assert.equal(techCatalog.categories.length, 7);
-  assert.equal(techCatalog.topics.length, 27);
+  assert.equal(techCatalog.categories.length, 8);
+  assert.equal(techCatalog.topics.length, 28);
   assert.equal(getAcademyCatalog('missing'), techCatalog);
 });
 

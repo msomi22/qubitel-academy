@@ -39,6 +39,8 @@ import tech_dsa_two_pointers_topic from './tech/dsa/two-pointers/topic.manifest.
 import tech_dsa_union_find_topic from './tech/dsa/union-find/topic.manifest.json' with { type: 'json' };
 import tech_engineering_leadership_category from './tech/engineering-leadership/category.manifest.json' with { type: 'json' };
 import tech_engineering_leadership_management_track_topic from './tech/engineering-leadership/management-track/topic.manifest.json' with { type: 'json' };
+import tech_itil_category from './tech/itil/category.manifest.json' with { type: 'json' };
+import tech_itil_itil_foundation_topic from './tech/itil/itil-foundation/topic.manifest.json' with { type: 'json' };
 import tech_java_category from './tech/java/category.manifest.json' with { type: 'json' };
 import tech_java_java_core_topic from './tech/java/java-core/topic.manifest.json' with { type: 'json' };
 import tech_kubernetes_ckad_category from './tech/kubernetes-ckad/category.manifest.json' with { type: 'json' };
@@ -66,6 +68,7 @@ export const categoryManifestRecords = [
   { path: './tech/aptitude/category.manifest.json', manifest: tech_aptitude_category },
   { path: './tech/dsa/category.manifest.json', manifest: tech_dsa_category },
   { path: './tech/engineering-leadership/category.manifest.json', manifest: tech_engineering_leadership_category },
+  { path: './tech/itil/category.manifest.json', manifest: tech_itil_category },
   { path: './tech/java/category.manifest.json', manifest: tech_java_category },
   { path: './tech/kubernetes-ckad/category.manifest.json', manifest: tech_kubernetes_ckad_category },
   { path: './tech/ml-ai/category.manifest.json', manifest: tech_ml_ai_category },
@@ -104,6 +107,7 @@ export const topicManifestRecords = [
   { path: './tech/dsa/two-pointers/topic.manifest.json', manifest: tech_dsa_two_pointers_topic },
   { path: './tech/dsa/union-find/topic.manifest.json', manifest: tech_dsa_union_find_topic },
   { path: './tech/engineering-leadership/management-track/topic.manifest.json', manifest: tech_engineering_leadership_management_track_topic },
+  { path: './tech/itil/itil-foundation/topic.manifest.json', manifest: tech_itil_itil_foundation_topic },
   { path: './tech/java/java-core/topic.manifest.json', manifest: tech_java_java_core_topic },
   { path: './tech/kubernetes-ckad/ckad-preparation/topic.manifest.json', manifest: tech_kubernetes_ckad_ckad_preparation_topic },
   { path: './tech/kubernetes-ckad/workloads-services/topic.manifest.json', manifest: tech_kubernetes_ckad_workloads_services_topic },
