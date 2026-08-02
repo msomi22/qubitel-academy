@@ -468,7 +468,7 @@
   /* Matches .progress-table-card padding/border-radius from progress-table.css */
 }
 
-/* Disabled premium category card — visible but muted */
+/* Shared disabled category behavior remains authoritative outside grade cards. */
 .premium-category-card.is-disabled {
   cursor: not-allowed;
   opacity: 0.65;
@@ -489,4 +489,303 @@
   border-color: color-mix(in srgb, var(--muted) 48%, transparent);
   background: color-mix(in srgb, var(--muted) 16%, transparent);
   color: var(--muted);
+}
+
+/* Grade picker cards: scoped so generic category cards retain their shared layout. */
+.grades-page .grade-picker-card {
+  --grade-card-surface: color-mix(in srgb, var(--card, var(--bg-card)) 94%, #fff 2%);
+  --grade-card-border: color-mix(in srgb, var(--line, var(--border)) 86%, var(--category-accent) 14%);
+  --grade-card-title: var(--text, var(--text-primary));
+  --grade-card-copy: color-mix(in srgb, var(--muted, var(--text-secondary)) 90%, var(--grade-card-title) 10%);
+  --grade-card-icon-surface: color-mix(in srgb, var(--line, var(--border)) 56%, var(--card, var(--bg-card)) 44%);
+  --grade-card-icon-border: color-mix(in srgb, var(--line, var(--border)) 86%, #fff 14%);
+  --grade-card-badge-surface: color-mix(in srgb, var(--muted, var(--text-secondary)) 12%, transparent);
+  --grade-card-badge-border: color-mix(in srgb, var(--muted, var(--text-secondary)) 44%, transparent);
+  --grade-card-badge-text: var(--muted, var(--text-secondary));
+  grid-template-columns: 60px minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  min-height: 158px;
+  gap: 14px;
+  padding: 16px;
+  border-color: var(--grade-card-border);
+  background:
+    radial-gradient(circle at 8% 10%, color-mix(in srgb, var(--category-accent) 8%, transparent), transparent 46%),
+    var(--grade-card-surface);
+}
+
+.grades-page .grade-picker-card__icon-tile {
+  display: grid;
+  width: 60px;
+  height: 60px;
+  place-items: center;
+  border: 1px solid var(--grade-card-icon-border);
+  border-radius: 14px;
+  background: var(--grade-card-icon-surface);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 14%, transparent);
+}
+
+.grades-page .grade-picker-card__icon {
+  display: block;
+  font-size: 36px;
+  line-height: 1;
+  filter: saturate(0.86);
+}
+
+.grades-page .grade-picker-card__content {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  gap: 4px;
+  padding-right: 42px;
+}
+
+.grades-page .grade-picker-card__title {
+  display: block;
+  overflow: visible;
+  color: var(--grade-card-title);
+  font-size: clamp(1rem, 1.35vw, 1.12rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.grades-page .grade-picker-card__domain {
+  color: var(--category-accent);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.grades-page .grade-picker-card__summary {
+  display: -webkit-box;
+  min-width: 0;
+  margin-top: 7px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--grade-card-copy);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.grades-page .grade-picker-card__badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+  padding: 4px 7px;
+  border: 1px solid var(--grade-card-badge-border);
+  border-radius: 999px;
+  background: var(--grade-card-badge-surface);
+  color: var(--grade-card-badge-text);
+  font-size: 0.62rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.grades-page .grade-picker-card__arrow {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  color: var(--category-accent);
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.grades-page .grade-picker-card.is-available {
+  --grade-card-border: color-mix(in srgb, var(--category-accent) 68%, var(--line, var(--border)) 32%);
+  --grade-card-icon-surface: color-mix(in srgb, var(--category-accent) 28%, var(--card, var(--bg-card)) 72%);
+  --grade-card-icon-border: color-mix(in srgb, var(--category-accent) 74%, transparent);
+  --grade-card-badge-surface: color-mix(in srgb, var(--category-accent) 18%, transparent);
+  --grade-card-badge-border: color-mix(in srgb, var(--category-accent) 62%, transparent);
+  --grade-card-badge-text: color-mix(in srgb, var(--category-accent) 82%, var(--grade-card-title) 18%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #fff 10%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--category-accent) 13%, transparent),
+    0 14px 32px rgb(0 0 0 / 0.14);
+}
+
+.grades-page .grade-picker-card.is-available .grade-picker-card__icon {
+  filter: saturate(1.12);
+}
+
+.grades-page .grade-picker-card.is-available:hover {
+  border-color: color-mix(in srgb, var(--category-accent) 86%, var(--line, var(--border)) 14%);
+}
+
+.grades-page .grade-picker-card.is-available:hover .grade-picker-card__arrow {
+  transform: translateX(3px);
+}
+
+.grades-page .grade-picker-card.is-available:focus-visible {
+  border-color: var(--category-accent);
+  outline: 3px solid color-mix(in srgb, var(--category-accent) 78%, #fff 22%);
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--category-accent) 24%, transparent),
+    0 18px 40px rgb(0 0 0 / 0.2);
+}
+
+.grades-page .grade-picker-card:is(:disabled, .is-disabled) {
+  --grade-card-border: color-mix(in srgb, var(--line, var(--border)) 94%, transparent);
+  --grade-card-icon-surface: color-mix(in srgb, var(--line, var(--border)) 62%, var(--card, var(--bg-card)) 38%);
+  --grade-card-icon-border: color-mix(in srgb, var(--line, var(--border)) 92%, #fff 8%);
+  cursor: not-allowed;
+  opacity: 1;
+  filter: none;
+  background: var(--grade-card-surface);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+}
+
+.grades-page .grade-picker-card:is(:disabled, .is-disabled) .grade-picker-card__icon {
+  opacity: 1;
+  filter: saturate(0.86);
+}
+
+.grades-page .grade-picker-card:is(:disabled, .is-disabled):hover,
+.grades-page .grade-picker-card:is(:disabled, .is-disabled):focus-visible {
+  transform: none;
+  border-color: var(--grade-card-border);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+}
+
+:root[data-theme="dark"] .grades-page .grade-picker-card {
+  --grade-card-surface: #16222f;
+  --grade-card-border: color-mix(in srgb, var(--line, #334155) 86%, var(--category-accent) 14%);
+  --grade-card-title: #eef5fb;
+  --grade-card-copy: #aebdca;
+  --grade-card-icon-surface: #273543;
+  --grade-card-icon-border: #405161;
+  --grade-card-badge-surface: rgba(148, 163, 184, 0.1);
+  --grade-card-badge-border: rgba(148, 163, 184, 0.34);
+  --grade-card-badge-text: #b7c3cf;
+}
+
+:root[data-theme="dark"] .grades-page .grade-picker-card.is-available {
+  --grade-card-icon-surface: color-mix(in srgb, var(--category-accent) 34%, #17332f 66%);
+  --grade-card-badge-text: #9ff4d6;
+  background:
+    radial-gradient(circle at 8% 10%, color-mix(in srgb, var(--category-accent) 18%, transparent), transparent 48%),
+    #162832;
+}
+
+:root[data-theme="dark"] .grades-page .grade-picker-card:is(:disabled, .is-disabled) {
+  --grade-card-surface: #182531;
+  --grade-card-border: #425160;
+  --grade-card-title: #e7eef5;
+  --grade-card-copy: #c1ccd6;
+  --grade-card-icon-surface: #2b3946;
+  --grade-card-icon-border: #4b5c6b;
+  --grade-card-badge-surface: rgba(174, 190, 204, 0.16);
+  --grade-card-badge-border: rgba(174, 190, 204, 0.48);
+  --grade-card-badge-text: #d0dae3;
+}
+
+:root[data-theme="dark"] .grades-page .grade-picker-card:is(:disabled, .is-disabled) .grade-picker-card__domain {
+  color: #aebdca;
+}
+
+:root[data-theme="light"] .grades-page .grade-picker-card {
+  --grade-card-surface: #f7faf9;
+  --grade-card-border: #ccd8d5;
+  --grade-card-title: #1d2b2a;
+  --grade-card-copy: #586765;
+  --grade-card-icon-surface: #e5ebea;
+  --grade-card-icon-border: #c8d3d1;
+  --grade-card-badge-surface: #edf1f0;
+  --grade-card-badge-border: #c7d0ce;
+  --grade-card-badge-text: #5e6c6a;
+}
+
+:root[data-theme="light"] .grades-page .grade-picker-card.is-available {
+  --grade-card-icon-surface: #ccece5;
+  --grade-card-badge-surface: #d9f3ed;
+  --grade-card-badge-text: #12685d;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(52, 211, 153, 0.14), transparent 48%),
+    #f6fbf9;
+}
+
+:root[data-theme="light"] .grades-page .grade-picker-card:is(:disabled, .is-disabled) {
+  --grade-card-surface: #f3f7f6;
+  --grade-card-border: #b8c5c2;
+  --grade-card-title: #253331;
+  --grade-card-copy: #465754;
+  --grade-card-icon-surface: #dde5e3;
+  --grade-card-icon-border: #bac7c4;
+  --grade-card-badge-surface: #e2e9e7;
+  --grade-card-badge-border: #aebdb9;
+  --grade-card-badge-text: #465653;
+}
+
+:root[data-theme="light"] .grades-page .grade-picker-card:is(:disabled, .is-disabled) .grade-picker-card__domain {
+  color: #526561;
+}
+
+@media (max-width: 760px) {
+  .grades-page .grade-picker-card {
+    grid-template-columns: 56px minmax(0, 1fr);
+    min-height: 146px;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .grades-page .grade-picker-card__icon-tile {
+    width: 56px;
+    height: 56px;
+    border-radius: 13px;
+  }
+
+  .grades-page .grade-picker-card__icon {
+    font-size: 35px;
+  }
+
+  .grades-page .grade-picker-card__content {
+    padding-right: 32px;
+  }
+
+  .grades-page .grade-picker-card__title {
+    font-size: 0.94rem;
+  }
+
+  .grades-page .grade-picker-card__summary {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .grades-page .grade-picker-card {
+    grid-template-columns: 58px minmax(0, 1fr);
+    min-height: 128px;
+    padding: 13px;
+  }
+
+  .grades-page .grade-picker-card__icon-tile {
+    width: 58px;
+    height: 58px;
+  }
+
+  .grades-page .grade-picker-card__content {
+    padding-right: 42px;
+  }
+
+  .grades-page .grade-picker-card__title {
+    font-size: 1rem;
+  }
+
+  .grades-page .grade-picker-card__summary {
+    font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grades-page .grade-picker-card__arrow {
+    transition: none;
+  }
+
+  .grades-page .grade-picker-card.is-available:hover .grade-picker-card__arrow {
+    transform: none;
+  }
 }

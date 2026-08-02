@@ -7,10 +7,47 @@ import { getAcademyCatalog } from '../academies/catalog.js';
 import { getChildren } from '../learning/registry/index.ts';
 import { createLearningNodeRegistry } from '../learning/registry/index.ts';
 import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
+import { getAppearance } from '../learning/core/index.ts';
 import { usePreferences } from '../hooks/usePreferences.js';
 
 import '../styles/progress-table.css';
 import '../styles/categories-premium-grid.css';
+
+function GradePickerCard({ grade, isAvailable, onSelect }) {
+  const icon = getAppearance(grade, 'icon') || '🎒';
+  const status = isAvailable ? 'Ready' : 'Soon';
+  const cardClassName = [
+    'premium-category-card',
+    'grade-picker-card',
+    'accent-emerald',
+    isAvailable ? 'is-available' : 'is-disabled'
+  ].join(' ');
+
+  return (
+    <button
+      type="button"
+      onClick={() => isAvailable && onSelect(grade.id)}
+      className={cardClassName}
+      disabled={!isAvailable}
+    >
+      <span className="grade-picker-card__icon-tile" aria-hidden="true">
+        <span className="grade-picker-card__icon">{icon}</span>
+      </span>
+
+      <span className="grade-picker-card__content">
+        <strong className="grade-picker-card__title">{grade.label}</strong>
+        <span className="grade-picker-card__domain">CBC Grade</span>
+        <span className="grade-picker-card__summary">{grade.summary}</span>
+      </span>
+
+      <span className="grade-picker-card__badge">{status}</span>
+
+      {isAvailable ? (
+        <span className="grade-picker-card__arrow" aria-hidden="true">→</span>
+      ) : null}
+    </button>
+  );
+}
 
 export default function CategoriesPage() {
   const navigate = useNavigate();
@@ -92,29 +129,14 @@ export default function CategoriesPage() {
 
         <div className="premium-category-grid">
           {grades.map((grade) => {
-            const isDisabled = grade.id !== 'grade-1';
+            const isAvailable = grade.id === 'grade-1';
             return (
-              <button
-                type="button"
+              <GradePickerCard
                 key={grade.id}
-                onClick={() => !isDisabled && handleGradeClick(grade.id)}
-                className={`premium-category-card grade-picker-card accent-emerald ${isDisabled ? 'is-disabled' : ''}`}
-                disabled={isDisabled}
-              >
-                <div className="premium-category-card__head">
-                  <span className="premium-category-card__icon" aria-hidden="true">🎒</span>
-                  <div className="premium-category-card__copy">
-                    <div className="premium-category-card__title-line">
-                      <strong>{grade.label}</strong>
-                      <span className="premium-category-card__badge">
-                        {isDisabled ? 'Soon' : 'Ready'}
-                      </span>
-                    </div>
-                    <span className="premium-category-card__domain">CBC Grade</span>
-                  </div>
-                </div>
-                <p>{grade.summary}</p>
-              </button>
+                grade={grade}
+                isAvailable={isAvailable}
+                onSelect={handleGradeClick}
+              />
             );
           })}
         </div>
