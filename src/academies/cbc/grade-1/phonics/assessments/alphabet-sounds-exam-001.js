@@ -33,6 +33,9 @@ function soundExamMcq({
     autoReadAloud: false,
     readAloudText,
     readOptionsAloud: true,
+    rendering: {
+      suppressObjective: true
+    },
     body: [
       {
         type: 'section',
@@ -58,6 +61,9 @@ function soundExamMcq({
       autoReadAloud: false,
       readAloudText,
       readOptionsAloud: true,
+      rendering: {
+        suppressObjective: true
+      },
       phonics: phonicsMetadata(item),
       examId: 'alphabet-sounds-exam-001',
       examTitle: 'Grade 1 Alphabet Sounds Exam',

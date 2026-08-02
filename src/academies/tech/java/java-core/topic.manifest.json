@@ -15,7 +15,39 @@
     {
       "id": "hashmap-behavior",
       "file": "lessons/hashmap-behavior.js"
-    }
+    },
+    {
+      "id": "generics-zero-to-hero",
+      "file": "lessons/generics-zero-to-hero.js"
+    },
+     {
+     "id": "java-core-concurrency-zero-to-hero",
+     "file": "lessons/concurrency-zero-to-hero.js"
+    },
+    {
+     "id": "java-core-streams-functional-interfaces-zero-to-hero",
+     "file": "lessons/streams-and-functional-interfaces-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-memory-model-garbage-collection-zero-to-hero",
+    "file": "lessons/memory-model-garbage-collection-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-equals-hashcode-immutability-zero-to-hero",
+    "file": "lessons/equals-hashcode-immutability-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-design-patterns-zero-to-hero",
+    "file": "lessons/design-patterns-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-java-21-zero-to-hero",
+    "file": "lessons/java-21-zero-to-hero.js"
+   },
+   {
+    "id": "java-core-java-26-zero-to-hero",
+    "file": "lessons/java-26-zero-to-hero.js"
+   }
   ],
   "practice": [
     {

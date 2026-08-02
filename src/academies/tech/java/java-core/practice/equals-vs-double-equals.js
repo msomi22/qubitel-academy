@@ -5,26 +5,27 @@ const problem = defineMcqProblem({
   topicId: 'java-core',
   title: 'equals() vs ==',
   difficulty: 'Easy',
-  prompt: 'Two different String objects both contain the text "Java". In Java, what is the best simple explanation of == versus equals() for objects?',
+  prompt: 'Two different String objects both contain the text "Java". In Java, what is the best simple explanation of == versus equals() for objects, and why does == sometimes appear to work for strings?',
   options: [
-    '== asks whether two variables point to the same object, while equals() can ask whether two objects mean the same value.',
+    '== asks whether two variables point to the same object, while equals() can ask whether two objects mean the same value. For strings, literals may be interned, so == can appear to work but is not reliable for content comparison.',
     '== and equals() always do exactly the same thing for every object.',
     'equals() checks whether two variables point to the same object, while == checks whether their text is equal.',
     '== automatically converts objects into strings before comparing them.'
   ],
-  correctAnswer: '== asks whether two variables point to the same object, while equals() can ask whether two objects mean the same value.',
-  explanation: 'For objects, == is like asking, "Are these two names pointing to the very same box?" equals() is like asking, "Do the things inside the boxes represent the same value?" For String, equals() compares the characters, so two different String objects can still be logically equal.',
-  mentalPicture: 'Imagine two separate boxes with the same label inside. == asks whether both variables point to the exact same box. equals() can ask whether the labels inside the boxes mean the same value.',
-  visualExplanation: 'Reference vs value meaning\na -> String object #1 containing "Java"\nb -> String object #2 containing "Java"\na == b       -> false, because they are different objects\na.equals(b) -> true, because String compares the text value',
-  productionReality: 'In production Java code, using == for object content can create subtle bugs in authentication checks, request validation, cache keys, tests, and business rules. For object meaning, use equals() and make sure domain classes implement equals() and hashCode() consistently.',
-  commonMistake: 'A common mistake is seeing == work for some string literals and assuming it compares text. That can happen because of string interning, but it is not the rule to rely on for object content.',
-  finalTakeaway: 'For objects, == compares identity; equals() compares logical meaning when the class implements it correctly.',
-  tags: ['java', 'objects', 'equality'],
+  correctAnswer: '== asks whether two variables point to the same object, while equals() can ask whether two objects mean the same value. For strings, literals may be interned, so == can appear to work but is not reliable for content comparison.',
+  explanation: 'For objects, == compares references (identity) — "Are these two variables pointing to the exact same object?" equals() compares logical content — "Do these objects represent the same value?" String literals are interned (cached) by the JVM, so "Java" == "Java" can be true due to sharing, which misleads beginners into thinking == compares text. Always use equals() for content.',
+  mentalPicture: 'Imagine two lunch boxes. == asks, "Is this the exact same lunch box?" equals() asks, "Do the lunch boxes have the same food inside?" String interning is like having a shared pool: if you ask for "Java", you might get the same shared box every time.',
+  visualExplanation: 'a = new String("Java") → object #1\nb = new String("Java") → object #2\na == b       → false (different objects)\na.equals(b) → true  (same text)\n\nc = "Java" (literal)\nd = "Java" (literal)\nc == d       → true (interned, same object)\n\nMoral: == works for interned strings but never rely on it for content.',
+  productionReality: 'In production, using == for object content causes subtle bugs in authentication, caching, and validation. Always use equals() (or Objects.equals() for null‑safe checks). For BigDecimal, use compareTo() instead of equals() because equals() also compares scale (2.0 vs 2.00 are not equal).',
+  commonMistake: 'Seeing == work for string literals and assuming it compares text. It works only because of interning, not because == checks content. Also, StringBuffer/StringBuilder do not override equals() — they behave like ==.',
+  finalTakeaway: 'For objects, == compares identity; equals() compares logical meaning. Use equals() for content, Objects.equals() for null‑safe comparisons, and BigDecimal.compareTo() for numeric equality. Never rely on == for object content, even if it appears to work.',
+  tags: ['java', 'objects', 'equality', 'string-interning'],
   rendering: {
     variant: 'deep-dive',
     density: 'comfortable',
     accent: 'blue'
   },
+  
   body: [
     {
       type: 'section',
@@ -34,37 +35,22 @@ const problem = defineMcqProblem({
     {
       type: 'code',
       language: 'java',
-      code: 'String a = new String("Java");\nString b = new String("Java");\n\nSystem.out.println(a == b);      // false\nSystem.out.println(a.equals(b)); // true'
-    },
-    {
-      type: 'section',
-      title: 'What each line means',
-      content: 'a and b are two separate String objects. They both contain the same letters, but they are not the same object. That is why a == b is false. Their text is the same, and String implements equals() to compare text, so a.equals(b) is true.'
+      code: 'String a = new String("Java");\nString b = new String("Java");\n\nSystem.out.println(a == b);      // false — different objects\nSystem.out.println(a.equals(b)); // true — same content\n\nString c = "Java"; // interned literal\nString d = "Java"; // interned literal\nSystem.out.println(c == d);      // true — same interned object'
     },
     {
       type: 'table',
-      columns: ['Comparison', 'Simple meaning', 'Example result'],
+      columns: ['Comparison', 'Meaning', 'Result'],
       rows: [
-        ['a == b', 'Are a and b pointing to the exact same object?', 'false'],
-        ['a.equals(b)', 'Do a and b have the same logical value?', 'true'],
-        ['a == a', 'Is a the same reference as itself?', 'true']
+        ['a == b (new String vs new String)', 'Are they the exact same object?', 'false'],
+        ['a.equals(b)', 'Do they have the same logical value?', 'true'],
+        ['c == d (literal vs literal)', 'Are they the exact same object?', 'true (due to interning)']
       ]
     },
     {
       type: 'callout',
       tone: 'warning',
       title: 'Common beginner trap',
-      content: 'Do not use == to compare String content. Use equals(), because you usually care whether the words match, not whether both variables point to the exact same String object.'
-    },
-    {
-      type: 'checklist',
-      title: 'Remember this',
-      items: [
-        'For primitives like int, == compares values.',
-        'For objects, == compares references: same object or not.',
-        'For objects, equals() can compare meaning, if the class implemented it properly.',
-        'For String content, prefer equals().'
-      ]
+      content: 'Do not use == to compare String content. Use equals() (or Objects.equals() for null‑safe comparison). The fact that == works for string literals is a special case, not the rule.'
     }
   ],
   metadata: {

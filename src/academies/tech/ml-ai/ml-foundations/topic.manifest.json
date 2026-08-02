@@ -9,8 +9,20 @@
   "academy": "tech",
   "lessons": [
     {
-      "id": "ml-foundations-training-vs-inference-learning-001",
+      "id": "java-core-ai-agents-daily-coding-zero-to-hero",
       "file": "lessons/ml-foundations-training-vs-inference-learning-001.js"
+    },
+    {
+      "id": "ml-foundations-claude-code-zero-to-hero",
+      "file": "lessons/claude-code-zero-to-hero.js"
+    },
+    {
+      "id": "ml-foundations-github-copilot-zero-to-hero",
+      "file": "lessons/github-copilot-zero-to-hero.js"
+    },
+    {
+      "id": "ml-foundations-copilot-practical-ticket-implementation",
+      "file": "lessons/copilot-practical-ticket-implementation.js"
     }
   ],
   "practice": [

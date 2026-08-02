@@ -8,6 +8,7 @@ import PassageDrawer, {
 } from '../components/cbc/PassageDrawer.jsx';
 import PassageReadAloudControls from '../components/cbc/PassageReadAloudControls.jsx';
 import ReadAloudButton from '../components/cbc/ReadAloudButton.jsx';
+import CbcMathLayout from '../components/question-renderers/cbc/CbcMathLayout.jsx';
 import CbcVisualAid from '../components/question-renderers/cbc/CbcVisualAid.jsx';
 import { siteConfig } from '../config/siteConfig.js';
 import { buildCategoryReturnPath } from '../services/categoryNavigationService.js';
@@ -79,6 +80,31 @@ function hasVisualMcq(question) {
   );
 }
 
+function hasVerticalMathLayout(question) {
+  const layout = question?.rendering?.mathLayout || question?.metadata?.rendering?.mathLayout || null;
+  return layout?.type === 'vertical-operation';
+}
+
+function shouldSuppressObjective(question, exam) {
+  if (question?.rendering?.suppressObjective || question?.metadata?.rendering?.suppressObjective) {
+    return true;
+  }
+
+  const objective = question?.body?.[0]?.content || '';
+  const normalizedObjective = objective.trim().toLowerCase();
+  const normalizedTitle = String(exam?.examTitle || '').trim().toLowerCase();
+  const isMixedMathematics = normalizedTitle.includes('mixed mathematics')
+    || question?.metadata?.examId === 'grade-3-mathematics-mixed-exam-001'
+    || question?.metadata?.subjectId === 'mathematics'
+    || question?.topicId === 'mathematics';
+
+  return isMixedMathematics && [
+    'i can solve mixed grade 3 mathematics questions.',
+    'i can answer grade 3 questions.',
+    'i can solve this exam.'
+  ].includes(normalizedObjective);
+}
+
 function categoryDisplayName(exam) {
   return exam?.categoryName || exam?.category?.name || 'Grade 3';
 }
@@ -133,7 +159,10 @@ function startInstructions(exam) {
   if (firstQuestion?.metadata?.learningAreaId === 'parts-of-speech') {
     return `Read each sentence carefully. Choose the answer that matches the part of speech and spelling clue. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
   }
-  return `Choose the correctly spelt word. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  if (firstQuestion?.metadata?.subjectId === 'mathematics' || firstQuestion?.topicId === 'mathematics') {
+    return `Solve each mathematics question carefully. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
+  }
+  return `Read each question carefully and choose the correct answer. You have ${questionTimeLimit(firstQuestion)} seconds for each question.`;
 }
 
 function passageForExam(exam) {
@@ -178,7 +207,7 @@ function restoreScrollSnapshot(snapshot) {
   window.scrollTo({ top: snapshot.windowY, left: snapshot.windowX, behavior: 'auto' });
 }
 
-function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext }) {
+function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext, placement = 'bottom' }) {
   if (totalQuestions <= 1) return null;
 
   function handlePreviousClick(event) {
@@ -192,7 +221,7 @@ function ExamNavigation({ currentIndex, totalQuestions, onPrevious, onNext }) {
   }
 
   return (
-    <nav className="cbc-exam-navigation" aria-label="Exam question navigation">
+    <nav className={`cbc-exam-navigation ${placement}`.trim()} aria-label={`${placement} exam question navigation`}>
       <button type="button" className="cbc-exam-button secondary" onClick={handlePreviousClick} disabled={currentIndex === 0}>
         Previous
       </button>
@@ -384,6 +413,7 @@ export default function ExamSessionPage() {
   const exitSavedRef = useRef(false);
   const sessionRef = useRef({});
   const pendingScrollSnapshotRef = useRef(null);
+  const manualPreviousQuestionIdRef = useRef('');
   const passageToggleRef = useRef(null);
 
   activeRef.current = view === 'exam';
@@ -552,6 +582,7 @@ export default function ExamSessionPage() {
 
   useEffect(() => {
     if (view !== 'exam' || !currentQuestion || remainingSeconds !== 0) return;
+    if (manualPreviousQuestionIdRef.current === currentQuestion.id) return;
 
     const nextAnswers = currentAnswer
       ? answers
@@ -568,7 +599,7 @@ export default function ExamSessionPage() {
     if (currentIndex === exam.questions.length - 1) completeExam(nextAnswers);
     else {
       pendingScrollSnapshotRef.current = captureScrollSnapshot();
-      setCurrentIndex((index) => index + 1);
+      setCurrentIndex((index) => Math.min(exam.questions.length - 1, index + 1));
     }
   }, [answers, currentAnswer, currentIndex, currentQuestion, exam?.questions?.length, hasTimedComprehension, remainingSeconds, view]);
 
@@ -680,16 +711,29 @@ export default function ExamSessionPage() {
 
   function nextQuestion() {
     pendingScrollSnapshotRef.current = captureScrollSnapshot();
+    manualPreviousQuestionIdRef.current = '';
     if (currentIndex === exam.questions.length - 1) {
       completeExam(answers);
       return;
     }
-    setCurrentIndex((index) => index + 1);
+    setCurrentIndex((index) => Math.min(exam.questions.length - 1, index + 1));
   }
 
   function previousQuestion() {
     pendingScrollSnapshotRef.current = captureScrollSnapshot();
-    setCurrentIndex((index) => Math.max(0, index - 1));
+    setCurrentIndex((index) => {
+      const previousIndex = Math.max(0, index - 1);
+      const previousQuestion = exam.questions[previousIndex];
+      const previousQuestionSeconds = previousQuestion
+        ? timeLeftByQuestion[previousQuestion.id] ?? questionTimeLimit(previousQuestion)
+        : 0;
+
+      manualPreviousQuestionIdRef.current = previousQuestionSeconds <= 0
+        ? previousQuestion?.id || ''
+        : '';
+
+      return previousIndex;
+    });
   }
 
   function openPassage() {
@@ -819,11 +863,16 @@ export default function ExamSessionPage() {
   const questionTimedOut = Boolean(currentAnswer?.timedOut);
   const promptVisual = promptVisualFor(currentQuestion);
   const visualQuestion = hasVisualMcq(currentQuestion);
+  const verticalMathQuestion = hasVerticalMathLayout(currentQuestion);
   const questionCardClass = [
     'cbc-exam-question-card',
     visualQuestion ? 'visual-mcq' : '',
+    verticalMathQuestion ? 'vertical-math' : '',
     promptVisual ? '' : 'no-prompt-visual'
   ].filter(Boolean).join(' ');
+  const questionObjective = shouldSuppressObjective(currentQuestion, exam)
+    ? ''
+    : currentQuestion.body?.[0]?.content || '';
 
   return (
     <main className="page cbc-exam-page cbc-exam-active-page stable-exam-page">
@@ -846,7 +895,7 @@ export default function ExamSessionPage() {
             View Passage
           </button>
         ) : null}
-        <button type="button" className="cbc-exam-leave" onClick={leaveExam}>Leave exam</button>
+        <button type="button" className="cbc-exam-leave" onClick={leaveExam}>Exit exam</button>
         <div className="cbc-exam-progress" aria-label={`${progress}% through exam`}>
           <span style={{ width: `${progress}%` }} />
         </div>
@@ -857,19 +906,35 @@ export default function ExamSessionPage() {
         totalQuestions={exam.questions.length}
         onPrevious={previousQuestion}
         onNext={nextQuestion}
+        placement="top"
       />
 
       <section className={questionCardClass}>
         <div className="cbc-exam-question-scroll">
-          <p className="cbc-exam-objective">{currentQuestion.body?.[0]?.content || `I can complete ${skillDisplayName(exam).toLowerCase()} questions.`}</p>
-          <h2>{currentQuestion.question}</h2>
-          <WordPatternChip question={currentQuestion} />
-          <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
-          {promptVisual ? (
-            <div className="cbc-exam-prompt-visual" aria-label="Question visual">
-              <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+          {questionObjective ? (
+            <div className="cbc-exam-helper-zone">
+              <p className="cbc-exam-objective">{questionObjective}</p>
             </div>
           ) : null}
+
+          <div className="cbc-exam-question-focus" aria-labelledby="cbc-exam-question-title">
+            <span className="cbc-exam-zone-label">
+              {verticalMathQuestion ? 'Work this out' : `Question ${currentIndex + 1}`}
+            </span>
+            <h2 id="cbc-exam-question-title">{currentQuestion.question}</h2>
+            <CbcMathLayout question={currentQuestion} />
+          </div>
+
+          <div className="cbc-exam-media-zone">
+            <WordPatternChip question={currentQuestion} />
+            <ReadAloudButton question={{ ...currentQuestion, autoReadAloud: false }} className="cbc-exam-read-aloud" />
+            {promptVisual ? (
+              <div className="cbc-exam-prompt-visual" aria-label="Question visual">
+                <CbcVisualAid visual={promptVisual} label={currentQuestion.title} />
+              </div>
+            ) : null}
+          </div>
+
           <div className="cbc-exam-options" role="radiogroup" aria-label={currentQuestion.question}>
             {currentQuestion.options.map((option, index) => {
               const selected = currentAnswer?.selectedAnswer === index;
@@ -889,7 +954,7 @@ export default function ExamSessionPage() {
                       <CbcVisualAid visual={optionVisual} label={option} />
                     </span>
                   ) : null}
-                  <span>{option}</span>
+                  <span className="cbc-exam-option-text">{option}</span>
                 </button>
               );
             })}
@@ -909,6 +974,7 @@ export default function ExamSessionPage() {
         totalQuestions={exam.questions.length}
         onPrevious={previousQuestion}
         onNext={nextQuestion}
+        placement="bottom"
       />
 
       {hasTimedComprehension ? (

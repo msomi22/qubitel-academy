@@ -97,7 +97,7 @@
 }
 
 .stable-exam-page .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
-  grid-template-columns: 24px 40px minmax(0, 1fr) !important;
+  grid-template-columns: 24px 64px minmax(auto, 1fr) !important;
   min-height: 50px !important;
 }
 
@@ -211,7 +211,7 @@
   }
 
   .stable-exam-page .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
-    grid-template-columns: 22px 34px minmax(0, 1fr) !important;
+    grid-template-columns: 22px 54px minmax(auto, 1fr) !important;
     min-height: 45px !important;
   }
 
@@ -228,7 +228,7 @@
   }
 
   .stable-exam-page .cbc-exam-question-card.visual-mcq .cbc-exam-options button {
-    grid-template-columns: 21px 32px minmax(0, 1fr) !important;
+    grid-template-columns: 21px 48px minmax(auto, 1fr) !important;
     min-height: 43px !important;
   }
 }

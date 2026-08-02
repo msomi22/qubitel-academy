@@ -33,6 +33,9 @@ function vowelExamMcq({
     autoReadAloud: false,
     readAloudText,
     readOptionsAloud: true,
+    rendering: {
+      suppressObjective: true
+    },
     body: [
       {
         type: 'section',
@@ -58,6 +61,9 @@ function vowelExamMcq({
       autoReadAloud: false,
       readAloudText,
       readOptionsAloud: true,
+      rendering: {
+        suppressObjective: true
+      },
       phonics: phonicsMetadata(item, { soundType: 'short-vowel' }),
       examId: 'vowel-sounds-exam-001',
       examTitle: 'Grade 1 Vowel Sounds Exam',

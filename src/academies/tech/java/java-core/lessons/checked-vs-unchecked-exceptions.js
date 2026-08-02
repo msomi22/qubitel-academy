@@ -5,8 +5,8 @@ const problem = defineLearningProblem({
   topicId: 'java-core',
   title: 'Checked vs Unchecked Exceptions',
   difficulty: 'Medium',
-  prompt: 'Teach the difference between checked and unchecked exceptions in Java. Explain compiler rules, examples, when to use each, and how the choice affects API design.',
-  tags: ['java', 'exceptions', 'api-design'],
+  prompt: 'A rigorous, production-grade masterclass on Java exception handling, dissecting checked vs unchecked exception contracts, try-catch-finally semantics, suppression, try-with-resources, exception chaining, multi-catch, catch ordering, custom exception design, exception wrapping patterns, handling exceptions in lambdas, uncaught exception handlers, performance considerations, and API design best practices.',
+  tags: ['java', 'exceptions', 'api-design', 'error-handling', 'try-with-resources', 'threads'],
   rendering: {
     variant: 'deep-dive',
     density: 'detailed',
@@ -16,13 +16,18 @@ const problem = defineLearningProblem({
     {
       type: 'section',
       title: 'The simplest explanation',
-      content: 'A checked exception is an exception Java forces you to think about at compile time. An unchecked exception is an exception Java allows to happen at runtime without forcing every caller to catch or declare it.'
+      content: 'A checked exception is an exception Java forces you to think about at compile time. An unchecked exception is an exception Java allows to happen at runtime without forcing every caller to catch or declare it. The distinction exists because some failures are recoverable and predictable (check them), while others indicate programming errors or unrecoverable conditions (don\'t force handling).'
     },
     {
-      type: 'diagram',
+      type: 'section',
       title: 'Exception hierarchy mental model',
-      content: 'Throwable\n├── Error                          usually serious JVM/system problems\n└── Exception\n    ├── checked exceptions          must be caught or declared\n    └── RuntimeException            unchecked; compiler does not force handling',
-      caption: 'The key split is whether the exception is under RuntimeException or not.'
+      content: 'Throwable\n├── Error                          serious JVM/system problems, virtually unrecoverable\n└── Exception\n    ├── checked exceptions          must be caught or declared in the throws clause\n    └── RuntimeException            unchecked; compiler does not force handling'
+    },
+    {
+      type: 'callout',
+      tone: 'info',
+      title: 'The key split',
+      content: 'The key split is whether the exception is under RuntimeException or not. Error is also unchecked but should almost never be caught.'
     },
     {
       type: 'callout',
@@ -34,10 +39,20 @@ const problem = defineLearningProblem({
       type: 'table',
       columns: ['Type', 'Compiler forces handling?', 'Common parent', 'Simple meaning'],
       rows: [
-        ['Checked exception', 'Yes', 'Exception but not RuntimeException', 'The caller is expected to know this can happen and may recover.'],
+        ['Checked exception', 'Yes', 'Exception (but not RuntimeException)', 'The caller is expected to know this can happen and may recover.'],
         ['Unchecked exception', 'No', 'RuntimeException', 'Usually a programming mistake, invalid input, or unrecoverable runtime condition.'],
-        ['Error', 'No', 'Error', 'Serious JVM/system problem that application code usually should not handle.']
+        ['Error', 'No', 'Error', 'Serious JVM/system problem that application code should almost never handle.']
       ]
+    },
+    {
+      type: 'section',
+      title: 'throw vs throws: The Two Keywords',
+      content: 'The `throws` keyword appears in a method signature to declare that the method might throw one or more checked exceptions, delegating the responsibility to the caller. The `throw` keyword is used inside a method body to actually create and throw an exception instance. A method cannot `throw` a checked exception that it does not declare with `throws`.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// throws — declares that this method may propagate this checked exception outward\npublic String readFile(String path) throws IOException {\n    // throw — actually creates and throws the exception instance\n    if (path == null) {\n        throw new IllegalArgumentException("path cannot be null");\n    }\n    // ...\n}'
     },
     {
       type: 'section',
@@ -62,17 +77,98 @@ const problem = defineLearningProblem({
     {
       type: 'code',
       language: 'java',
-      code: 'void withdraw(int amount) {\n    if (amount <= 0) {\n        throw new IllegalArgumentException("amount must be positive");\n    }\n\n    // continue withdrawal\n}'
+      code: 'void withdraw(int amount) {\n    if (amount <= 0) {\n        throw new IllegalArgumentException("amount must be positive");\n    }\n    // continue withdrawal\n}'
+    },
+    {
+      type: 'section',
+      title: 'try-catch-finally and Exception Suppression',
+      content: 'The `finally` block executes regardless of whether an exception is thrown or not. However, there is a critical and often misunderstood behavior: if both the `try` block and the `finally` block throw exceptions, the exception from `finally` is propagated outward, and the exception from the `try` block is **discarded** — it is lost unless you explicitly preserve it. This is a common pitfall in manual resource cleanup code that `try-with-resources` solves elegantly by automatically suppressing exceptions thrown during closure onto the primary exception.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Before Java 7 — manual resource cleanup with loss of the original exception\nInputStream in = null;\ntry {\n    in = new FileInputStream("data.txt");\n    // ... use in, may throw\n} finally {\n    if (in != null) {\n        in.close(); // If THIS throws, the original exception from the try block is LOST\n    }\n}\n// The original exception is gone — only the close() exception is thrown\n\n// Manual preservation pattern (pre-Java 7)\nThrowable saved = null;\ntry {\n    // ... use resource\n} catch (Throwable t) {\n    saved = t;\n    throw t;\n} finally {\n    try {\n        if (in != null) in.close();\n    } catch (Throwable t) {\n        if (saved != null) {\n            saved.addSuppressed(t); // Preserve the close exception as suppressed\n        } else {\n            throw t;\n        }\n    }\n}\n\n// Modern try-with-resources — suppresses correctly, the original exception is always primary\ntry (InputStream in = new FileInputStream("data.txt")) {\n    // ... use in\n} catch (IOException e) {\n    // The primary exception is from the try block, but close() exceptions are SUPPRESSED\n    for (Throwable suppressed : e.getSuppressed()) {\n        logger.error("Suppressed: ", suppressed);\n    }\n}'
+    },
+    {
+      type: 'callout',
+      tone: 'warning',
+      title: 'The `finally` `return` Trap',
+      content: 'If a `finally` block contains a `return` statement, it overrides any `return` or exception from the `try` block. This can silently swallow exceptions and return unexpected values. Never put a `return` in a `finally` block unless you have an extremely specific reason and fully understand the consequences.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Dangerous — swallows the exception\nint divide(int a, int b) {\n    try {\n        return a / b;\n    } finally {\n        return 0; // If b == 0, ArithmeticException is thrown, but this return overrides it!\n    }\n}\n\n// Result: divide(10, 0) returns 0, no exception!\n\n// Correct — never return from finally\nint divideSafe(int a, int b) {\n    try {\n        return a / b;\n    } finally {\n        // Clean up resources, but never return or throw\n    }\n}'
+    },
+    {
+      type: 'section',
+      title: 'Try-With-Resources: The Modern Standard',
+      content: 'Java 7 introduced try-with-resources, which automatically closes any resource that implements `AutoCloseable`. The resources are closed in reverse order of declaration. If a resource throws an exception during closing, it is added as a suppressed exception to the primary exception. This is the only correct way to manage resources like streams, connections, or files in modern Java.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Multiple resources — closed in reverse declaration order (smtpStream then htmlStream)\ntry (HTMLStream htmlStream = new HTMLStream();\n     SMTPStream smtpStream = new SMTPStream(htmlStream)) {\n    smtpStream.sendMessage();\n} catch (IOException e) {\n    for (Throwable suppressed : e.getSuppressed()) {\n        System.err.println("Suppressed: " + suppressed);\n    }\n}\n\n// Full syntax: try-with-resources + catch + finally\ntry (Connection conn = dataSource.getConnection()) {\n    // ... use connection\n} catch (SQLException e) {\n    // ... handle SQL-specific error\n} finally {\n    // This executes after the try block completes (or after the catch block)\n    cleanupRegistry.flush();\n}'
+    },
+    {
+      type: 'section',
+      title: 'Exception Chaining: The Cause Pattern',
+      content: 'When translating a low-level exception into a higher-level domain exception, always preserve the original cause. Every `Throwable` supports a `cause` via the constructor or `initCause()`, and `getCause()` retrieves it. This preserves the full stack trace and debugging context without leaking internal implementation details to the caller.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Custom exception that accepts a cause for chaining\npublic class DataAccessException extends RuntimeException {\n    public DataAccessException(String message) {\n        super(message);\n    }\n    public DataAccessException(String message, Throwable cause) {\n        super(message, cause);\n    }\n}\n\n// Usage: translating a low-level SQLException into a domain exception\ntry {\n    // ... JDBC operation\n} catch (SQLException e) {\n    throw new DataAccessException("Failed to fetch user by ID: " + userId, e);\n}\n\n// The full stack trace is accessible via getCause()\nThrowable cause = dataAccessException.getCause(); // SQLException'
+    },
+    {
+      type: 'section',
+      title: 'Multi-Catch: Catching Multiple Exception Types (Java 7+)',
+      content: 'When multiple exceptions require identical handling, multi-catch reduces duplication. The caught exception variable is implicitly `final` and cannot be reassigned. The types must not overlap (e.g., you cannot catch `IOException` and `FileNotFoundException` in the same multi-catch because one is a subclass of the other).'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Before Java 7 — duplicated handling\ntry {\n    // ... operation\n} catch (IOException e) {\n    logger.error("I/O error", e);\n    throw new ServiceException("I/O error", e);\n} catch (SQLException e) {\n    logger.error("SQL error", e);\n    throw new ServiceException("SQL error", e);\n}\n\n// Java 7+ — multi-catch, variable is implicitly final\ntry {\n    // ... operation\n} catch (IOException | SQLException e) {\n    logger.error("Operation failed", e);\n    throw new ServiceException("Operation failed", e);\n}'
+    },
+    {
+      type: 'section',
+      title: 'Catch Ordering: Specific Before General',
+      content: 'Catch blocks are evaluated in order. A more specific exception must appear before a more general one; otherwise, the code will not compile. This is because the general catch would "steal" the exception from the specific catch.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Correct order: specific to general\ntry {\n    // ... operation\n} catch (FileNotFoundException e) {\n    // Specific: file missing\n} catch (IOException e) {\n    // General: any other I/O error\n} catch (Exception e) {\n    // Very general: any other unexpected exception\n}\n\n// Incorrect: would not compile because IOException catches FileNotFoundException first\n/*\ntry {\n    // ... operation\n} catch (IOException e) {\n    // This catches FileNotFoundException too (it\'s a subclass)\n} catch (FileNotFoundException e) {\n    // Unreachable — compilation error\n}\n*/'
+    },
+    {
+      type: 'section',
+      title: 'Catching Exception vs Throwable: Know the Risk',
+      content: 'Catching `Exception` catches all checked and unchecked exceptions except `Error`. Catching `Throwable` catches absolutely everything including `Error` (like `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`). In application code, catching `Throwable` or `Error` is almost always wrong because you cannot meaningfully recover from a JVM-level failure, and doing so can mask serious problems. Catch `Exception` if you must catch broadly, and never catch `Error` without a very specific reason.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Acceptable: catch Exception at an outer boundary to log and then rethrow\npublic void processRequest(Request req) {\n    try {\n        // ... business logic that throws various exceptions\n    } catch (Exception e) {\n        logger.error("Request processing failed", e);\n        throw new ServiceException("Processing error", e);\n    }\n}\n\n// Dangerous: catching Throwable hides severe JVM errors\n/*\ntry {\n    // ... operation\n} catch (Throwable t) {\n    // This catches OutOfMemoryError, StackOverflowError, etc.\n    // The JVM is likely in an unstable state — catching this is usually a mistake\n}\n*/'
+    },
+    {
+      type: 'section',
+      title: 'Uncaught Exception Handlers: Don\'t Let Threads Die Silently',
+      content: 'When an exception propagates to the top of a thread and is not caught, the thread terminates and the exception is printed to `System.err` — but in a production environment with thread pools, that output is often lost or ignored. To capture every unhandled exception across the entire application, set a `Thread.UncaughtExceptionHandler` at the thread or global level. This is especially critical in server environments where a single failed request should never vanish without a trace.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Global handler for all threads\nThread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {\n    logger.error("Unhandled exception in thread: {}", thread.getName(), throwable);\n    // Optionally: send alert, write to dead-letter queue, etc.\n});\n\n// Handler for a specific thread pool\nExecutorService executor = Executors.newFixedThreadPool(4);\nThreadFactory factory = Thread.ofVirtual()\n    .uncaughtExceptionHandler((thread, throwable) -> {\n        logger.error("Virtual thread failed: {}", thread.getName(), throwable);\n    })\n    .factory();\n\n// Without a handler, an uncaught exception would silently kill the thread\n// With the handler, it\'s logged and the thread is cleaned up gracefully.'
     },
     {
       type: 'comparison',
       items: [
         {
-          title: 'Use checked exceptions when',
+          label: 'Use checked exceptions when',
           content: 'The caller can reasonably recover or choose a clear fallback, such as retrying, asking for another file, or showing a helpful message.'
         },
         {
-          title: 'Use unchecked exceptions when',
+          label: 'Use unchecked exceptions when',
           content: 'The problem usually means the program was called incorrectly, the state is invalid, or forcing every caller to catch it would add noise without real recovery.'
         }
       ]
@@ -82,6 +178,21 @@ const problem = defineLearningProblem({
       tone: 'warning',
       title: 'API design warning',
       content: 'Checked exceptions become part of your public API. Once many callers depend on that method signature, changing it can be painful. Use checked exceptions intentionally, not automatically.'
+    },
+    {
+      type: 'section',
+      title: 'Exception Wrapping and Translation Patterns',
+      content: 'A common enterprise pattern is to wrap checked exceptions in unchecked exceptions to prevent leaky abstractions. This is especially common at application boundaries: a `SQLException` becomes a `DataAccessException` (unchecked), an `IOException` becomes a `StorageException` (unchecked). This keeps callers free from low-level implementation details while preserving the root cause for debugging.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Repository layer — translate checked SQLException to unchecked DataAccessException\npublic User findById(long id) {\n    try {\n        // ... JDBC query\n    } catch (SQLException e) {\n        throw new DataAccessException("Failed to find user: " + id, e);\n    }\n}\n\n// Helper pattern for lambda/stream exception handling\n@FunctionalInterface\ninterface ThrowingFunction<T, R> { R apply(T t) throws Exception; }\n\nstatic <T, R> Function<T, R> wrap(ThrowingFunction<T, R> fn) {\n    return t -> {\n        try { return fn.apply(t); }\n        catch (Exception e) { throw new RuntimeException(e); }\n    };\n}\n\n// Usage in a stream\nfiles.stream()\n    .map(wrap(Files::readString))\n    .collect(Collectors.toList());'
+    },
+    {
+      type: 'section',
+      title: 'Exception Handling in Lambdas and Streams',
+      content: 'Functional interfaces in `java.util.function` do not declare checked exceptions, so lambdas inside streams cannot throw checked exceptions directly. The solution is to wrap checked exceptions in unchecked ones using a helper method (as shown above) or to create a custom functional interface that declares the exception and adapt it. Never ignore or swallow exceptions inside a lambda to make it compile — that hides failures that will break your application silently.'
     },
     {
       type: 'section',
@@ -95,8 +206,19 @@ const problem = defineLearningProblem({
         ['File cannot be read', 'Checked or translated application exception', 'The caller may recover or report a clear operational issue.'],
         ['Negative amount passed to withdraw()', 'Unchecked IllegalArgumentException', 'The caller violated the method contract.'],
         ['Database temporarily unavailable', 'Often translated at service boundary', 'The API should expose a meaningful failure, not raw internals.'],
-        ['Null where null is not allowed', 'Unchecked NullPointerException or validation exception', 'Usually a programming or validation problem.']
+        ['Null where null is not allowed', 'Unchecked NullPointerException or validation exception', 'Usually a programming or validation problem.'],
+        ['Thread interrupted', 'Propagate InterruptedException or restore interrupt status', 'Interruption is a cooperative cancellation signal. Always handle it correctly.']
       ]
+    },
+    {
+      type: 'section',
+      title: 'Performance Impact of Exceptions',
+      content: 'Creating and throwing an exception is expensive — it fills the entire stack trace, capturing every frame from the throw site back to the top. In hot code paths, this can be a performance killer. Exceptions should be used for exceptional conditions, not for control flow. Validate inputs before calling methods rather than catching and handling expected failures.'
+    },
+    {
+      type: 'code',
+      language: 'java',
+      code: '// Anti-pattern: using exceptions for control flow\nboolean isValidNumber(String input) {\n    try {\n        Integer.parseInt(input);\n        return true;\n    } catch (NumberFormatException e) {\n        return false;\n    }\n}\n\n// Better: validation without throwing (parse is called once anyway, but the\n// performance cost matters when this is in a hot loop — use a regex or manual validation first)'
     },
     {
       type: 'callout',
@@ -108,22 +230,29 @@ const problem = defineLearningProblem({
       type: 'checklist',
       title: 'Strong answer checklist',
       items: [
-        'Checked exceptions must be caught or declared.',
+        'Checked exceptions must be caught or declared in the throws clause.',
         'Unchecked exceptions extend RuntimeException and are not forced by the compiler.',
         'Checked exceptions are useful when recovery is realistic.',
         'Unchecked exceptions are common for programming errors or invalid arguments.',
         'Exception choices affect method signatures and API usability.',
-        'Production code should translate low-level failures into useful boundary-level errors.'
+        'Production code should translate low-level failures into useful boundary-level errors.',
+        'Try-with-resources is the modern standard for resource management and suppression handling.',
+        'Multi-catch reduces duplication; catch order is specific to general.',
+        'Never catch Throwable or Error in application code without a very specific reason.',
+        'Preserve exception causes via chaining to maintain debugging context.',
+        'Do not use exceptions for flow control — they are expensive.',
+        'Set uncaught exception handlers for production threads to log failures that would otherwise vanish.',
+        'Never return from a finally block — it swallows exceptions and overrides return values.'
       ]
     },
     {
       type: 'callout',
       tone: 'success',
       title: 'Memory sentence',
-      content: 'Checked means the compiler says, "Handle this or declare it." Unchecked means the compiler says, "This may happen, but I will not force every caller to catch it."'
+      content: 'Checked means the compiler says, "Handle this or declare it." Unchecked means the compiler says, "This may happen, but I will not force every caller to catch it." Use checked for recoverable failures, unchecked for programming errors, and always preserve the cause for debugging. In production, capture every unhandled thread exception with a handler, and never return from `finally`.'
     }
   ],
-  explanation: 'A strong answer explains the compiler rule, shows examples, and then talks about design intent: checked exceptions are useful when callers can recover, while unchecked exceptions are often used for invalid usage, programming mistakes, or conditions that should be handled at a boundary.',
+  explanation: 'A comprehensive, enterprise-grade masterclass covering the checked vs unchecked exception contract, throw vs throws distinction, try-catch-finally semantics, exception suppression, try-with-resources with multiple resources and suppressed exceptions, exception chaining via cause, multi-catch, catch ordering, custom exception design with cause constructors, exception wrapping and translation patterns, handling exceptions in lambdas, uncaught exception handlers for threads, performance considerations, and API design best practices.',
   metadata: {
     reviewStatus: 'approved',
     visibility: ['dev', 'prod']

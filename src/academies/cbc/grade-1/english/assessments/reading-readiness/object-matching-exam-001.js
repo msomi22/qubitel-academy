@@ -44,6 +44,9 @@ const examQuestions = items.map((item, index) => defineMcqProblem({
   autoReadAloud: false,
   readAloudText: `Find the word ${item.answer}.`,
   readOptionsAloud: false,
+  rendering: {
+    suppressObjective: true
+  },
   body: [
     {
       type: 'section',
@@ -73,6 +76,9 @@ const examQuestions = items.map((item, index) => defineMcqProblem({
     questionTimeSeconds,
     totalTimeSeconds: items.length * questionTimeSeconds,
     points: 1,
+    rendering: {
+      suppressObjective: true
+    },
     promptVisual: emoji(item.promptIcon),
     optionVisuals: item.optionIcons.map((icon) => emoji(icon)),
     readAloudText: `Find the word ${item.answer}.`,

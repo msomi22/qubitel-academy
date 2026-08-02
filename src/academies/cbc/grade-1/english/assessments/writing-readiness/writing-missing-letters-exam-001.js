@@ -115,7 +115,8 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
   question: 'Which letter is missing?',
   rendering: {
     wordPattern: item.prompt,
-    suppressPromptHeading: true
+    suppressPromptHeading: true,
+    suppressObjective: true
   },
   promptVisual: emoji(item.visualHint),
   readAloud: true,
@@ -148,6 +149,11 @@ const examQuestions = questions.map((item, index) => defineMcqProblem({
     questionTimeSeconds,
     totalTimeSeconds: questions.length * questionTimeSeconds,
     points: 1,
+    rendering: {
+      wordPattern: item.prompt,
+      suppressPromptHeading: true,
+      suppressObjective: true
+    },
     readAloudText: item.readAloudText,
     visualHint: item.visualHint,
     promptVisual: emoji(item.visualHint),
