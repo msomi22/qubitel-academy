@@ -98,6 +98,56 @@ function LearningAreaCard({ child, path, kindLabel, isDisabled }) {
   );
 }
 
+function ThemeCard({ child, path, kindLabel, isDisabled }) {
+  const icon = ICON_BY_KIND.theme;
+  const cardContent = (
+    <>
+      <span className="theme-node-card__icon-tile" aria-hidden="true">
+        <span className="theme-node-card__icon">{icon}</span>
+      </span>
+
+      <span className="theme-node-card__content">
+        <strong className="theme-node-card__title">{child.label}</strong>
+        <span className="theme-node-card__meta">{kindLabel}</span>
+      </span>
+
+      {child.summary && (
+        <span className="theme-node-card__summary">{child.summary}</span>
+      )}
+
+      <span className="theme-node-card__badge">
+        {isDisabled ? 'Soon' : kindLabel}
+      </span>
+
+      {!isDisabled && (
+        <span className="theme-node-card__arrow" aria-hidden="true">→</span>
+      )}
+    </>
+  );
+
+  if (isDisabled) {
+    return (
+      <div
+        className="theme-node-card is-disabled"
+        aria-label={`${child.label} - ${kindLabel} (disabled)`}
+        aria-disabled="true"
+      >
+        {cardContent}
+      </div>
+    );
+  }
+
+  return (
+    <NavLink
+      to={path || '#'}
+      className="theme-node-card is-available"
+      aria-label={`${child.label} - ${kindLabel}`}
+    >
+      {cardContent}
+    </NavLink>
+  );
+}
+
 export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSectionHeadings = false }) {
   const groupedChildren = useMemo(() => {
     const children = nodes || getChildren(registry, nodeId);
@@ -136,12 +186,22 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
       {groupedChildren.map((group) => (
         <div
           key={group.key}
-          className={`child-group ${group.key === 'learningAreas' ? 'child-group--learning-areas' : ''}`.trim()}
+          className={`child-group ${
+            group.key === 'learningAreas'
+              ? 'child-group--learning-areas'
+              : group.key === 'themes'
+                ? 'child-group--themes'
+                : ''
+          }`.trim()}
         >
           {!hideSectionHeadings && <h2 className="child-group-title">{group.label}</h2>}
           <div
             className={`premium-category-grid child-grid-inner ${
-              group.key === 'learningAreas' ? 'learning-area-node-grid' : ''
+              group.key === 'learningAreas'
+                ? 'learning-area-node-grid'
+                : group.key === 'themes'
+                  ? 'theme-node-grid'
+                  : ''
             }`.trim()}
           >
             {group.children.map((child) => {
@@ -160,6 +220,18 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
               if (child.kind === 'learningArea') {
                 return (
                   <LearningAreaCard
+                    key={child.id}
+                    child={child}
+                    path={path}
+                    kindLabel={kindLabel}
+                    isDisabled={isDisabled}
+                  />
+                );
+              }
+
+              if (child.kind === 'theme') {
+                return (
+                  <ThemeCard
                     key={child.id}
                     child={child}
                     path={path}

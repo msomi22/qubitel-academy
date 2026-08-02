@@ -30,6 +30,7 @@ import './styles/focused-text-wrap-fix.css';
 import './styles/glossary.css';
 import './styles/categories-premium-grid.css';
 import './styles/learning-area-node-cards.css';
+import './styles/theme-node-cards.css';
 import './styles/problem-page-premium-mobile.css';
 import './styles/topic-page-premium-question-grid.css';
 import './styles/topic-page-subtopic-grid-fix.css';
