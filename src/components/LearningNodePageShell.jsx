@@ -8,6 +8,7 @@ import LearningNodeSiblingNav from './LearningNodeSiblingNav.jsx';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 import LearningNodeBookView from './LearningNodeBookView.jsx';
 import LearningNodeCompactHeader from './LearningNodeCompactHeader.jsx';
+import { isCbcTheme } from './learningNodeBookView.model.ts';
 import './LearningNodeUI.css';
 
 function getNodeAttributeValue(node, key) {
@@ -27,16 +28,9 @@ function getNodeRenderingValue(node, key) {
   );
 }
 
-function isInAcademy(navigation, academyNodeId) {
-  return navigation?.breadcrumbs?.some((node) => node.id === academyNodeId);
-}
-
 function isDirectBookContent(node) {
   return node?.content?.type === 'book' && Array.isArray(node.content.pages);
 }
-
-const FLATTENED_CONTENT_KINDS = new Set(['notes', 'practice', 'revision', 'assessment', 'exam']);
-const BOOK_STYLE_CHILD_KINDS = new Set(['strand', 'subStrand', 'learningArea']);
 
 function shouldRenderBookView(currentNode, navigation) {
   if (!currentNode || currentNode.kind !== 'theme') return false;
@@ -48,18 +42,7 @@ function shouldRenderBookView(currentNode, navigation) {
     return true;
   }
 
-  if (!isInAcademy(navigation, 'cbc-academy')) return false;
-
-  const childKinds = navigation?.children?.map((child) => child.kind) || [];
-  const hasDirectBookContentChildren = navigation?.children?.some((child) => isDirectBookContent(child));
-
-  if (hasDirectBookContentChildren) return true;
-
-  const hasFlattenedContentChildren = childKinds.some((kind) => FLATTENED_CONTENT_KINDS.has(kind));
-
-  if (hasFlattenedContentChildren) return false;
-
-  return childKinds.some((kind) => BOOK_STYLE_CHILD_KINDS.has(kind));
+  return isCbcTheme(currentNode, navigation?.breadcrumbs);
 }
 
 export default function LearningNodePageShell({
@@ -131,14 +114,6 @@ export default function LearningNodePageShell({
     ? assessmentChildren
     : themeChildren;
 
-  const selectedLearningAreaTitle = isAssessmentPanel
-    ? 'Learning Area Assessments'
-    : 'Themes';
-
-  const selectedLearningAreaCountLabel = isAssessmentPanel
-    ? `${assessmentChildren.length} exams`
-    : `${themeChildren.length} themes`;
-
   const selectedLearningAreaSectionClassName = isAssessmentPanel
     ? 'learning-area-assessments-section'
     : 'learning-area-themes-section';
@@ -156,16 +131,18 @@ export default function LearningNodePageShell({
         <strong>{themeChildren.length}</strong>
       </button>
 
-      <button
-        type="button"
-        role="tab"
-        aria-selected={learningAreaPanel === 'assessments'}
-        className={`learning-area-tab ${learningAreaPanel === 'assessments' ? 'is-active' : ''}`}
-        onClick={() => setLearningAreaPanel('assessments')}
-      >
-        <span>✅ Assessments</span>
-        <strong>{assessmentChildren.length}</strong>
-      </button>
+      {assessmentChildren.length > 0 && (
+        <button
+          type="button"
+          role="tab"
+          aria-selected={learningAreaPanel === 'assessments'}
+          className={`learning-area-tab ${learningAreaPanel === 'assessments' ? 'is-active' : ''}`}
+          onClick={() => setLearningAreaPanel('assessments')}
+        >
+          <span>✅ Assessments</span>
+          <strong>{assessmentChildren.length}</strong>
+        </button>
+      )}
     </div>
   ) : null;
 
@@ -241,6 +218,7 @@ export default function LearningNodePageShell({
                 registry={registry}
                 nodeId={currentNode.id}
                 backPath={parentPath}
+                standardCbcTheme={isCbcTheme(currentNode, navigation.breadcrumbs)}
               />
             </section>
           ) : shouldUseLearningAreaLayout ? (

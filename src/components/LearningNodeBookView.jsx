@@ -6,13 +6,15 @@ import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 import LearningBookReader from './book/LearningBookReader.jsx';
 import LearningBookContentBlock from './book/LearningBookContentBlock.jsx';
 import LearningBookHeader from './book/LearningBookHeader.jsx';
+import {
+  createAssessmentBookPages,
+  createMissingContentPage,
+  isStandardCbcContentType,
+  resolveStandardCbcContentType,
+  STANDARD_CBC_CONTENT_TABS
+} from './learningNodeBookView.model.ts';
 
-const CONTENT_TABS = [
-  { key: 'learningMaterial', label: 'Learning Material', icon: '📖' },
-  { key: 'practice', label: 'Practice', icon: '✏️' },
-  { key: 'assessment', label: 'Assessment', icon: '✅' },
-  { key: 'lessonPlan', label: 'Lesson Plan', icon: '🧑‍🏫' }
-];
+const CONTENT_TABS = STANDARD_CBC_CONTENT_TABS;
 
 const TAB_GROUPS = {
   learningMaterial: new Set(['lessons', 'notes', 'learningMaterial']),
@@ -80,7 +82,7 @@ function getContentType(node) {
 
 function getRequestedContentType(searchParams) {
   const requestedTab = searchParams.get('tab') || '';
-  return DIRECT_CONTENT_TAB_ORDER.includes(requestedTab) ? requestedTab : '';
+  return isStandardCbcContentType(requestedTab) ? requestedTab : '';
 }
 
 function getDirectContentChildren(node, registry) {
@@ -152,6 +154,10 @@ function createDirectContentPages(node, parentNode) {
     return createDirectBookPages(node);
   }
 
+  if (node?.content?.type === 'assessmentExamList') {
+    return createAssessmentBookPages(node);
+  }
+
   return [{
     type: 'content',
     strand: parentNode || node,
@@ -160,8 +166,13 @@ function createDirectContentPages(node, parentNode) {
   }];
 }
 
-export default function LearningNodeBookView({ registry, nodeId, backPath }) {
-  const [searchParams] = useSearchParams();
+export default function LearningNodeBookView({
+  registry,
+  nodeId,
+  backPath,
+  standardCbcTheme = false
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const requestedContentType = getRequestedContentType(searchParams);
   const [selectedContentType, setSelectedContentType] = useState(requestedContentType || 'learningMaterial');
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
@@ -172,9 +183,12 @@ export default function LearningNodeBookView({ registry, nodeId, backPath }) {
     () => getDirectContentChildren(currentNode, registry),
     [currentNode, registry]
   );
-  const selectedDirectContentChild = directContentChildren.find(
+  const matchingDirectContentChild = directContentChildren.find(
     (child) => getContentType(child) === selectedContentType
-  ) || directContentChildren[0];
+  );
+  const selectedDirectContentChild = standardCbcTheme
+    ? matchingDirectContentChild
+    : matchingDirectContentChild || directContentChildren[0];
   const directContentTabs = useMemo(
     () => getDirectSiblingContentTabs(registry, currentNode),
     [registry, currentNode]
@@ -183,7 +197,9 @@ export default function LearningNodeBookView({ registry, nodeId, backPath }) {
     () => getDirectChildContentTabs(registry, currentNode),
     [registry, currentNode]
   );
-  const visibleContentTabs = directContentTabs.length > 0
+  const visibleContentTabs = standardCbcTheme
+    ? CONTENT_TABS
+    : directContentTabs.length > 0
     ? directContentTabs
     : directChildContentTabs.length > 0
       ? directChildContentTabs
@@ -196,7 +212,13 @@ export default function LearningNodeBookView({ registry, nodeId, backPath }) {
     }
 
     if (selectedDirectContentChild) {
-      return createDirectContentPages(selectedDirectContentChild, currentNode);
+      const directPages = createDirectContentPages(selectedDirectContentChild, currentNode);
+      if (directPages.length > 0) return directPages;
+      if (standardCbcTheme) return [createMissingContentPage(selectedContentType)];
+    }
+
+    if (standardCbcTheme) {
+      return [createMissingContentPage(selectedContentType)];
     }
 
     const children = getChildren(registry, nodeId);
@@ -321,18 +343,17 @@ export default function LearningNodeBookView({ registry, nodeId, backPath }) {
         }
       }
 
-      if (selectedContentType === 'practice') {
-        pageList.push({ type: 'placeholder', title: 'More practice coming soon' });
-        pageList.push({ type: 'placeholder', title: 'Practice exercises coming soon' });
-      }
-      if (selectedContentType === 'assessment') {
-        pageList.push({ type: 'placeholder', title: 'More assessments coming soon' });
-        pageList.push({ type: 'placeholder', title: 'Assessments coming soon' });
-      }
     });
 
     return pageList;
-  }, [registry, nodeId, selectedContentType, currentNode, selectedDirectContentChild]);
+  }, [
+    registry,
+    nodeId,
+    selectedContentType,
+    currentNode,
+    selectedDirectContentChild,
+    standardCbcTheme
+  ]);
 
   const totalPages = pages.length;
 
@@ -350,14 +371,15 @@ export default function LearningNodeBookView({ registry, nodeId, backPath }) {
   }, [nodeId]);
 
   useEffect(() => {
-    if (initializedTabNodeIdRef.current !== nodeId) {
-      initializedTabNodeIdRef.current = nodeId;
-      if (requestedContentType && requestedContentType !== selectedContentType) {
-        setSelectedContentType(requestedContentType);
-      }
+    const nodeChanged = initializedTabNodeIdRef.current !== nodeId;
+    const nextContentType = resolveStandardCbcContentType(requestedContentType);
+
+    if (nodeChanged) initializedTabNodeIdRef.current = nodeId;
+    if ((nodeChanged || standardCbcTheme) && nextContentType !== selectedContentType) {
+      setSelectedContentType(nextContentType);
       setCurrentPageIndex(0);
     }
-  }, [nodeId, requestedContentType, selectedContentType]);
+  }, [nodeId, requestedContentType, selectedContentType, standardCbcTheme]);
 
   if (pages.length === 0) {
     return (
@@ -375,8 +397,15 @@ export default function LearningNodeBookView({ registry, nodeId, backPath }) {
   };
 
   const selectContentType = (contentType) => {
-    if (contentType !== selectedContentType) {
+    if (!standardCbcTheme && contentType !== selectedContentType) {
       setSelectedContentType(contentType);
+      setCurrentPageIndex(0);
+    }
+
+    if (standardCbcTheme && searchParams.get('tab') !== contentType) {
+      const nextSearchParams = new URLSearchParams(searchParams);
+      nextSearchParams.set('tab', contentType);
+      setSearchParams(nextSearchParams, { replace: true });
       setCurrentPageIndex(0);
     }
   };
@@ -443,6 +472,19 @@ function BookPageContent({ page, pageNumber, totalPages, registry, isAnimationCo
     }
     return <ReviewPage page={page} pageNumber={pageNumber} totalPages={totalPages} registry={registry} />;
   }
+  if (page.type === 'assessmentCollection') {
+    if (isAnimationCopy) {
+      return <AnimationCopyPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
+    }
+    return (
+      <AssessmentCollectionPage
+        page={page}
+        pageNumber={pageNumber}
+        totalPages={totalPages}
+        registry={registry}
+      />
+    );
+  }
   if (page.type === 'placeholder') {
     return <PlaceholderPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
   }
@@ -460,7 +502,9 @@ function BookPageContent({ page, pageNumber, totalPages, registry, isAnimationCo
 }
 
 function AnimationCopyPage({ page, pageNumber, totalPages }) {
-  const title = page.type === 'review'
+  const title = page.type === 'assessmentCollection'
+    ? page.title
+    : page.type === 'review'
     ? `${page.strand?.label || 'Learning material'} review`
     : page.subStrand?.label || page.strand?.label || 'Learning material';
 
@@ -473,6 +517,30 @@ function AnimationCopyPage({ page, pageNumber, totalPages }) {
       <div className="book-content-scroll book-content-scroll--interactive" aria-hidden="true">
         <div className="book-content-inner">
           <h3 className="book-content-group-title">{title}</h3>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function AssessmentCollectionPage({ page, pageNumber, totalPages, registry }) {
+  const assessmentNode = {
+    ...page.assessmentNode,
+    content: {
+      ...page.assessmentNode.content,
+      exams: page.exams
+    }
+  };
+
+  return (
+    <>
+      <div className="book-page-header">
+        <span className="book-page-breadcrumb">{page.title}</span>
+        <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
+      </div>
+      <div className="book-content-scroll book-content-scroll--interactive">
+        <div className="book-content-inner">
+          <LearningNodeContentRenderer registry={registry} node={assessmentNode} />
         </div>
       </div>
     </>

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { createNodeRoutePath } from '../learning/routing';
-import { getChildren } from '../learning/registry/index.ts';
+import { getChildren, isLearningNodeReady } from '../learning/registry/index.ts';
 
 const ICON_BY_KIND = {
   learningArea: '📖',
@@ -211,11 +211,10 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
               });
               const icon = ICON_BY_KIND[child.kind] || '📄';
               const kindLabel = LABEL_BY_KIND[child.kind] || child.kind;
-              const isActiveLearningArea =
-                child.kind === 'learningArea' &&
-                ['grade-1-english-activities', 'grade-1-mathematical-activities'].includes(child.id);
               const hasActions = child.actions && child.actions.length > 0;
-              const isDisabled = !hasActions || (child.kind === 'learningArea' && !isActiveLearningArea);
+              const isDisabled = child.kind === 'learningArea'
+                ? !hasActions || !isLearningNodeReady(registry, child)
+                : !hasActions;
 
               if (child.kind === 'learningArea') {
                 return (

@@ -1,13 +1,17 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
 import CategoryLibrary from '../components/CategoryLibrary.jsx';
 import { getAcademyRootNodeById } from '../learning/academies/index.ts';
 import { getAcademyCatalog } from '../academies/catalog.js';
-import { getChildren } from '../learning/registry/index.ts';
-import { createLearningNodeRegistry } from '../learning/registry/index.ts';
+import {
+  createLearningNodeRegistry,
+  getChildren,
+  isLearningNodeReady
+} from '../learning/registry/index.ts';
 import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
 import { getAppearance } from '../learning/core/index.ts';
+import { createNodeRoutePath } from '../learning/routing';
 import { usePreferences } from '../hooks/usePreferences.js';
 
 import '../styles/progress-table.css';
@@ -26,7 +30,7 @@ function GradePickerCard({ grade, isAvailable, onSelect }) {
   return (
     <button
       type="button"
-      onClick={() => isAvailable && onSelect(grade.id)}
+      onClick={() => isAvailable && onSelect(grade)}
       className={cardClassName}
       disabled={!isAvailable}
     >
@@ -53,18 +57,17 @@ export default function CategoriesPage() {
   const navigate = useNavigate();
   const activeAcademy = getActiveAcademy();
   const { completed } = usePreferences();
-  const [grades, setGrades] = useState([]);
 
   const activeCatalog = useMemo(
     () => getAcademyCatalog(activeAcademy.id),
     [activeAcademy.id]
   );
 
-  const gradeNodes = useMemo(() => {
-    if (activeAcademy.id !== 'cbc') return [];
+  const cbcGradeModel = useMemo(() => {
+    if (activeAcademy.id !== 'cbc') return null;
     
     const academyNode = getAcademyRootNodeById('cbc-academy');
-    if (!academyNode) return [];
+    if (!academyNode) return null;
     
     const cbcGradesSource = createCbcGradesRegistrySource();
     const registry = createLearningNodeRegistry({
@@ -72,22 +75,19 @@ export default function CategoriesPage() {
     });
     
     const children = getChildren(registry, academyNode.id);
-    return children.filter(child => child.kind === 'grade');
+    return {
+      registry,
+      grades: children.filter(child => child.kind === 'grade')
+    };
   }, [activeAcademy.id]);
 
-  useEffect(() => {
-    if (gradeNodes.length > 0) {
-      setGrades(gradeNodes);
-    }
-  }, [gradeNodes]);
+  const handleGradeClick = (grade) => {
+    if (!cbcGradeModel) return;
 
-  const handleGradeClick = (gradeId) => {
-    if (activeAcademy.id === 'cbc' && gradeId === 'grade-1') {
-      navigate('/gd1');
-      return;
-    }
-
-    navigate(`/learn/${gradeId}`);
+    navigate(createNodeRoutePath(cbcGradeModel.registry, grade, {
+      includeRoot: false,
+      includeAcademyRoot: false
+    }));
   };
 
   if (activeAcademy.id !== 'cbc') {
@@ -128,8 +128,12 @@ export default function CategoriesPage() {
         </section>
 
         <div className="premium-category-grid">
-          {grades.map((grade) => {
-            const isAvailable = grade.id === 'grade-1';
+          {(cbcGradeModel?.grades || []).map((grade) => {
+            const hasActions = Boolean(grade.actions?.length);
+            const isAvailable = hasActions && isLearningNodeReady(
+              cbcGradeModel.registry,
+              grade
+            );
             return (
               <GradePickerCard
                 key={grade.id}
