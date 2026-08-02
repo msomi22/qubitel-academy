@@ -1,11 +1,17 @@
+import grade3ReadingComprehensionLesson from
+  '../../../../../../../../academies/cbc/grade-3/english/lessons/reading-comprehension-school-garden-lesson-001.js';
 import type { LearningNode } from '../../../../../../../core/index.ts';
 import { createLearningNode } from '../../../../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../../../../core/learningNode.constants.ts';
+import {
+  adaptLegacyLearningProblemToBook
+} from '../../../../../adapters/legacyLearningProblem.adapter.ts';
 import {
   createAssessmentExamDescriptor
 } from '../../../assessmentExamDescriptor.ts';
 
 const THEME_NODE_ID = 'grade-3-english-activities-theme-reading-comprehension';
+const LEARNING_MATERIAL_NODE_ID = 'gd3-eng-reading-comprehension-learning-material';
 const ASSESSMENT_NODE_ID = 'gd3-eng-reading-comprehension-assessment';
 const SOURCE_ROOT = 'src/academies/cbc/grade-3/english/assessments/comprehension';
 
@@ -111,13 +117,22 @@ export const grade3ReadingComprehensionExamDescriptors = [
   })
 ];
 
+const learningMaterialBook = adaptLegacyLearningProblemToBook(
+  grade3ReadingComprehensionLesson,
+  {
+    manifestId: 'reading-comprehension-school-garden-lesson-001',
+    pageSubtitle: 'Learning Material',
+    pageBreakAfterBodyIndexes: [1, 2]
+  }
+);
+
 const themeNode = createLearningNode({
   id: THEME_NODE_ID,
   kind: LEARNING_NODE_KINDS.theme,
   label: 'Reading Comprehension',
   summary: 'Read passages and answer questions using details from the text.',
   parentId: 'grade-3-english-activities',
-  childIds: [ASSESSMENT_NODE_ID],
+  childIds: [LEARNING_MATERIAL_NODE_ID, ASSESSMENT_NODE_ID],
   attributes: [
     { key: 'routeSegment', value: 'reading-comprehension' },
     { key: 'themeId', value: 'reading-comprehension' },
@@ -129,6 +144,40 @@ const themeNode = createLearningNode({
   actions: [{ intent: 'openChildren' }],
   appearances: [
     { key: 'icon', value: '📖' },
+    { key: 'tone', value: 'childFriendly' }
+  ],
+  version: 1
+});
+
+const learningMaterialNode = createLearningNode({
+  id: LEARNING_MATERIAL_NODE_ID,
+  kind: 'learningMaterial',
+  label: 'Learning Material',
+  summary: grade3ReadingComprehensionLesson.question,
+  parentId: THEME_NODE_ID,
+  content: learningMaterialBook,
+  attributes: [
+    { key: 'gradeCode', value: 'GD3' },
+    { key: 'gradeName', value: 'Grade 3' },
+    { key: 'learningAreaCode', value: 'ENG' },
+    { key: 'learningAreaName', value: 'English Activities' },
+    { key: 'themeName', value: 'Reading Comprehension' },
+    { key: 'routeSegment', value: 'learning-material' },
+    { key: 'contentType', value: 'learningMaterial' },
+    { key: 'themeId', value: 'reading-comprehension' },
+    {
+      key: 'authoredLessonId',
+      value: 'english-reading-comprehension-school-garden-lesson-001'
+    },
+    {
+      key: 'legacyManifestId',
+      value: 'reading-comprehension-school-garden-lesson-001'
+    }
+  ],
+  features: [{ kind: 'guidedContent' }],
+  actions: [{ intent: 'resume' }],
+  appearances: [
+    { key: 'icon', value: '📒' },
     { key: 'tone', value: 'childFriendly' }
   ],
   version: 1
@@ -164,5 +213,6 @@ const assessmentNode = createLearningNode({
 
 export const grade3EnglishReadingComprehensionNodes: LearningNode[] = [
   themeNode,
+  learningMaterialNode,
   assessmentNode
 ];

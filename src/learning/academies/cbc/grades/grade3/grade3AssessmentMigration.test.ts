@@ -325,8 +325,6 @@ test('registers the exact assessment hierarchy with ready learning areas and no 
   );
 
   const assessmentOnlyThemeIds = [
-    'grade-3-english-activities-theme-reading-comprehension',
-    'grade-3-english-activities-theme-parts-of-speech',
     'grade-3-mathematical-activities-theme-mixed-revision',
     'grade-3-kiswahili-activities-theme-ufahamu'
   ];
@@ -335,6 +333,19 @@ test('registers the exact assessment hierarchy with ready learning areas and no 
     const children = getChildren(registry, themeId);
     assert.equal(children.length, 1, themeId);
     assert.equal(children[0].kind, 'assessment', themeId);
+    assert.equal(isLearningNodeReady(registry, themeId), true, themeId);
+  });
+
+  const englishLessonThemeIds = [
+    'grade-3-english-activities-theme-reading-comprehension',
+    'grade-3-english-activities-theme-parts-of-speech'
+  ];
+
+  englishLessonThemeIds.forEach((themeId) => {
+    const children = getChildren(registry, themeId);
+    assert.equal(children.length, 2, themeId);
+    assert.equal(children[0].kind, 'learningMaterial', themeId);
+    assert.equal(children[1].kind, 'assessment', themeId);
     assert.equal(isLearningNodeReady(registry, themeId), true, themeId);
   });
 
