@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Book Viewer — Reusable Component Reference</title>
+
+<!--
+  ============================================================================
+  BOOK VIEWER — REFERENCE COMPONENT
+  ============================================================================
+  A realistic, page-turning book reader built with plain HTML/CSS/JS,
+  structured so it maps almost 1:1 onto a React component tree.
+
+  REACT MIGRATION GUIDE (read this first)
+  ----------------------------------------------------------------------------
+  Everything below is written in clearly separated "components" even though
+  there is no framework. Each one is a candidate for a real React component
+  or hook with (almost) the same name:
+
+    DATA
+      `bookData`                →  props passed into <Book data={bookData} />
+
+    STATE / LOGIC  (see <script>, section "3. STATE / CONTROLLER")
+      `readerState` + the functions that mutate it
+                                →  a `useBookReader(bookData)` custom hook
+                                   returning { currentIndex, goNext, goPrev,
+                                   goToPage, isAnimating, theme, toggleTheme }
+
+    RENDER FUNCTIONS (see <script>, section "2. RENDER / TEMPLATE FUNCTIONS")
+      `renderBlock(block)`      →  <ContentBlock block={block} />
+      `renderPageMarkup(page)`  →  <Page data={page} />
+      `buildLeaf(...)`          →  <FlipLeaf front={...} back={...} dir={...} />
+
+    DOM STRUCTURE (see <body>)
+      .app-toolbar              →  <Toolbar title=... onToggleTheme=... />
+      .book-stage > .book       →  <BookStage><Book>...</Book></BookStage>
+      .controls                 →  <PageControls .../>
+      .jump-dialog               →  <JumpToPageDialog .../>
+
+  In React, `readerState` becomes real component state (useState/useReducer),
+  the imperative DOM writes (`el.innerHTML = ...`) become JSX returned from
+  render, and `addEventListener` calls become props like `onClick`/
+  `onPointerDown`. The animation logic (rotateY leaves, drag-follow) is
+  framework-agnostic and can be lifted almost verbatim into a `useEffect`
+  or a small class kept outside React and driven by refs.
+
+  CONTENT MODEL
+  ----------------------------------------------------------------------------
+  A page is just data: { strand, subStrand, blocks: [...] }. `blocks` is an
+  array of typed content — this is the extension point for embedding
+  anything (text, image, audio, quote, list, or fully custom HTML/components).
+  Adding a new block type = adding one case to `renderBlock()` (or, in React,
+  one branch in a <ContentBlock> switch).
+  ============================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================================
+   1. RESET & BASE
+   ============================================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  background: var(--color-desk-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+button { font: inherit; color: inherit; }
+img { max-width: 100%; display: block; }
+h1, h2, h3, p, figure, blockquote, ul, ol, dl { margin: 0; }
+
+/* ============================================================================
+   2. DESIGN TOKENS
+   Subject-grounded palette: leather binding, gilt page edges, warm paper —
+   the material vocabulary of an actual bound book, in two lightness modes.
+   ============================================================================ */
+:root,
+[data-theme="light"] {
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Lora', Georgia, serif;
+  --font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --color-desk-bg: #ddd3bc;
+  --color-paper: #f7f1e2;
+  --color-paper-2: #f1e9d6;
+  --color-paper-shadow: #e4d8bc;
+  --color-paper-shadow-2: #d8c9a4;
+  --color-ink: #2a2117;
+  --color-ink-soft: #6e6353;
+  --color-ink-faint: #948a76;
+  --color-leather: #5b2a2e;
+  --color-leather-dark: #3d1c1f;
+  --color-gilt: #977228;
+  --color-rule: rgba(42, 33, 23, 0.16);
+  --color-rule-soft: rgba(42, 33, 23, 0.08);
+  --shadow-color: rgba(35, 22, 10, 0.38);
+  --shadow-color-soft: rgba(35, 22, 10, 0.18);
+  --focus-ring: #8a5a20;
+  --scrollbar-thumb: rgba(42, 33, 23, 0.25);
+}
+
+[data-theme="dark"] {
+  --color-desk-bg: #0e0c0a;
+  --color-paper: #221d17;
+  --color-paper-2: #2a231b;
+  --color-paper-shadow: #171310;
+  --color-paper-shadow-2: #100d0a;
+  --color-ink: #e9e0c9;
+  --color-ink-soft: #a99c87;
+  --color-ink-faint: #7c7262;
+  --color-leather: #8a4448;
+  --color-leather-dark: #5e2c2f;
+  --color-gilt: #d2aa63;
+  --color-rule: rgba(233, 224, 201, 0.14);
+  --color-rule-soft: rgba(233, 224, 201, 0.07);
+  --shadow-color: rgba(0, 0, 0, 0.65);
+  --shadow-color-soft: rgba(0, 0, 0, 0.4);
+  --focus-ring: #d2aa63;
+  --scrollbar-thumb: rgba(233, 224, 201, 0.2);
+}
+
+:root {
+  --flip-duration: 650ms;
+  --flip-duration-fast: 380ms;
+  --flip-ease: cubic-bezier(0.4, 0.05, 0.2, 1);
+  --radius-page: 3px 10px 10px 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --flip-duration: 1ms; --flip-duration-fast: 1ms; }
+}
+
+/* ============================================================================
+   3. APP SHELL / TOOLBAR
+   ============================================================================ */
+.app {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, var(--color-leather), var(--color-leather-dark));
+  color: #f2e6da;
+  box-shadow: 0 2px 10px var(--shadow-color-soft);
+  position: relative;
+  z-index: 5;
+}
+
+.app-toolbar__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.theme-toggle {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.theme-toggle:hover { background: rgba(255, 255, 255, 0.18); }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* ============================================================================
+   4. BOOK STAGE (perspective root)
+   ============================================================================ */
+.book-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 14px 10px;
+  perspective: 1800px;
+}
+
+.book {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 3 / 4.35;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  transform: rotateX(1.5deg);
+  border-radius: var(--radius-page);
+  background: var(--color-paper);
+  touch-action: pan-y; /* allow vertical scroll of the page body; horizontal handled manually */
+  box-shadow:
+    3px 4px 0 var(--color-paper-shadow),
+    6px 8px 0 var(--color-paper-shadow-2),
+    0 14px 30px var(--shadow-color);
+}
+
+/* Fallback for browsers without aspect-ratio support (or with buggy
+   interaction between aspect-ratio and absolutely-positioned children,
+   seen on some WebKit versions): keeps the book from collapsing to zero
+   height. The aspect-ratio rule above wins wherever it's supported. */
+@supports not (aspect-ratio: 1 / 1) {
+  .book { height: 0; padding-top: 145%; }
+}
+
+/* Decorative spine — only appears once there's room to suggest an open book */
+.book__spine {
+  display: none;
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  left: -26px;
+  width: 26px;
+  border-radius: 8px 0 0 8px;
+  background: linear-gradient(90deg, var(--color-leather-dark), var(--color-leather));
+  box-shadow: -4px 6px 16px var(--shadow-color-soft);
+}
+
+/* Corner "grab" hotspots for quick tap-to-turn, sit in the page margin so
+   they never overlap reading content. Also serve as the discoverability
+   affordance (a chevron) for the drag-to-turn gesture. */
+.book__tapzone {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  width: 13%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 4;
+  display: grid;
+  color: var(--color-ink-faint);
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+.book__tapzone:hover,
+.book__tapzone:focus-visible { opacity: 1; background: var(--color-rule-soft); }
+.book__tapzone--prev { left: 0; border-radius: var(--radius-page) 0 0 var(--radius-page); place-items: center start; }
+.book__tapzone--next { right: 0; place-items: center end; }
+.book__tapzone svg { width: 16px; height: 16px; margin: 0 4px; }
+
+/* ============================================================================
+   5. PAGE
+   ============================================================================ */
+.page {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-paper);
+  border-radius: var(--radius-page);
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Gutter shadow near the spine edge — reinforces "this is bound" even in
+   single-page view. */
+.page::before {
+  content: "";
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(0,0,0,0.16), transparent 7%);
+  z-index: 2;
+}
+[data-theme="dark"] .page::before {
+  background: linear-gradient(to right, rgba(0,0,0,0.4), transparent 7%);
+}
+
+.page__header {
+  flex: none;
+  padding: 22px 26px 12px;
+  border-bottom: 1px solid var(--color-rule);
+}
+.page__eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-gilt);
+  margin-bottom: 4px;
+}
+.page__title {
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+
+.page__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 26px 20px;
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  line-height: 1.7;
+  color: var(--color-ink);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+.page__body::-webkit-scrollbar { width: 5px; }
+.page__body::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+/* Faint ruled lines — the literal "book page with lines" texture, subtle
+   enough not to fight legibility. Spacing matches the body line-height. */
+.page__body--ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent calc(1.7em - 1px),
+    var(--color-rule-soft) calc(1.7em - 1px),
+    var(--color-rule-soft) 1.7em
+  );
+  background-position: 0 4px;
+}
+
+.page__footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 26px 16px;
+  border-top: 1px solid var(--color-rule);
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  color: var(--color-ink-soft);
+  letter-spacing: 0.02em;
+}
+.page__footer-number {
+  font-variant-numeric: oldstyle-nums;
+  color: var(--color-gilt);
+  font-weight: 600;
+}
+
+/* Cover / title page variant */
+.page--cover { align-items: center; justify-content: center; text-align: center; }
+.page--cover .page__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  overflow: visible;
+}
+.page--cover .cover__title {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+.page--cover .cover__rule {
+  width: 56px;
+  height: 2px;
+  background: var(--color-gilt);
+}
+.page--cover .cover__subtitle {
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+}
+.page--cover .cover__author {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+  margin-top: 10px;
+}
+
+/* Blank paper back-face used while a leaf is mid-flip */
+.page--blank {
+  background: var(--color-paper-2);
+  display: grid;
+  place-items: center;
+}
+.page--blank::after {
+  content: "";
+  width: 60%;
+  height: 60%;
+  border: 1px solid var(--color-rule-soft);
+  border-radius: 2px;
+}
+
+/* ============================================================================
+   6. CONTENT BLOCKS — the embeddable-content extension point.
+   Add a new type by adding a `.block--yourtype` rule + a case in
+   `renderBlock()` (or a branch in <ContentBlock> in React).
+   ============================================================================ */
+.block { margin-bottom: 1.1em; }
+.block:last-child { margin-bottom: 0; }
+
+.block--heading {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.block--text { text-align: justify; hyphens: auto; }
+.block--text:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 2.6em;
+  font-weight: 700;
+  float: left;
+  line-height: 0.8;
+  padding: 0.05em 0.08em 0 0;
+  color: var(--color-leather);
+}
+[data-theme="dark"] .block--text:first-of-type::first-letter { color: var(--color-gilt); }
+
+.block--image figure { margin: 0; }
+.block--image img {
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid var(--color-rule);
+}
+.block--image figcaption {
+  margin-top: 6px;
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  color: var(--color-ink-soft);
+  text-align: center;
+  font-style: italic;
+}
+
+.block--audio {
+  background: var(--color-paper-2);
+  border: 1px solid var(--color-rule);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.block--audio .audio__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  margin-bottom: 8px;
+}
+.block--audio .audio__label svg { width: 15px; height: 15px; color: var(--color-gilt); }
+.block--audio audio { width: 100%; height: 34px; }
+
+.block--quote {
+  border-left: 3px solid var(--color-gilt);
+  padding: 2px 0 2px 16px;
+  font-family: var(--font-body);
+  font-style: italic;
+  color: var(--color-ink-soft);
+}
+.block--quote cite {
+  display: block;
+  margin-top: 6px;
+  font-style: normal;
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.block--list ul, .block--list ol { padding-left: 1.3em; }
+.block--list li { margin-bottom: 0.35em; }
+
+/* Example of a fully custom block: an activity/callout box built from
+   arbitrary markup, proving the slot accepts anything. */
+.activity-box {
+  background: var(--color-paper-2);
+  border: 1px dashed var(--color-gilt);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.activity-box__label {
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gilt);
+  margin-bottom: 8px;
+}
+.activity-box label { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 6px; font-size: 0.9rem; }
+.activity-box details { margin-top: 8px; font-size: 0.85rem; color: var(--color-ink-soft); }
+.activity-box summary { cursor: pointer; font-weight: 600; color: var(--color-ink); }
+
+/* ============================================================================
+   7. FLIP LEAF (the page-turn animation)
+   ============================================================================ */
+.flip-leaf {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  z-index: 3;
+  will-change: transform;
+  pointer-events: none; /* the leaf is a visual overlay only during animation */
+}
+.flip-leaf__face {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: var(--radius-page);
+  overflow: hidden;
+}
+.flip-leaf__face--front { transform: rotateY(0deg); }
+.flip-leaf__face--back { transform: rotateY(180deg); }
+
+/* A soft moving shade that sweeps across the leaf as it turns, standing in
+   for the way real paper catches light while curling. */
+.flip-leaf__shade {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0,0,0,0.22), transparent 45%, transparent 55%, rgba(0,0,0,0.22));
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   8. CONTROLS
+   ============================================================================ */
+.controls {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px calc(14px + env(safe-area-inset-bottom));
+}
+
+.ctrl-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--shadow-color-soft);
+  transition: transform 0.12s ease, opacity 0.15s ease;
+}
+.ctrl-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.ctrl-btn:active:not(:disabled) { transform: translateY(0) scale(0.96); }
+.ctrl-btn:disabled { opacity: 0.35; cursor: default; }
+.ctrl-btn svg { width: 18px; height: 18px; }
+
+.page-indicator {
+  min-width: 130px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 22px;
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper);
+  font-family: var(--font-ui);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--shadow-color-soft);
+}
+.page-indicator:hover { color: var(--color-ink); }
+.page-indicator strong { color: var(--color-gilt); font-variant-numeric: oldstyle-nums; }
+
+/* ============================================================================
+   9. JUMP-TO-PAGE DIALOG
+   ============================================================================ */
+.jump-dialog {
+  border: none;
+  border-radius: 14px;
+  padding: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: 0 20px 50px var(--shadow-color);
+  width: min(320px, 90vw);
+}
+.jump-dialog::backdrop { background: rgba(10, 8, 6, 0.5); }
+.jump-dialog form { padding: 20px 20px 16px; display: flex; flex-direction: column; gap: 12px; }
+.jump-dialog h2 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.jump-dialog__row { display: flex; align-items: center; gap: 10px; }
+.jump-dialog input[type="number"] {
+  width: 70px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper-2);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+}
+.jump-dialog input[type="range"] { flex: 1; accent-color: var(--color-gilt); }
+.jump-dialog__actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.jump-dialog button[type="submit"],
+.jump-dialog button[type="button"] {
+  padding: 9px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--color-rule);
+  background: var(--color-paper-2);
+  cursor: pointer;
+}
+.jump-dialog button[type="submit"] {
+  background: var(--color-leather);
+  border-color: var(--color-leather);
+  color: #f2e6da;
+  font-weight: 600;
+}
+
+/* ============================================================================
+   10. ACCESSIBILITY UTILITIES
+   ============================================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   11. RESPONSIVE — tablet / desktop enhancements
+   ============================================================================ */
+@media (min-width: 700px) {
+  .book { max-width: 480px; margin-left: 26px; }
+  .book__spine { display: block; }
+  .page__title { font-size: 1.4rem; }
+  .page--cover .cover__title { font-size: 2.2rem; }
+}
+
+@media (min-width: 1024px) {
+  .book-stage { padding-top: 40px; }
+  .book { max-width: 540px; }
+  .app-toolbar { padding: 16px 28px; }
+}
+</style>
+</head>
+<body>
+
+<!--
+  Root app node. `data-theme` is the single source of truth for theming;
+  in React this would be `<div className="app" data-theme={theme}>`.
+-->
+<div class="app" id="app" data-theme="light">
+
+  <!-- ============================ TOOLBAR ============================ -->
+  <header class="app-toolbar">
+    <h1 class="app-toolbar__title" id="bookTitleLabel">Loading…</h1>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Switch to dark theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+    </button>
+  </header>
+
+  <!-- ============================ BOOK STAGE ============================ -->
+  <!-- React: <BookStage><Book pages={pages} current={i} /></BookStage> -->
+  <main class="book-stage">
+    <div class="book" id="book" role="group" aria-roledescription="book" aria-label="Book pages">
+
+      <div class="book__spine" aria-hidden="true"></div>
+
+      <!-- Quick tap-to-turn zones, sit in the page margin -->
+      <button class="book__tapzone book__tapzone--prev" id="tapPrev" type="button" aria-label="Previous page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <button class="book__tapzone book__tapzone--next" id="tapNext" type="button" aria-label="Next page">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Static base layer: always shows the "resting" (destination) page -->
+      <section class="page" id="pageBase"></section>
+
+      <!-- Flip leaf is created/destroyed on demand during a turn -->
+      <!-- (kept out of the DOM at rest — see buildLeaf() / removeLeaf() in JS) -->
+    </div>
+  </main>
+
+  <!-- ============================ CONTROLS ============================ -->
+  <!-- React: <PageControls onPrev={} onNext={} onOpenJump={} current={} total={} /> -->
+  <footer class="controls">
+    <button class="ctrl-btn" id="btnPrev" type="button" aria-label="Previous page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+
+    <button class="page-indicator" id="btnJump" type="button" aria-haspopup="dialog">
+      Page <strong id="pageIndicatorCurrent">1</strong>&nbsp;of&nbsp;<span id="pageIndicatorTotal">1</span>
+    </button>
+
+    <button class="ctrl-btn" id="btnNext" type="button" aria-label="Next page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </footer>
+
+  <!-- ============================ JUMP-TO-PAGE DIALOG ============================ -->
+  <!-- React: <JumpToPageDialog open={} max={} onSubmit={} onClose={} /> -->
+  <dialog class="jump-dialog" id="jumpDialog">
+    <form id="jumpForm">
+      <h2>Go to page</h2>
+      <div class="jump-dialog__row">
+        <input type="number" id="jumpInput" min="1" step="1" aria-label="Page number">
+        <input type="range" id="jumpSlider" min="1" step="1" aria-label="Page slider">
+      </div>
+      <div class="jump-dialog__actions">
+        <button type="button" id="jumpCancel">Cancel</button>
+        <button type="submit" id="jumpGo">Go</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Screen-reader-only live region for page-change announcements -->
+  <div class="sr-only" aria-live="polite" id="srLive"></div>
+</div>
+
+<script>
+'use strict';
+
+/* ============================================================================
+   1. DATA
+   This is the component's "props". Swap this object (or fetch it from an
+   API) to display different content — nothing else needs to change.
+   Each page: { strand, subStrand, blocks[] } or { isCover: true, ... }.
+   `blocks[].type` is the embeddable-content extension point.
+   ============================================================================ */
+const bookData = {
+  title: 'The Living World',
+  author: 'A Grade 6 Science Companion',
+  pages: [
+    {
+      isCover: true,
+      title: 'The Living World',
+      subtitle: 'Exploring Strands in Living Things & Their Environment',
+      author: 'Companion Reader · Sample Edition'
+    },
+    {
+      strand: 'Strand: Living Things and Their Environment',
+      subStrand: 'Sub-strand: Classification of Animals',
+      blocks: [
+        { type: 'heading', text: 'Why do we classify animals?' },
+        { type: 'text', text: 'Long before anyone owned a microscope, people sorted the animals around them by what was useful to know: which ones were safe, which ones flew, which ones lived in water. Classification is simply that instinct made systematic — a way of grouping living things by the features they share, so that anything new we meet can be understood by comparison rather than from scratch.' },
+        { type: 'text', text: 'Modern classification groups animals first into those with a backbone, called vertebrates, and those without one, called invertebrates. Within each group, further sub-strands separate animals by skin covering, breathing method, and how their young are born.' }
+      ]
+    },
+    {
+      strand: 'Strand: Living Things and Their Environment',
+      subStrand: 'Sub-strand: Vertebrate Body Plans',
+      blocks: [
+        { type: 'image', src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2MDAgMjIwIiByb2xlPSJpbWciIGFyaWEtbGFiZWxsZWRieT0idCI+Cjx0aXRsZSBpZD0idCI+U2ltcGxlIGxpbmUgZGlhZ3JhbSBjb21wYXJpbmcgZml2ZSB2ZXJ0ZWJyYXRlIGJvZHkgb3V0bGluZXM8L3RpdGxlPgo8cmVjdCB3aWR0aD0iNjAwIiBoZWlnaHQ9IjIyMCIgZmlsbD0iI2YxZTlkNiIvPgo8ZyBmaWxsPSJub25lIiBzdHJva2U9IiM1YjJhMmUiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KICA8IS0tIGZpc2ggLS0+CiAgPHBhdGggZD0iTTQwIDExMCBDNzAgODUgMTEwIDg1IDEzMCAxMTAgQzExMCAxMzUgNzAgMTM1IDQwIDExMCBaIi8+CiAgPHBhdGggZD0iTTQwIDExMCBMMTUgOTUgTDE1IDEyNSBaIi8+CiAgPCEtLSBhbXBoaWJpYW4gLS0+CiAgPGVsbGlwc2UgY3g9IjIwMCIgY3k9IjEyMCIgcng9IjMyIiByeT0iMjAiLz4KICA8Y2lyY2xlIGN4PSIxODUiIGN5PSIxMDUiIHI9IjEwIi8+CiAgPHBhdGggZD0iTTE3OCAxMzggTDE2OCAxNTggTTIyMiAxMzggTDIzMiAxNTggTTE4MiAxNDAgTDE3NiAxNjAgTTIxOCAxNDAgTDIyNCAxNjAiLz4KICA8IS0tIHJlcHRpbGUgLS0+CiAgPHBhdGggZD0iTTI5MCAxMzAgQzMwMCAxMDAgMzQwIDk1IDM2MCAxMDUgQzM3NSAxMTIgMzg1IDEzMCA0MDAgMTI4Ii8+CiAgPGNpcmNsZSBjeD0iMjkyIiBjeT0iMTI4IiByPSI5Ii8+CiAgPHBhdGggZD0iTTMxMCAxMjggTDMwNSAxNDUgTTMzMCAxMTggTDMyOCAxMzggTTM1MCAxMTIgTDM1MiAxMzIiLz4KICA8IS0tIGJpcmQgLS0+CiAgPGVsbGlwc2UgY3g9IjQ2MCIgY3k9IjExMCIgcng9IjI2IiByeT0iMjIiLz4KICA8Y2lyY2xlIGN4PSI0NDAiIGN5PSI5MiIgcj0iMTEiLz4KICA8cGF0aCBkPSJNNDI5IDkwIEw0MTUgODYiLz4KICA8cGF0aCBkPSJNNDcwIDk1IEM1MDAgODAgNTIwIDkwIDUwNSAxMDUgQzQ5NSAxMTIgNDc4IDEwOCA0NzAgMTAwIi8+CiAgPHBhdGggZD0iTTQ1MiAxMzAgTDQ0OCAxNTAgTTQ3MCAxMzAgTDQ3NCAxNTAiLz4KICA8IS0tIG1hbW1hbCAtLT4KICA8ZWxsaXBzZSBjeD0iNTUwIiBjeT0iMTE1IiByeD0iMjgiIHJ5PSIxOCIvPgogIDxjaXJjbGUgY3g9IjUzMCIgY3k9Ijk4IiByPSIxMSIvPgogIDxwYXRoIGQ9Ik01MjIgOTAgTDUxNiA4MCBNNTM0IDg4IEw1MzQgNzgiLz4KICA8cGF0aCBkPSJNNTM1IDEzMCBMNTMwIDE1MCBNNTY1IDEzMCBMNTY4IDE1MCBNNTQwIDEzMiBMNTM2IDE1MiBNNTYwIDEzMiBMNTY0IDE1MiIvPgo8L2c+CjxnIGZvbnQtZmFtaWx5PSJJbnRlciwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzZlNjM1MyI+CiAgPHRleHQgeD0iMjAiIHk9IjE2NSI+RmlzaDwvdGV4dD4KICA8dGV4dCB4PSIxNzgiIHk9IjE3NSI+QW1waGliaWFuPC90ZXh0PgogIDx0ZXh0IHg9IjMwNSIgeT0iMTY1Ij5SZXB0aWxlPC90ZXh0PgogIDx0ZXh0IHg9IjQ0MCIgeT0iMTc1Ij5CaXJkPC90ZXh0PgogIDx0ZXh0IHg9IjUyNSIgeT0iMTY1Ij5NYW1tYWw8L3RleHQ+CjwvZz4KPC9zdmc+', alt: 'Simple line diagram comparing five vertebrate body outlines', caption: 'Fig. 2.1 — Five vertebrate groups, arranged by typical body plan.' },
+        { type: 'text', text: 'Notice how each outline shares the same basic plan — a head, a spine, and paired limbs or fins — even though the groups have adapted to very different environments, from riverbeds to open sky.' }
+      ]
+    },
+    {
+      strand: 'Strand: Living Things and Their Environment',
+      subStrand: 'Sub-strand: Listening for Classification Clues',
+      blocks: [
+        { type: 'heading', text: 'Field recording: identifying by sound' },
+        { type: 'text', text: 'In the field, you often hear an animal before you see it. This short recording is a placeholder for any audio your content team supplies — replace its source with a real field recording, a pronunciation guide, or narrated text.' },
+        { type: 'audio', src: 'data:audio/wav;base64,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', label: 'Sample chime — replace with your own audio file' }
+      ]
+    },
+    {
+      strand: 'Strand: Living Things and Their Environment',
+      subStrand: 'Sub-strand: A Note on Observation',
+      blocks: [
+        { type: 'quote', text: 'The naturalist who names nothing but only watches carefully will still learn more in an afternoon than the one who watches nothing at all.', cite: 'Field notebook, anonymous teacher' },
+        { type: 'text', text: 'Careful, patient observation is the root skill beneath every strand in this book. Before reaching for a label, describe what is actually in front of you: shape, movement, sound, habitat.' }
+      ]
+    },
+    {
+      strand: 'Strand: Living Things and Their Environment',
+      subStrand: 'Sub-strand: Vertebrates vs Invertebrates',
+      blocks: [
+        { type: 'heading', text: 'Quick comparison' },
+        { type: 'list', ordered: false, items: [
+          'Vertebrates have an internal backbone that supports and protects the spinal cord.',
+          'Invertebrates lack a backbone — many instead rely on an exoskeleton or a soft hydrostatic body.',
+          'Vertebrates are a smaller group overall, but include all mammals, birds, reptiles, amphibians, and fish.',
+          'Invertebrates make up the large majority of all known animal species, led by insects.'
+        ] }
+      ]
+    },
+    {
+      strand: 'Strand: Living Things and Their Environment',
+      subStrand: 'Sub-strand: Try It Yourself',
+      blocks: [
+        { type: 'custom', html: `
+          <div class="activity-box">
+            <div class="activity-box__label">Quick check</div>
+            <label><input type="radio" name="q1" checked disabled> A frog is an example of a vertebrate.</label>
+            <label><input type="radio" name="q2" disabled> A jellyfish has a backbone.</label>
+            <details>
+              <summary>Reveal answer</summary>
+              A frog is a vertebrate (amphibian class); a jellyfish is an invertebrate with no backbone at all.
+            </details>
+          </div>
+        ` }
+      ]
+    },
+    {
+      isCover: true,
+      title: 'End of Sample',
+      subtitle: 'Continue the pattern by adding more page objects to bookData.pages',
+      author: 'Thank you for reading'
+    }
+  ]
+};
+
+/* ============================================================================
+   2. RENDER / TEMPLATE FUNCTIONS
+   Pure functions: data in, HTML string out. In React these become the JSX
+   returned by small presentational components.
+   ============================================================================ */
+
+/** Minimal escaping for text inserted via template strings. */
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+/**
+ * Renders a single content block. This is the extension point for new
+ * embeddable content types — add a case here (and matching CSS) for
+ * anything beyond text/image/audio/quote/list/custom.
+ * React equivalent: <ContentBlock block={block} />
+ */
+function renderBlock(block) {
+  switch (block.type) {
+    case 'heading':
+      return `<h3 class="block block--heading">${escapeHTML(block.text)}</h3>`;
+
+    case 'text':
+      return `<p class="block block--text">${escapeHTML(block.text)}</p>`;
+
+    case 'image':
+      return `
+        <figure class="block block--image">
+          <img src="${block.src}" alt="${escapeHTML(block.alt || '')}" loading="lazy">
+          ${block.caption ? `<figcaption>${escapeHTML(block.caption)}</figcaption>` : ''}
+        </figure>`;
+
+    case 'audio':
+      return `
+        <div class="block block--audio">
+          <div class="audio__label">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a1 1 0 0 0-1 1v8.18A3 3 0 1 0 13 15V7h4a1 1 0 0 0 0-2h-5a1 1 0 0 0-1 1v0Z"/></svg>
+            ${escapeHTML(block.label || 'Audio')}
+          </div>
+          <audio controls src="${block.src}"></audio>
+        </div>`;
+
+    case 'quote':
+      return `
+        <blockquote class="block block--quote">
+          ${escapeHTML(block.text)}
+          ${block.cite ? `<cite>${escapeHTML(block.cite)}</cite>` : ''}
+        </blockquote>`;
+
+    case 'list': {
+      const tag = block.ordered ? 'ol' : 'ul';
+      const items = block.items.map(item => `<li>${escapeHTML(item)}</li>`).join('');
+      return `<div class="block block--list"><${tag}>${items}</${tag}></div>`;
+    }
+
+    case 'custom':
+      // Caller-supplied markup. In production, sanitize this (e.g. DOMPurify)
+      // before insertion, or in React, prefer real components over raw HTML.
+      return `<div class="block block--custom">${block.html}</div>`;
+
+    default:
+      return '';
+  }
+}
+
+/**
+ * Renders a full page (header + body + footer) as an HTML string.
+ * React equivalent: <Page data={pageData} pageNumber={n} bookTitle={..}/>
+ */
+function renderPageMarkup(pageData, pageNumber, totalPages, bookTitle) {
+  if (pageData.isCover) {
+    return `
+      <div class="page page--cover">
+        <div class="page__body">
+          <h2 class="cover__title">${escapeHTML(pageData.title)}</h2>
+          <div class="cover__rule" aria-hidden="true"></div>
+          ${pageData.subtitle ? `<p class="cover__subtitle">${escapeHTML(pageData.subtitle)}</p>` : ''}
+          ${pageData.author ? `<p class="cover__author">${escapeHTML(pageData.author)}</p>` : ''}
+        </div>
+      </div>`;
+  }
+
+  const blocksHTML = pageData.blocks.map(renderBlock).join('');
+
+  return `
+    <div class="page">
+      <header class="page__header">
+        <p class="page__eyebrow">${escapeHTML(pageData.strand)}</p>
+        <h2 class="page__title">${escapeHTML(pageData.subStrand)}</h2>
+      </header>
+      <div class="page__body page__body--ruled">${blocksHTML}</div>
+      <footer class="page__footer">
+        <span class="page__footer-title">${escapeHTML(bookTitle)}</span>
+        <span class="page__footer-number">${pageNumber}</span>
+      </footer>
+    </div>`;
+}
+
+/* ============================================================================
+   3. STATE / CONTROLLER
+   Everything in this section is the imperative stand-in for a
+   `useBookReader(bookData)` React hook. `readerState` is the hook's state;
+   the functions below are the hook's returned actions.
+   ============================================================================ */
+const readerState = {
+  currentIndex: 0,
+  isAnimating: false,
+};
+
+const totalPages = bookData.pages.length;
+
+// DOM refs (React: these become element refs or are simply unnecessary,
+// since JSX would own this markup directly).
+const els = {
+  book: document.getElementById('book'),
+  pageBase: document.getElementById('pageBase'),
+  bookTitleLabel: document.getElementById('bookTitleLabel'),
+  pageIndicatorCurrent: document.getElementById('pageIndicatorCurrent'),
+  pageIndicatorTotal: document.getElementById('pageIndicatorTotal'),
+  btnPrev: document.getElementById('btnPrev'),
+  btnNext: document.getElementById('btnNext'),
+  tapPrev: document.getElementById('tapPrev'),
+  tapNext: document.getElementById('tapNext'),
+  btnJump: document.getElementById('btnJump'),
+  jumpDialog: document.getElementById('jumpDialog'),
+  jumpForm: document.getElementById('jumpForm'),
+  jumpInput: document.getElementById('jumpInput'),
+  jumpSlider: document.getElementById('jumpSlider'),
+  jumpCancel: document.getElementById('jumpCancel'),
+  srLive: document.getElementById('srLive'),
+  themeToggle: document.getElementById('themeToggle'),
+  app: document.getElementById('app'),
+};
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** Renders the resting page into the static base layer. */
+function renderBase(index) {
+  els.pageBase.innerHTML = renderPageMarkup(bookData.pages[index], index + 1, totalPages, bookData.title);
+}
+
+/** Syncs the footer indicator + document title + a11y announcement. */
+function updateIndicator(announce) {
+  els.pageIndicatorCurrent.textContent = String(readerState.currentIndex + 1);
+  els.pageIndicatorTotal.textContent = String(totalPages);
+  els.btnPrev.disabled = readerState.currentIndex <= 0;
+  els.btnNext.disabled = readerState.currentIndex >= totalPages - 1;
+  els.tapPrev.style.visibility = els.btnPrev.disabled ? 'hidden' : 'visible';
+  els.tapNext.style.visibility = els.btnNext.disabled ? 'hidden' : 'visible';
+  if (announce) {
+    els.srLive.textContent = `Page ${readerState.currentIndex + 1} of ${totalPages}`;
+  }
+}
+
+/**
+ * Builds the temporary "flip leaf" overlay used during a page turn.
+ * front face = the page currently being left; back face = blank paper.
+ * React equivalent: <FlipLeaf dir={dir} frontPage={...} />
+ */
+function buildLeaf(dir, sourceIndex) {
+  const leaf = document.createElement('div');
+  leaf.className = 'flip-leaf';
+  leaf.style.transformOrigin = dir === 'next' ? 'left center' : 'right center';
+  leaf.style.transform = 'rotateY(0deg)';
+
+  const front = document.createElement('div');
+  front.className = 'flip-leaf__face flip-leaf__face--front';
+  front.innerHTML = renderPageMarkup(bookData.pages[sourceIndex], sourceIndex + 1, totalPages, bookData.title);
+
+  const back = document.createElement('div');
+  back.className = 'flip-leaf__face flip-leaf__face--back';
+  back.innerHTML = '<div class="page page--blank"></div>';
+
+  const shade = document.createElement('div');
+  shade.className = 'flip-leaf__shade';
+
+  front.appendChild(shade.cloneNode());
+  leaf.appendChild(front);
+  leaf.appendChild(back);
+  els.book.appendChild(leaf);
+  return leaf;
+}
+
+/** Updates the shade overlay opacity to peak mid-turn (progress 0..1). */
+function updateShade(leaf, progress) {
+  const shade = leaf.querySelector('.flip-leaf__shade');
+  if (shade) shade.style.opacity = String(Math.sin(Math.min(progress, 1) * Math.PI) * 0.6);
+}
+
+/**
+ * Turns exactly one page via a full, button/keyboard-triggered animation.
+ * React equivalent: the `goNext` / `goPrev` actions from useBookReader.
+ */
+/**
+ * Runs `onSettle` exactly once, as soon as either happens first:
+ *  - the leaf's own `transform` transition genuinely ends, or
+ *  - a fallback timer expires.
+ * The fallback exists because some WebKit builds can silently fail to fire
+ * `transitionend` (e.g. if the "from" and "to" styles get coalesced into a
+ * single paint before a transition is actually observed). Without it, a
+ * missed event would leave `isAnimating` stuck `true` forever and the leaf
+ * permanently covering the page underneath — exactly the "blank page" bug
+ * this guards against.
+ */
+function settleLeaf(leaf, durationMs, onSettle) {
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    leaf.removeEventListener('transitionend', onTransitionEnd);
+    clearTimeout(fallbackId);
+    onSettle();
+  };
+  function onTransitionEnd(ev) {
+    if (ev.target !== leaf || !/transform/.test(ev.propertyName)) return;
+    finish();
+  }
+  leaf.addEventListener('transitionend', onTransitionEnd);
+  const fallbackId = window.setTimeout(finish, durationMs + 150);
+}
+
+function turnPage(dir) {
+  if (readerState.isAnimating) return;
+  const targetIndex = dir === 'next' ? readerState.currentIndex + 1 : readerState.currentIndex - 1;
+  if (targetIndex < 0 || targetIndex >= totalPages) return;
+
+  if (prefersReducedMotion) {
+    readerState.currentIndex = targetIndex;
+    renderBase(targetIndex);
+    updateIndicator(true);
+    return;
+  }
+
+  readerState.isAnimating = true;
+  const sourceIndex = readerState.currentIndex;
+  renderBase(targetIndex); // destination is already waiting underneath
+  const leaf = buildLeaf(dir, sourceIndex);
+
+  // Force a reflow between the leaf's initial transform and the transition
+  // we're about to start — without this, some browsers coalesce both style
+  // writes into one paint and never actually animate (or fire transitionend).
+  void leaf.offsetHeight;
+
+  leaf.style.transition = `transform var(--flip-duration) var(--flip-ease)`;
+  const endAngle = dir === 'next' ? -180 : 180;
+  leaf.style.transform = `rotateY(${endAngle}deg)`;
+  updateShade(leaf, 0.999); // snap shade to full during the click-triggered path
+
+  const durationMs = parseFloat(getComputedStyle(els.book).getPropertyValue('--flip-duration')) || 650;
+  settleLeaf(leaf, durationMs, () => {
+    leaf.remove();
+    readerState.currentIndex = targetIndex;
+    readerState.isAnimating = false;
+    updateIndicator(true);
+  });
+}
+
+/**
+ * Jumps directly to an arbitrary page. Uses a quick cross-fade rather than
+ * a full 3D flip (flipping N intermediate pages would be slow/noisy) —
+ * a deliberate, documented simplification.
+ */
+function jumpToPage(targetIndex) {
+  targetIndex = Math.max(0, Math.min(totalPages - 1, targetIndex));
+  if (targetIndex === readerState.currentIndex || readerState.isAnimating) return;
+
+  if (prefersReducedMotion) {
+    readerState.currentIndex = targetIndex;
+    renderBase(targetIndex);
+    updateIndicator(true);
+    return;
+  }
+
+  readerState.isAnimating = true;
+  els.pageBase.style.transition = `opacity var(--flip-duration-fast) ease`;
+  els.pageBase.style.opacity = '0';
+  window.setTimeout(() => {
+    readerState.currentIndex = targetIndex;
+    renderBase(targetIndex);
+    requestAnimationFrame(() => { els.pageBase.style.opacity = '1'; });
+    updateIndicator(true);
+    window.setTimeout(() => { readerState.isAnimating = false; }, 380);
+  }, 380);
+}
+
+/* ---- Drag-to-turn (pointer-follow flip) -----------------------------------
+   Lets a reader drag from anywhere on the page (excluding interactive
+   content like the <audio> control) to peel the page over in real time,
+   releasing either completes or cancels the turn. Purely an enhancement
+   layered on top of turnPage()'s visual model. */
+let dragCandidate = null; // { pointerId, startX, startY }
+let drag = null;          // { dir, leaf, targetIndex, lastProgress, lastX, lastT }
+
+const DRAG_COMMIT_DISTANCE = 0.28; // fraction of book width
+const DRAG_COMMIT_VELOCITY = 0.6;  // px/ms
+
+function isInteractiveTarget(target) {
+  return !!target.closest('button, a, audio, input, select, textarea, [data-no-drag]');
+}
+
+function onPointerDown(e) {
+  if (readerState.isAnimating) return;
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  if (isInteractiveTarget(e.target)) return;
+  dragCandidate = { pointerId: e.pointerId, startX: e.clientX, startY: e.clientY };
+}
+
+function beginDrag(dir) {
+  const targetIndex = dir === 'next' ? readerState.currentIndex + 1 : readerState.currentIndex - 1;
+  const sourceIndex = readerState.currentIndex;
+  readerState.isAnimating = true;
+  renderBase(targetIndex);
+  const leaf = buildLeaf(dir, sourceIndex);
+  return { dir, leaf, targetIndex, lastProgress: 0, lastX: null, lastT: null };
+}
+
+function onPointerMove(e) {
+  if (!dragCandidate || dragCandidate.pointerId !== e.pointerId) return;
+  const dx = e.clientX - dragCandidate.startX;
+  const dy = e.clientY - dragCandidate.startY;
+
+  if (!drag) {
+    if (Math.abs(dx) < 10 || Math.abs(dx) <= Math.abs(dy)) return; // let vertical scroll win
+    const dir = dx < 0 ? 'next' : 'prev';
+    const targetIndex = dir === 'next' ? readerState.currentIndex + 1 : readerState.currentIndex - 1;
+    if (targetIndex < 0 || targetIndex >= totalPages) { dragCandidate = null; return; }
+    drag = beginDrag(dir);
+  }
+
+  e.preventDefault();
+  const width = els.book.clientWidth;
+  const progress = Math.max(0, Math.min(1, Math.abs(dx) / width));
+  const angle = drag.dir === 'next' ? -180 * progress : 180 * progress;
+  drag.leaf.style.transition = 'none';
+  drag.leaf.style.transform = `rotateY(${angle}deg)`;
+  updateShade(drag.leaf, progress);
+
+  const now = performance.now();
+  if (drag.lastX !== null) {
+    drag.velocity = Math.abs(dx - drag.lastX) / Math.max(1, now - drag.lastT);
+  }
+  drag.lastX = dx; drag.lastT = now; drag.lastProgress = progress;
+}
+
+function onPointerUp(e) {
+  if (dragCandidate && dragCandidate.pointerId !== e.pointerId) return;
+  if (!drag) { dragCandidate = null; return; }
+
+  const commit = drag.lastProgress > DRAG_COMMIT_DISTANCE || (drag.velocity || 0) > DRAG_COMMIT_VELOCITY;
+  const endAngle = commit ? (drag.dir === 'next' ? -180 : 180) : 0;
+
+  void drag.leaf.offsetHeight; // force reflow, see note in turnPage()
+  drag.leaf.style.transition = `transform var(--flip-duration-fast) var(--flip-ease)`;
+  drag.leaf.style.transform = `rotateY(${endAngle}deg)`;
+
+  const finishedDrag = drag;
+  const durationMs = parseFloat(getComputedStyle(els.book).getPropertyValue('--flip-duration-fast')) || 380;
+  settleLeaf(finishedDrag.leaf, durationMs, () => {
+    finishedDrag.leaf.remove();
+    if (commit) {
+      readerState.currentIndex = finishedDrag.targetIndex;
+    } else {
+      renderBase(readerState.currentIndex); // restore the base under the cancelled leaf
+    }
+    readerState.isAnimating = false;
+    updateIndicator(true);
+  });
+
+  drag = null;
+  dragCandidate = null;
+}
+
+/* ============================================================================
+   4. THEME
+   ============================================================================ */
+function applyTheme(theme) {
+  els.app.setAttribute('data-theme', theme);
+  els.themeToggle.setAttribute('aria-pressed', String(theme === 'dark'));
+  els.themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+}
+
+function initTheme() {
+  // No persistence layer by design (kept in-memory only) — wire this to
+  // localStorage/your own settings store in a real deployment.
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(prefersDark ? 'dark' : 'light');
+}
+
+/* ============================================================================
+   5. EVENT WIRING
+   In React, each of these becomes a prop (onClick, onPointerDown, ...)
+   attached directly in JSX instead of via addEventListener.
+   ============================================================================ */
+function initEvents() {
+  els.btnPrev.addEventListener('click', () => turnPage('prev'));
+  els.btnNext.addEventListener('click', () => turnPage('next'));
+  els.tapPrev.addEventListener('click', () => turnPage('prev'));
+  els.tapNext.addEventListener('click', () => turnPage('next'));
+
+  document.addEventListener('keydown', (e) => {
+    if (els.jumpDialog.open) return;
+    if (e.key === 'ArrowLeft') turnPage('prev');
+    if (e.key === 'ArrowRight') turnPage('next');
+    if (e.key === 'Home') jumpToPage(0);
+    if (e.key === 'End') jumpToPage(totalPages - 1);
+  });
+
+  els.book.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointermove', onPointerMove, { passive: false });
+  window.addEventListener('pointerup', onPointerUp);
+  window.addEventListener('pointercancel', onPointerUp);
+
+  els.btnJump.addEventListener('click', () => {
+    els.jumpInput.max = String(totalPages);
+    els.jumpSlider.max = String(totalPages);
+    els.jumpInput.value = String(readerState.currentIndex + 1);
+    els.jumpSlider.value = String(readerState.currentIndex + 1);
+    els.jumpDialog.showModal();
+    els.jumpInput.focus();
+  });
+  els.jumpCancel.addEventListener('click', () => els.jumpDialog.close());
+  els.jumpInput.addEventListener('input', () => { els.jumpSlider.value = els.jumpInput.value; });
+  els.jumpSlider.addEventListener('input', () => { els.jumpInput.value = els.jumpSlider.value; });
+  els.jumpForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const target = parseInt(els.jumpInput.value, 10) - 1;
+    els.jumpDialog.close();
+    if (!Number.isNaN(target)) jumpToPage(target);
+  });
+  els.jumpDialog.addEventListener('click', (e) => {
+    // Close when clicking the ::backdrop (i.e. outside the form panel)
+    const rect = els.jumpDialog.getBoundingClientRect();
+    const inside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+    if (!inside) els.jumpDialog.close();
+  });
+
+  els.themeToggle.addEventListener('click', () => {
+    const next = els.app.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+  });
+}
+
+/* ============================================================================
+   6. INIT
+   ============================================================================ */
+function init() {
+  els.bookTitleLabel.textContent = bookData.title;
+  renderBase(readerState.currentIndex);
+  updateIndicator(false);
+  initTheme();
+  initEvents();
+}
+
+init();
+</script>
+</body>
+</html>

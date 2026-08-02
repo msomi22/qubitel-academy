@@ -1,4 +1,5 @@
 export { default as LearningNodePageShell } from './LearningNodePageShell.jsx';
+export { default as LearningNodeCompactHeader } from './LearningNodeCompactHeader.jsx';
 export { default as LearningNodeBreadcrumbs } from './LearningNodeBreadcrumbs.jsx';
 export { default as LearningNodeChildGrid } from './LearningNodeChildGrid.jsx';
 export { default as LearningNodeSiblingNav } from './LearningNodeSiblingNav.jsx';

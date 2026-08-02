@@ -1,8 +1,11 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { NavLink, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { getChildren } from '../learning/registry/index.ts';
 import { createNodeRoutePath } from '../learning/routing';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
+import LearningBookReader from './book/LearningBookReader.jsx';
+import LearningBookContentBlock from './book/LearningBookContentBlock.jsx';
+import LearningBookHeader from './book/LearningBookHeader.jsx';
 
 const CONTENT_TABS = [
   { key: 'learningMaterial', label: 'Learning Material', icon: '📖' },
@@ -135,6 +138,7 @@ function getDirectChildContentTabs(registry, node) {
 
 function createDirectBookPages(node) {
   return node.content.pages.map((bookPage, index) => ({
+    id: bookPage.id,
     type: 'directBookContent',
     title: bookPage.title || `Page ${index + 1}`,
     subtitle: bookPage.subtitle || '',
@@ -156,7 +160,7 @@ function createDirectContentPages(node, parentNode) {
   }];
 }
 
-export default function LearningNodeBookView({ registry, nodeId, backPath, backLabel }) {
+export default function LearningNodeBookView({ registry, nodeId, backPath }) {
   const [searchParams] = useSearchParams();
   const requestedContentType = getRequestedContentType(searchParams);
   const [selectedContentType, setSelectedContentType] = useState(requestedContentType || 'learningMaterial');
@@ -355,19 +359,6 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
     }
   }, [nodeId, requestedContentType, selectedContentType]);
 
-  const currentPage = pages[currentPageIndex];
-
-  const canGoPrevious = currentPageIndex > 0;
-  const canGoNext = currentPageIndex < totalPages - 1;
-
-  const goToPrevious = () => {
-    if (canGoPrevious) setCurrentPageIndex(prev => prev - 1);
-  };
-
-  const goToNext = () => {
-    if (canGoNext) setCurrentPageIndex(prev => prev + 1);
-  };
-
   if (pages.length === 0) {
     return (
       <div className="book-empty">
@@ -379,6 +370,10 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
   const progressPercentage =
     totalPages > 0 ? ((currentPageIndex + 1) / totalPages) * 100 : 0;
 
+  const changePage = (nextPageIndex) => {
+    setCurrentPageIndex(Math.min(Math.max(nextPageIndex, 0), totalPages - 1));
+  };
+
   const selectContentType = (contentType) => {
     if (contentType !== selectedContentType) {
       setSelectedContentType(contentType);
@@ -388,41 +383,15 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
 
   return (
     <div className="book-reader">
-      <div className="book-toolbar">
-        {backPath && (
-          <NavLink className="book-toolbar-back" to={backPath}>
-            ← Back to {backLabel || 'Themes'}
-          </NavLink>
-        )}
-
-        <div className="book-content-tabs" role="tablist" aria-label="Choose content type">
-          {visibleContentTabs.map((tab) => (
-            tab.path ? (
-              <NavLink
-                key={tab.key}
-                role="tab"
-                aria-selected={activeContentType === tab.key}
-                className={`book-content-tab ${activeContentType === tab.key ? 'book-content-tab-active' : ''}`}
-                to={tab.path}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </NavLink>
-            ) : (
-              <button
-                key={tab.key}
-                role="tab"
-                aria-selected={selectedContentType === tab.key}
-                className={`book-content-tab ${selectedContentType === tab.key ? 'book-content-tab-active' : ''}`}
-                onClick={() => selectContentType(tab.key)}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            )
-          ))}
-        </div>
-      </div>
+      <LearningBookHeader
+        registry={registry}
+        nodeId={nodeId}
+        backPath={backPath}
+        tabs={visibleContentTabs}
+        activeContentType={activeContentType}
+        selectedContentType={selectedContentType}
+        onSelectContentType={selectContentType}
+      />
 
       <div className="book-progress-bar" aria-hidden="true">
         <div
@@ -431,56 +400,34 @@ export default function LearningNodeBookView({ registry, nodeId, backPath, backL
         />
       </div>
 
-      <div className="book-page-container">
-        <div
-          key={`${selectedContentType}-${currentPageIndex}`}
-          className="book-page book-page-active"
-        >
-          <div className="book-page-body">
-            <BookPageContent
-              page={currentPage}
-              pageNumber={currentPageIndex + 1}
-              totalPages={totalPages}
-              registry={registry}
-            />
-          </div>
-
-          {totalPages > 0 && (
-            <div className="book-page-footer-nav">
-              <button
-                className="book-page-nav-button"
-                onClick={goToPrevious}
-                disabled={!canGoPrevious}
-              >
-                ← <span className="book-page-nav-label">Previous</span>
-              </button>
-
-              <div className="book-page-footer-indicator">
-                <strong>{currentPageIndex + 1}</strong>
-                <span>/</span>
-                <span>{totalPages}</span>
-              </div>
-
-              <button
-                className="book-page-nav-button book-page-nav-button-primary"
-                onClick={goToNext}
-                disabled={!canGoNext}
-              >
-                <span className="book-page-nav-label">Next</span> →
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
+      <LearningBookReader
+        pages={pages}
+        currentPageIndex={currentPageIndex}
+        onPageChange={changePage}
+        bookTitle={currentNode?.content?.title || currentNode?.label || 'Learning material'}
+        resetKey={`${nodeId}:${activeContentType}:${totalPages}`}
+        renderPage={(page, context) => (
+          <BookPageContent
+            page={page}
+            pageNumber={context.pageNumber}
+            totalPages={context.totalPages}
+            registry={registry}
+            isAnimationCopy={context.isAnimationCopy}
+          />
+        )}
+      />
     </div>
   );
 }
 
-function BookPageContent({ page, pageNumber, totalPages, registry }) {
+function BookPageContent({ page, pageNumber, totalPages, registry, isAnimationCopy = false }) {
   if (page.type === 'chapter') {
     return <ChapterPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
   }
   if (page.type === 'content') {
+    if (isAnimationCopy) {
+      return <AnimationCopyPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
+    }
     return (
       <ContentPage
         page={page}
@@ -491,18 +438,48 @@ function BookPageContent({ page, pageNumber, totalPages, registry }) {
     );
   }
   if (page.type === 'review') {
+    if (isAnimationCopy) {
+      return <AnimationCopyPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
+    }
     return <ReviewPage page={page} pageNumber={pageNumber} totalPages={totalPages} registry={registry} />;
   }
   if (page.type === 'placeholder') {
     return <PlaceholderPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
   }
   if (page.type === 'directBookContent') {
-    return <DirectBookContentPage page={page} pageNumber={pageNumber} totalPages={totalPages} />;
+    return (
+      <DirectBookContentPage
+        page={page}
+        pageNumber={pageNumber}
+        totalPages={totalPages}
+        isAnimationCopy={isAnimationCopy}
+      />
+    );
   }
   return null;
 }
 
-function DirectBookContentPage({ page, pageNumber, totalPages }) {
+function AnimationCopyPage({ page, pageNumber, totalPages }) {
+  const title = page.type === 'review'
+    ? `${page.strand?.label || 'Learning material'} review`
+    : page.subStrand?.label || page.strand?.label || 'Learning material';
+
+  return (
+    <>
+      <div className="book-page-header">
+        <span className="book-page-breadcrumb">{title}</span>
+        <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
+      </div>
+      <div className="book-content-scroll book-content-scroll--interactive" aria-hidden="true">
+        <div className="book-content-inner">
+          <h3 className="book-content-group-title">{title}</h3>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function DirectBookContentPage({ page, pageNumber, totalPages, isAnimationCopy }) {
   return (
     <>
       <div className="book-page-header">
@@ -510,23 +487,16 @@ function DirectBookContentPage({ page, pageNumber, totalPages }) {
         <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
       </div>
 
-      <div className="book-content-scroll">
+      <div className="book-content-scroll book-content-scroll--authored">
         <div className="book-content-inner">
           {page.subtitle && <p>{page.subtitle}</p>}
           {page.description && <p>{page.description}</p>}
           {page.content.map((block, index) => (
-            <section key={block.id || block.title || index} className="book-content-group">
-              {block.title && <h4 className="book-content-group-title">{block.title}</h4>}
-              {block.text && <p>{block.text}</p>}
-              {block.content && <p>{block.content}</p>}
-              {Array.isArray(block.items) && block.items.length > 0 && (
-                <ul>
-                  {block.items.map((item, itemIndex) => (
-                    <li key={`${item}-${itemIndex}`}>{item}</li>
-                  ))}
-                </ul>
-              )}
-            </section>
+            <LearningBookContentBlock
+              key={block.id || block.title || index}
+              block={block}
+              isAnimationCopy={isAnimationCopy}
+            />
           ))}
         </div>
       </div>
@@ -604,7 +574,7 @@ function ContentPage({ page, pageNumber, totalPages, registry }) {
         <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
       </div>
 
-      <div className="book-content-scroll">
+      <div className="book-content-scroll book-content-scroll--interactive">
         <div className="book-content-inner">
           {items.length === 0 ? (
             <p>📄 No content available for this section yet.</p>
@@ -640,7 +610,7 @@ function ReviewPage({ page, pageNumber, totalPages, registry }) {
         <span className="book-page-breadcrumb">{strand.label}</span>
         <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
       </div>
-      <div className="book-review-section">
+      <div className="book-review-section book-content-scroll--interactive">
         <div className="book-review-header">
           <span className="book-review-icon">✅</span>
           <h3 className="book-review-title">Chapter Review</h3>

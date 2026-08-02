@@ -7,6 +7,7 @@ import LearningNodeChildGrid from './LearningNodeChildGrid.jsx';
 import LearningNodeSiblingNav from './LearningNodeSiblingNav.jsx';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 import LearningNodeBookView from './LearningNodeBookView.jsx';
+import LearningNodeCompactHeader from './LearningNodeCompactHeader.jsx';
 import './LearningNodeUI.css';
 
 function getNodeAttributeValue(node, key) {
@@ -103,6 +104,7 @@ export default function LearningNodePageShell({
 
   const shouldShowBookView = shouldRenderBookView(currentNode, navigation);
   const shouldShowDirectBookView = isDirectBookContent(currentNode);
+  const isBookMode = shouldShowBookView || shouldShowDirectBookView;
 
   // Check if this is a learning area page that should use tabbed layout
   const isLearningAreaPage = currentNode.kind === 'learningArea';
@@ -141,11 +143,37 @@ export default function LearningNodePageShell({
     ? 'learning-area-assessments-section'
     : 'learning-area-themes-section';
 
+  const learningAreaTabs = shouldUseLearningAreaLayout ? (
+    <div className="learning-area-tab-list" role="tablist" aria-label="Learning area sections">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={learningAreaPanel === 'themes'}
+        className={`learning-area-tab ${learningAreaPanel === 'themes' ? 'is-active' : ''}`}
+        onClick={() => setLearningAreaPanel('themes')}
+      >
+        <span>📚 Themes</span>
+        <strong>{themeChildren.length}</strong>
+      </button>
+
+      <button
+        type="button"
+        role="tab"
+        aria-selected={learningAreaPanel === 'assessments'}
+        className={`learning-area-tab ${learningAreaPanel === 'assessments' ? 'is-active' : ''}`}
+        onClick={() => setLearningAreaPanel('assessments')}
+      >
+        <span>✅ Assessments</span>
+        <strong>{assessmentChildren.length}</strong>
+      </button>
+    </div>
+  ) : null;
+
   return (
     <div className="page progress-page-focused learning-node-page">
       <section
         className={`glass progress-table-card learning-node-card ${
-          shouldShowBookView ? 'progress-card-book-mode' : ''
+          isBookMode ? 'progress-card-book-mode' : ''
         } ${
           shouldUseLearningAreaLayout ? 'progress-card-learning-area-mode' : ''
         } ${
@@ -153,49 +181,56 @@ export default function LearningNodePageShell({
         }`}
         aria-labelledby={headingId}
       >
-        <header className="learning-node-header">
-          <div className="learning-node-breadcrumbs">
-            <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
-          </div>
+        {isBookMode ? (
+          <h1 id={headingId} className="learning-node-sr-only">
+            {currentNode.label}
+          </h1>
+        ) : (
+          <header className="learning-node-header">
+            {shouldUseLearningAreaLayout || isGradePage ? (
+              <>
+                <h1 id={headingId} className="sr-only">
+                  {currentNode.label}
+                </h1>
+                <LearningNodeCompactHeader
+                  backTo={isGradePage ? '/categories' : parentPath}
+                  backLabel={isGradePage ? 'Grades' : navigation.parent?.label || 'Previous'}
+                  backAriaLabel={
+                    isGradePage
+                      ? 'Back to Grades'
+                      : `Back to ${navigation.parent?.label || 'previous'}`
+                  }
+                  breadcrumbs={(
+                    <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
+                  )}
+                  actions={shouldUseLearningAreaLayout ? learningAreaTabs : null}
+                />
+              </>
+            ) : (
+              <>
+                <div className="learning-node-breadcrumbs">
+                  <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
+                </div>
 
-          {shouldShowBookView ? (
-            <h1 id={headingId} className="learning-node-sr-only">
-              {currentNode.label}
-            </h1>
-          ) : shouldUseLearningAreaLayout ? (
-            <h1 id={headingId} className="sr-only">
-              {currentNode.label}
-            </h1>
-          ) : isGradePage ? (
-            <h1 id={headingId} className="sr-only">
-              {currentNode.label}
-            </h1>
-          ) : (
-            <div className="progress-card-head">
-              <div>
-                <p className="eyebrow">{kindLabel}</p>
-                <h1 id={headingId}>{currentNode.label}</h1>
-                {currentNode.summary && <p>{currentNode.summary}</p>}
-              </div>
-            </div>
-          )}
+                <div className="progress-card-head">
+                  <div>
+                    <p className="eyebrow">{kindLabel}</p>
+                    <h1 id={headingId}>{currentNode.label}</h1>
+                    {currentNode.summary && <p>{currentNode.summary}</p>}
+                  </div>
+                </div>
 
-          {isGradePage && currentNode.parentId && (
-            <div className="grade-page-action-row">
-              <NavLink className="btn ghost learning-area-back-button grade-page-back-button" to="/categories">
-                ← Back to Grades
-              </NavLink>
-            </div>
-          )}
-
-          {showParentBackButton && parentPath && !shouldShowBookView && !shouldUseLearningAreaLayout && (
-            <div className="learning-node-parent-action" style={{ marginTop: '10px' }}>
-              <NavLink className="btn ghost" to={parentPath}>
-                ← Back to {navigation.parent?.label || 'previous'}
-              </NavLink>
-            </div>
-          )}
-        </header>
+                {showParentBackButton && parentPath && (
+                  <div className="learning-node-parent-action" style={{ marginTop: '10px' }}>
+                    <NavLink className="btn ghost" to={parentPath}>
+                      ← Back to {navigation.parent?.label || 'previous'}
+                    </NavLink>
+                  </div>
+                )}
+              </>
+            )}
+          </header>
+        )}
 
         <main className="learning-node-main">
           {children}
@@ -206,41 +241,10 @@ export default function LearningNodePageShell({
                 registry={registry}
                 nodeId={currentNode.id}
                 backPath={parentPath}
-                backLabel="Themes"
               />
             </section>
           ) : shouldUseLearningAreaLayout ? (
             <div className="learning-area-tabbed-view">
-              <div className="learning-area-action-row">
-                {showParentBackButton && parentPath && (
-                  <NavLink className="btn ghost learning-area-back-button" to={parentPath}>
-                    ← Back to {navigation.parent?.label || 'previous'}
-                  </NavLink>
-                )}
-                <div className="learning-area-tab-list" role="tablist" aria-label="Learning area sections">
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={learningAreaPanel === 'themes'}
-                    className={`learning-area-tab ${learningAreaPanel === 'themes' ? 'is-active' : ''}`}
-                    onClick={() => setLearningAreaPanel('themes')}
-                  >
-                    <span>📚 Themes</span>
-                    <strong>{themeChildren.length}</strong>
-                  </button>
-
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={learningAreaPanel === 'assessments'}
-                    className={`learning-area-tab ${learningAreaPanel === 'assessments' ? 'is-active' : ''}`}
-                    onClick={() => setLearningAreaPanel('assessments')}
-                  >
-                    <span>✅ Assessments</span>
-                    <strong>{assessmentChildren.length}</strong>
-                  </button>
-                </div>
-              </div>
               <section className={`learning-area-section ${selectedLearningAreaSectionClassName} ${selectedLearningAreaChildren.length === 0 ? 'is-empty' : ''}`}>
                 <div className="learning-area-scroll-panel">
                   {selectedLearningAreaChildren.length > 0 ? (
@@ -260,7 +264,6 @@ export default function LearningNodePageShell({
                 registry={registry}
                 nodeId={currentNode.id}
                 backPath={parentPath}
-                backLabel={navigation.parent?.label || 'previous'}
               />
             </section>
           ) : (
