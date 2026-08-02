@@ -63,8 +63,9 @@ function AlphabetCard({ card, cardType, color, display, isActive, isAutoReading,
   );
 }
 
-export default function AlphabetMasteryBlock({ block }) {
+export default function AlphabetMasteryBlock({ block, presentation = 'standalone' }) {
   const letters = useMemo(() => safeLetters(block), [block]);
+  const isBookPresentation = presentation === 'book';
   const audioRef = useRef(null);
   const isMountedRef = useRef(false);
   const autoReadPlayTimerRef = useRef(null);
@@ -379,21 +380,27 @@ export default function AlphabetMasteryBlock({ block }) {
     : '';
 
   return (
-    <section className="workspace-block problem-rich-block alphabet-mastery-board" aria-labelledby="alphabet-mastery-heading">
-      <div className="alphabet-mastery-hero">
-        <div className="alphabet-mastery-heading">
-          <h4 id="alphabet-mastery-heading">{block?.title || 'Alphabet Mastery'}</h4>
-          {block?.subtitle ? <p>{block.subtitle}</p> : null}
-        </div>
+    <section
+      aria-label={isBookPresentation ? 'Alphabet Mastery' : undefined}
+      aria-labelledby={isBookPresentation ? undefined : 'alphabet-mastery-heading'}
+      className="workspace-block problem-rich-block alphabet-mastery-board"
+    >
+      {!isBookPresentation ? (
+        <div className="alphabet-mastery-hero">
+          <div className="alphabet-mastery-heading">
+            <h4 id="alphabet-mastery-heading">{block?.title || 'Alphabet Mastery'}</h4>
+            {block?.subtitle ? <p>{block.subtitle}</p> : null}
+          </div>
 
-        <div className="alphabet-mastery-mascot" aria-hidden="true">🦊</div>
+          <div className="alphabet-mastery-mascot" aria-hidden="true">🦊</div>
 
-        <div className="alphabet-mastery-progress" aria-label={`${progress}% complete`}>
-          <span>My Progress</span>
-          <strong>{progress}%</strong>
-          <small>{playedCardIds.size} / {totalCards} cards</small>
+          <div className="alphabet-mastery-progress" aria-label={`${progress}% complete`}>
+            <span>My Progress</span>
+            <strong>{progress}%</strong>
+            <small>{playedCardIds.size} / {totalCards} cards</small>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="alphabet-mastery-toolbar">
         <span className="alphabet-mastery-tab is-active">A-Z</span>

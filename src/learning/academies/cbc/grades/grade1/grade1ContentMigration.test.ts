@@ -199,7 +199,7 @@ test('removes Greetings Practice content while preserving its standard placehold
   assert.ok(registry.nodesById.has('gd1-eng-greetings-lesson-plan'));
 });
 
-test('appends five canonical Alphabet pages after the preserved School page', () => {
+test('appends seven canonical four-pair Alphabet pages after the preserved School page', () => {
   const book = getBook(grade1EnglishSchoolNodes, 'gd1-eng-school-learning-material');
   const alphabetPages = book.pages.slice(1);
   const blocks = getInteractiveBlocks(book, 'alphabetMastery');
@@ -208,15 +208,31 @@ test('appends five canonical Alphabet pages after the preserved School page', ()
   assert.equal(book.pages[0].title, 'School');
   assert.equal(book.pages[0].blocks[0].text,
     'In this lesson, you will learn about school environment and activities.');
-  assert.equal(alphabetPages.length, 5);
+  assert.equal(book.pages.length, 8);
+  assert.equal(alphabetPages.length, 7);
   assert.deepEqual(alphabetPages.map((page) => page.id), [
-    'alphabet-mastery-lesson-001-page-a-e',
-    'alphabet-mastery-lesson-001-page-f-j',
-    'alphabet-mastery-lesson-001-page-k-o',
-    'alphabet-mastery-lesson-001-page-p-t',
-    'alphabet-mastery-lesson-001-page-u-z'
+    'alphabet-mastery-lesson-001-page-a-d',
+    'alphabet-mastery-lesson-001-page-e-h',
+    'alphabet-mastery-lesson-001-page-i-l',
+    'alphabet-mastery-lesson-001-page-m-p',
+    'alphabet-mastery-lesson-001-page-q-t',
+    'alphabet-mastery-lesson-001-page-u-x',
+    'alphabet-mastery-lesson-001-page-y-z'
   ]);
-  assert.deepEqual(blocks.map((block) => block.letters?.length), [5, 5, 5, 5, 6]);
+  assert.deepEqual(alphabetPages.map((page) => page.title), [
+    'Letters A–D',
+    'Letters E–H',
+    'Letters I–L',
+    'Letters M–P',
+    'Letters Q–T',
+    'Letters U–X',
+    'Letters Y–Z'
+  ]);
+  assert.deepEqual(blocks.map((block) => block.letters?.length), [4, 4, 4, 4, 4, 4, 2]);
+  assert.deepEqual(
+    blocks.map((block) => (block.letters?.length || 0) * 2),
+    [8, 8, 8, 8, 8, 8, 4]
+  );
   assert.deepEqual(migratedLetters, alphabetMasteryLetters);
   assert.deepEqual(migratedLetters.map((item) => item.letter),
     'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''));
@@ -265,7 +281,7 @@ test('keeps exactly six Reading exams followed by the missing Writing exam', () 
   assert.equal('questions' in exams[6], false);
 });
 
-test('appends five canonical number ranges and preserves Practice and one Assessment', () => {
+test('appends ten canonical Number pages and preserves Practice and one Assessment', () => {
   const book = getBook(grade1MathNumbersNodes, 'gd1-math-numbers-learning-material');
   const numberPages = book.pages.slice(1);
   const blocks = getInteractiveBlocks(book, 'numberAudioGrid');
@@ -274,19 +290,45 @@ test('appends five canonical number ranges and preserves Practice and one Assess
   const exams = getExams(grade1MathNumbersNodes, 'gd1-math-numbers-assessment');
 
   assert.equal(book.pages[0].title, 'Numbers');
-  assert.equal(numberPages.length, 5);
+  assert.equal(book.pages.length, 11);
+  assert.equal(numberPages.length, 10);
   assert.deepEqual(numberPages.map((page) => page.id), [
-    'numbers-1-100-lesson-001-page-001-020',
-    'numbers-1-100-lesson-001-page-021-040',
-    'numbers-1-100-lesson-001-page-041-060',
-    'numbers-1-100-lesson-001-page-061-080',
-    'numbers-1-100-lesson-001-page-081-100'
+    'numbers-1-100-lesson-001-page-001-010',
+    'numbers-1-100-lesson-001-page-011-020',
+    'numbers-1-100-lesson-001-page-021-030',
+    'numbers-1-100-lesson-001-page-031-040',
+    'numbers-1-100-lesson-001-page-041-050',
+    'numbers-1-100-lesson-001-page-051-060',
+    'numbers-1-100-lesson-001-page-061-070',
+    'numbers-1-100-lesson-001-page-071-080',
+    'numbers-1-100-lesson-001-page-081-090',
+    'numbers-1-100-lesson-001-page-091-100'
   ]);
-  assert.deepEqual(blocks.map((block) => block.numbers?.length), [20, 20, 20, 20, 20]);
+  assert.deepEqual(numberPages.map((page) => page.title), [
+    'Numbers 1–10',
+    'Numbers 11–20',
+    'Numbers 21–30',
+    'Numbers 31–40',
+    'Numbers 41–50',
+    'Numbers 51–60',
+    'Numbers 61–70',
+    'Numbers 71–80',
+    'Numbers 81–90',
+    'Numbers 91–100'
+  ]);
+  assert.deepEqual(blocks.map((block) => block.numbers?.length), Array(10).fill(10));
   assert.deepEqual(migratedNumbers, numbersOneToOneHundred);
   assert.deepEqual(migratedNumbers.map((item) => item.number),
     Array.from({ length: 100 }, (_, index) => index + 1));
   assert.equal(new Set(migratedNumbers.map((item) => item.id)).size, 100);
+  migratedNumbers.forEach((item, index) => {
+    const canonicalItem = numbersOneToOneHundred[index];
+    assert.equal(item.id, canonicalItem.id);
+    assert.equal(item.display, canonicalItem.display);
+    assert.equal(item.label, canonicalItem.label);
+    assert.equal(item.audioFile, canonicalItem.audioFile);
+    assert.equal(item.audioSrc, canonicalItem.audioSrc);
+  });
   assert.deepEqual(practice.content, {
     type: 'practiceCardList',
     cards: [{

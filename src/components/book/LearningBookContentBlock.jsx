@@ -37,11 +37,11 @@ export default function LearningBookContentBlock({ block, isAnimationCopy = fals
   }
 
   if (interactiveBlock?.renderer === 'alphabetMastery') {
-    return <AlphabetMasteryBlock block={block} />;
+    return <AlphabetMasteryBlock block={block} presentation="book" />;
   }
 
   if (interactiveBlock?.renderer === 'numberAudioGrid') {
-    return <NumberAudioGridBlock block={block} />;
+    return <NumberAudioGridBlock block={block} presentation="book" />;
   }
 
   if (blockType === 'paragraph' || blockType === 'text') {

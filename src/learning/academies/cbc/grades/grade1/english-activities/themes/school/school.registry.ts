@@ -12,33 +12,45 @@ const alphabetMasteryPages = createInteractiveLessonPages(alphabetMasteryLesson,
   pageSubtitle: 'Alphabet Mastery',
   pages: [
     {
-      id: 'alphabet-mastery-lesson-001-page-a-e',
-      title: 'Letters A–E',
+      id: 'alphabet-mastery-lesson-001-page-a-d',
+      title: 'Letters A–D',
       startIndex: 0,
-      endIndex: 5
+      endIndex: 4
     },
     {
-      id: 'alphabet-mastery-lesson-001-page-f-j',
-      title: 'Letters F–J',
-      startIndex: 5,
-      endIndex: 10
+      id: 'alphabet-mastery-lesson-001-page-e-h',
+      title: 'Letters E–H',
+      startIndex: 4,
+      endIndex: 8
     },
     {
-      id: 'alphabet-mastery-lesson-001-page-k-o',
-      title: 'Letters K–O',
-      startIndex: 10,
-      endIndex: 15
+      id: 'alphabet-mastery-lesson-001-page-i-l',
+      title: 'Letters I–L',
+      startIndex: 8,
+      endIndex: 12
     },
     {
-      id: 'alphabet-mastery-lesson-001-page-p-t',
-      title: 'Letters P–T',
-      startIndex: 15,
+      id: 'alphabet-mastery-lesson-001-page-m-p',
+      title: 'Letters M–P',
+      startIndex: 12,
+      endIndex: 16
+    },
+    {
+      id: 'alphabet-mastery-lesson-001-page-q-t',
+      title: 'Letters Q–T',
+      startIndex: 16,
       endIndex: 20
     },
     {
-      id: 'alphabet-mastery-lesson-001-page-u-z',
-      title: 'Letters U–Z',
+      id: 'alphabet-mastery-lesson-001-page-u-x',
+      title: 'Letters U–X',
       startIndex: 20,
+      endIndex: 24
+    },
+    {
+      id: 'alphabet-mastery-lesson-001-page-y-z',
+      title: 'Letters Y–Z',
+      startIndex: 24,
       endIndex: 26
     }
   ]

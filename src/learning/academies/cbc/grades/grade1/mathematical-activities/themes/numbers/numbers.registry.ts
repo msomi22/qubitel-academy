@@ -14,33 +14,63 @@ const numbersOneToOneHundredPages = createInteractiveLessonPages(
     pageSubtitle: 'Numbers 1–100',
     pages: [
       {
-        id: 'numbers-1-100-lesson-001-page-001-020',
-        title: 'Numbers 1–20',
+        id: 'numbers-1-100-lesson-001-page-001-010',
+        title: 'Numbers 1–10',
         startIndex: 0,
+        endIndex: 10
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-011-020',
+        title: 'Numbers 11–20',
+        startIndex: 10,
         endIndex: 20
       },
       {
-        id: 'numbers-1-100-lesson-001-page-021-040',
-        title: 'Numbers 21–40',
+        id: 'numbers-1-100-lesson-001-page-021-030',
+        title: 'Numbers 21–30',
         startIndex: 20,
+        endIndex: 30
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-031-040',
+        title: 'Numbers 31–40',
+        startIndex: 30,
         endIndex: 40
       },
       {
-        id: 'numbers-1-100-lesson-001-page-041-060',
-        title: 'Numbers 41–60',
+        id: 'numbers-1-100-lesson-001-page-041-050',
+        title: 'Numbers 41–50',
         startIndex: 40,
+        endIndex: 50
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-051-060',
+        title: 'Numbers 51–60',
+        startIndex: 50,
         endIndex: 60
       },
       {
-        id: 'numbers-1-100-lesson-001-page-061-080',
-        title: 'Numbers 61–80',
+        id: 'numbers-1-100-lesson-001-page-061-070',
+        title: 'Numbers 61–70',
         startIndex: 60,
+        endIndex: 70
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-071-080',
+        title: 'Numbers 71–80',
+        startIndex: 70,
         endIndex: 80
       },
       {
-        id: 'numbers-1-100-lesson-001-page-081-100',
-        title: 'Numbers 81–100',
+        id: 'numbers-1-100-lesson-001-page-081-090',
+        title: 'Numbers 81–90',
         startIndex: 80,
+        endIndex: 90
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-091-100',
+        title: 'Numbers 91–100',
+        startIndex: 90,
         endIndex: 100
       }
     ]
