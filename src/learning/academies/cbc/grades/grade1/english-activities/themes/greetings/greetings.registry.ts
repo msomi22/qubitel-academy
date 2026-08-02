@@ -12,7 +12,6 @@ const grade1EnglishThemeGreetings = createLearningNode({
   parentId: 'grade-1-english-activities',
   childIds: [
     'gd1-eng-greetings-learning-material',
-    'gd1-eng-greetings-practice',
     'gd1-eng-greetings-assessment',
     'gd1-eng-greetings-lesson-plan'
   ],
@@ -53,44 +52,6 @@ const grade1EnglishGreetingsLearningMaterial = createLearningNode({
   actions: [{ intent: 'resume' }],
   appearances: [
     { key: 'icon', value: '📒' },
-    { key: 'tone', value: 'childFriendly' }
-  ],
-  version: 1
-});
-
-const grade1EnglishGreetingsPractice = createLearningNode({
-  id: 'gd1-eng-greetings-practice',
-  kind: LEARNING_NODE_KINDS.practice,
-  label: 'Practice',
-  summary: 'Practice using greetings politely.',
-  parentId: grade1EnglishThemeGreetings.id,
-  content: {
-    type: 'practiceCardList',
-    cards: [
-      {
-        id: 'gd1-eng-greetings-pronunciation-vocabulary-practice',
-        title: 'Pronunciation and Vocabulary',
-        description: 'Practise greeting words, letter sounds, and polite responses.',
-        targetProblemId: 'alphabet-mastery-lesson-001',
-        href: '/practice/alphabet-mastery-lesson-001?backPath=/gd1/eng/greetings%3Ftab%3Dpractice&backLabel=Back',
-        status: 'Ready'
-      }
-    ]
-  },
-  attributes: [
-    { key: 'gradeCode', value: 'GD1' },
-    { key: 'gradeName', value: 'Grade 1' },
-    { key: 'learningAreaCode', value: 'ENG' },
-    { key: 'learningAreaName', value: 'English Activities' },
-    { key: 'themeName', value: 'Greetings' },
-    { key: 'routeSegment', value: 'practice' },
-    { key: 'contentType', value: 'practice' },
-    { key: 'themeId', value: 'greetings' }
-  ],
-  features: [{ kind: 'practice' }, { kind: 'readAloud' }],
-  actions: [{ intent: 'startPractice' }],
-  appearances: [
-    { key: 'icon', value: '✏️' },
     { key: 'tone', value: 'childFriendly' }
   ],
   version: 1
@@ -204,7 +165,6 @@ const grade1EnglishGreetingsAssessment = createLearningNode({
 export const grade1EnglishGreetingsNodes: LearningNode[] = [
   grade1EnglishThemeGreetings,
   grade1EnglishGreetingsLearningMaterial,
-  grade1EnglishGreetingsPractice,
   grade1EnglishGreetingsAssessment,
   grade1EnglishGreetingsLessonPlan
 ];

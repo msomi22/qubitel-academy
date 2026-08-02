@@ -1,3 +1,7 @@
+import AlphabetMasteryBlock from '../rich-problem/AlphabetMasteryBlock.jsx';
+import NumberAudioGridBlock from '../rich-problem/NumberAudioGridBlock.jsx';
+import { resolveInteractiveBookBlock } from './learningBookInteractiveBlock.model.js';
+
 function BlockTitle({ children }) {
   if (!children) return null;
   return <h3 className="learning-book__block-title">{children}</h3>;
@@ -21,6 +25,24 @@ export default function LearningBookContentBlock({ block, isAnimationCopy = fals
   if (!block || typeof block !== 'object') return null;
 
   const blockType = block.type || '';
+  const interactiveBlock = resolveInteractiveBookBlock(block, isAnimationCopy);
+
+  if (interactiveBlock?.mode === 'summary') {
+    return (
+      <div className="learning-book__block" aria-hidden="true">
+        <BlockTitle>{interactiveBlock.title}</BlockTitle>
+        <p>{interactiveBlock.text}</p>
+      </div>
+    );
+  }
+
+  if (interactiveBlock?.renderer === 'alphabetMastery') {
+    return <AlphabetMasteryBlock block={block} />;
+  }
+
+  if (interactiveBlock?.renderer === 'numberAudioGrid') {
+    return <NumberAudioGridBlock block={block} />;
+  }
 
   if (blockType === 'paragraph' || blockType === 'text') {
     return (

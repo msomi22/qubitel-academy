@@ -1,6 +1,48 @@
+import alphabetMasteryLesson from
+  '../../../../../../../../academies/cbc/grade-1/english/lessons/alphabet-mastery-lesson-001.js';
 import type { LearningNode } from '../../../../../../../core/index.ts';
 import { createLearningNode } from '../../../../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../../../../core/learningNode.constants.ts';
+import { createInteractiveLessonPages } from '../../../grade1InteractiveLesson.adapter.ts';
+
+const alphabetMasteryPages = createInteractiveLessonPages(alphabetMasteryLesson, {
+  manifestId: 'alphabet-mastery-lesson-001',
+  interactiveBlockType: 'alphabetMastery',
+  itemField: 'letters',
+  pageSubtitle: 'Alphabet Mastery',
+  pages: [
+    {
+      id: 'alphabet-mastery-lesson-001-page-a-e',
+      title: 'Letters A–E',
+      startIndex: 0,
+      endIndex: 5
+    },
+    {
+      id: 'alphabet-mastery-lesson-001-page-f-j',
+      title: 'Letters F–J',
+      startIndex: 5,
+      endIndex: 10
+    },
+    {
+      id: 'alphabet-mastery-lesson-001-page-k-o',
+      title: 'Letters K–O',
+      startIndex: 10,
+      endIndex: 15
+    },
+    {
+      id: 'alphabet-mastery-lesson-001-page-p-t',
+      title: 'Letters P–T',
+      startIndex: 15,
+      endIndex: 20
+    },
+    {
+      id: 'alphabet-mastery-lesson-001-page-u-z',
+      title: 'Letters U–Z',
+      startIndex: 20,
+      endIndex: 26
+    }
+  ]
+});
 
 const schoolLearningMaterialBook = {
   type: 'book',
@@ -16,7 +58,8 @@ const schoolLearningMaterialBook = {
           text: 'In this lesson, you will learn about school environment and activities.'
         }
       ]
-    }
+    },
+    ...alphabetMasteryPages
   ]
 };
 
@@ -132,8 +175,10 @@ const schoolAssessmentExam1 = {
     learningAreaCode: 'ENG',
     learningAreaName: 'English Activities',
     themeName: 'School',
+    manifestId: 'object-matching-exam-001',
     examId: 'grade-1-reading-readiness-exam-001',
     examTitle: 'Exam 1: Picture and Object Matching',
+    sourceLearningAreaId: 'reading-readiness',
     assessmentType: 'exam',
     questionCount: 15
   }
@@ -151,8 +196,10 @@ const schoolAssessmentExam2 = {
     learningAreaCode: 'ENG',
     learningAreaName: 'English Activities',
     themeName: 'School',
+    manifestId: 'reading-word-mastery-exam-002',
     examId: 'grade-1-reading-word-mastery-exam-002',
     examTitle: 'Exam 2: Beginning Sounds B, C and D',
+    sourceLearningAreaId: 'reading-readiness',
     assessmentType: 'exam',
     questionCount: 20
   }
@@ -170,8 +217,10 @@ const schoolAssessmentExam3 = {
     learningAreaCode: 'ENG',
     learningAreaName: 'English Activities',
     themeName: 'School',
+    manifestId: 'reading-word-mastery-exam-003',
     examId: 'grade-1-reading-word-mastery-exam-003',
     examTitle: 'Exam 3: Beginning Sounds F, G and H',
+    sourceLearningAreaId: 'reading-readiness',
     assessmentType: 'exam',
     questionCount: 20
   }
@@ -189,8 +238,10 @@ const schoolAssessmentExam4 = {
     learningAreaCode: 'ENG',
     learningAreaName: 'English Activities',
     themeName: 'School',
+    manifestId: 'reading-word-mastery-exam-004',
     examId: 'grade-1-reading-word-mastery-exam-004',
     examTitle: 'Exam 4: Beginning Sounds J, K and L',
+    sourceLearningAreaId: 'reading-readiness',
     assessmentType: 'exam',
     questionCount: 20
   }
@@ -208,8 +259,10 @@ const schoolAssessmentExam5 = {
     learningAreaCode: 'ENG',
     learningAreaName: 'English Activities',
     themeName: 'School',
+    manifestId: 'reading-word-mastery-exam-005',
     examId: 'grade-1-reading-word-mastery-exam-005',
     examTitle: 'Exam 5: Beginning Sounds M, N, P, R, S and T',
+    sourceLearningAreaId: 'reading-readiness',
     assessmentType: 'exam',
     questionCount: 10
   }
@@ -227,10 +280,34 @@ const schoolAssessmentExam6 = {
     learningAreaCode: 'ENG',
     learningAreaName: 'English Activities',
     themeName: 'School',
+    manifestId: 'reading-word-mastery-exam-006',
     examId: 'grade-1-reading-word-mastery-exam-006',
     examTitle: 'Exam 6: Beginning Sounds V, W, Y and Z',
+    sourceLearningAreaId: 'reading-readiness',
     assessmentType: 'exam',
     questionCount: 10
+  }
+};
+
+const schoolWritingReadinessExam1 = {
+  id: 'writing-missing-letters-exam-001',
+  title: 'Exam 1: Missing Letters in 3-Letter Words',
+  description: 'Choose the missing letter to complete each three-letter word.',
+  estimatedTime: '10 min',
+  metadata: {
+    gradeCode: 'GD1',
+    gradeName: 'Grade 1',
+    learningAreaCode: 'ENG',
+    learningAreaName: 'English Activities',
+    themeName: 'School',
+    manifestId: 'writing-missing-letters-exam-001',
+    examId: 'writing-missing-letters-exam-001',
+    examTitle: 'Exam 1: Missing Letters in 3-Letter Words',
+    sourceLearningAreaId: 'writing-readiness',
+    assessmentType: 'exam',
+    questionCount: 10,
+    questionTimeSeconds: 60,
+    totalTimeSeconds: 600
   }
 };
 
@@ -248,7 +325,8 @@ const grade1EnglishSchoolAssessment = createLearningNode({
       schoolAssessmentExam3,
       schoolAssessmentExam4,
       schoolAssessmentExam5,
-      schoolAssessmentExam6
+      schoolAssessmentExam6,
+      schoolWritingReadinessExam1
     ]
   },
   attributes: [

@@ -1,6 +1,51 @@
+import numbersOneToOneHundredLesson from
+  '../../../../../../../../academies/cbc/grade-1/mathematics/lessons/numbers-1-100-lesson-001.js';
 import type { LearningNode } from '../../../../../../../core/index.ts';
 import { createLearningNode } from '../../../../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../../../../core/learningNode.constants.ts';
+import { createInteractiveLessonPages } from '../../../grade1InteractiveLesson.adapter.ts';
+
+const numbersOneToOneHundredPages = createInteractiveLessonPages(
+  numbersOneToOneHundredLesson,
+  {
+    manifestId: 'numbers-1-100-lesson-001',
+    interactiveBlockType: 'numberAudioGrid',
+    itemField: 'numbers',
+    pageSubtitle: 'Numbers 1–100',
+    pages: [
+      {
+        id: 'numbers-1-100-lesson-001-page-001-020',
+        title: 'Numbers 1–20',
+        startIndex: 0,
+        endIndex: 20
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-021-040',
+        title: 'Numbers 21–40',
+        startIndex: 20,
+        endIndex: 40
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-041-060',
+        title: 'Numbers 41–60',
+        startIndex: 40,
+        endIndex: 60
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-061-080',
+        title: 'Numbers 61–80',
+        startIndex: 60,
+        endIndex: 80
+      },
+      {
+        id: 'numbers-1-100-lesson-001-page-081-100',
+        title: 'Numbers 81–100',
+        startIndex: 80,
+        endIndex: 100
+      }
+    ]
+  }
+);
 
 const numbersLearningMaterialBook = {
   type: 'book',
@@ -16,7 +61,8 @@ const numbersLearningMaterialBook = {
           text: 'In this lesson, you will learn about numbers and counting.'
         }
       ]
-    }
+    },
+    ...numbersOneToOneHundredPages
   ]
 };
 
@@ -142,8 +188,10 @@ const numbersAssessmentExam = {
     learningAreaCode: 'MATH',
     learningAreaName: 'Mathematical Activities',
     themeName: 'Numbers',
+    manifestId: 'counting-exam-001',
     examId: 'grade-1-mathematics-numbers-exam-001',
     examTitle: 'Exam 1: Numbers',
+    sourceLearningAreaId: 'numbers',
     assessmentType: 'exam',
     questionCount: 15
   }
