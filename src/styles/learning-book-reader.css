@@ -253,19 +253,20 @@
   box-sizing: border-box;
 }
 
-.learning-book--single .learning-book__resting-page-body {
+.learning-book--single .learning-book__resting-page-body,
+.learning-book--spread .learning-book__resting-page-body {
   flex: 1 1 0;
   height: auto;
   overflow-y: auto;
   overflow-x: hidden;
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: auto;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   padding-bottom: clamp(1rem, 4vh, 2.5rem);
 }
 
-.learning-book--single .learning-book__resting-page-body > .book-content-scroll,
-.learning-book--single .learning-book__resting-page-body > .book-review-section {
+.learning-book__resting-page-body > .book-content-scroll,
+.learning-book__resting-page-body > .book-review-section {
   flex: 0 0 auto;
   height: auto;
   min-height: 0;
@@ -276,7 +277,7 @@
   touch-action: auto;
 }
 
-.learning-book--single .learning-book__resting-page-body > .book-content-scroll > .book-content-inner {
+.learning-book__resting-page-body > .book-content-scroll > .book-content-inner {
   min-height: 0;
 }
 

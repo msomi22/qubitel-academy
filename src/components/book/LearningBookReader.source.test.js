@@ -11,22 +11,22 @@ const bookViewSource = readSource('../LearningNodeBookView.jsx');
 const readerStyleSource = readSource('../../styles/learning-book-reader.css');
 const learningNodeStyleSource = readSource('../LearningNodeUI.css');
 const assessmentStyleSource = readSource('../../styles/topic-assessments.css');
+const shellStyleSource = readSource('../../styles/theme-page-parity.css');
 
 function extractRule(source, selector) {
   const escapedSelector = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return source.match(new RegExp(`${escapedSelector}\\s*\\{([\\s\\S]*?)\\}`))?.[1] || '';
 }
 
-test('single-page resting leaf owns bounded vertical scrolling', () => {
+test('each resting leaf owns bounded vertical scrolling with native boundary chaining', () => {
   const baseRule = extractRule(readerStyleSource, '.learning-book__resting-page-body');
   const singlePagesRule = extractRule(readerStyleSource, '.learning-book--single .learning-book__pages');
   const boundedPageRule = readerStyleSource.match(
     /\.learning-book--single \.learning-book__pages,[\s\S]*?\{([\s\S]*?)\}/
   )?.[1] || '';
-  const scrollRule = extractRule(
-    readerStyleSource,
-    '.learning-book--single .learning-book__resting-page-body'
-  );
+  const scrollRule = readerStyleSource.match(
+    /\.learning-book--single \.learning-book__resting-page-body,\s*\.learning-book--spread \.learning-book__resting-page-body\s*\{([\s\S]*?)\}/
+  )?.[1] || '';
 
   assert.match(readerSource, /className="learning-book__resting-page-body"/);
   assert.match(baseRule, /height:\s*100%/);
@@ -41,9 +41,11 @@ test('single-page resting leaf owns bounded vertical scrolling', () => {
   assert.match(scrollRule, /height:\s*auto/);
   assert.match(scrollRule, /overflow-y:\s*auto/);
   assert.match(scrollRule, /overflow-x:\s*hidden/);
+  assert.match(scrollRule, /overscroll-behavior-y:\s*auto/);
   assert.match(scrollRule, /touch-action:\s*pan-y/);
   assert.match(scrollRule, /padding-bottom:\s*clamp\(/);
   assert.doesNotMatch(scrollRule, /overflow-y:\s*scroll/);
+  assert.doesNotMatch(scrollRule, /overscroll-behavior-y:\s*(?:contain|none)/);
   assert.doesNotMatch(singlePagesRule, /overflow:\s*hidden/);
 });
 
@@ -54,6 +56,15 @@ test('reader controls remain outside the resting page scroll owner', () => {
   assert.ok(scrollOwnerIndex >= 0);
   assert.ok(pagesCloseIndex > scrollOwnerIndex);
   assert.match(readerStyleSource, /grid-template-rows:\s*minmax\(0, 1fr\) 62px/);
+});
+
+test('application page remains available as the receiving vertical scroll owner', () => {
+  const pageWrapRule = extractRule(shellStyleSource, '.app-shell .page-wrap');
+
+  assert.match(pageWrapRule, /height:\s*calc\(100vh - var\(--topbar-height\)\)/);
+  assert.match(pageWrapRule, /overflow-y:\s*auto/);
+  assert.match(pageWrapRule, /overflow-x:\s*hidden/);
+  assert.doesNotMatch(pageWrapRule, /overscroll-behavior(?:-y)?:\s*(?:contain|none)/);
 });
 
 test('animation leaves remain inert and do not receive the resting scroll owner', () => {
@@ -76,25 +87,29 @@ test('animation leaves remain inert and do not receive the resting scroll owner'
   );
 });
 
-test('single-page nested content does not create a second vertical scrollbar', () => {
-  const singleScrollOwnerRules = readerStyleSource.match(
-    /\.learning-book--single \.learning-book__resting-page-body\s*\{[\s\S]*?overflow-y:\s*auto[\s\S]*?\}/g
+test('nested content does not create a second vertical scrollbar in single or spread mode', () => {
+  const restingPageScrollOwnerRules = readerStyleSource.match(
+    /\.learning-book--single \.learning-book__resting-page-body,\s*\.learning-book--spread \.learning-book__resting-page-body\s*\{[\s\S]*?overflow-y:\s*auto[\s\S]*?\}/g
   ) || [];
   const interactiveContentRule = extractRule(
     learningNodeStyleSource,
     '.book-content-scroll--interactive'
   );
   const nestedRule = readerStyleSource.match(
-    /\.learning-book--single \.learning-book__resting-page-body > \.book-content-scroll,[\s\S]*?\{([\s\S]*?)\}/
+    /\.learning-book__resting-page-body > \.book-content-scroll,[\s\S]*?\{([\s\S]*?)\}/
   )?.[1] || '';
   const nestedInnerRule = extractRule(
     readerStyleSource,
-    '.learning-book--single .learning-book__resting-page-body > .book-content-scroll > .book-content-inner'
+    '.learning-book__resting-page-body > .book-content-scroll > .book-content-inner'
   );
   const assessmentGridRule = extractRule(assessmentStyleSource, '.topic-assessment-grid');
 
   assert.match(interactiveContentRule, /overflow-y:\s*auto/);
-  assert.equal(singleScrollOwnerRules.length, 1);
+  assert.match(interactiveContentRule, /overflow-x:\s*hidden/);
+  assert.match(interactiveContentRule, /overscroll-behavior-y:\s*auto/);
+  assert.match(interactiveContentRule, /touch-action:\s*pan-y/);
+  assert.doesNotMatch(interactiveContentRule, /overscroll-behavior:\s*(?:contain|none)/);
+  assert.equal(restingPageScrollOwnerRules.length, 1);
   assert.match(nestedRule, /flex:\s*0 0 auto/);
   assert.match(nestedRule, /height:\s*auto/);
   assert.match(nestedRule, /min-height:\s*0/);
@@ -108,12 +123,6 @@ test('single-page nested content does not create a second vertical scrollbar', (
   assert.doesNotMatch(assessmentGridRule, /overflow-y\s*:/);
   assert.doesNotMatch(assessmentGridRule, /overscroll-behavior\s*:/);
   assert.doesNotMatch(assessmentGridRule, /-webkit-overflow-scrolling\s*:/);
-  assert.equal(
-    (readerStyleSource.match(
-      /\.learning-book--spread \.learning-book__resting-page-body\s*\{/g
-    ) || []).length,
-    0
-  );
 });
 
 test('vertical intent cancels swipe tracking while horizontal turns stay thresholded', () => {
