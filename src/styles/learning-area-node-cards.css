@@ -1,0 +1,320 @@
+/* LearningNode grade-page learning-area cards. */
+
+.progress-card-grade-mode .child-group--learning-areas,
+.progress-card-grade-mode .learning-area-node-grid,
+.progress-card-grade-mode .learning-area-node-card,
+.progress-card-grade-mode .learning-area-node-card__content {
+  min-width: 0;
+}
+
+.progress-card-grade-mode .child-group--learning-areas {
+  margin-bottom: 0;
+}
+
+.progress-card-grade-mode .learning-area-node-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.progress-card-grade-mode .learning-area-node-card {
+  --learning-area-card-surface: #f4f8f7;
+  --learning-area-card-border: #c5d2cf;
+  --learning-area-card-title: #20302e;
+  --learning-area-card-meta: #536661;
+  --learning-area-card-summary: #4d5e5a;
+  --learning-area-card-icon-surface: #dce6e4;
+  --learning-area-card-icon-border: #b9c8c4;
+  --learning-area-card-badge-surface: #e4ebe9;
+  --learning-area-card-badge-border: #afbfbb;
+  --learning-area-card-badge-text: #465854;
+  position: relative;
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr);
+  grid-template-rows: auto minmax(3.1em, 1fr);
+  align-content: start;
+  align-items: start;
+  gap: 16px;
+  min-height: 196px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid var(--learning-area-card-border);
+  border-radius: 14px;
+  background: var(--learning-area-card-surface);
+  color: var(--learning-area-card-title);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.progress-card-grade-mode .learning-area-node-card__icon-tile {
+  display: grid;
+  width: 60px;
+  height: 60px;
+  place-items: center;
+  border: 1px solid var(--learning-area-card-icon-border);
+  border-radius: 15px;
+  background: var(--learning-area-card-icon-surface);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16);
+}
+
+.progress-card-grade-mode .learning-area-node-card__icon {
+  display: block;
+  font-size: 40px;
+  line-height: 1;
+  opacity: 1;
+  filter: none;
+}
+
+.progress-card-grade-mode .learning-area-node-card__content {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding-top: 25px;
+  padding-right: 0;
+}
+
+.progress-card-grade-mode .learning-area-node-card__title {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow: visible;
+  color: var(--learning-area-card-title);
+  font-size: clamp(1rem, 1.25vw, 1.15rem);
+  font-weight: 900;
+  line-height: 1.16;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: initial;
+}
+
+.progress-card-grade-mode .learning-area-node-card__meta {
+  min-width: 0;
+  color: var(--learning-area-card-meta);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.progress-card-grade-mode .learning-area-node-card__summary {
+  grid-column: 1 / -1;
+  align-self: start;
+  min-width: 0;
+  padding-right: 28px;
+  color: var(--learning-area-card-summary);
+  font-size: 0.84rem;
+  font-weight: 650;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.progress-card-grade-mode .learning-area-node-card__badge {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+  z-index: 1;
+  max-width: calc(100% - 26px);
+  padding: 4px 7px;
+  border: 1px solid var(--learning-area-card-badge-border);
+  border-radius: 999px;
+  background: var(--learning-area-card-badge-surface);
+  color: var(--learning-area-card-badge-text);
+  font-size: 0.62rem;
+  font-weight: 950;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.progress-card-grade-mode .learning-area-node-card__arrow {
+  position: absolute;
+  right: 15px;
+  bottom: 13px;
+  color: var(--accent, #0f766e);
+  font-size: 1.35rem;
+  font-weight: 900;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.progress-card-grade-mode .learning-area-node-card.is-available {
+  --learning-area-card-surface: color-mix(in srgb, var(--card, var(--bg-card)) 88%, #d8f2ec 12%);
+  --learning-area-card-border: color-mix(in srgb, var(--accent, #0f766e) 74%, var(--line, #cbd5d1) 26%);
+  --learning-area-card-meta: color-mix(in srgb, var(--accent, #0f766e) 82%, var(--learning-area-card-title) 18%);
+  --learning-area-card-icon-surface: color-mix(in srgb, var(--accent, #0f766e) 30%, var(--card, #fff) 70%);
+  --learning-area-card-icon-border: color-mix(in srgb, var(--accent, #0f766e) 78%, transparent);
+  --learning-area-card-badge-surface: color-mix(in srgb, var(--accent, #0f766e) 16%, transparent);
+  --learning-area-card-badge-border: color-mix(in srgb, var(--accent, #0f766e) 62%, transparent);
+  --learning-area-card-badge-text: color-mix(in srgb, var(--accent, #0f766e) 84%, var(--learning-area-card-title) 16%);
+  cursor: pointer;
+  opacity: 1;
+  filter: none;
+}
+
+.progress-card-grade-mode .learning-area-node-card.is-available:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent, #0f766e);
+  background: color-mix(in srgb, var(--learning-area-card-surface) 94%, var(--accent, #0f766e) 6%);
+}
+
+.progress-card-grade-mode .learning-area-node-card.is-available:hover .learning-area-node-card__arrow {
+  transform: translateX(3px);
+}
+
+.progress-card-grade-mode .learning-area-node-card.is-available:focus:not(:focus-visible) {
+  outline: none !important;
+}
+
+.progress-card-grade-mode .learning-area-node-card.is-available:focus-visible {
+  z-index: 2;
+  border-color: var(--accent, #0f766e);
+  outline: 3px solid var(--accent, #0f766e) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--bg-card, #fff) 88%, transparent) !important;
+}
+
+.progress-card-grade-mode .learning-area-node-card.is-disabled,
+.progress-card-grade-mode .learning-area-node-card[aria-disabled="true"] {
+  cursor: default;
+  pointer-events: none;
+  opacity: 1;
+  filter: none;
+  transform: none;
+  border-color: var(--learning-area-card-border);
+  background: var(--learning-area-card-surface);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+
+.progress-card-grade-mode .learning-area-node-card.is-disabled:hover,
+.progress-card-grade-mode .learning-area-node-card.is-disabled:focus,
+.progress-card-grade-mode .learning-area-node-card.is-disabled:focus-visible,
+.progress-card-grade-mode .learning-area-node-card[aria-disabled="true"]:hover {
+  transform: none;
+  border-color: var(--learning-area-card-border);
+  outline: none;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+
+:root[data-theme="dark"] .progress-card-grade-mode .learning-area-node-card {
+  --learning-area-card-surface: #172532;
+  --learning-area-card-border: #405160;
+  --learning-area-card-title: #edf4fa;
+  --learning-area-card-meta: #b4c2ce;
+  --learning-area-card-summary: #bdc9d4;
+  --learning-area-card-icon-surface: #2a3a49;
+  --learning-area-card-icon-border: #4b6071;
+  --learning-area-card-badge-surface: rgba(174, 190, 204, 0.16);
+  --learning-area-card-badge-border: rgba(174, 190, 204, 0.48);
+  --learning-area-card-badge-text: #d2dce5;
+}
+
+:root[data-theme="dark"] .progress-card-grade-mode .learning-area-node-card.is-available {
+  --learning-area-card-surface: #102c31;
+  --learning-area-card-border: color-mix(in srgb, var(--accent, #63f1e2) 76%, #334b52 24%);
+  --learning-area-card-title: #f2f9fb;
+  --learning-area-card-meta: #75eadc;
+  --learning-area-card-summary: #c0d3d7;
+  --learning-area-card-icon-surface: color-mix(in srgb, var(--accent, #63f1e2) 34%, #12383b 66%);
+  --learning-area-card-icon-border: color-mix(in srgb, var(--accent, #63f1e2) 70%, transparent);
+  --learning-area-card-badge-surface: rgba(45, 212, 191, 0.15);
+  --learning-area-card-badge-border: rgba(99, 241, 226, 0.58);
+  --learning-area-card-badge-text: #9ffcf0;
+}
+
+:root[data-theme="light"] .progress-card-grade-mode .learning-area-node-card.is-available {
+  --learning-area-card-surface: #f1faf7;
+  --learning-area-card-border: #139889;
+  --learning-area-card-title: #17322e;
+  --learning-area-card-meta: #0f766e;
+  --learning-area-card-summary: #405853;
+  --learning-area-card-icon-surface: #ccece5;
+  --learning-area-card-icon-border: #45a99d;
+  --learning-area-card-badge-surface: #dcf3ee;
+  --learning-area-card-badge-border: #69b8ae;
+  --learning-area-card-badge-text: #0d685f;
+}
+
+@media (min-width: 1280px) {
+  .progress-card-grade-mode .learning-area-node-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1080px) {
+  .progress-card-grade-mode .learning-area-node-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .progress-card-grade-mode .learning-area-node-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card {
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 11px;
+    min-height: 178px;
+    padding: 13px;
+    border-radius: 12px;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card__icon-tile {
+    width: 54px;
+    height: 54px;
+    border-radius: 13px;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card__icon {
+    font-size: 36px;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card__content {
+    gap: 4px;
+    padding-top: 25px;
+    padding-right: 0;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card__title {
+    font-size: 0.94rem;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card__meta {
+    font-size: 0.72rem;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card__summary {
+    padding-right: 24px;
+    font-size: 0.75rem;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card__badge {
+    top: 10px;
+    right: 10px;
+    font-size: 0.56rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .progress-card-grade-mode .learning-area-node-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card {
+    min-height: 158px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-card-grade-mode .learning-area-node-card,
+  .progress-card-grade-mode .learning-area-node-card__arrow {
+    transition: none;
+  }
+
+  .progress-card-grade-mode .learning-area-node-card.is-available:hover,
+  .progress-card-grade-mode .learning-area-node-card.is-available:hover .learning-area-node-card__arrow {
+    transform: none;
+  }
+}

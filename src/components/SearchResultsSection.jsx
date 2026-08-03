@@ -37,7 +37,7 @@ function SearchResultPreview({ entry, completed }) {
       className={`search-preview-card glass-lite ${
         completed ? 'done' : ''
       }`}
-      to={`/problem/${encodeURIComponent(questionId)}`}
+      to={`/practice/${encodeURIComponent(questionId)}`}
       state={{
         searchEntry: entry
       }}
@@ -57,7 +57,7 @@ function SearchResultPreview({ entry, completed }) {
           {question.scenario ||
             question.question ||
             entry.snippet ||
-            'Open this problem in the focused workspace.'}
+            'Open this practice.'}
         </p>
       </div>
 
@@ -68,7 +68,7 @@ function SearchResultPreview({ entry, completed }) {
       </div>
 
       <strong className="open-focused-link">
-        Open focused workspace →
+        Open practice →
       </strong>
     </NavLink>
   );
@@ -120,7 +120,7 @@ function SearchResultsSection({ results, completed }) {
     return (
       <section className="search-results-section" ref={sectionRef}>
         <div className="empty-state glass-lite">
-          <h2>No matching problems yet</h2>
+          <h2>No matching practices yet</h2>
 
           <p>
             Try fewer words, remove one filter, or search by a broader
@@ -137,11 +137,11 @@ function SearchResultsSection({ results, completed }) {
         <div>
           <p className="eyebrow">Search results</p>
 
-          <h2>{totalQuestions} matching problems</h2>
+          <h2>{totalQuestions} matching practices</h2>
 
           <p className="render-note">
             Showing results {pageStart + 1}-{pageEnd}. Click any result
-            to open the focused problem workspace.
+            to open the practice workspace.
           </p>
         </div>
       </div>

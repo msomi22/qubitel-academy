@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import ReadAloudButton from '../../cbc/ReadAloudButton.jsx';
+import StandardPracticeWorkspace from '../../practice/StandardPracticeWorkspace.jsx';
 import { buildProblemPath } from '../../../services/questionNavigationService.js';
 import { storageService } from '../../../services/storageService.js';
+import QuestionNavigationControls from '../shared/QuestionNavigationControls.jsx';
 import CbcVisualAid from './CbcVisualAid.jsx';
 
 function optionLetter(index) {
@@ -20,6 +22,72 @@ function promptVisualFor(question) {
 
 function friendlyPrompt(question) {
   return question?.question || question?.prompt || question?.readAloudText || question?.title || 'Choose the correct answer.';
+}
+
+function CbcGradeOneQuestionBody({
+  question,
+  selected,
+  answered,
+  isCorrect,
+  promptVisual,
+  completed,
+  onSelect,
+  onReset
+}) {
+  return (
+    <div className="cbc-grade-one-body-scroll">
+      <WordPatternChip question={question} />
+
+      <ReadAloudButton question={{ ...question, autoReadAloud: false }} className="cbc-grade-one-read-aloud" />
+
+      {promptVisual ? (
+        <section className="cbc-grade-one-prompt-visual" aria-label="Question visual">
+          <CbcVisualAid visual={promptVisual} label={question.title} />
+        </section>
+      ) : null}
+
+      <section className="cbc-grade-one-options" aria-label="Answer choices">
+        {question.options?.map((option, index) => {
+          const selectedOption = selected === index;
+          const correctOption = question.correctAnswer === index;
+          const optionVisual = optionVisualFor(question, index);
+          const optionClass = [
+            'cbc-grade-one-option',
+            selectedOption ? 'selected' : '',
+            answered && correctOption ? 'correct' : '',
+            answered && selectedOption && !correctOption ? 'wrong' : ''
+          ].filter(Boolean).join(' ');
+
+          return (
+            <button
+              type="button"
+              key={`${option}-${index}`}
+              className={optionClass}
+              aria-pressed={selectedOption}
+              onClick={() => onSelect(index)}
+            >
+              <span className="cbc-grade-one-option-letter">{optionLetter(index)}</span>
+              {optionVisual ? <CbcVisualAid visual={optionVisual} label={option} /> : null}
+              <span className="cbc-grade-one-option-text">{option}</span>
+            </button>
+          );
+        })}
+      </section>
+
+      <section className={`cbc-grade-one-feedback ${answered ? (isCorrect ? 'correct' : 'wrong') : 'empty'}`} role="status" aria-live="polite">
+        {answered ? (
+          <>
+            <strong>{isCorrect ? 'Great job!' : 'Good try!'}</strong>
+            <p>{isCorrect ? 'That answer is correct.' : question.explanation || 'Try the correct answer next time.'}</p>
+          </>
+        ) : <span aria-hidden="true">&nbsp;</span>}
+      </section>
+
+      <div className={`cbc-grade-one-actions ${completed || answered ? '' : 'empty'}`.trim()}>
+        {completed || answered ? <button type="button" onClick={onReset}>Try again</button> : <span aria-hidden="true">&nbsp;</span>}
+      </div>
+    </div>
+  );
 }
 
 function WordPatternChip({ question }) {
@@ -107,12 +175,14 @@ export default function CbcGradeOneQuestionRenderer({
   completed,
   onToggle,
   onMarkComplete,
-  navigation
+  navigation,
+  problemHeader = null
 }) {
   const [selected, setSelected] = useState(() => storageService.getSelectedAnswer(question.id));
   const answered = selected !== null;
   const isCorrect = answered && selected === question.correctAnswer;
   const promptVisual = promptVisualFor(question);
+  const isGroupedPractice = navigation?.total > 1;
 
   function handleSelect(index) {
     setSelected(index);
@@ -124,6 +194,33 @@ export default function CbcGradeOneQuestionRenderer({
     const updated = storageService.resetQuestionProgress(question.id);
     setSelected(null);
     onToggle?.(question.id, updated);
+  }
+
+  if (isGroupedPractice) {
+    return (
+      <StandardPracticeWorkspace
+        backPath={problemHeader?.backControl?.props?.to}
+        backLabel={problemHeader?.backControl?.props?.children || 'Back'}
+        title={question.title || friendlyPrompt(question)}
+        objective={question.objective || question.scenario || friendlyPrompt(question)}
+        practiceGuide={question.practiceGuide || question.explanation}
+        tags={question.tags || question.concepts || question.metadata?.tags}
+        navigationTop={<QuestionNavigationControls navigation={navigation} className="question-navigation-top" />}
+        navigationBottom={<QuestionNavigationControls navigation={navigation} className="question-navigation-bottom" />}
+        doneControl={problemHeader?.doneControl}
+      >
+        <CbcGradeOneQuestionBody
+          question={question}
+          selected={selected}
+          answered={answered}
+          isCorrect={isCorrect}
+          promptVisual={promptVisual}
+          completed={completed}
+          onSelect={handleSelect}
+          onReset={handleReset}
+        />
+      </StandardPracticeWorkspace>
+    );
   }
 
   return (
@@ -141,56 +238,16 @@ export default function CbcGradeOneQuestionRenderer({
           </h1>
         </header>
 
-        <WordPatternChip question={question} />
-
-        <ReadAloudButton question={{ ...question, autoReadAloud: false }} className="cbc-grade-one-read-aloud" />
-
-        {promptVisual ? (
-          <section className="cbc-grade-one-prompt-visual" aria-label="Question visual">
-            <CbcVisualAid visual={promptVisual} label={question.title} />
-          </section>
-        ) : null}
-
-        <section className="cbc-grade-one-options" aria-label="Answer choices">
-          {question.options?.map((option, index) => {
-            const selectedOption = selected === index;
-            const correctOption = question.correctAnswer === index;
-            const optionVisual = optionVisualFor(question, index);
-            const optionClass = [
-              'cbc-grade-one-option',
-              selectedOption ? 'selected' : '',
-              answered && correctOption ? 'correct' : '',
-              answered && selectedOption && !correctOption ? 'wrong' : ''
-            ].filter(Boolean).join(' ');
-
-            return (
-              <button
-                type="button"
-                key={`${option}-${index}`}
-                className={optionClass}
-                aria-pressed={selectedOption}
-                onClick={() => handleSelect(index)}
-              >
-                <span className="cbc-grade-one-option-letter">{optionLetter(index)}</span>
-                {optionVisual ? <CbcVisualAid visual={optionVisual} label={option} /> : null}
-                <span className="cbc-grade-one-option-text">{option}</span>
-              </button>
-            );
-          })}
-        </section>
-
-        <section className={`cbc-grade-one-feedback ${answered ? (isCorrect ? 'correct' : 'wrong') : 'empty'}`} role="status" aria-live="polite">
-          {answered ? (
-            <>
-              <strong>{isCorrect ? 'Great job!' : 'Good try!'}</strong>
-              <p>{isCorrect ? 'That answer is correct.' : question.explanation || 'Try the correct answer next time.'}</p>
-            </>
-          ) : <span aria-hidden="true">&nbsp;</span>}
-        </section>
-
-        <div className={`cbc-grade-one-actions ${completed || answered ? '' : 'empty'}`.trim()}>
-          {completed || answered ? <button type="button" onClick={handleReset}>Try again</button> : <span aria-hidden="true">&nbsp;</span>}
-        </div>
+        <CbcGradeOneQuestionBody
+          question={question}
+          selected={selected}
+          answered={answered}
+          isCorrect={isCorrect}
+          promptVisual={promptVisual}
+          completed={completed}
+          onSelect={handleSelect}
+          onReset={handleReset}
+        />
       </div>
 
       <CbcGradeOneNavigation navigation={navigation} placement="bottom" />

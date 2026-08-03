@@ -232,11 +232,10 @@ When producing the final answer in chat, put the entire instruction inside a sin
     ```md
     # Coding Implementation Instruction: Issue #<number> — <Short Title>
 
-    If the assistant or coding agent cannot rename the conversation directly, it must first surface this name to the user and ask the user to rename the conversation manually before continuing.
 
     ---
 
-    ## 2. Task Summary
+    ## 1. Task Summary
 
     Implement #<number> on branch `<branch-name>`.
 
@@ -248,9 +247,10 @@ When producing the final answer in chat, put the entire instruction inside a sin
 
     ---
 
-    ## 3. Required References
+    ## 2. Required References
 
     Read these before coding:
 
     - #<target issue>
     - #<parent epic>
+```

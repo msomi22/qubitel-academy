@@ -1,0 +1,243 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Self-hosted Ollama coding server on EC2 GPU.
+  Installs Ollama and pulls qwen2.5-coder:14b.
+  Ollama remains private and should be accessed through SSH tunneling.
+
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: demo-app-2026
+    Description: Existing EC2 key pair name.
+
+  InstanceType:
+    Type: String
+    Default: g5.2xlarge
+    AllowedValues:
+      - g4dn.xlarge
+      - g5.xlarge
+      - g5.2xlarge
+      - g6.xlarge
+      - g6.2xlarge
+    Description: GPU instance type for Ollama.
+
+  LatestDlamiAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/deeplearning/ami/x86_64/base-oss-nvidia-driver-gpu-ubuntu-22.04/latest/ami-id
+    Description: Latest AWS Deep Learning Base OSS NVIDIA Driver GPU AMI Ubuntu 22.04.
+
+  AllowedSshCidr:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: CIDR allowed to SSH into the instance. Replace with your public IP CIDR for better security.
+
+  VolumeSizeGb:
+    Type: Number
+    Default: 100
+    MinValue: 80
+    MaxValue: 500
+    Description: Root EBS volume size in GB.
+
+  ModelName:
+    Type: String
+    Default: qwen2.5-coder:14b
+    Description: Ollama model to pull during bootstrap.
+
+Resources:
+  OllamaVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.60.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: ollama-coder-vpc
+
+  OllamaSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref OllamaVpc
+      CidrBlock: 10.60.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: ollama-coder-public-subnet
+
+  OllamaInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: ollama-coder-igw
+
+  OllamaVpcGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref OllamaVpc
+      InternetGatewayId: !Ref OllamaInternetGateway
+
+  OllamaRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref OllamaVpc
+      Tags:
+        - Key: Name
+          Value: ollama-coder-public-rt
+
+  OllamaDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: OllamaVpcGatewayAttachment
+    Properties:
+      RouteTableId: !Ref OllamaRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref OllamaInternetGateway
+
+  OllamaSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref OllamaSubnet
+      RouteTableId: !Ref OllamaRouteTable
+
+  OllamaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH only. Ollama API is accessed through SSH tunnel.
+      VpcId: !Ref OllamaVpc
+      SecurityGroupIngress:
+        - Description: SSH from allowed CIDR
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref AllowedSshCidr
+      SecurityGroupEgress:
+        - Description: Allow outbound internet access for package/model downloads
+          IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: ollama-coder-sg
+
+  OllamaInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ollama-coder-role-${AWS::StackName}
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Tags:
+        - Key: Name
+          Value: ollama-coder-role
+
+  OllamaInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref OllamaInstanceRole
+
+  OllamaEc2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestDlamiAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyName
+      IamInstanceProfile: !Ref OllamaInstanceProfile
+      SubnetId: !Ref OllamaSubnet
+      SecurityGroupIds:
+        - !Ref OllamaSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: !Ref VolumeSizeGb
+            VolumeType: gp3
+            DeleteOnTermination: true
+      Tags:
+        - Key: Name
+          Value: ollama-coder-ec2
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+
+          exec > >(tee /var/log/ollama-bootstrap.log | logger -t ollama-bootstrap -s 2>/dev/console) 2>&1
+
+          echo "Starting Ollama bootstrap..."
+          echo "Model: ${ModelName}"
+
+          export DEBIAN_FRONTEND=noninteractive
+
+          apt-get update -y
+          apt-get install -y curl jq htop nvtop unzip
+
+          echo "Checking NVIDIA GPU..."
+          for i in {1..30}; do
+            if nvidia-smi; then
+              echo "NVIDIA GPU detected."
+              break
+            fi
+            echo "Waiting for NVIDIA driver/GPU..."
+            sleep 10
+          done
+
+          echo "Installing Ollama..."
+          curl -fsSL https://ollama.com/install.sh | sh
+
+          systemctl enable ollama
+          systemctl start ollama
+
+          echo "Waiting for Ollama API..."
+          for i in {1..60}; do
+            if curl -sf http://127.0.0.1:11434/api/tags; then
+              echo "Ollama API is ready."
+              break
+            fi
+            sleep 5
+          done
+
+          echo "Pulling model: ${ModelName}"
+          ollama pull ${ModelName}
+
+          echo "Testing model..."
+          ollama run ${ModelName} "Reply with: Ollama coding server is ready."
+
+          echo "Bootstrap complete."
+
+Outputs:
+  InstanceId:
+    Description: EC2 instance ID
+    Value: !Ref OllamaEc2Instance
+
+  PublicIp:
+    Description: Public IP address
+    Value: !GetAtt OllamaEc2Instance.PublicIp
+
+  PublicDnsName:
+    Description: Public DNS name
+    Value: !GetAtt OllamaEc2Instance.PublicDnsName
+
+  SshCommandUbuntu:
+    Description: SSH command for Ubuntu-based DLAMI
+    Value: !Sub "ssh -i ${KeyName}.pem ubuntu@${OllamaEc2Instance.PublicDnsName}"
+
+  ClineTunnelCommand:
+    Description: SSH tunnel command for Cline/Ollama
+    Value: !Sub "ssh -i ${KeyName}.pem -L 11434:localhost:11434 ubuntu@${OllamaEc2Instance.PublicDnsName}"
+
+  ClineBaseUrl:
+    Description: Use this in Cline
+    Value: "http://localhost:11434"
+
+  ClineModel:
+    Description: Use this model in Cline
+    Value: !Ref ModelName
+
+  BootstrapLog:
+    Description: Check installation logs after SSH
+    Value: "sudo tail -f /var/log/ollama-bootstrap.log"

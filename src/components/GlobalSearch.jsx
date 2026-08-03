@@ -21,7 +21,7 @@ function GlobalResult({ entry, completed, onSelect }) {
   return (
     <NavLink
       className={`global-search-result ${completed ? 'done' : ''}`}
-      to={`/problem/${encodeURIComponent(questionId)}`}
+      to={`/practice/${encodeURIComponent(questionId)}`}
       state={{ searchEntry: entry }}
       onClick={onSelect}
     >
@@ -85,7 +85,7 @@ export default function GlobalSearch() {
   return (
     <div className="global-search" role="search" ref={rootRef}>
       <label className="global-search-control">
-        <span className="sr-only">Search problems</span>
+        <span className="sr-only">Search practices</span>
         <SearchIcon />
         <input
           ref={inputRef}
@@ -98,7 +98,7 @@ export default function GlobalSearch() {
           onFocus={() => {
             if (hasQuery) setPanelOpen(true);
           }}
-          placeholder="Search problems, concepts, or technologies..."
+          placeholder="Search practices, concepts, or technologies..."
           autoComplete="off"
         />
       </label>

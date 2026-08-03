@@ -68,6 +68,11 @@
       "learningAreaId": "reading-readiness"
     },
     {
+      "id": "greetings-exam-001",
+      "file": "assessments/greetings/greetings-exam-001.js",
+      "learningAreaId": "listening-speaking"
+    },
+    {
       "id": "reading-word-mastery-exam-002",
       "file": "assessments/reading-readiness/reading-word-mastery-exam-002.js",
       "learningAreaId": "reading-readiness"

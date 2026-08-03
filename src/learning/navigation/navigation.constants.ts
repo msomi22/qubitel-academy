@@ -6,5 +6,6 @@ export const LEARNING_NODE_NAVIGATION_DIRECTIONS = {
 } as const;
 
 export const LEARNING_NODE_NAVIGATION_DEFAULTS = {
-  includeCurrentInBreadcrumbs: true
+  includeCurrentInBreadcrumbs: true,
+  skipKinds: ['platform']
 } as const;

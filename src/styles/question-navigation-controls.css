@@ -95,6 +95,48 @@
   display: block;
 }
 
+.standard-practice-workspace .question-navigation-controls {
+  width: min(420px, 100%);
+  gap: 8px;
+  margin: 4px auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.standard-practice-workspace .question-nav-button,
+.standard-practice-workspace .question-nav-placeholder {
+  min-height: 34px;
+}
+
+.standard-practice-workspace .question-nav-button {
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.standard-practice-workspace .question-nav-arrow {
+  width: 24px;
+  height: 24px;
+  font-size: 0.95rem;
+}
+
+.standard-practice-workspace .question-nav-button strong {
+  font-size: 0.82rem;
+}
+
+.standard-practice-workspace .question-nav-button small {
+  display: none;
+}
+
+.standard-practice-workspace .question-nav-progress {
+  min-width: 46px;
+  min-height: 28px;
+  padding: 0 8px;
+  font-size: 0.82rem;
+}
+
 @media (max-width: 640px) {
   .question-navigation-controls {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

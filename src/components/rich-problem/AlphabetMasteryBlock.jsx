@@ -63,8 +63,9 @@ function AlphabetCard({ card, cardType, color, display, isActive, isAutoReading,
   );
 }
 
-export default function AlphabetMasteryBlock({ block }) {
+export default function AlphabetMasteryBlock({ block, presentation = 'standalone' }) {
   const letters = useMemo(() => safeLetters(block), [block]);
+  const isBookPresentation = presentation === 'book';
   const audioRef = useRef(null);
   const isMountedRef = useRef(false);
   const autoReadPlayTimerRef = useRef(null);
@@ -379,22 +380,27 @@ export default function AlphabetMasteryBlock({ block }) {
     : '';
 
   return (
-    <section className="workspace-block problem-rich-block alphabet-mastery-board" aria-labelledby="alphabet-mastery-heading">
-      <div className="alphabet-mastery-hero">
-        <div className="alphabet-mastery-heading">
-          <span className="alphabet-mastery-back">English</span>
-          <h4 id="alphabet-mastery-heading">{block?.title || 'Alphabet Mastery'}</h4>
-          {block?.subtitle ? <p>{block.subtitle}</p> : null}
-        </div>
+    <section
+      aria-label={isBookPresentation ? 'Alphabet Mastery' : undefined}
+      aria-labelledby={isBookPresentation ? undefined : 'alphabet-mastery-heading'}
+      className="workspace-block problem-rich-block alphabet-mastery-board"
+    >
+      {!isBookPresentation ? (
+        <div className="alphabet-mastery-hero">
+          <div className="alphabet-mastery-heading">
+            <h4 id="alphabet-mastery-heading">{block?.title || 'Alphabet Mastery'}</h4>
+            {block?.subtitle ? <p>{block.subtitle}</p> : null}
+          </div>
 
-        <div className="alphabet-mastery-mascot" aria-hidden="true">🦊</div>
+          <div className="alphabet-mastery-mascot" aria-hidden="true">🦊</div>
 
-        <div className="alphabet-mastery-progress" aria-label={`${progress}% complete`}>
-          <span>My Progress</span>
-          <strong>{progress}%</strong>
-          <small>{playedCardIds.size} / {totalCards} cards</small>
+          <div className="alphabet-mastery-progress" aria-label={`${progress}% complete`}>
+            <span>My Progress</span>
+            <strong>{progress}%</strong>
+            <small>{playedCardIds.size} / {totalCards} cards</small>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="alphabet-mastery-toolbar">
         <span className="alphabet-mastery-tab is-active">A-Z</span>
@@ -446,32 +452,34 @@ export default function AlphabetMasteryBlock({ block }) {
         </div>
       </div>
 
-      <div className="alphabet-mastery-grid" aria-label="Alphabet sound cards" {...gridProps}>
-        {letters.map((item, index) => (
-          <div className="alphabet-mastery-letter-row" style={{ '--alphabet-card-accent': item.color }} key={item.id}>
-            <AlphabetCard
-              card={item.identifier}
-              cardType="identifier"
-              color={item.color}
-              display={item.display}
-              isActive={activeCardId === item.identifier.id}
-              isAutoReading={activeAutoReadItem?.card?.id === item.identifier.id}
-              itemRef={getItemRef(index * 2)}
-              onPlay={handleManualPlay}
-            />
+      <div className="alphabet-mastery-card-scroll">
+        <div className="alphabet-mastery-grid" aria-label="Alphabet sound cards" {...gridProps}>
+          {letters.map((item, index) => (
+            <div className="alphabet-mastery-letter-row" style={{ '--alphabet-card-accent': item.color }} key={item.id}>
+              <AlphabetCard
+                card={item.identifier}
+                cardType="identifier"
+                color={item.color}
+                display={item.display}
+                isActive={activeCardId === item.identifier.id}
+                isAutoReading={activeAutoReadItem?.card?.id === item.identifier.id}
+                itemRef={getItemRef(index * 2)}
+                onPlay={handleManualPlay}
+              />
 
-            <AlphabetCard
-              card={item.phonetic}
-              cardType="phonetic"
-              color={item.color}
-              display={item.display}
-              isActive={activeCardId === item.phonetic.id}
-              isAutoReading={activeAutoReadItem?.card?.id === item.phonetic.id}
-              itemRef={getItemRef(index * 2 + 1)}
-              onPlay={handleManualPlay}
-            />
-          </div>
-        ))}
+              <AlphabetCard
+                card={item.phonetic}
+                cardType="phonetic"
+                color={item.color}
+                display={item.display}
+                isActive={activeCardId === item.phonetic.id}
+                isAutoReading={activeAutoReadItem?.card?.id === item.phonetic.id}
+                itemRef={getItemRef(index * 2 + 1)}
+                onPlay={handleManualPlay}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="alphabet-mastery-status" role="status" aria-live="polite">

@@ -1,0 +1,616 @@
+.learning-book {
+  --learning-book-paper: #f8f0dc;
+  --learning-book-paper-muted: #efe3c8;
+  --learning-book-paper-left: #f8f0dc;
+  --learning-book-paper-right: #f4ead4;
+  --learning-book-paper-edge: #dfcfaa;
+  --learning-book-ink: #30271e;
+  --learning-book-ink-muted: #746654;
+  --learning-book-heading: #694b17;
+  --learning-book-rule: rgba(74, 54, 34, 0.18);
+  --learning-book-binding: #70413a;
+  --learning-book-binding-dark: #452522;
+  --learning-book-accent: #84601f;
+  --learning-book-page-shade: rgba(34, 22, 10, 0.72);
+  --learning-book-leaf-shade: rgba(55, 34, 16, 0.13);
+  --learning-book-page-wash: rgba(55, 34, 16, 0.04);
+  --learning-book-depth-base: #000;
+  --learning-book-gutter-dark: rgba(43, 27, 13, 0.24);
+  --learning-book-gutter-dark-alt: rgba(43, 27, 13, 0.22);
+  --learning-book-gutter-highlight: rgba(255, 255, 255, 0.16);
+  --learning-book-control-surface: #f3e8cf;
+  --learning-book-control-surface-primary: #f8f0dc;
+  --learning-book-control-text: #30271e;
+  --learning-book-control-border: rgba(255, 255, 255, 0.34);
+  --learning-book-control-border-strong: rgba(255, 255, 255, 0.48);
+  --learning-book-indicator-surface: rgba(44, 24, 22, 0.74);
+  --learning-book-indicator-text: #fff8eb;
+  --learning-book-focus: rgba(255, 255, 255, 0.84);
+  --learning-book-disabled-opacity: 0.48;
+  --learning-book-shadow: rgba(39, 26, 12, 0.34);
+  --learning-book-turn-duration: 620ms;
+  width: 100%;
+  container-type: inline-size;
+  color: var(--learning-book-ink);
+}
+
+:root[data-theme="light"] .learning-book {
+  --learning-book-paper: #fbf3df;
+  --learning-book-paper-muted: #f1e5cb;
+  --learning-book-paper-left: #fbf3df;
+  --learning-book-paper-right: #f6ecd5;
+  --learning-book-paper-edge: #deceb0;
+  --learning-book-ink: #302b25;
+  --learning-book-ink-muted: #6d655b;
+  --learning-book-heading: #245f75;
+  --learning-book-rule: rgba(55, 83, 84, 0.17);
+  --learning-book-binding: #8a5b4d;
+  --learning-book-binding-dark: #674136;
+  --learning-book-accent: #0f766e;
+  --learning-book-page-shade: rgba(66, 46, 29, 0.28);
+  --learning-book-leaf-shade: rgba(79, 55, 32, 0.09);
+  --learning-book-page-wash: rgba(83, 61, 36, 0.025);
+  --learning-book-depth-base: #3e2a23;
+  --learning-book-gutter-dark: rgba(60, 42, 25, 0.15);
+  --learning-book-gutter-dark-alt: rgba(60, 42, 25, 0.13);
+  --learning-book-gutter-highlight: rgba(255, 252, 242, 0.38);
+  --learning-book-control-surface: #f7edd9;
+  --learning-book-control-surface-primary: #fff7e7;
+  --learning-book-control-text: #302b25;
+  --learning-book-control-border: #c9ae88;
+  --learning-book-control-border-strong: #aa8964;
+  --learning-book-indicator-surface: #eee2cc;
+  --learning-book-indicator-text: #3b342d;
+  --learning-book-focus: #0f766e;
+  --learning-book-disabled-opacity: 1;
+  --learning-book-disabled-surface: #ddd7cd;
+  --learning-book-disabled-text: #746f68;
+  --learning-book-disabled-border: #c5beb3;
+  --learning-book-shadow: rgba(62, 48, 32, 0.17);
+}
+
+:root[data-theme="dark"] .learning-book {
+  --learning-book-paper: #171d24;
+  --learning-book-paper-muted: #202936;
+  --learning-book-paper-left: #171d24;
+  --learning-book-paper-right: #1b222c;
+  --learning-book-paper-edge: #0c1117;
+  --learning-book-ink: #e6edf3;
+  --learning-book-ink-muted: #9aa9ba;
+  --learning-book-heading: #8fc6ff;
+  --learning-book-rule: rgba(143, 198, 255, 0.2);
+  --learning-book-binding: #202f38;
+  --learning-book-binding-dark: #111a22;
+  --learning-book-accent: #5eead4;
+  --learning-book-page-shade: rgba(2, 7, 12, 0.72);
+  --learning-book-leaf-shade: rgba(3, 9, 15, 0.32);
+  --learning-book-page-wash: rgba(94, 234, 212, 0.025);
+  --learning-book-depth-base: #03070b;
+  --learning-book-gutter-dark: rgba(3, 8, 13, 0.68);
+  --learning-book-gutter-dark-alt: rgba(3, 8, 13, 0.6);
+  --learning-book-gutter-highlight: rgba(94, 234, 212, 0.09);
+  --learning-book-control-surface: #273540;
+  --learning-book-control-surface-primary: #2b3b46;
+  --learning-book-control-text: #e6edf3;
+  --learning-book-control-border: rgba(143, 198, 255, 0.3);
+  --learning-book-control-border-strong: rgba(94, 234, 212, 0.56);
+  --learning-book-indicator-surface: #0e1720;
+  --learning-book-indicator-text: #dce7ef;
+  --learning-book-focus: #8fc6ff;
+  --learning-book-disabled-opacity: 0.54;
+  --learning-book-shadow: rgba(2, 6, 12, 0.46);
+}
+
+.learning-book__stage {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0.35rem 0.35rem clamp(0.35rem, 1.2vh, 0.8rem);
+  perspective: 2200px;
+}
+
+.learning-book__volume {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 58px;
+  height: clamp(510px, calc(100dvh - 15.5rem), 690px);
+  min-height: 0;
+  border: 1px solid color-mix(in srgb, var(--learning-book-binding) 58%, transparent);
+  border-radius: 10px 10px 14px 14px;
+  background: linear-gradient(135deg, var(--learning-book-binding), var(--learning-book-binding-dark));
+  box-shadow:
+    0 5px 0 color-mix(in srgb, var(--learning-book-binding-dark) 82%, var(--learning-book-depth-base)),
+    0 18px 38px var(--learning-book-shadow);
+  overflow: visible;
+  transform: rotateX(0.6deg);
+  transform-style: preserve-3d;
+  touch-action: pan-y;
+}
+
+.learning-book--spread .learning-book__volume {
+  width: calc(100% - 2rem);
+  max-width: none;
+}
+
+.learning-book__pages {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 0;
+  padding: 8px 9px 0;
+  transform-style: preserve-3d;
+}
+
+.learning-book--single .learning-book__pages {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  max-width: 600px;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.learning-book__page,
+.learning-book__blank {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background:
+    linear-gradient(90deg, var(--learning-book-page-wash), transparent 10%),
+    var(--learning-book-paper-left);
+}
+
+:root[data-theme="dark"] .learning-book__page,
+:root[data-theme="dark"] .learning-book__blank {
+  background:
+    linear-gradient(90deg, var(--learning-book-page-shade), transparent 11%),
+    var(--learning-book-paper-left);
+}
+
+.learning-book__page--left,
+.learning-book__blank--left {
+  background-color: var(--learning-book-paper-left);
+  border-radius: 7px 1px 2px 9px;
+  box-shadow:
+    -3px 3px 0 var(--learning-book-paper-edge),
+    inset -18px 0 24px -25px var(--learning-book-page-shade);
+}
+
+.learning-book__page--right,
+.learning-book__blank--right {
+  background:
+    linear-gradient(270deg, color-mix(in srgb, var(--learning-book-page-shade) 14%, transparent), transparent 10%),
+    var(--learning-book-paper-right);
+  border-radius: 1px 7px 9px 2px;
+  box-shadow:
+    3px 3px 0 var(--learning-book-paper-edge),
+    inset 18px 0 24px -25px var(--learning-book-page-shade);
+}
+
+.learning-book--single .learning-book__page--left {
+  height: 100%;
+  border-radius: 7px 7px 9px 9px;
+  box-shadow:
+    3px 3px 0 var(--learning-book-paper-edge),
+    0 9px 18px color-mix(in srgb, var(--learning-book-shadow) 34%, transparent);
+}
+
+.learning-book__gutter {
+  position: absolute;
+  z-index: 3;
+  top: 8px;
+  bottom: 0;
+  left: 50%;
+  width: 20px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--learning-book-gutter-dark) 43%,
+    var(--learning-book-gutter-highlight) 50%,
+    var(--learning-book-gutter-dark-alt) 57%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+.learning-book--single .learning-book__gutter {
+  display: none;
+}
+
+.learning-book__page-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: clamp(1rem, 2.1vw, 1.6rem) clamp(1.05rem, 2.4vw, 1.8rem);
+  color: var(--learning-book-ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(0.94rem, 1.25vw, 1.05rem);
+  line-height: 1.52;
+  overflow: visible;
+}
+
+.learning-book__resting-page-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.learning-book--single .learning-book__pages,
+.learning-book--single .learning-book__page,
+.learning-book--single .learning-book__page-content {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.learning-book--single .learning-book__resting-page-body {
+  flex: 1 1 0;
+  height: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  padding-bottom: clamp(1rem, 4vh, 2.5rem);
+}
+
+.learning-book--single .learning-book__resting-page-body > .book-content-scroll,
+.learning-book--single .learning-book__resting-page-body > .book-review-section {
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+  overscroll-behavior: auto;
+  -webkit-overflow-scrolling: auto;
+  touch-action: auto;
+}
+
+.learning-book--single .learning-book__resting-page-body > .book-content-scroll > .book-content-inner {
+  min-height: 0;
+}
+
+.learning-book__leaf {
+  position: absolute;
+  z-index: 5;
+  top: 8px;
+  bottom: 0;
+  width: calc(50% - 9px);
+  pointer-events: none;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.learning-book__leaf--spread.learning-book__leaf--next {
+  right: 9px;
+  transform-origin: left center;
+  animation: learning-book-turn-next var(--learning-book-turn-duration)
+    cubic-bezier(0.4, 0.05, 0.2, 1) forwards;
+}
+
+.learning-book__leaf--spread.learning-book__leaf--previous {
+  left: 9px;
+  transform-origin: right center;
+  animation: learning-book-turn-previous var(--learning-book-turn-duration)
+    cubic-bezier(0.4, 0.05, 0.2, 1) forwards;
+}
+
+.learning-book__leaf--single {
+  inset: 8px 9px 0;
+  width: auto;
+}
+
+.learning-book__leaf--single.learning-book__leaf--next {
+  transform-origin: left center;
+  animation: learning-book-turn-next var(--learning-book-turn-duration)
+    cubic-bezier(0.4, 0.05, 0.2, 1) forwards;
+}
+
+.learning-book__leaf--single.learning-book__leaf--previous {
+  transform-origin: right center;
+  animation: learning-book-turn-previous var(--learning-book-turn-duration)
+    cubic-bezier(0.4, 0.05, 0.2, 1) forwards;
+}
+
+.learning-book__leaf-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 4px;
+  background: var(--learning-book-paper-left);
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--learning-book-shadow) 48%, transparent);
+  backface-visibility: hidden;
+}
+
+.learning-book__leaf-face--front {
+  transform: rotateY(0deg);
+}
+
+.learning-book__leaf-face--back {
+  background:
+    linear-gradient(90deg, transparent 86%, var(--learning-book-leaf-shade)),
+    var(--learning-book-paper-muted);
+  transform: rotateY(180deg);
+}
+
+.learning-book__controls {
+  z-index: 8;
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 58px;
+  padding: 7px 12px;
+  border-top: 1px solid color-mix(in srgb, var(--learning-book-paper-edge) 55%, transparent);
+  border-radius: 0 0 12px 12px;
+  background: linear-gradient(135deg, var(--learning-book-binding), var(--learning-book-binding-dark));
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.learning-book__control,
+.learning-book__indicator {
+  min-height: 44px;
+  border: 1px solid var(--learning-book-control-border);
+  border-radius: 999px;
+}
+
+.learning-book__control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: max-content;
+  min-width: 124px;
+  padding: 0.55rem 1rem;
+  background: var(--learning-book-control-surface);
+  color: var(--learning-book-control-text);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.learning-book__control:first-child {
+  justify-self: start;
+}
+
+.learning-book__control:last-child {
+  justify-self: end;
+}
+
+.learning-book__control--primary {
+  border-color: var(--learning-book-control-border-strong);
+  background: var(--learning-book-control-surface-primary);
+  color: var(--learning-book-control-text);
+}
+
+.learning-book__control:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--learning-book-accent);
+  box-shadow: 0 3px 9px color-mix(in srgb, var(--learning-book-shadow) 58%, transparent);
+}
+
+.learning-book__control:focus-visible {
+  outline: 3px solid var(--learning-book-focus);
+  outline-offset: 2px;
+}
+
+.learning-book__control:disabled {
+  opacity: var(--learning-book-disabled-opacity);
+  cursor: not-allowed;
+}
+
+:root[data-theme="light"] .learning-book__control:disabled {
+  border-color: var(--learning-book-disabled-border);
+  background: var(--learning-book-disabled-surface);
+  color: var(--learning-book-disabled-text);
+  box-shadow: none;
+}
+
+.learning-book__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+  padding: 0.5rem 1rem;
+  background: var(--learning-book-indicator-surface);
+  color: var(--learning-book-indicator-text);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.learning-book__block {
+  margin: 0 0 0.9em;
+}
+
+.learning-book__block:last-child {
+  margin-bottom: 0;
+}
+
+.learning-book__block-title,
+.learning-book__block--heading {
+  margin: 0 0 0.45em;
+  color: var(--learning-book-heading);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.08em;
+  line-height: 1.28;
+}
+
+.learning-book__block p {
+  margin: 0;
+}
+
+.learning-book__block ul,
+.learning-book__block ol {
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.learning-book__block li + li {
+  margin-top: 0.27em;
+}
+
+.learning-book__block li::marker {
+  color: var(--learning-book-accent);
+}
+
+.learning-book__page-content a {
+  color: var(--learning-book-accent);
+}
+
+.learning-book__page-content a:focus-visible {
+  border-radius: 0.15rem;
+  outline: 2px solid var(--learning-book-focus);
+  outline-offset: 2px;
+}
+
+.learning-book__block--image img {
+  display: block;
+  width: 100%;
+  max-height: min(36dvh, 280px);
+  object-fit: contain;
+  border: 1px solid var(--learning-book-rule);
+  border-radius: 8px;
+}
+
+.learning-book__block--image figcaption {
+  margin-top: 0.4rem;
+  color: var(--learning-book-ink-muted);
+  font-size: 0.82em;
+  font-style: italic;
+  text-align: center;
+}
+
+.learning-book__block--audio {
+  padding: 0.7rem;
+  border: 1px solid var(--learning-book-rule);
+  border-radius: 10px;
+  background: var(--learning-book-paper-muted);
+}
+
+.learning-book__block--audio audio {
+  width: 100%;
+}
+
+.learning-book__block--quote {
+  padding-left: 1rem;
+  border-left: 3px solid var(--learning-book-accent);
+  color: var(--learning-book-ink-muted);
+  font-style: italic;
+}
+
+.learning-book__block--quote cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.8em;
+  font-style: normal;
+}
+
+.learning-book__announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes learning-book-turn-next {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(-180deg); }
+}
+
+@keyframes learning-book-turn-previous {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(180deg); }
+}
+
+@container (max-width: 899px) {
+  .learning-book__volume {
+    grid-template-rows: minmax(0, 1fr) 62px;
+    width: min(100%, 620px);
+    height: clamp(500px, calc(100dvh - 15rem), 720px);
+  }
+
+  .learning-book__pages {
+    padding: 7px 8px 0;
+  }
+
+  .learning-book__page-content {
+    padding: clamp(0.95rem, 4.5vw, 1.45rem);
+    font-size: clamp(0.94rem, 3.25vw, 1.04rem);
+  }
+
+  .learning-book__controls {
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.4rem;
+    min-height: 62px;
+    padding: 8px;
+  }
+
+  .learning-book__control {
+    min-width: 0;
+    padding-inline: 0.75rem;
+  }
+
+  .learning-book__indicator {
+    min-width: 100px;
+    padding-inline: 0.7rem;
+  }
+}
+
+@container (max-width: 480px) {
+  .learning-book__stage {
+    padding-inline: 0;
+  }
+
+  .learning-book__volume {
+    height: clamp(500px, calc(100dvh - 13.5rem), 690px);
+  }
+
+  .learning-book__control {
+    gap: 0.25rem;
+    font-size: 0.88rem;
+    padding-inline: 0.55rem;
+  }
+
+  .learning-book__indicator {
+    min-width: 82px;
+    font-size: 0.83rem;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (max-height: 720px) and (min-width: 900px) {
+  .learning-book__volume {
+    height: max(440px, calc(100dvh - 13.5rem));
+  }
+
+  .learning-book__page-content {
+    padding-block: 0.9rem;
+    line-height: 1.44;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learning-book {
+    --learning-book-turn-duration: 1ms;
+  }
+
+  .learning-book__control {
+    transition: none;
+  }
+}

@@ -29,6 +29,8 @@ import './styles/mobile-first-topic-library-fix.css';
 import './styles/focused-text-wrap-fix.css';
 import './styles/glossary.css';
 import './styles/categories-premium-grid.css';
+import './styles/learning-area-node-cards.css';
+import './styles/theme-node-cards.css';
 import './styles/problem-page-premium-mobile.css';
 import './styles/topic-page-premium-question-grid.css';
 import './styles/topic-page-subtopic-grid-fix.css';
@@ -65,6 +67,7 @@ import './styles/cbc-grade-one-wide-screen-fix.css';
 import './styles/cbc-exam-start-button-fix.css';
 import './styles/alphabet-mastery.css';
 import './styles/number-audio-grid.css';
+import './styles/interaction-state-fix.css';
 
 function loadCloudflareAnalytics() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {

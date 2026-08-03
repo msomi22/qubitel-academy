@@ -131,25 +131,18 @@ export const storageService = {
     return activeExamSessions;
   },
   setLastCbcActivity(activity = {}) {
-    const categoryId = String(activity.categoryId || '').trim();
-    const topicId = String(activity.topicId || '').trim();
-    const href = String(activity.href || '').trim();
-
-    if (!categoryId || !topicId || !href) return null;
+    const nodeId = String(activity.nodeId || '').trim();
+    const nodeKind = String(activity.nodeKind || '').trim();
+    if (!nodeId) return null;
 
     const lastCbcActivity = {
       academy: 'cbc',
-      categoryId,
-      topicId,
-      activityType: String(activity.activityType || 'topic').trim() || 'topic',
-      href,
-      title: String(activity.title || topicId).trim() || topicId,
+      nodeId,
+      nodeKind,
       updatedAt: activity.updatedAt || new Date().toISOString()
     };
 
-    if (activity.categoryTitle) {
-      lastCbcActivity.categoryTitle = String(activity.categoryTitle);
-    }
+    if (activity.tab) lastCbcActivity.tab = String(activity.tab).trim();
 
     this.write({ lastCbcActivity });
     return lastCbcActivity;
@@ -157,10 +150,12 @@ export const storageService = {
   getLastCbcActivity() {
     const activity = this.read().lastCbcActivity;
 
-    if (!activity || activity.academy !== 'cbc') return null;
-    if (!activity.categoryId || !activity.topicId || !activity.href) return null;
+    if (!activity || activity.academy !== 'cbc' || !activity.nodeId) return null;
 
     return activity;
+  },
+  clearLastCbcActivity() {
+    this.write({ lastCbcActivity: null });
   },
   setGradeOneVoiceType(voiceType) {
     const grade1VoiceType = voiceType === 'male' ? 'male' : 'female';

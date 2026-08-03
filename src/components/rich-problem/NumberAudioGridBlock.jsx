@@ -53,8 +53,9 @@ function NumberAudioCard({ item, isActive, isAutoReading, itemRef, onPlay }) {
   );
 }
 
-export default function NumberAudioGridBlock({ block }) {
+export default function NumberAudioGridBlock({ block, presentation = 'standalone' }) {
   const numbers = useMemo(() => safeNumbers(block), [block]);
+  const isBookPresentation = presentation === 'book';
   const audioRef = useRef(null);
   const isMountedRef = useRef(false);
   const autoReadAudioInProgressRef = useRef(false);
@@ -359,22 +360,28 @@ export default function NumberAudioGridBlock({ block }) {
     : '';
 
   return (
-    <section className="workspace-block problem-rich-block number-audio-board" aria-labelledby="number-audio-heading">
-      <div className="number-audio-hero">
-        <div className="number-audio-heading">
-          <span className="number-audio-back">Mathematics</span>
-          <h4 id="number-audio-heading">{block.title || 'Numbers 1–100'}</h4>
-          {block.subtitle ? <p>{block.subtitle}</p> : null}
-        </div>
+    <section
+      aria-label={isBookPresentation ? 'Numbers 1–100' : undefined}
+      aria-labelledby={isBookPresentation ? undefined : 'number-audio-heading'}
+      className="workspace-block problem-rich-block number-audio-board"
+    >
+      {!isBookPresentation ? (
+        <div className="number-audio-hero">
+          <div className="number-audio-heading">
+            <span className="number-audio-back">Mathematics</span>
+            <h4 id="number-audio-heading">{block.title || 'Numbers 1–100'}</h4>
+            {block.subtitle ? <p>{block.subtitle}</p> : null}
+          </div>
 
-        <div className="number-audio-mascot" aria-hidden="true">123</div>
+          <div className="number-audio-mascot" aria-hidden="true">123</div>
 
-        <div className="number-audio-progress" aria-label={`${progress}% complete`}>
-          <span>My Progress</span>
-          <strong>{progress}%</strong>
-          <small>{playedNumberIds.size} / {totalCards} numbers</small>
+          <div className="number-audio-progress" aria-label={`${progress}% complete`}>
+            <span>My Progress</span>
+            <strong>{progress}%</strong>
+            <small>{playedNumberIds.size} / {totalCards} numbers</small>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="number-audio-toolbar">
         <span className="number-audio-tab is-active">1-100</span>

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import LoadingCard from '../components/LoadingCard.jsx';
 import PassageDrawer, {
@@ -111,6 +111,11 @@ function categoryDisplayName(exam) {
 
 function topicDisplayName(exam) {
   return exam?.topic?.name || 'English';
+}
+
+function examBackButtonText(exam) {
+  const firstQuestion = exam?.questions?.[0];
+  return firstQuestion?.metadata?.backLabel || `Back to ${topicDisplayName(exam)}`;
 }
 
 function skillDisplayName(exam) {
@@ -257,7 +262,7 @@ function AttemptHistory({ attempts, onViewResult }) {
   );
 }
 
-function RecoveryView({ exam, session, onContinue, onStartAgain, onBack }) {
+function RecoveryView({ exam, session, onContinue, onStartAgain, onBack, backLabel }) {
   return (
     <main className="page cbc-exam-page">
       <section className="cbc-exam-start-card cbc-exam-recovery-card">
@@ -270,7 +275,7 @@ function RecoveryView({ exam, session, onContinue, onStartAgain, onBack }) {
         <div className="cbc-exam-result-actions">
           <button type="button" className="cbc-exam-button primary" onClick={onContinue}>Continue exam</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onStartAgain}>Start again</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {topicDisplayName(exam)}</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>{backLabel || examBackButtonText(exam)}</button>
         </div>
       </section>
     </main>
@@ -284,7 +289,8 @@ function TimedComprehensionReadingView({
   activeSentenceId,
   onActiveSentenceChange,
   onStartQuestions,
-  onBack
+  onBack,
+  backLabel
 }) {
   const guideReached = guideSecondsLeft <= 0;
 
@@ -305,7 +311,7 @@ function TimedComprehensionReadingView({
         </div>
         <div className="cbc-exam-result-actions">
           <button type="button" className="cbc-exam-button primary" onClick={onStartQuestions}>Start Questions</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {topicDisplayName(exam)}</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>{backLabel || examBackButtonText(exam)}</button>
         </div>
       </section>
       
@@ -325,7 +331,7 @@ function TimedComprehensionReadingView({
   );
 }
 
-function ResultView({ attempt, exam, onRetake, onHistory, onBack }) {
+function ResultView({ attempt, exam, onRetake, onHistory, onBack, backLabel }) {
   const answerReview = Object.entries(attempt.answers || {});
 
   function downloadPdf() {
@@ -358,7 +364,7 @@ function ResultView({ attempt, exam, onRetake, onHistory, onBack }) {
           <button type="button" className="cbc-exam-button primary" onClick={downloadPdf}>Download PDF</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onRetake}>Retake exam</button>
           <button type="button" className="cbc-exam-button secondary" onClick={onHistory}>Attempt history</button>
-          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>Back to {topicDisplayName(exam)}</button>
+          <button type="button" className="cbc-exam-button quiet" onClick={onBack}>{backLabel || examBackButtonText(exam)}</button>
         </div>
       </section>
 
@@ -388,6 +394,7 @@ function ResultView({ attempt, exam, onRetake, onHistory, onBack }) {
 export default function ExamSessionPage() {
   const { examId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [exam, setExam] = useState(null);
   const [history, setHistory] = useState([]);
   const [view, setView] = useState('loading');
@@ -416,6 +423,10 @@ export default function ExamSessionPage() {
     categoryId: exam?.category?.id,
     topicId: exam?.topic?.id
   }), [exam?.category?.id, exam?.topic?.id]);
+  const explicitBackPath = searchParams.get('backPath') || '';
+  const explicitBackLabel = searchParams.get('backLabel') || '';
+  const examReturnPath = explicitBackPath || exam?.questions?.[0]?.metadata?.backPath || topicReturnPath;
+  const examReturnLabel = explicitBackLabel || examBackButtonText(exam);
   const comprehensionConfig = timedComprehensionConfig(exam);
   const hasTimedComprehension = Boolean(comprehensionConfig);
 
@@ -742,7 +753,7 @@ export default function ExamSessionPage() {
     saveAbandonedAttempt();
     activeRef.current = false;
     window.history.back();
-    window.setTimeout(() => navigate(topicReturnPath, { replace: true }), 0);
+    window.setTimeout(() => navigate(examReturnPath, { replace: true }), 0);
   }
 
   function showHistory() {
@@ -776,7 +787,8 @@ export default function ExamSessionPage() {
         session={recoverySession}
         onContinue={continueExam}
         onStartAgain={hasTimedComprehension ? startReading : startExam}
-        onBack={() => navigate(topicReturnPath)}
+        onBack={() => navigate(examReturnPath)}
+        backLabel={examReturnLabel}
       />
     );
   }
@@ -788,7 +800,8 @@ export default function ExamSessionPage() {
         exam={exam}
         onRetake={hasTimedComprehension ? startReading : startExam}
         onHistory={showHistory}
-        onBack={() => navigate(topicReturnPath)}
+        onBack={() => navigate(examReturnPath)}
+        backLabel={examReturnLabel}
       />
     );
   }
@@ -802,7 +815,8 @@ export default function ExamSessionPage() {
         activeSentenceId={activePassageSentenceId}
         onActiveSentenceChange={setActivePassageSentenceId}
         onStartQuestions={startExam}
-        onBack={() => navigate(topicReturnPath)}
+        onBack={() => navigate(examReturnPath)}
+        backLabel={examReturnLabel}
       />
     );
   }
@@ -837,7 +851,7 @@ export default function ExamSessionPage() {
             <button type="button" className="cbc-exam-button primary" onClick={hasTimedComprehension ? startReading : startExam}>
               {hasTimedComprehension ? 'Start Reading' : 'Start exam'}
             </button>
-            <button type="button" className="cbc-exam-button quiet" onClick={() => navigate(topicReturnPath)}>Back to {topicDisplayName(exam)}</button>
+            <button type="button" className="cbc-exam-button quiet" onClick={() => navigate(examReturnPath)}>{examReturnLabel}</button>
           </div>
         </section>
         <AttemptHistory attempts={history} onViewResult={showResult} />

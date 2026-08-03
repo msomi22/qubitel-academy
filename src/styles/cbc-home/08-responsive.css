@@ -174,8 +174,7 @@
       font-size: 12.5px;
     }
   
-    .cbc-home-learning-grid,
-    .cbc-home-lesson-grid {
+    .cbc-home-learning-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
@@ -254,22 +253,12 @@
       margin-top: 18px;
     }
   
-    .cbc-home-learning-area-panel,
-    .cbc-home-lesson-panel {
+    .cbc-home-learning-area-panel {
       padding-inline: 14px;
     }
   
-    .cbc-home-learning-grid,
-    .cbc-home-lesson-grid {
+    .cbc-home-learning-grid {
       gap: 16px;
-    }
-  
-    .cbc-home-lesson-grid {
-      padding-right: 0;
-    }
-  
-    .cbc-home-next-button {
-      display: none;
     }
   
     .cbc-home-plant-left {
@@ -419,8 +408,7 @@
       align-items: flex-start;
     }
   
-    .cbc-home-learning-grid,
-    .cbc-home-lesson-grid {
+    .cbc-home-learning-grid {
       grid-template-columns: 1fr;
     }
   

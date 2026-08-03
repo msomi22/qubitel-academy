@@ -272,7 +272,7 @@ function VisualBlock({ question, showFallback = false }) {
   const hasVisualExplanation = fallbackVisualExplanation.trim().length > 0;
 
   if (!hasStructuredVisual && !hasVisualExplanation) {
-    return showFallback ? <EmptyState title="Visual walkthrough">Visual walkthrough is not available for this problem yet.</EmptyState> : null;
+    return showFallback ? <EmptyState title="Visual walkthrough">Visual walkthrough is not available for this practice yet.</EmptyState> : null;
   }
 
   return (
@@ -281,7 +281,7 @@ function VisualBlock({ question, showFallback = false }) {
       {visual?.summary ? <p className="visual-summary">{visual.summary}</p> : null}
       <VisualInputStrip inputs={visual?.inputs} />
       {hasVisualExplanation ? <p className="visual-summary">{fallbackVisualExplanation}</p> : null}
-      {visual?.image ? <img className="visual-image-panel" src={visual.image} alt={visual.imageAlt || visual.title || 'Problem visual walkthrough'} loading="lazy" /> : null}
+      {visual?.image ? <img className="visual-image-panel" src={visual.image} alt={visual.imageAlt || visual.title || 'Practice visual walkthrough'} loading="lazy" /> : null}
       <VisualRail diagram={visual?.diagram} />
       {visual?.steps?.length ? (
         <ol className="visual-step-list">
@@ -301,7 +301,7 @@ function SupportPanel({ question }) {
   if (!concepts.length && !tags.length) return null;
 
   return (
-    <aside className="problem-support-panel" aria-label="Problem metadata">
+    <aside className="practice-support-panel" aria-label="Practice metadata">
       {concepts.length ? <section><span className="mini-label">Concepts</span><div className="compact-chip-row">{concepts.map((concept) => <span key={text(concept)}>{text(concept)}</span>)}</div></section> : null}
       {tags.length ? <section><span className="mini-label">Tags</span><div className="compact-chip-row muted">{tags.map((tag) => <span key={text(tag)}>#{text(tag)}</span>)}</div></section> : null}
     </aside>
@@ -333,7 +333,7 @@ function TimedQuizStatus({ seconds, locked }) {
   );
 }
 
-export default function FocusedProblemWorkspace({ question, completed, onToggle, onMarkComplete, hideTopline = false }) {
+export default function FocusedProblemWorkspace({ question, completed, onToggle, onMarkComplete, hideTopline = false, problemHeader = null, customOverviewContent = null }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [selected, setSelected] = useState(() => storageService.getSelectedAnswer(question.id));
   const [timedAttempt, setTimedAttempt] = useState(() => storageService.getTimedQuestionAttempt(question.id));
@@ -348,6 +348,7 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
   const timedAttemptComplete = Boolean(timedAttempt?.status);
   const quizLocked = isTimedMcq && (timedAttemptComplete || completed || remainingSeconds <= 0);
   const richBody = list(question.body);
+  const isAlphabetMastery = richBody.some((block) => block?.type === 'alphabetMastery');
   const hasOverviewRichBody = richBody.some((block) => !isVisualRichBlock(block));
   const hasVisualRichBody = richBody.some(isVisualRichBlock);
   const hasVisualExplanation = text(question.visualExplanation).trim().length > 0;
@@ -359,6 +360,11 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
     hasMcq,
     hasVisualRichBody: hasVisualRichBody || hasVisualExplanation
   }), [codeContent, explanation, hasMcq, hasVisualRichBody, hasVisualExplanation, question]);
+
+  const displayTabs = useMemo(
+    () => tabs.map(([id, label]) => [id, id === 'solution' ? 'Practice Guide' : label]),
+    [tabs]
+  );
 
   useEffect(() => {
     if (!tabs.some(([id]) => id === activeTab)) setActiveTab(tabs[0]?.[0] || 'overview');
@@ -427,10 +433,14 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
     }
   }
 
+  const headerControls = problemHeader && typeof problemHeader === 'object' && !problemHeader.type ? problemHeader : null;
+
   return (
-    <article className={`focused-problem-workspace glass-lite ${completed ? 'done' : ''} ${focusMode ? 'focus-mode' : ''}`}>
+    <article className={`focused-practice-workspace glass-lite ${completed ? 'done' : ''} ${focusMode ? 'focus-mode' : ''}`}>
+      {!headerControls ? problemHeader : null}
+
       {!hideTopline ? (
-        <div className="focused-problem-topline">
+        <div className="focused-practice-topline">
           <div className="meta-strip">
             <span className="pill">{question.difficulty}</span>
             {!isTimedMcq ? <span className="time-pill">Time: {question.estimatedTime || '10 min'}</span> : null}
@@ -438,21 +448,24 @@ export default function FocusedProblemWorkspace({ question, completed, onToggle,
           <button className="mark" onClick={() => onToggle?.(question.id)}>{completed ? 'Reset progress' : 'Mark complete'}</button>
         </div>
       ) : null}
-      <div className="focused-tabs-wrap">
-        <div className="focused-tabs" role="tablist" aria-label="Problem learning sections">{tabs.map(([id, label]) => <button key={id} type="button" className={`focused-tab-btn ${activeTab === id ? 'active' : ''}`} role="tab" aria-selected={activeTab === id} onClick={() => setActiveTab(id)}>{label}</button>)}</div>
+      <div className="focused-tabs-wrap learning-node-problem-header" aria-label={headerControls ? 'Practice navigation' : undefined}>
+        <div className="focused-tabs learning-node-problem-tabs" role="tablist" aria-label="Practice learning sections">{headerControls?.backControl}{displayTabs.map(([id, label]) => <button key={id} type="button" className={`focused-tab-btn ${activeTab === id ? 'active' : ''}`} role="tab" aria-selected={activeTab === id} onClick={() => setActiveTab(id)}>{label}</button>)}</div>
         <div className="focused-tabs-actions">
           {isTimedMcq ? <TimedQuizStatus seconds={remainingSeconds} locked={quizLocked} /> : null}
           <button type="button" className={`focus-mode-toggle ${focusMode ? 'active' : ''}`} aria-pressed={focusMode} onClick={() => setFocusMode((current) => !current)}>{focusMode ? 'Exit focus' : 'Focus mode'}</button>
+          {headerControls?.doneControl}
         </div>
       </div>
+      {headerControls?.progressControl}
 
       <div className="focused-workspace-layout">
         <div className="focused-tab-content">
-          {activeTab === 'overview' ? <div className="focused-panel-stack"><ReadAloudButton question={question} /><TextBlock title="Scenario" className="scenario-box" preserveWhitespace>{question.scenario}</TextBlock>{!hasOverviewRichBody ? <TextBlock title={hasMcq ? 'Question' : 'Problem'} className="problem-prompt">{question.question}</TextBlock> : null}<RichBodyBlocks blocks={question.body} mode="overview" />{hasMcq ? <McqBlock question={question} selected={selected} onSelect={handleMcqSelect} disabled={quizLocked} timedAttempt={timedAttempt} /> : null}<ExampleBlock items={question.examples} /><ListBlock title="Constraints" items={question.constraints} /></div> : null}
+          {activeTab === 'overview' ? <div className="focused-panel-stack">{customOverviewContent || <><ReadAloudButton question={question} /><TextBlock title="Scenario" className="scenario-box" preserveWhitespace>{question.scenario}</TextBlock>{!hasOverviewRichBody ? <TextBlock title={hasMcq ? 'Question' : 'Problem'} className="problem-prompt">{question.question}</TextBlock> : null}<RichBodyBlocks blocks={question.body} mode="overview" />{hasMcq ? <McqBlock question={question} selected={selected} onSelect={handleMcqSelect} disabled={quizLocked} timedAttempt={timedAttempt} /> : null}<ExampleBlock items={question.examples} /><ListBlock title="Constraints" items={question.constraints} /></>}</div> : null}
           {activeTab === 'visual' ? <div className="focused-panel-stack">{hasVisualRichBody ? <RichBodyBlocks blocks={question.body} mode="visual" /> : <VisualBlock question={question} showFallback />}{hasVisualRichBody ? <VisualBlock question={question} /> : null}</div> : null}
           {activeTab === 'intuition' ? <div className="focused-two-col"><TextBlock title="1. Think first" className="think-box">{question.starterThought}</TextBlock><TextBlock title="2. Mental picture">{question.mentalPicture}</TextBlock><TextBlock title="3. Why this pattern fits">{question.intuition}</TextBlock><TextBlock title="4. Recognition signal">{question.patternSignal}</TextBlock><TextBlock title="5. Invariant to maintain">{question.invariant}</TextBlock></div> : null}
           {activeTab === 'approach' ? <div className="focused-panel-stack"><ListBlock title="Step-by-step breakdown" items={question.stepByStepBreakdown} ordered /><div className="approach-card-stack"><TextBlock title="Brute-force thought">{question.bruteForceThought}</TextBlock><TextBlock title="Optimization journey">{question.optimizationJourney}</TextBlock><ListBlock title="Edge cases" items={question.edgeCases} /></div><ApproachReinforcementCards question={question} /></div> : null}
-          {activeTab === 'solution' ? <div className="focused-panel-stack"><TextBlock title="Solution explanation">{explanation}</TextBlock><CodeBlock code={codeContent || 'No code sample is configured yet.'} language={question.language || 'java'} title="Implementation notes" className="workspace-block focused-code-block" /><RichBodyBlocks blocks={question.solutionBody || question.solutionBlocks} mode="overview" /></div> : null}
+          {activeTab === 'solution' && isAlphabetMastery ? <div className="focused-panel-stack"><ListBlock title="How to practise" items={['Tap a letter card to hear the letter name.', 'Tap the picture card to hear the sound word.', 'Repeat the sound aloud.', 'Try Auto Read to listen through the cards.', 'Keep practising until all cards are complete.']} ordered /></div> : null}
+          {activeTab === 'solution' && !isAlphabetMastery ? <div className="focused-panel-stack"><TextBlock title="Practice Guide">{explanation}</TextBlock><CodeBlock code={codeContent || 'No code sample is configured yet.'} language={question.language || 'java'} title="Implementation notes" className="workspace-block focused-code-block" /><RichBodyBlocks blocks={question.solutionBody || question.solutionBlocks} mode="overview" /></div> : null}
           {activeTab === 'answer' ? <div className="focused-panel-stack"><McqBlock question={question} selected={selected} onSelect={handleMcqSelect} disabled={quizLocked} timedAttempt={timedAttempt} /><TextBlock title="Explanation">{explanation || question.intuition}</TextBlock><TextBlock title="Final takeaway">{question.finalTakeaway || question.keyTakeaway || question.takeaway}</TextBlock><ListBlock title="Why other options are wrong" items={question.optionExplanations || question.wrongOptionExplanations || question.distractorExplanations} /></div> : null}
           {activeTab === 'complexity' ? <div className="focused-two-col"><TextBlock title="Complexity / trade-off analysis">{question.complexityAnalysis}</TextBlock><TextBlock title="Production reality">{question.productionReality}</TextBlock><TextBlock title="Common mistake">{question.commonMistake}</TextBlock></div> : null}
         </div>

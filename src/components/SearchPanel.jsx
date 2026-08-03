@@ -12,7 +12,7 @@ export default function SearchPanel({
             type="search"
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
-            placeholder="Search problems..."
+            placeholder="Search practices..."
             autoComplete="off"
           />
         </div>

@@ -16,11 +16,44 @@ export type NodeAppearance = {
   value: unknown;
 };
 
+export type LearningContentBlock = {
+  type: string;
+  title?: string;
+  text?: string;
+  content?: string;
+  body?: string;
+  items?: string[];
+  [key: string]: unknown;
+};
+
+export type LearningBookPage = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  blocks: LearningContentBlock[];
+  metadata?: Record<string, unknown>;
+};
+
+export type LearningBookContent = {
+  type: 'book';
+  title: string;
+  description?: string;
+  pages: LearningBookPage[];
+  metadata?: Record<string, unknown>;
+};
+
+export type LearningNodeContent =
+  | string
+  | LearningBookContent
+  | Record<string, unknown>
+  | unknown[];
+
 export type LearningNode = {
   id: string;
   kind: string;
   label: string;
   summary?: string;
+  content?: LearningNodeContent;
   parentId?: string;
   childIds?: string[];
   attributes?: NodeAttribute[];
@@ -42,7 +75,9 @@ export type ContainerNodeKind =
   | 'category'
   | 'grade'
   | 'learningArea'
+  | 'theme'
   | 'strand'
+  | 'subStrand'
   | 'topic';
 
 export type ContentNodeKind =
@@ -50,4 +85,7 @@ export type ContentNodeKind =
   | 'question'
   | 'practice'
   | 'assessment'
-  | 'exam';
+  | 'exam'
+  | 'notes'
+  | 'revision'
+  | 'activity';

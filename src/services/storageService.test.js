@@ -91,29 +91,23 @@ test('active exam sessions can be saved, restored, and cleared', () => {
   }
 });
 
-test('last CBC activity can be saved and restored for Continue', () => {
+test('last CBC LearningNode visit can be saved and restored for Continue', () => {
   const previousLocalStorage = globalThis.localStorage;
   globalThis.localStorage = memoryStorage();
 
   try {
     const activity = storageService.setLastCbcActivity({
-      categoryId: 'grade-1',
-      topicId: 'environmental-activities',
-      activityType: 'practice',
-      href: '/category/grade-1?topic=environmental-activities&page=1',
-      title: 'Environmental Activities',
-      categoryTitle: 'Grade 1',
+      nodeId: 'grade-1-english-activities-theme-school',
+      nodeKind: 'theme',
+      tab: 'assessment',
       updatedAt: '2026-06-14T10:00:00.000Z'
     });
 
     assert.deepEqual(activity, {
       academy: 'cbc',
-      categoryId: 'grade-1',
-      topicId: 'environmental-activities',
-      activityType: 'practice',
-      href: '/category/grade-1?topic=environmental-activities&page=1',
-      title: 'Environmental Activities',
-      categoryTitle: 'Grade 1',
+      nodeId: 'grade-1-english-activities-theme-school',
+      nodeKind: 'theme',
+      tab: 'assessment',
       updatedAt: '2026-06-14T10:00:00.000Z'
     });
     assert.deepEqual(storageService.getLastCbcActivity(), activity);
@@ -136,6 +130,33 @@ test('last CBC activity ignores incomplete stored activity data', () => {
   try {
     assert.equal(storageService.getLastCbcActivity(), null);
     assert.equal(storageService.setLastCbcActivity({ categoryId: 'grade-1' }), null);
+  } finally {
+    globalThis.localStorage = previousLocalStorage;
+  }
+});
+
+test('malformed persisted state falls back without a Continue activity', () => {
+  const previousLocalStorage = globalThis.localStorage;
+  globalThis.localStorage = memoryStorage({
+    'qubitel-academy:v2': '{not-valid-json'
+  });
+
+  try {
+    assert.equal(storageService.getLastCbcActivity(), null);
+  } finally {
+    globalThis.localStorage = previousLocalStorage;
+  }
+});
+
+test('last CBC activity can be cleared after stale history is detected', () => {
+  const previousLocalStorage = globalThis.localStorage;
+  globalThis.localStorage = memoryStorage();
+
+  try {
+    storageService.setLastCbcActivity({ nodeId: 'grade-1', nodeKind: 'grade' });
+    assert.ok(storageService.getLastCbcActivity());
+    storageService.clearLastCbcActivity();
+    assert.equal(storageService.getLastCbcActivity(), null);
   } finally {
     globalThis.localStorage = previousLocalStorage;
   }

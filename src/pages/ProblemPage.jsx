@@ -6,7 +6,7 @@ import ComplexSystemDesignProblem from '../components/problems/ComplexSystemDesi
 import { getQuestionRenderer } from '../components/question-renderers/registry/questionRendererRegistry.js';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
 
-import { findQuestionById } from '../services/questionBankService.js';
+import { findPracticeSetById, findQuestionById } from '../services/questionBankService.js';
 import { recordCbcLastActivity } from '../services/cbcLastActivityService.js';
 import {
   getAdjacentQuestions,
@@ -19,6 +19,7 @@ import {
   buildCategoryReturnPath,
   categoryPath
 } from '../services/categoryNavigationService.js';
+import '../components/LearningNodeUI.css';
 
 function uniqueItems(items = []) {
   const seen = new Set();
@@ -109,16 +110,33 @@ export default function ProblemPage() {
         }
 
         const result = await findQuestionById(decodedQuestionId);
+        const practiceSet = result ? null : await findPracticeSetById(decodedQuestionId);
+        const firstPracticeQuestion = practiceSet?.questions?.[0] || null;
+        const resolvedEntry = result || (firstPracticeQuestion ? {
+          question: firstPracticeQuestion,
+          topic: {
+            id: practiceSet.topicId,
+            name: practiceSet.topicName,
+            category: firstPracticeQuestion.category
+          },
+          bank: {
+            id: practiceSet.practiceId,
+            name: practiceSet.practiceTitle,
+            category: firstPracticeQuestion.category,
+            questions: practiceSet.questions
+          },
+          categoryName: firstPracticeQuestion.category
+        } : null);
 
         if (active) {
-          setEntry(result);
+          setEntry(resolvedEntry);
 
-          if (!result) setError('Problem not found.');
+          if (!resolvedEntry) setError('Practice not found.');
         }
       } catch (err) {
         console.error(err);
 
-        if (active) setError('Could not load this problem.');
+        if (active) setError('Could not load this practice.');
       } finally {
         if (active) setLoading(false);
       }
@@ -183,14 +201,14 @@ export default function ProblemPage() {
     setCompleted(updated);
   }
 
-  if (loading && !entry) return <LoadingCard label="Loading problem workspace..." />;
+  if (loading && !entry) return <LoadingCard label="Loading practice workspace..." />;
 
   if (error || !entry) {
     return (
       <main className="page">
-        <section className="hero-card problem-detail-shell">
-          <p className="eyebrow">Problem workspace</p>
-          <h1>{error || 'Problem not found.'}</h1>
+        <section className="hero-card practice-detail-shell">
+          <p className="eyebrow">Practice workspace</p>
+          <h1>{error || 'Practice not found.'}</h1>
           <p>The selected question may have moved or the bank may have been renamed.</p>
           <NavLink className="btn" to="/">Back to dashboard</NavLink>
         </section>
@@ -206,8 +224,15 @@ export default function ProblemPage() {
         ...location.state.returnToCategory
       })
     : categoryPath(categoryId);
+  const explicitBackPath = searchParams.get('backPath') || '';
+  const explicitBackLabel = searchParams.get('backLabel') || '';
+  const hasExplicitBackTarget = explicitBackPath.trim().length > 0;
+  const problemBackPath = hasExplicitBackTarget ? explicitBackPath : categoryBackPath;
+  const problemBackLabel = explicitBackLabel || 'Back to topic';
   const topicName = entry.topic?.name || entry.categoryName || 'Topic';
   const categoryName = entry.category?.name || entry.categoryName || entry.topic?.category || 'Learning';
+  const isPracticeSet = Boolean(entry.bank?.id && entry.topic?.id && entry.bank.id !== entry.topic.id);
+  const practiceTitle = isPracticeSet ? entry.bank.name : null;
   const primaryPattern = entry.question.finalPattern || topicName;
   const isComplexSystemDesign = entry.question.type === 'complex-system-design';
   const isMcq = isMcqType(entry.question.type);
@@ -231,7 +256,7 @@ export default function ProblemPage() {
   const scopeLabel = navigationScope
     ? [
         categoryName,
-        topicName,
+        practiceTitle || topicName,
         navigationScope.learningAreaTitle
       ].filter(Boolean).join(' / ')
     : '';
@@ -252,59 +277,63 @@ export default function ProblemPage() {
   ]);
 
   return (
-    <main className="page problem-detail-shell focused-problem-page premium-problem-page stable-problem-page">
-      <div className="problem-breadcrumb compact-problem-breadcrumb">
-        <NavLink to="/">Dashboard</NavLink>
-        <span>/</span>
-        <NavLink to={categoryBackPath}>{topicName}</NavLink>
-        <span>/</span>
-        <span>{entry.question.title}</span>
-      </div>
-
-      <section className="reference-problem-intro premium-problem-intro">
-        <div className="premium-problem-title-area">
-          <div className="premium-problem-context-row">
-            <NavLink to={categoryBackPath}>Back to topic</NavLink>
-            <span>{categoryName}</span>
-            <span>{topicName}</span>
+    <main className="page practice-detail-shell focused-practice-page premium-practice-page stable-practice-page">
+      {!hasExplicitBackTarget ? (
+        <>
+          <div className="practice-breadcrumb compact-practice-breadcrumb">
+            <NavLink to="/">Dashboard</NavLink>
+            <span>/</span>
+            <NavLink to={problemBackPath}>{topicName}</NavLink>
+            <span>/</span>
+            <span>{entry.question.title}</span>
           </div>
 
-          {scopeLabel ? (
-            <div className="premium-problem-context-row" aria-label="Learning area scope">
-              <span>{scopeLabel}</span>
-              {scopedQuestionNumber ? <span>{scopedQuestionNumber}</span> : null}
+          <section className="reference-practice-intro premium-practice-intro">
+            <div className="premium-practice-title-area">
+              <div className="premium-practice-context-row">
+                <NavLink to={problemBackPath}>{problemBackLabel}</NavLink>
+                <span>{categoryName}</span>
+                <span>{topicName}</span>
+              </div>
+
+              {scopeLabel ? (
+                <div className="premium-practice-context-row" aria-label="Learning area scope">
+                  <span>{scopeLabel}</span>
+                  {scopedQuestionNumber ? <span>{scopedQuestionNumber}</span> : null}
+                </div>
+              ) : null}
+
+              <h1>{entry.question.title}</h1>
+
+              <div className="practice-meta-pills" aria-label="Practice metadata">
+                {problemTags.map(({ label, type }) => (
+                  <span key={label} className={pillClass(type, label, entry.question.difficulty)}>
+                    {label}
+                  </span>
+                ))}
+              </div>
+
+              {introText ? <p className="premium-practice-summary">{introText}</p> : null}
             </div>
-          ) : null}
 
-          <h1>{entry.question.title}</h1>
+            <aside className="premium-practice-progress-card" aria-label="Practice actions">
+              <span className="mini-label">Current state</span>
+              <strong>{isComplete ? 'Completed' : 'Ready to solve'}</strong>
+              <small>{isMcq ? 'Select an answer, then review the explanation.' : 'Read, draft mentally, then compare with the solution.'}</small>
 
-          <div className="problem-meta-pills" aria-label="Problem metadata">
-            {problemTags.map(({ label, type }) => (
-              <span key={label} className={pillClass(type, label, entry.question.difficulty)}>
-                {label}
-              </span>
-            ))}
-          </div>
+              <div className="reference-action-group premium-practice-actions">
+                <NavLink className="btn ghost" to={problemBackPath}>{problemBackLabel}</NavLink>
 
-          {introText ? <p className="premium-problem-summary">{introText}</p> : null}
-        </div>
-
-        <aside className="premium-problem-progress-card" aria-label="Focused problem actions">
-          <span className="mini-label">Current state</span>
-          <strong>{isComplete ? 'Completed' : 'Ready to solve'}</strong>
-          <small>{isMcq ? 'Select an answer, then review the explanation.' : 'Read, draft mentally, then compare with the solution.'}</small>
-
-          <div className="reference-action-group premium-problem-actions">
-            <NavLink className="btn ghost" to={categoryBackPath}>Back to topic</NavLink>
-
-            {!isComplexSystemDesign ? (
-              <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
-                {isComplete ? 'Reset' : 'Done'}
-              </button>
-            ) : null}
-          </div>
-        </aside>
-      </section>
+                {!isComplexSystemDesign ? (
+                  <button className="mark reference-mark" onClick={() => handleCompletionClick(entry.question.id)}>
+                    {isComplete ? 'Reset' : 'Done'}
+                  </button>
+                ) : null}
+              </div>
+            </aside>
+          </section>
+        </>
+      ) : null}
 
       <section className="stable-question-shell" aria-busy={loading ? 'true' : 'false'}>
         {isComplexSystemDesign ? (
@@ -321,6 +350,19 @@ export default function ProblemPage() {
             onToggle={handleCompletionClick}
             onMarkComplete={handleMarkComplete}
             navigation={questionNavigation}
+            problemHeader={hasExplicitBackTarget ? {
+              backControl: <NavLink className="book-toolbar-back learning-node-problem-back" to={problemBackPath}>← {problemBackLabel}</NavLink>,
+              doneControl: (
+                <button className="book-content-tab book-content-tab-active learning-node-problem-done" onClick={() => handleCompletionClick(entry.question.id)} type="button">
+                  {isComplete ? 'Reset' : 'Done'}
+                </button>
+              ),
+              progressControl: (
+                <div className="book-progress-bar learning-node-problem-progress" aria-hidden="true">
+                  <div className="book-progress-fill" style={{ width: isComplete ? '100%' : '12%' }} />
+                </div>
+              )
+            } : null}
             hideTopline
           />
         )}
