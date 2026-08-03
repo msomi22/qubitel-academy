@@ -514,7 +514,7 @@ function AnimationCopyPage({ page, pageNumber, totalPages }) {
         <span className="book-page-breadcrumb">{title}</span>
         <span className="book-page-number">Page {pageNumber} of {totalPages}</span>
       </div>
-      <div className="book-content-scroll book-content-scroll--interactive" aria-hidden="true">
+      <div className="book-content-scroll" aria-hidden="true">
         <div className="book-content-inner">
           <h3 className="book-content-group-title">{title}</h3>
         </div>

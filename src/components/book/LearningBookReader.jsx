@@ -4,6 +4,7 @@ import '../../styles/learning-book-reader.css';
 const SPREAD_MIN_WIDTH_PX = 900;
 const TURN_FALLBACK_MS = 850;
 const SWIPE_DISTANCE_PX = 52;
+const SWIPE_INTENT_DISTANCE_PX = 10;
 const SWIPE_DIRECTION_RATIO = 1.25;
 
 const INTERACTIVE_TARGET_SELECTOR = [
@@ -220,6 +221,18 @@ export default function LearningBookReader({
     requestPageTurn(deltaX < 0 ? 'next' : 'previous');
   };
 
+  const handlePointerMove = (event) => {
+    const swipe = swipeRef.current;
+    if (!swipe || swipe.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - swipe.startX;
+    const deltaY = event.clientY - swipe.startY;
+    const hasVerticalIntent = Math.abs(deltaY) >= SWIPE_INTENT_DISTANCE_PX
+      && Math.abs(deltaY) > Math.abs(deltaX) * SWIPE_DIRECTION_RATIO;
+
+    if (hasVerticalIntent) swipeRef.current = null;
+  };
+
   const handlePointerCancel = () => {
     swipeRef.current = null;
   };
@@ -235,12 +248,14 @@ export default function LearningBookReader({
     return (
       <article className={`learning-book__page learning-book__page--${side}`}>
         <div className="learning-book__page-content">
-          {renderPage(pages[pageIndex], {
-            pageIndex,
-            pageNumber: pageIndex + 1,
-            totalPages,
-            isAnimationCopy
-          })}
+          <div className="learning-book__resting-page-body">
+            {renderPage(pages[pageIndex], {
+              pageIndex,
+              pageNumber: pageIndex + 1,
+              totalPages,
+              isAnimationCopy
+            })}
+          </div>
         </div>
       </article>
     );
@@ -340,6 +355,7 @@ export default function LearningBookReader({
           aria-roledescription="book"
           aria-label={bookTitle || 'Learning material'}
           onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerCancel}
         >

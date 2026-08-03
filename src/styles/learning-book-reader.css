@@ -232,6 +232,42 @@
   overflow: visible;
 }
 
+.learning-book__resting-page-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.learning-book--single .learning-book__pages,
+.learning-book--single .learning-book__page,
+.learning-book--single .learning-book__page-content {
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+.learning-book--single .learning-book__resting-page-body {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  padding-bottom: clamp(1rem, 4vh, 2.5rem);
+}
+
+.learning-book--single .learning-book__resting-page-body > .book-content-scroll,
+.learning-book--single .learning-book__resting-page-body > .book-review-section {
+  flex: 0 0 auto;
+  min-height: auto;
+  overflow: visible;
+  overscroll-behavior: auto;
+}
+
 .learning-book__leaf {
   position: absolute;
   z-index: 5;
