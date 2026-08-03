@@ -142,7 +142,9 @@
 }
 
 .learning-book--single .learning-book__pages {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   max-width: 600px;
   width: 100%;
   margin-inline: auto;
@@ -252,6 +254,8 @@
 }
 
 .learning-book--single .learning-book__resting-page-body {
+  flex: 1 1 0;
+  height: auto;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
@@ -263,9 +267,17 @@
 .learning-book--single .learning-book__resting-page-body > .book-content-scroll,
 .learning-book--single .learning-book__resting-page-body > .book-review-section {
   flex: 0 0 auto;
-  min-height: auto;
+  height: auto;
+  min-height: 0;
+  max-height: none;
   overflow: visible;
   overscroll-behavior: auto;
+  -webkit-overflow-scrolling: auto;
+  touch-action: auto;
+}
+
+.learning-book--single .learning-book__resting-page-body > .book-content-scroll > .book-content-inner {
+  min-height: 0;
 }
 
 .learning-book__leaf {

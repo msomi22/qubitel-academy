@@ -51,10 +51,7 @@
   align-items: start;
   gap: 10px;
   overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
   padding: 2px;
-  -webkit-overflow-scrolling: touch;
 }
 
 .learning-node-tab-card-grid {
