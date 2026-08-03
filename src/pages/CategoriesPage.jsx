@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getActiveAcademy } from '../config/detectAcademy.ts';
 import CategoryLibrary from '../components/CategoryLibrary.jsx';
 import { getAcademyRootNodeById } from '../learning/academies/index.ts';
@@ -11,8 +11,12 @@ import {
 } from '../learning/registry/index.ts';
 import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
 import { getAppearance } from '../learning/core/index.ts';
-import { createNodeRoutePath } from '../learning/routing';
 import { usePreferences } from '../hooks/usePreferences.js';
+import {
+  buildCbcGradeDestinationPath,
+  findReadyCbcLearningArea,
+  readCbcGradeSelectionIntent
+} from '../utils/cbcGradeSelectionRouting.js';
 
 import '../styles/progress-table.css';
 import '../styles/categories-premium-grid.css';
@@ -55,6 +59,7 @@ function GradePickerCard({ grade, isAvailable, onSelect }) {
 
 export default function CategoriesPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const activeAcademy = getActiveAcademy();
   const { completed } = usePreferences();
 
@@ -81,13 +86,21 @@ export default function CategoriesPage() {
     };
   }, [activeAcademy.id]);
 
+  const gradeSelectionIntent = useMemo(
+    () => readCbcGradeSelectionIntent(searchParams),
+    [searchParams]
+  );
+
   const handleGradeClick = (grade) => {
     if (!cbcGradeModel) return;
 
-    navigate(createNodeRoutePath(cbcGradeModel.registry, grade, {
-      includeRoot: false,
-      includeAcademyRoot: false
-    }));
+    const destination = buildCbcGradeDestinationPath(
+      cbcGradeModel.registry,
+      grade,
+      gradeSelectionIntent
+    );
+
+    if (destination) navigate(destination);
   };
 
   if (activeAcademy.id !== 'cbc') {
@@ -133,6 +146,13 @@ export default function CategoriesPage() {
             const isAvailable = hasActions && isLearningNodeReady(
               cbcGradeModel.registry,
               grade
+            ) && (
+              gradeSelectionIntent?.type !== 'subject'
+              || Boolean(findReadyCbcLearningArea(
+                cbcGradeModel.registry,
+                grade,
+                gradeSelectionIntent.subject
+              ))
             );
             return (
               <GradePickerCard

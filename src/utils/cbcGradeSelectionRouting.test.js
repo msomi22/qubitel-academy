@@ -1,36 +1,51 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
+import { getAcademyRootNodeById } from '../learning/academies/index.ts';
+import {
+  createCbcGradesRegistrySource
+} from '../learning/academies/cbc/cbcGrades.registry.ts';
+import {
+  createLearningNodeRegistry,
+  getChildren
+} from '../learning/registry/index.ts';
 import {
   buildCbcGradeDestinationPath,
   buildCbcGradeSelectionPath,
   buildCbcLearningAreaPath,
+  buildCbcSubjectGradeSelectionPath,
+  findReadyCbcLearningArea,
   readCbcGradeSelectionIntent
 } from './cbcGradeSelectionRouting.js';
 
-const gradeOne = {
-  id: 'grade-1',
-  topics: ['cre', 'english', 'environmental-activities', 'kiswahili', 'mathematics']
-};
+const academyNode = getAcademyRootNodeById('cbc-academy');
+const source = createCbcGradesRegistrySource();
+const registry = createLearningNodeRegistry({
+  nodes: [academyNode, ...source.nodes]
+});
+const grades = getChildren(registry, academyNode).filter((node) => node.kind === 'grade');
+const gradeOne = grades.find((grade) => grade.id === 'grade-1');
+const gradeThree = grades.find((grade) => grade.id === 'grade-3');
 
-test('buildCbcGradeSelectionPath uses current Grade 1 learning-area routes', () => {
-  assert.equal(buildCbcGradeSelectionPath({ subject: 'english' }), '/gd1/eng');
+test('dashboard subject selection preserves intent on the existing Grades page', () => {
   assert.equal(
-    buildCbcGradeSelectionPath({ subject: 'mathematics' }),
-    '/gd1/mathematical-activities'
+    buildCbcSubjectGradeSelectionPath({ subject: 'english' }),
+    '/categories?subject=english'
   );
   assert.equal(
-    buildCbcGradeSelectionPath({ subject: 'environmental-activities' }),
-    '/gd1'
+    buildCbcSubjectGradeSelectionPath({ subject: 'mathematics' }),
+    '/categories?subject=math'
   );
+  assert.equal(buildCbcSubjectGradeSelectionPath({ subject: 'unknown' }), '/categories');
 });
 
-test('buildCbcGradeSelectionPath sends dashboard actions to non-blank CBC pages', () => {
+test('excluded dashboard actions retain their current direct behavior', () => {
   assert.equal(buildCbcGradeSelectionPath({ action: 'continue' }), '/gd1');
   assert.equal(buildCbcGradeSelectionPath({ action: 'read-with-me' }), '/gd1/eng');
+  assert.equal(buildCbcGradeSelectionPath({ subject: 'math' }), '/gd1/mathematical-activities');
 });
 
-test('buildCbcLearningAreaPath uses ready canonical Grade 3 routes', () => {
+test('compatibility destinations are derived from registered semantic routes', () => {
   assert.equal(
     buildCbcLearningAreaPath({ gradeId: 'grade-3', subject: 'english' }),
     '/gd3/english-activities'
@@ -39,87 +54,69 @@ test('buildCbcLearningAreaPath uses ready canonical Grade 3 routes', () => {
     buildCbcLearningAreaPath({ gradeId: 'grade-3', subject: 'mathematics' }),
     '/gd3/mathematical-activities'
   );
-  assert.equal(
-    buildCbcLearningAreaPath({ gradeId: 'grade-3', subject: 'kiswahili' }),
-    '/gd3/kiswahili-activities'
-  );
 });
 
-test('readCbcGradeSelectionIntent accepts only supported CBC grade-selection params', () => {
+test('reads known subject intent and safely ignores unknown subject queries', () => {
   assert.deepEqual(
     readCbcGradeSelectionIntent(new URLSearchParams('subject=math')),
     { type: 'subject', subject: 'math' }
   );
-  assert.deepEqual(
-    readCbcGradeSelectionIntent(new URLSearchParams('action=read-with-me')),
-    { type: 'action', action: 'read-with-me' }
-  );
   assert.equal(readCbcGradeSelectionIntent(new URLSearchParams('subject=unknown')), null);
 });
 
-test('buildCbcGradeDestinationPath routes selected grades to matching subject topics', () => {
+test('normal Grades selection resolves the selected registered grade route', () => {
+  assert.equal(buildCbcGradeDestinationPath(registry, gradeOne, null), '/gd1');
+  assert.equal(buildCbcGradeDestinationPath(registry, gradeThree, null), '/gd3');
+});
+
+test('English selection resolves ready registered learning areas for Grade 1 and Grade 3', () => {
   assert.equal(
-    buildCbcGradeDestinationPath(gradeOne, { type: 'subject', subject: 'english' }),
+    buildCbcGradeDestinationPath(
+      registry,
+      gradeOne,
+      { type: 'subject', subject: 'english' }
+    ),
     '/gd1/eng'
   );
   assert.equal(
-    buildCbcGradeDestinationPath(gradeOne, { type: 'subject', subject: 'math' }),
-    '/gd1/mathematical-activities'
-  );
-});
-
-test('buildCbcGradeDestinationPath safely falls back to the selected grade', () => {
-  assert.equal(
     buildCbcGradeDestinationPath(
-      { id: 'grade-3', topics: ['english'] },
-      { type: 'subject', subject: 'kiswahili' }
+      registry,
+      gradeThree,
+      { type: 'subject', subject: 'english' }
     ),
-    '/gd3'
-  );
-  assert.equal(
-    buildCbcGradeDestinationPath(gradeOne, { type: 'action', action: 'continue' }),
-    '/gd1'
-  );
-});
-
-test('buildCbcGradeDestinationPath continues to the selected grade most recent topic when available', () => {
-  assert.equal(
-    buildCbcGradeDestinationPath(
-      gradeOne,
-      { type: 'action', action: 'continue' },
-      { continueTopicId: 'mathematics' }
-    ),
-    '/gd1/mathematical-activities'
-  );
-  assert.equal(
-    buildCbcGradeDestinationPath(
-      gradeOne,
-      { type: 'action', action: 'continue' },
-      { continueTopicId: 'missing' }
-    ),
-    '/gd1'
-  );
-});
-
-test('buildCbcGradeDestinationPath sends read-with-me to an available reading subject', () => {
-  assert.equal(
-    buildCbcGradeDestinationPath(gradeOne, { type: 'action', action: 'read-with-me' }),
-    '/gd1/eng'
-  );
-});
-
-test('buildCbcGradeDestinationPath keeps continue and read-with-me destinations distinct', () => {
-  const gradeThree = {
-    id: 'grade-3',
-    topics: ['kiswahili', 'mathematics']
-  };
-
-  assert.equal(
-    buildCbcGradeDestinationPath(gradeThree, { type: 'action', action: 'continue' }),
-    '/gd3'
-  );
-  assert.equal(
-    buildCbcGradeDestinationPath(gradeThree, { type: 'action', action: 'read-with-me' }),
     '/gd3/english-activities'
+  );
+});
+
+test('Mathematics selection resolves ready registered learning areas for Grade 1 and Grade 3', () => {
+  assert.equal(
+    buildCbcGradeDestinationPath(
+      registry,
+      gradeOne,
+      { type: 'subject', subject: 'mathematics' }
+    ),
+    '/gd1/mathematical-activities'
+  );
+  assert.equal(
+    buildCbcGradeDestinationPath(
+      registry,
+      gradeThree,
+      { type: 'subject', subject: 'math' }
+    ),
+    '/gd3/mathematical-activities'
+  );
+});
+
+test('missing or unready matching areas remain inaccessible', () => {
+  const gradeTwo = grades.find((grade) => grade.id === 'grade-2');
+
+  assert.equal(findReadyCbcLearningArea(registry, gradeTwo, 'english'), null);
+  assert.equal(
+    buildCbcGradeDestinationPath(
+      registry,
+      gradeTwo,
+      { type: 'subject', subject: 'english' }
+    ),
+    null
   );
 });

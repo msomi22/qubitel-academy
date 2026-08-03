@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { NavLink, useSearchParams } from 'react-router-dom';
 import { createNodeRoutePath } from '../learning/routing';
 import { getNavigationContext } from '../learning/navigation/index.ts';
 import LearningNodeBreadcrumbs from './LearningNodeBreadcrumbs.jsx';
@@ -9,6 +9,7 @@ import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 import LearningNodeBookView from './LearningNodeBookView.jsx';
 import LearningNodeCompactHeader from './LearningNodeCompactHeader.jsx';
 import { isCbcTheme } from './learningNodeBookView.model.ts';
+import { recordCbcLearningNodeVisit } from '../services/cbcLastActivityService.js';
 import './LearningNodeUI.css';
 
 function getNodeAttributeValue(node, key) {
@@ -52,12 +53,23 @@ export default function LearningNodePageShell({
   showSiblingNav = true,
   contentRendererProps = {}
 }) {
+  const [searchParams] = useSearchParams();
   const navigation = useMemo(
     () => getNavigationContext(registry, nodeId),
     [registry, nodeId]
   );
 
   const currentNode = navigation.current;
+  useEffect(() => {
+    if (!currentNode) return;
+
+    recordCbcLearningNodeVisit({
+      registry,
+      node: currentNode,
+      tab: searchParams.get('tab')
+    });
+  }, [currentNode, registry, searchParams]);
+
   if (!currentNode) {
     return (
       <section className="page learning-node-page">

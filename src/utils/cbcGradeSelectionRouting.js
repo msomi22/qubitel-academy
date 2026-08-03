@@ -1,42 +1,46 @@
-import { categoryPath } from '../services/categoryNavigationService.js';
+import { getAttribute } from '../learning/core/index.ts';
+import { getAcademyRootNodeById } from '../learning/academies/index.ts';
+import {
+  createCbcGradesRegistrySource
+} from '../learning/academies/cbc/cbcGrades.registry.ts';
+import {
+  createLearningNodeRegistry,
+  getChildren,
+  getNodeById,
+  isLearningNodeReady
+} from '../learning/registry/index.ts';
+import { createNodeRoutePath } from '../learning/routing/index.ts';
 
 const CBC_GRADE_SELECTION_PATH = '/categories';
-
-const CBC_GRADE_PATHS = {
-  'grade-1': '/gd1',
-  'grade-3': '/gd3'
+const CBC_ROUTE_OPTIONS = {
+  includeRoot: false,
+  includeAcademyRoot: false
 };
-
-const CBC_LEARNING_AREA_PATHS = {
-  'grade-1': {
-    english: '/gd1/eng',
-    math: '/gd1/mathematical-activities'
-  },
-  'grade-3': {
-    english: '/gd3/english-activities',
-    math: '/gd3/mathematical-activities',
-    kiswahili: '/gd3/kiswahili-activities'
-  }
-};
+const cbcAcademyNode = getAcademyRootNodeById('cbc-academy');
+const cbcGradesSource = createCbcGradesRegistrySource();
+const cbcRegistry = createLearningNodeRegistry({
+  nodes: [cbcAcademyNode, ...cbcGradesSource.nodes].filter(Boolean)
+});
 
 const SUBJECT_ALIASES = {
-  english: ['english'],
-  math: ['mathematics', 'math'],
-  mathematics: ['mathematics', 'math'],
-  'environmental-activities': ['environmental-activities', 'cre'],
-  environment: ['environmental-activities', 'cre'],
-  cre: ['cre', 'environmental-activities'],
-  kiswahili: ['kiswahili']
+  english: ['english', 'english-activities', 'eng'],
+  math: ['math', 'mathematics', 'mathematical-activities'],
+  'environmental-activities': ['environmental-activities', 'environment'],
+  cre: ['cre', 'religious-education-activities'],
+  kiswahili: ['kiswahili', 'kiswahili-activities']
 };
 
 const SUBJECT_QUERY_VALUES = {
   english: 'english',
+  eng: 'english',
   math: 'math',
   mathematics: 'math',
+  'mathematical-activities': 'math',
   'environmental-activities': 'environmental-activities',
   environment: 'environmental-activities',
   cre: 'cre',
-  kiswahili: 'kiswahili'
+  kiswahili: 'kiswahili',
+  'kiswahili-activities': 'kiswahili'
 };
 
 const ACTION_QUERY_VALUES = {
@@ -49,66 +53,74 @@ function toSearchParams(searchParams = new URLSearchParams()) {
   return new URLSearchParams(searchParams);
 }
 
+function normalizeValue(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
 function normalizeSubject(value) {
-  return SUBJECT_QUERY_VALUES[String(value || '').trim().toLowerCase()] || '';
+  return SUBJECT_QUERY_VALUES[normalizeValue(value)] || '';
 }
 
 function normalizeAction(value) {
-  return ACTION_QUERY_VALUES[String(value || '').trim().toLowerCase()] || '';
+  return ACTION_QUERY_VALUES[normalizeValue(value)] || '';
 }
 
-function getCategoryTopicIds(category = {}) {
-  return Array.isArray(category.topics)
-    ? category.topics.map((topicId) => String(topicId))
-    : [];
+function getLearningAreaSearchValues(node) {
+  return [
+    node.id,
+    node.label,
+    getAttribute(node, 'learningAreaCode'),
+    getAttribute(node, 'learningAreaId'),
+    getAttribute(node, 'learningAreaName'),
+    getAttribute(node, 'routeSegment')
+  ].map(normalizeValue);
 }
 
-function findAvailableTopic(category, candidates = []) {
-  const topicIds = getCategoryTopicIds(category);
-  return candidates.find((topicId) => topicIds.includes(topicId)) || '';
+function learningAreaMatchesSubject(node, subject) {
+  const aliases = SUBJECT_ALIASES[normalizeSubject(subject)] || [];
+  const values = getLearningAreaSearchValues(node);
+
+  return aliases.some((alias) => values.some((value) => (
+    value === alias || value.endsWith(`-${alias}`)
+  )));
 }
 
-function buildCategoryTopicPath(category, topicId) {
-  const basePath = buildCbcLearningAreaPath({ gradeId: category?.id });
-  if (!topicId) return basePath;
+export function buildCbcSubjectGradeSelectionPath({ subject } = {}) {
+  const normalizedSubject = normalizeSubject(subject);
+  if (!normalizedSubject) return CBC_GRADE_SELECTION_PATH;
 
-  return buildCbcLearningAreaPath({
-    gradeId: category?.id,
-    subject: topicId
-  });
+  const params = new URLSearchParams();
+  params.set('subject', normalizedSubject);
+  return `${CBC_GRADE_SELECTION_PATH}?${params.toString()}`;
 }
 
 export function buildCbcLearningAreaPath({ gradeId, subject } = {}) {
-  const normalizedGradeId = String(gradeId || '').trim().toLowerCase();
-  const basePath = CBC_GRADE_PATHS[normalizedGradeId]
-    || categoryPath(normalizedGradeId);
+  const grade = getNodeById(cbcRegistry, normalizeValue(gradeId));
+  if (!grade || grade.kind !== 'grade') return CBC_GRADE_SELECTION_PATH;
+
   const normalizedSubject = normalizeSubject(subject);
+  const target = normalizedSubject
+    ? findReadyCbcLearningArea(cbcRegistry, grade, normalizedSubject)
+    : grade;
 
-  if (!normalizedSubject) return basePath;
-
-  return CBC_LEARNING_AREA_PATHS[normalizedGradeId]?.[normalizedSubject]
-    || basePath;
+  return target
+    ? createNodeRoutePath(cbcRegistry, target, CBC_ROUTE_OPTIONS) || CBC_GRADE_SELECTION_PATH
+    : createNodeRoutePath(cbcRegistry, grade, CBC_ROUTE_OPTIONS) || CBC_GRADE_SELECTION_PATH;
 }
 
 export function buildCbcGradeSelectionPath({ subject, action } = {}) {
   const normalizedSubject = normalizeSubject(subject);
   const normalizedAction = normalizeAction(action);
 
-  if (normalizedSubject) {
-    return buildCbcLearningAreaPath({
-      gradeId: 'grade-1',
-      subject: normalizedSubject
-    });
+  if (normalizedSubject === 'english' || normalizedAction === 'read-with-me') {
+    return buildCbcLearningAreaPath({ gradeId: 'grade-1', subject: 'english' });
   }
 
-  if (normalizedAction === 'read-with-me') {
-    return buildCbcLearningAreaPath({
-      gradeId: 'grade-1',
-      subject: 'english'
-    });
+  if (normalizedSubject === 'math') {
+    return buildCbcLearningAreaPath({ gradeId: 'grade-1', subject: 'math' });
   }
 
-  if (normalizedAction === 'continue') {
+  if (normalizedAction === 'continue' || normalizedSubject) {
     return buildCbcLearningAreaPath({ gradeId: 'grade-1' });
   }
 
@@ -126,29 +138,27 @@ export function readCbcGradeSelectionIntent(searchParams = new URLSearchParams()
   return null;
 }
 
-export function buildCbcGradeDestinationPath(category, intent, options = {}) {
-  const basePath = buildCbcLearningAreaPath({ gradeId: category?.id });
-  if (!category?.id || !intent) return basePath;
+export function findReadyCbcLearningArea(registry, grade, subject) {
+  const normalizedSubject = normalizeSubject(subject);
+  if (!registry || !grade?.id || !normalizedSubject) return null;
 
-  if (intent.type === 'action') {
-    if (intent.action === 'read-with-me') {
-      return buildCategoryTopicPath(
-        category,
-        findAvailableTopic(category, ['english']) || 'english'
-      );
-    }
+  return getChildren(registry, grade)
+    .filter((node) => node.kind === 'learningArea')
+    .find((node) => (
+      learningAreaMatchesSubject(node, normalizedSubject)
+      && isLearningNodeReady(registry, node)
+    )) || null;
+}
 
-    if (intent.action === 'continue') {
-      return buildCategoryTopicPath(
-        category,
-        findAvailableTopic(category, [options.continueTopicId])
-      );
-    }
+export function buildCbcGradeDestinationPath(registry, grade, intent) {
+  if (!registry || !grade?.id) return null;
 
-    return basePath;
+  if (intent?.type === 'subject') {
+    const learningArea = findReadyCbcLearningArea(registry, grade, intent.subject);
+    return learningArea
+      ? createNodeRoutePath(registry, learningArea, CBC_ROUTE_OPTIONS) || null
+      : null;
   }
 
-  const subject = normalizeSubject(intent.subject);
-  const candidates = SUBJECT_ALIASES[subject] || [];
-  return buildCategoryTopicPath(category, findAvailableTopic(category, candidates));
+  return createNodeRoutePath(registry, grade, CBC_ROUTE_OPTIONS) || null;
 }

@@ -2,12 +2,11 @@ import { Link } from 'react-router-dom';
 import { getCbcLastActivityContinueState } from '../../services/cbcLastActivityService.js';
 import { categoryPath } from '../../services/categoryNavigationService.js';
 import {
-  buildCbcGradeSelectionPath,
-  buildCbcLearningAreaPath
+  buildCbcLearningAreaPath,
+  buildCbcSubjectGradeSelectionPath
 } from '../../utils/cbcGradeSelectionRouting.js';
 import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/owl-with-backpack-transparent.webp';
 import actionContinueBook from '../../assets/academies/cbc/grade-1/home/action-continue-book.webp';
-import actionReadOwlBook from '../../assets/academies/cbc/grade-1/home/action-read-owl-book.webp';
 import actionPracticeTarget from '../../assets/academies/cbc/grade-1/home/action-practice-target.webp';
 import subjectEnglishAbcBook from '../../assets/academies/cbc/grade-1/home/subject-english-hero.webp';
 import subjectMathCardScene from '../../assets/academies/cbc/grade-1/home/subject-math-board-blocks.webp';
@@ -26,11 +25,8 @@ const SUBJECT_META = [
     friendlyName: 'English',
     copy: 'Read, write and have fun!',
     cardClass: 'cbc-home-subject-card--english',
-    lessonClass: 'cbc-home-lesson-card--english',
     visualClass: 'cbc-home-abc-book',
-    backgroundSrc: subjectEnglishAbcBook,
-    lessonIcon: '📗',
-    lessonMeta: 'English • 5 min'
+    backgroundSrc: subjectEnglishAbcBook
   },
   {
     subject: 'math',
@@ -38,11 +34,8 @@ const SUBJECT_META = [
     friendlyName: 'Math',
     copy: 'Count, add and solve!',
     cardClass: 'cbc-home-subject-card--math',
-    lessonClass: 'cbc-home-lesson-card--math',
     visualClass: 'cbc-home-math-board',
-    backgroundSrc: subjectMathCardScene,
-    lessonIcon: '⭐',
-    lessonMeta: 'Math • 5 min'
+    backgroundSrc: subjectMathCardScene
   },
   {
     subject: 'kiswahili',
@@ -50,10 +43,7 @@ const SUBJECT_META = [
     friendlyName: 'Kiswahili',
     copy: 'Soma, andika na uelewe!',
     cardClass: 'cbc-home-subject-card--kiswahili',
-    lessonClass: 'cbc-home-lesson-card--kiswahili',
-    visualClass: 'cbc-home-kiswahili-bubbles',
-    lessonIcon: '💬',
-    lessonMeta: 'Kiswahili • 5 min'
+    visualClass: 'cbc-home-kiswahili-bubbles'
   },
   {
     subject: 'environmental-activities',
@@ -61,28 +51,7 @@ const SUBJECT_META = [
     friendlyName: 'Environmental Activities',
     copy: 'Discover our world and take care!',
     cardClass: 'cbc-home-subject-card--environment',
-    lessonClass: 'cbc-home-lesson-card--environment',
-    visualClass: 'cbc-home-world-art',
-    lessonIcon: '🌺',
-    lessonMeta: 'Env. Activities • 5 min'
-  }
-];
-
-const TODAY_LESSON_META = [
-  {
-    subject: 'math',
-    match: ['math', 'mathematics', 'number', 'addition', 'subtraction', 'count'],
-    friendlyName: 'Mathematics'
-  },
-  {
-    subject: 'kiswahili',
-    match: ['kiswahili', 'swahili', 'salamu'],
-    friendlyName: 'Kiswahili'
-  },
-  {
-    subject: 'cre',
-    match: ['cre', 'christian religious', 'environmental', 'environment', 'activities'],
-    friendlyName: 'CRE'
+    visualClass: 'cbc-home-world-art'
   }
 ];
 
@@ -164,15 +133,7 @@ function getLearningAreaHref(section, meta) {
     : getSectionSubject(section);
 
   return subject
-    ? buildCbcGradeSelectionPath({ subject })
-    : section?.href || '/categories';
-}
-
-function getTodayLessonHref(section) {
-  const subject = getSectionSubject(section);
-
-  return subject
-    ? buildCbcGradeSelectionPath({ subject })
+    ? buildCbcSubjectGradeSelectionPath({ subject })
     : section?.href || '/categories';
 }
 
@@ -194,34 +155,6 @@ function toSubjectTopicSection(topic, meta) {
     href: getTopicLearningHref(topic),
     kind: 'subjectTopic',
     progress: topic.progress,
-    source: 'compatibility'
-  };
-}
-
-function getTopicCount(topic) {
-  return Number(topic?.count || topic?.progress?.total || 0);
-}
-
-function getBestTopicForMeta(topics, meta) {
-  const candidates = topics.filter((topic) => topicMatchesMeta(topic, meta));
-
-  return candidates.sort((a, b) => (
-    Number(getTopicCount(b) > 0) - Number(getTopicCount(a) > 0)
-    || getTopicCount(b) - getTopicCount(a)
-    || String(a.category || '').localeCompare(String(b.category || ''))
-    || String(a.id || '').localeCompare(String(b.id || ''))
-  ))[0] || null;
-}
-
-function toTodayLessonSection(topic, meta) {
-  return {
-    id: `today:${meta.subject}:${topic?.category || 'grade-selection'}/${topic?.id || meta.subject}`,
-    title: meta.friendlyName,
-    summary: meta.friendlyName,
-    href: topic ? getTopicLearningHref(topic) : buildCbcGradeSelectionPath({ subject: meta.subject }),
-    kind: 'todayLesson',
-    subject: meta.subject,
-    progress: topic?.progress,
     source: 'compatibility'
   };
 }
@@ -295,39 +228,18 @@ function getStarCount(progress) {
   return 0;
 }
 
-function getTodayLessons({ learningAreas }) {
-  const topics = Array.isArray(learningAreas) ? learningAreas : [];
-  return TODAY_LESSON_META.map((meta) => (
-    toTodayLessonSection(getBestTopicForMeta(topics, meta), meta)
-  ));
+function getContinueHref(lastActivityState) {
+  return lastActivityState?.href || '/categories';
 }
 
-function getContinueHref(homeModel, continueSection, lastActivityState) {
-  return lastActivityState?.href
-    || continueSection?.href
-    || homeModel?.continueAction?.href
-    || buildCbcGradeSelectionPath({ action: 'continue' });
-}
-
-function getContinueCardTitle(continueSection, lastActivityState) {
+function getContinueCardTitle(lastActivityState) {
   if (lastActivityState?.title) return lastActivityState.title;
-
-  const title = String(continueSection?.title || '').trim();
-
-  if (!title || title.toLowerCase() === 'review progress') return 'Continue';
-  if (title.toLowerCase().startsWith('continue')) return title;
-
-  return `Continue ${title}`;
+  return 'Continue';
 }
 
-function getContinueCardDescription(continueSection, lastActivityState) {
+function getContinueCardDescription(lastActivityState) {
   if (lastActivityState?.description) return lastActivityState.description;
-
-  const summary = String(continueSection?.summary || '').trim();
-
-  return summary && summary !== 'All visible topics are complete.'
-    ? summary
-    : 'Pick up where you left off';
+  return 'Pick up where you left off';
 }
 
 function CbcOwlMascot() {
@@ -442,35 +354,9 @@ function CbcLearningAreaCard({ section, index }) {
   );
 }
 
-function CbcLessonCard({ section, index }) {
-  const meta = getSubjectMeta(section, index);
-  const title = section?.title || getFriendlySubjectTitle(section, index);
-  const href = getTodayLessonHref(section);
-
-  return (
-    <Link
-      to={href}
-      className={`cbc-home-lesson-card ${meta.lessonClass}`.trim()}
-    >
-      <span className="cbc-home-lesson-icon" aria-hidden="true">
-        {meta.lessonIcon}
-      </span>
-
-      <span>
-        <span className="cbc-home-lesson-title">{title}</span>
-        <span className="cbc-home-lesson-meta">{meta.lessonMeta}</span>
-      </span>
-
-      <span className="cbc-home-lesson-cta">
-        Let&apos;s go! <span aria-hidden="true">▶</span>
-      </span>
-    </Link>
-  );
-}
-
 function CbcEmptyHome({ homeModel }) {
   const lastActivityState = getCbcLastActivityContinueState();
-  const continueHref = getContinueHref(homeModel, null, lastActivityState);
+  const continueHref = getContinueHref(lastActivityState);
 
   return (
     <main className="cbc-home-page cbc-home-page--empty">
@@ -498,14 +384,6 @@ function CbcEmptyHome({ homeModel }) {
               imageSrc={actionContinueBook}
               variant="cbc-home-action-card--continue"
             />
-
-            <CbcActionCard
-              to={buildCbcGradeSelectionPath({ action: 'read-with-me' })}
-              title="Read with me"
-              description="Listen and read fun stories"
-              imageSrc={actionReadOwlBook}
-              variant="cbc-home-action-card--read"
-            />
           </div>
         </div>
 
@@ -528,16 +406,12 @@ function CbcEmptyHome({ homeModel }) {
 
 export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
   const progress = homeModel.progress || emptyProgress;
-  const continueSection = getSectionByKind(homeModel, 'continue');
   const learningPathsSection = getSectionByKind(homeModel, 'learningPaths');
   const lastActivityState = getCbcLastActivityContinueState();
 
   const rawLearningAreas = getSectionChildren(learningPathsSection);
   const learningAreas = getDisplayLearningAreas(homeModel, rawLearningAreas);
-  const todayLessons = getTodayLessons({
-    learningAreas: homeModel.homeContent?.topics
-  });
-  const continueHref = getContinueHref(homeModel, continueSection, lastActivityState);
+  const continueHref = getContinueHref(lastActivityState);
 
   if (!homeModel.hasContent) {
     return <CbcEmptyHome homeModel={homeModel} />;
@@ -568,18 +442,10 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
           <div className="cbc-home-hero-actions" aria-label="Main learner actions">
             <CbcActionCard
               to={continueHref}
-              title={getContinueCardTitle(continueSection, lastActivityState)}
-              description={getContinueCardDescription(continueSection, lastActivityState)}
+              title={getContinueCardTitle(lastActivityState)}
+              description={getContinueCardDescription(lastActivityState)}
               imageSrc={actionContinueBook}
               variant="cbc-home-action-card--continue"
-            />
-
-            <CbcActionCard
-              to={buildCbcGradeSelectionPath({ action: 'read-with-me' })}
-              title="Read with me"
-              description="Listen and read fun stories"
-              imageSrc={actionReadOwlBook}
-              variant="cbc-home-action-card--read"
             />
 
             <CbcActionCard
@@ -617,40 +483,6 @@ export default function CbcAcademyHome({ homeModel, randomCount = 0 }) {
             )) : (
               <p className="cbc-home-empty-note">Learning areas will appear here soon.</p>
             )}
-          </div>
-        </section>
-
-        <section className="cbc-home-lesson-panel" aria-labelledby="cbc-home-todays-learning-title">
-          <div className="cbc-home-lesson-heading-row">
-            <span className="cbc-home-lesson-heading-emoji" aria-hidden="true">😄</span>
-
-            <div>
-              <h2 className="cbc-home-lesson-heading-title" id="cbc-home-todays-learning-title">
-                Today&apos;s learning
-              </h2>
-
-              <div className="cbc-home-lesson-heading-copy">
-                Pick a fun lesson to get started!
-              </div>
-            </div>
-          </div>
-
-          <div className="cbc-home-lessons-wrap">
-            <div className="cbc-home-lesson-grid">
-              {todayLessons.length ? todayLessons.map((section, index) => (
-                <CbcLessonCard
-                  key={section.id || section.href || section.title}
-                  section={section}
-                  index={index}
-                />
-              )) : (
-                <p className="cbc-home-empty-note">Start learning to see today&apos;s fun lessons.</p>
-              )}
-            </div>
-
-            <Link className="cbc-home-next-button" to="/categories" aria-label="More lessons">
-              ›
-            </Link>
           </div>
         </section>
       </section>
