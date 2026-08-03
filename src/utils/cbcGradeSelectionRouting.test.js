@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {
   buildCbcGradeDestinationPath,
   buildCbcGradeSelectionPath,
+  buildCbcLearningAreaPath,
   readCbcGradeSelectionIntent
 } from './cbcGradeSelectionRouting.js';
 
@@ -12,18 +13,36 @@ const gradeOne = {
   topics: ['cre', 'english', 'environmental-activities', 'kiswahili', 'mathematics']
 };
 
-test('buildCbcGradeSelectionPath preserves CBC home subject intent', () => {
-  assert.equal(buildCbcGradeSelectionPath({ subject: 'english' }), '/categories?subject=english');
-  assert.equal(buildCbcGradeSelectionPath({ subject: 'mathematics' }), '/categories?subject=math');
+test('buildCbcGradeSelectionPath uses current Grade 1 learning-area routes', () => {
+  assert.equal(buildCbcGradeSelectionPath({ subject: 'english' }), '/gd1/eng');
+  assert.equal(
+    buildCbcGradeSelectionPath({ subject: 'mathematics' }),
+    '/gd1/mathematical-activities'
+  );
   assert.equal(
     buildCbcGradeSelectionPath({ subject: 'environmental-activities' }),
-    '/categories?subject=environmental-activities'
+    '/gd1'
   );
 });
 
-test('buildCbcGradeSelectionPath preserves CBC home action intent', () => {
-  assert.equal(buildCbcGradeSelectionPath({ action: 'continue' }), '/categories?action=continue');
-  assert.equal(buildCbcGradeSelectionPath({ action: 'read-with-me' }), '/categories?action=read-with-me');
+test('buildCbcGradeSelectionPath sends dashboard actions to non-blank CBC pages', () => {
+  assert.equal(buildCbcGradeSelectionPath({ action: 'continue' }), '/gd1');
+  assert.equal(buildCbcGradeSelectionPath({ action: 'read-with-me' }), '/gd1/eng');
+});
+
+test('buildCbcLearningAreaPath uses ready canonical Grade 3 routes', () => {
+  assert.equal(
+    buildCbcLearningAreaPath({ gradeId: 'grade-3', subject: 'english' }),
+    '/gd3/english-activities'
+  );
+  assert.equal(
+    buildCbcLearningAreaPath({ gradeId: 'grade-3', subject: 'mathematics' }),
+    '/gd3/mathematical-activities'
+  );
+  assert.equal(
+    buildCbcLearningAreaPath({ gradeId: 'grade-3', subject: 'kiswahili' }),
+    '/gd3/kiswahili-activities'
+  );
 });
 
 test('readCbcGradeSelectionIntent accepts only supported CBC grade-selection params', () => {
@@ -41,40 +60,51 @@ test('readCbcGradeSelectionIntent accepts only supported CBC grade-selection par
 test('buildCbcGradeDestinationPath routes selected grades to matching subject topics', () => {
   assert.equal(
     buildCbcGradeDestinationPath(gradeOne, { type: 'subject', subject: 'english' }),
-    '/category/grade-1?topic=english&page=1'
+    '/gd1/eng'
   );
   assert.equal(
     buildCbcGradeDestinationPath(gradeOne, { type: 'subject', subject: 'math' }),
-    '/category/grade-1?topic=mathematics&page=1'
+    '/gd1/mathematical-activities'
   );
 });
 
 test('buildCbcGradeDestinationPath safely falls back to the selected grade', () => {
   assert.equal(
-    buildCbcGradeDestinationPath({ id: 'grade-3', topics: ['english'] }, { type: 'subject', subject: 'kiswahili' }),
-    '/category/grade-3'
+    buildCbcGradeDestinationPath(
+      { id: 'grade-3', topics: ['english'] },
+      { type: 'subject', subject: 'kiswahili' }
+    ),
+    '/gd3'
   );
   assert.equal(
     buildCbcGradeDestinationPath(gradeOne, { type: 'action', action: 'continue' }),
-    '/category/grade-1'
+    '/gd1'
   );
 });
 
 test('buildCbcGradeDestinationPath continues to the selected grade most recent topic when available', () => {
   assert.equal(
-    buildCbcGradeDestinationPath(gradeOne, { type: 'action', action: 'continue' }, { continueTopicId: 'mathematics' }),
-    '/category/grade-1?topic=mathematics&page=1'
+    buildCbcGradeDestinationPath(
+      gradeOne,
+      { type: 'action', action: 'continue' },
+      { continueTopicId: 'mathematics' }
+    ),
+    '/gd1/mathematical-activities'
   );
   assert.equal(
-    buildCbcGradeDestinationPath(gradeOne, { type: 'action', action: 'continue' }, { continueTopicId: 'missing' }),
-    '/category/grade-1'
+    buildCbcGradeDestinationPath(
+      gradeOne,
+      { type: 'action', action: 'continue' },
+      { continueTopicId: 'missing' }
+    ),
+    '/gd1'
   );
 });
 
 test('buildCbcGradeDestinationPath sends read-with-me to an available reading subject', () => {
   assert.equal(
     buildCbcGradeDestinationPath(gradeOne, { type: 'action', action: 'read-with-me' }),
-    '/category/grade-1?topic=english&page=1'
+    '/gd1/eng'
   );
 });
 
@@ -86,10 +116,10 @@ test('buildCbcGradeDestinationPath keeps continue and read-with-me destinations 
 
   assert.equal(
     buildCbcGradeDestinationPath(gradeThree, { type: 'action', action: 'continue' }),
-    '/category/grade-3'
+    '/gd3'
   );
   assert.equal(
     buildCbcGradeDestinationPath(gradeThree, { type: 'action', action: 'read-with-me' }),
-    '/category/grade-3?topic=english&page=1'
+    '/gd3/english-activities'
   );
 });

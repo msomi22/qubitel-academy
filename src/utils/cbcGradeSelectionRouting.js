@@ -2,6 +2,23 @@ import { categoryPath } from '../services/categoryNavigationService.js';
 
 const CBC_GRADE_SELECTION_PATH = '/categories';
 
+const CBC_GRADE_PATHS = {
+  'grade-1': '/gd1',
+  'grade-3': '/gd3'
+};
+
+const CBC_LEARNING_AREA_PATHS = {
+  'grade-1': {
+    english: '/gd1/eng',
+    math: '/gd1/mathematical-activities'
+  },
+  'grade-3': {
+    english: '/gd3/english-activities',
+    math: '/gd3/mathematical-activities',
+    kiswahili: '/gd3/kiswahili-activities'
+  }
+};
+
 const SUBJECT_ALIASES = {
   english: ['english'],
   math: ['mathematics', 'math'],
@@ -52,25 +69,50 @@ function findAvailableTopic(category, candidates = []) {
 }
 
 function buildCategoryTopicPath(category, topicId) {
-  const basePath = category?.route || categoryPath(category?.id);
+  const basePath = buildCbcLearningAreaPath({ gradeId: category?.id });
   if (!topicId) return basePath;
 
-  const params = new URLSearchParams();
-  params.set('topic', topicId);
-  params.set('page', '1');
-  return `${basePath}?${params.toString()}`;
+  return buildCbcLearningAreaPath({
+    gradeId: category?.id,
+    subject: topicId
+  });
+}
+
+export function buildCbcLearningAreaPath({ gradeId, subject } = {}) {
+  const normalizedGradeId = String(gradeId || '').trim().toLowerCase();
+  const basePath = CBC_GRADE_PATHS[normalizedGradeId]
+    || categoryPath(normalizedGradeId);
+  const normalizedSubject = normalizeSubject(subject);
+
+  if (!normalizedSubject) return basePath;
+
+  return CBC_LEARNING_AREA_PATHS[normalizedGradeId]?.[normalizedSubject]
+    || basePath;
 }
 
 export function buildCbcGradeSelectionPath({ subject, action } = {}) {
-  const params = new URLSearchParams();
   const normalizedSubject = normalizeSubject(subject);
   const normalizedAction = normalizeAction(action);
 
-  if (normalizedSubject) params.set('subject', normalizedSubject);
-  else if (normalizedAction) params.set('action', normalizedAction);
+  if (normalizedSubject) {
+    return buildCbcLearningAreaPath({
+      gradeId: 'grade-1',
+      subject: normalizedSubject
+    });
+  }
 
-  const query = params.toString();
-  return query ? `${CBC_GRADE_SELECTION_PATH}?${query}` : CBC_GRADE_SELECTION_PATH;
+  if (normalizedAction === 'read-with-me') {
+    return buildCbcLearningAreaPath({
+      gradeId: 'grade-1',
+      subject: 'english'
+    });
+  }
+
+  if (normalizedAction === 'continue') {
+    return buildCbcLearningAreaPath({ gradeId: 'grade-1' });
+  }
+
+  return CBC_GRADE_SELECTION_PATH;
 }
 
 export function readCbcGradeSelectionIntent(searchParams = new URLSearchParams()) {
@@ -85,7 +127,7 @@ export function readCbcGradeSelectionIntent(searchParams = new URLSearchParams()
 }
 
 export function buildCbcGradeDestinationPath(category, intent, options = {}) {
-  const basePath = category?.route || categoryPath(category?.id);
+  const basePath = buildCbcLearningAreaPath({ gradeId: category?.id });
   if (!category?.id || !intent) return basePath;
 
   if (intent.type === 'action') {

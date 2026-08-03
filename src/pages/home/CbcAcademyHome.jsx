@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { getCbcLastActivityContinueState } from '../../services/cbcLastActivityService.js';
 import { categoryPath } from '../../services/categoryNavigationService.js';
-import { buildCbcGradeSelectionPath } from '../../utils/cbcGradeSelectionRouting.js';
+import {
+  buildCbcGradeSelectionPath,
+  buildCbcLearningAreaPath
+} from '../../utils/cbcGradeSelectionRouting.js';
 import owlWithBackpackTransparent from '../../assets/academies/cbc/grade-1/home/owl-with-backpack-transparent.webp';
 import actionContinueBook from '../../assets/academies/cbc/grade-1/home/action-continue-book.webp';
 import actionReadOwlBook from '../../assets/academies/cbc/grade-1/home/action-read-owl-book.webp';
@@ -176,11 +179,11 @@ function getTodayLessonHref(section) {
 function getTopicLearningHref(topic) {
   if (!topic?.category || !topic?.id) return '/categories';
 
-  const params = new URLSearchParams();
-  params.set('topic', String(topic.id));
-  params.set('page', '1');
+  const subject = getSubjectFromText(topic.id);
 
-  return `${categoryPath(topic.category)}?${params.toString()}`;
+  return subject
+    ? buildCbcLearningAreaPath({ gradeId: topic.category, subject })
+    : categoryPath(topic.category);
 }
 
 function toSubjectTopicSection(topic, meta) {
