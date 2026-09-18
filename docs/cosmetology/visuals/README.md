@@ -210,3 +210,26 @@ At minimum, it should include a labeled figure showing:
 - hyponychium.
 
 A top view plus a cross-sectional view is preferred because some structures cannot be understood properly from the surface alone.
+
+
+## Web Image Format
+
+For learner-facing web delivery:
+
+- use **WebP** for generated or photographic instructional images;
+- use **SVG** for true vector diagrams and icons;
+- keep PNG/JPEG only when there is a specific quality, editing, or compatibility reason;
+- prefer WebP references in runtime learning content;
+- keep labels readable after compression;
+- target approximately **150–400 KB or less** for full-page instructional images where practical.
+
+Book images should use lazy loading and asynchronous decoding.
+
+Example:
+
+```text
+18-01a-nail-unit-top-view.webp
+18-01b-nail-unit-cross-section.webp
+```
+
+When converting an existing PNG/JPEG, visually verify the WebP output before replacing the runtime reference. Text labels, leader lines, and scientific details must remain clear.
