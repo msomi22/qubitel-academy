@@ -5,5 +5,6 @@ import { getAcademyRootNodeIds as ids } from './index.ts';
 test('academy registry exposes stable ids', () => assert.deepEqual(ids(), [
   'technology-academy',
   'cbc-academy',
-  'customer-experience-academy'
+  'customer-experience-academy',
+  'skill-academy'
 ]));
