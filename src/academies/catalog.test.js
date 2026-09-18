@@ -76,8 +76,8 @@ test('Skill Academy exposes Cosmetology as its first programme catalog boundary'
     academyCatalogs.skill.topics.map((topic) => `${topic.category}/${topic.id}`),
     [
       'cosmetology/programme-overview',
-      'cosmetology/level-6-foundations',
-      'cosmetology/level-6-onychology'
+      'cosmetology/l6-foundations',
+      'cosmetology/l6-onychology'
     ]
   );
 });
