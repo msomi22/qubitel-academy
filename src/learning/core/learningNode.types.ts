@@ -73,6 +73,9 @@ export type ContainerNodeKind =
   | 'platform'
   | 'academy'
   | 'category'
+  | 'programme'
+  | 'level'
+  | 'module'
   | 'grade'
   | 'learningArea'
   | 'theme'
@@ -81,6 +84,7 @@ export type ContainerNodeKind =
   | 'topic';
 
 export type ContentNodeKind =
+  | 'learningMaterial'
   | 'lesson'
   | 'question'
   | 'practice'
