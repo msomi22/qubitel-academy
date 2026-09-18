@@ -2,10 +2,10 @@ import type { LearningNode, LearningBookContent } from '../../../../core/index.t
 import { createLearningNode } from '../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../core/learningNode.constants.ts';
 
-export const COSMETOLOGY_LEVEL_6_NODE_ID = 'cosmetology-level-6';
-export const COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID = 'cosmetology-l6-module-01-foundations';
-export const COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID = 'cosmetology-l6-professional-scope';
-export const COSMETOLOGY_PROFESSIONAL_SCOPE_MATERIAL_NODE_ID = 'cosmetology-l6-professional-scope-notes';
+export const COSMETOLOGY_LEVEL_6_NODE_ID = 'cos-l6';
+export const COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID = 'cos-l6-m01-foundations';
+export const COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID = 'cos-l6-m01-t01-scope';
+export const COSMETOLOGY_PROFESSIONAL_SCOPE_MATERIAL_NODE_ID = 'cos-l6-m01-lm01-start';
 
 const professionalScopeBook: LearningBookContent = {
   type: 'book',
@@ -110,12 +110,13 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
   createLearningNode({
     id: COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID,
     kind: LEARNING_NODE_KINDS.module,
-    label: 'Module 1 — Cosmetology Foundations and Professional Practice',
+    label: 'M1 · Foundations',
     summary: 'Professional scope, scientific foundations, ethics, safety, consultation and professional reasoning.',
     parentId: COSMETOLOGY_LEVEL_6_NODE_ID,
     childIds: [COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID],
     attributes: [
-      { key: 'routeSegment', value: 'foundations-professional-practice' },
+      { key: 'routeSegment', value: 'foundations' },
+      { key: 'officialTitle', value: 'Cosmetology Foundations and Professional Practice' },
       { key: 'moduleNumber', value: 1 }
     ],
     actions: [{ intent: 'openChildren' }],
@@ -128,12 +129,13 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
   createLearningNode({
     id: COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID,
     kind: LEARNING_NODE_KINDS.topic,
-    label: 'Professional Scope & Scientific Foundations',
+    label: 'Professional Scope',
     summary: 'Understand what professional cosmetology covers, how science supports practice, and where professional boundaries apply.',
     parentId: COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID,
     childIds: [COSMETOLOGY_PROFESSIONAL_SCOPE_MATERIAL_NODE_ID],
     attributes: [
-      { key: 'routeSegment', value: 'professional-scope' }
+      { key: 'routeSegment', value: 'scope' },
+      { key: 'officialTitle', value: 'Professional Scope & Scientific Foundations' }
     ],
     actions: [{ intent: 'openChildren' }],
     appearances: [
@@ -145,12 +147,13 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
   createLearningNode({
     id: COSMETOLOGY_PROFESSIONAL_SCOPE_MATERIAL_NODE_ID,
     kind: LEARNING_NODE_KINDS.learningMaterial,
-    label: 'Getting Started with Professional Cosmetology',
+    label: 'Getting Started',
     summary: 'Read the introductory Level 6 learning material.',
     parentId: COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID,
     content: professionalScopeBook,
     attributes: [
-      { key: 'routeSegment', value: 'getting-started' },
+      { key: 'routeSegment', value: 'start' },
+      { key: 'officialTitle', value: 'Getting Started with Professional Cosmetology' },
       { key: 'contentType', value: 'notes' }
     ],
     actions: [{ intent: 'resume' }],
