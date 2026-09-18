@@ -166,20 +166,29 @@ test('Skill topics do not add single learning-material pass-through nodes', () =
 });
 
 
-test('Onychology overview embeds the nail anatomy figure and teaches named structures', () => {
+test('Onychology overview embeds separate top-view and cross-section nail figures', () => {
   const registry = createSkillRegistry();
   const onychology = getNodeById(registry, 'cos-l6-m18-t01-overview');
 
   assert.equal(onychology?.content?.type, 'book');
 
   const pages = onychology?.content?.pages || [];
-  const anatomyPage = pages.find((page) => page.id === 'nail-unit-anatomy');
-  assert.ok(anatomyPage);
+  const topViewPage = pages.find((page) => page.id === 'nail-unit-top-view');
+  const crossSectionPage = pages.find((page) => page.id === 'nail-unit-cross-section');
 
-  const image = anatomyPage.blocks?.find((block) => block.type === 'image');
+  assert.ok(topViewPage);
+  assert.ok(crossSectionPage);
+
+  const topViewImage = topViewPage.blocks?.find((block) => block.type === 'image');
+  const crossSectionImage = crossSectionPage.blocks?.find((block) => block.type === 'image');
+
   assert.equal(
-    image?.src,
-    '/cosmetology/visuals/04-nails-body/18-01-nail-unit-anatomy.svg'
+    topViewImage?.src,
+    '/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.png'
+  );
+  assert.equal(
+    crossSectionImage?.src,
+    '/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.png'
   );
 
   const serialized = JSON.stringify(pages).toLowerCase();
