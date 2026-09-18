@@ -5,6 +5,7 @@ export default function LearningBookHeader({
   registry,
   nodeId,
   backPath,
+  backLabel = 'Themes',
   tabs,
   activeContentType,
   selectedContentType,
@@ -17,10 +18,10 @@ export default function LearningBookHeader({
           <NavLink
             className="book-toolbar-back"
             to={backPath}
-            aria-label="Back to Themes"
+            aria-label={`Back to ${backLabel}`}
           >
             <span aria-hidden="true">←</span>
-            <span>Themes</span>
+            <span>{backLabel}</span>
           </NavLink>
         )}
 
