@@ -164,3 +164,37 @@ test('Skill topics do not add single learning-material pass-through nodes', () =
     );
   }
 });
+
+
+test('Onychology overview embeds the nail anatomy figure and teaches named structures', () => {
+  const registry = createSkillRegistry();
+  const onychology = getNodeById(registry, 'cos-l6-m18-t01-overview');
+
+  assert.equal(onychology?.content?.type, 'book');
+
+  const pages = onychology?.content?.pages || [];
+  const anatomyPage = pages.find((page) => page.id === 'nail-unit-anatomy');
+  assert.ok(anatomyPage);
+
+  const image = anatomyPage.blocks?.find((block) => block.type === 'image');
+  assert.equal(
+    image?.src,
+    '/cosmetology/visuals/04-nails-body/18-01-nail-unit-anatomy.svg'
+  );
+
+  const serialized = JSON.stringify(pages).toLowerCase();
+  for (const term of [
+    'nail plate',
+    'nail bed',
+    'nail matrix',
+    'lunula',
+    'proximal nail fold',
+    'lateral nail fold',
+    'eponychium',
+    'cuticle',
+    'hyponychium',
+    'free edge'
+  ]) {
+    assert.match(serialized, new RegExp(term.replace(/ /g, '\\s+')));
+  }
+});
