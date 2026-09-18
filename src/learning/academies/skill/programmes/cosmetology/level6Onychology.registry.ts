@@ -40,32 +40,60 @@ const onychologyIntroductionBook: LearningBookContent = {
       ]
     },
     {
-      id: 'nail-unit-anatomy',
-      title: 'Anatomy of the Nail Unit',
+      id: 'nail-unit-top-view',
+      title: 'Nail Unit: Top View',
       blocks: [
         {
           type: 'image',
-          src: '/cosmetology/visuals/04-nails-body/18-01-nail-unit-anatomy.svg',
-          alt: 'Labelled top view and longitudinal cross-section of the human nail unit showing the proximal nail fold, eponychium, cuticle, lunula, nail plate, lateral nail folds, free edge, nail matrix, nail bed, and hyponychium.',
-          caption: 'Figure 18.1 — Anatomy of the human nail unit. Study both the surface view and cross-section before learning nail services.'
+          src: '/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.png',
+          alt: 'Labelled top view of a human fingernail showing the proximal nail fold, cuticle, lunula, lateral nail folds, nail plate, and free edge.',
+          caption: 'Figure 18.1A — Nail Unit Top View. Major visible structures used during consultation, shaping, and nail services.'
         },
         {
           type: 'paragraph',
-          text: 'The nail unit includes the nail plate, the tissues that produce and support it, and the skin folds that surround it. Some structures are visible from the surface, while others lie beneath the nail plate or proximal nail fold.'
+          text: 'From the surface, the learner should be able to identify the nail plate, free edge, lunula, proximal nail fold, lateral nail folds, and cuticle area. These landmarks guide observation, shaping, product placement, and safe use of tools.'
         },
         {
           type: 'list',
-          title: 'Structures to identify on Figure 18.1',
+          title: 'Identify these visible structures',
           items: [
             'proximal nail fold;',
-            'eponychium and cuticle;',
+            'cuticle;',
+            'lunula;',
+            'lateral nail folds;',
+            'nail plate;',
+            'free edge.'
+          ]
+        }
+      ]
+    },
+    {
+      id: 'nail-unit-cross-section',
+      title: 'Nail Unit: Cross-Section',
+      blocks: [
+        {
+          type: 'image',
+          src: '/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.png',
+          alt: 'Labelled longitudinal cross-section of the human nail unit showing the proximal nail fold, eponychium, cuticle, nail matrix, lunula, nail plate, nail bed, hyponychium, and free edge.',
+          caption: 'Figure 18.1B — Nail Unit Cross-Section. Hidden supporting structures of the nail unit, including the growth region and protective seals.'
+        },
+        {
+          type: 'paragraph',
+          text: 'The cross-section reveals structures that cannot be fully understood from the surface. The matrix produces most of the nail plate, the nail bed supports the plate, and the proximal and distal tissues help protect the nail unit from trauma and contamination.'
+        },
+        {
+          type: 'list',
+          title: 'Identify these internal and supporting structures',
+          items: [
+            'proximal nail fold;',
+            'eponychium;',
+            'cuticle;',
+            'nail matrix;',
             'lunula;',
             'nail plate;',
-            'lateral nail folds;',
-            'free edge;',
-            'nail matrix;',
             'nail bed;',
-            'hyponychium.'
+            'hyponychium;',
+            'free edge.'
           ]
         }
       ]
@@ -214,7 +242,7 @@ const onychologyIntroductionBook: LearningBookContent = {
     module: 18,
     level: 6,
     source: 'original',
-    figureIds: ['18.1']
+    figureIds: ['18.1A', '18.1B']
   }
 };
 
