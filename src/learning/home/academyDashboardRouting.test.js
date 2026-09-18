@@ -9,6 +9,9 @@ function readSource(relativePath) {
 const appSource = readSource('../../App.jsx');
 const cbcDashboardSource = readSource('../../pages/home/CbcAcademyHome.jsx');
 const cbcSidebarSource = readSource('../../components/CbcSidebar.jsx');
+const skillDashboardSource = readSource('../../pages/home/SkillAcademyHome.jsx');
+const skillSidebarSource = readSource('../../components/SkillSidebar.jsx');
+const sidebarOverrideSource = readSource('../../components/sidebarOverrideRegistry.js');
 const homeSource = readSource('../../pages/Home.jsx');
 const overrideSource = readSource('../../pages/home/homeOverrideRegistry.js');
 const learningNodeShellSource = readSource('../../components/LearningNodePageShell.jsx');
@@ -24,8 +27,9 @@ test('root Dashboard route renders the academy-aware Home composition', () => {
   assert.doesNotMatch(homeSource, /DashboardPlaceholder/);
 });
 
-test('CBC alone resolves to the existing CBC dashboard override', () => {
+test('CBC and Skill resolve to their academy dashboard overrides', () => {
   assert.match(overrideSource, /'cbc-academy':\s*CbcAcademyHome/);
+  assert.match(overrideSource, /'skill-academy':\s*SkillAcademyHome/);
   assert.match(overrideSource, /\|\|\s*DefaultAcademyHome/);
   assert.doesNotMatch(overrideSource, /'technology-academy':\s*CbcAcademyHome/);
   assert.doesNotMatch(overrideSource, /'customer-experience-academy':\s*CbcAcademyHome/);
@@ -61,6 +65,19 @@ test('Tech and CX continue to use the default academy dashboard', () => {
   assert.match(overrideSource, /\|\|\s*DefaultAcademyHome/);
   assert.doesNotMatch(overrideSource, /'technology-academy':\s*CbcAcademyHome/);
   assert.doesNotMatch(overrideSource, /'customer-experience-academy':\s*CbcAcademyHome/);
+});
+
+test('academy sidebar overrides keep CBC and Skill navigation independent', () => {
+  assert.match(sidebarOverrideSource, /cbc:\s*CbcSidebar/);
+  assert.match(sidebarOverrideSource, /skill:\s*SkillSidebar/);
+  assert.match(skillSidebarSource, /label:\s*'Programmes'/);
+  assert.match(skillSidebarSource, /label:\s*'Dashboard'/);
+});
+
+test('Skill dashboard exposes Programmes and LearningNode programme routes', () => {
+  assert.match(skillDashboardSource, />Programmes</);
+  assert.match(skillDashboardSource, /\/learn\/\$\{programme\.id\}/);
+  assert.match(skillDashboardSource, /createSkillProgrammesRegistrySource/);
 });
 
 test('CBC LearningNode pages record resolved visits for Continue', () => {
