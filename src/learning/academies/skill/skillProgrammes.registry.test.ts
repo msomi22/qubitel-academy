@@ -57,25 +57,32 @@ test('Cosmetology exposes Levels 3 through 6 and only Level 6 is ready', () => {
   );
 });
 
-test('Level 6 exposes a ready module, topic, and learning material', () => {
+test('Level 6 exposes Foundations and Onychology as ready learning modules', () => {
   const registry = createSkillRegistry();
   const modules = getChildren(registry, 'cosmetology-level-6');
 
-  assert.equal(modules.length, 1);
-  assert.equal(modules[0].kind, 'module');
-  assert.equal(modules[0].label, 'Module 1 — Cosmetology Foundations and Professional Practice');
-  assert.equal(isLearningNodeReady(registry, modules[0]), true);
+  assert.deepEqual(
+    modules.map((node) => node.label),
+    [
+      'Module 1 — Cosmetology Foundations and Professional Practice',
+      'Module 18 — Onychology, Manicure, Pedicure and Nail Technology'
+    ]
+  );
+  assert.ok(modules.every((node) => node.kind === 'module'));
+  assert.ok(modules.every((node) => isLearningNodeReady(registry, node)));
 
-  const topics = getChildren(registry, modules[0].id);
-  assert.equal(topics.length, 1);
-  assert.equal(topics[0].kind, 'topic');
+  for (const moduleNode of modules) {
+    const topics = getChildren(registry, moduleNode.id);
+    assert.equal(topics.length, 1);
+    assert.equal(topics[0].kind, 'topic');
 
-  const materials = getChildren(registry, topics[0].id);
-  assert.equal(materials.length, 1);
-  assert.equal(materials[0].kind, 'learningMaterial');
-  assert.equal(materials[0].content?.type, 'book');
-  assert.ok(Array.isArray(materials[0].content?.pages));
-  assert.ok(materials[0].content.pages.length > 0);
+    const materials = getChildren(registry, topics[0].id);
+    assert.equal(materials.length, 1);
+    assert.equal(materials[0].kind, 'learningMaterial');
+    assert.equal(materials[0].content?.type, 'book');
+    assert.ok(Array.isArray(materials[0].content?.pages));
+    assert.ok(materials[0].content.pages.length > 0);
+  }
 });
 
 test('non-CBC LearningNode UI routes use stable /learn/:nodeId routes', () => {
