@@ -35,6 +35,7 @@ test('Skill Academy exposes Cosmetology as a programme LearningNode', () => {
 
   assert.deepEqual(programmes.map((node) => node.id), [COSMETOLOGY_PROGRAMME_NODE_ID]);
   assert.equal(programmes[0].kind, 'programme');
+  assert.equal(programmes[0].content, undefined);
   assert.equal(isLearningNodeReady(registry, programmes[0]), true);
 });
 
