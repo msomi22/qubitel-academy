@@ -98,6 +98,8 @@ LearningNode names appear in cards, breadcrumbs, compact headers, back controls,
 
 ### Hard limits
 
+Apply these limits to all new or modified LearningNodes. Legacy nodes may be migrated incrementally.
+
 - `label`: maximum **32 characters**.
 - `id`: maximum **40 characters**.
 - `routeSegment`: maximum **24 characters**.
