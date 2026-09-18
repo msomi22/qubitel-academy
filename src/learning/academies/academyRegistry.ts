@@ -9,11 +9,13 @@ import {
 export const TECHNOLOGY_ACADEMY_NODE_ID = 'technology-academy';
 export const CBC_ACADEMY_NODE_ID = 'cbc-academy';
 export const CUSTOMER_EXPERIENCE_ACADEMY_NODE_ID = 'customer-experience-academy';
+export const SKILL_ACADEMY_NODE_ID = 'skill-academy';
 
 export const ACADEMY_ROOT_NODE_IDS = [
   TECHNOLOGY_ACADEMY_NODE_ID,
   CBC_ACADEMY_NODE_ID,
-  CUSTOMER_EXPERIENCE_ACADEMY_NODE_ID
+  CUSTOMER_EXPERIENCE_ACADEMY_NODE_ID,
+  SKILL_ACADEMY_NODE_ID
 ] as const;
 
 const ACADEMY_ROOT_NODES = [
@@ -72,6 +74,26 @@ const ACADEMY_ROOT_NODES = [
     appearances: [
       { key: 'tone', value: 'serviceFocused' },
       { key: 'icon', value: 'headphones' }
+    ]
+  }),
+  createAcademyNode({
+    id: SKILL_ACADEMY_NODE_ID,
+    label: 'Skill Academy',
+    summary: 'Technical, vocational and professional learning.',
+    parentId: QUBITEL_ACADEMY_ROOT_NODE_ID,
+    attributes: [
+      { key: 'scope', value: 'academyRoot' },
+      { key: 'routeSegment', value: 'skill' }
+    ],
+    features: [
+      { kind: 'skillsLearning' }
+    ],
+    actions: [
+      { intent: 'openChildren' }
+    ],
+    appearances: [
+      { key: 'tone', value: 'professional' },
+      { key: 'icon', value: 'tools' }
     ]
   })
 ] as const;
