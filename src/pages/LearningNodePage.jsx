@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { createLearningNodeRegistry, mergeLearningNodeSources } from '../learning/registry/index.ts';
 import { createGrade1EnglishActivitiesRegistrySource } from '../learning/academies/cbc/grade1/englishActivities.registry.ts';
 import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
+import { createSkillProgrammesRegistrySource } from '../learning/academies/skill/skillProgrammes.registry.ts';
 import { createQubitelAcademyPlatformRegistry, getAcademyRootNodes } from '../learning/academies/index.ts';
 import { detectAcademyIdFromLocation } from '../config/detectAcademy.ts';
 import { createNodeRoutePath } from '../learning/routing';
@@ -115,28 +116,32 @@ export default function LearningNodePage({ nodeIdOverride, semanticRoute = false
   const registry = useMemo(() => {
     const grade1Source = createGrade1EnglishActivitiesRegistrySource();
     const cbcGradesSource = createCbcGradesRegistrySource();
+    const skillProgrammesSource = createSkillProgrammesRegistrySource();
     const platformRegistry = createQubitelAcademyPlatformRegistry();
 
     const platformNodes = Array.from(platformRegistry.nodesById.values());
     const grade1Nodes = grade1Source.nodes;
-    const cbcGradesNodes = cbcGradesSource.nodes;
 
-    // If a specific academy is active (e.g., CBC), filter to show only that academy's content
     if (activeAcademyId && activeAcademyId !== 'tech') {
       const academyRootNodes = getAcademyRootNodes();
-      const activeAcademyNode = academyRootNodes.find(node => node.id === `${activeAcademyId}-academy`);
-      
+      const academyNodeId = activeAcademyId === 'customer-experience'
+        ? 'customer-experience-academy'
+        : `${activeAcademyId}-academy`;
+      const activeAcademyNode = academyRootNodes.find(node => node.id === academyNodeId);
+
       if (activeAcademyNode) {
-        // Include the active academy node and all its descendants, plus grade content
-        const activeAcademyIdStr = activeAcademyNode.id;
-        const filteredPlatformNodes = platformNodes.filter(node => {
-          // Keep root platform node and the active academy
-          if (node.id === 'qubitel-academy' || node.id === activeAcademyIdStr) return true;
-          return false;
-        });
-        
+        const filteredPlatformNodes = platformNodes.filter(node => (
+          node.id === 'qubitel-academy' || node.id === activeAcademyNode.id
+        ));
+
+        const academyContentNodes = activeAcademyId === 'cbc'
+          ? cbcGradesSource.nodes
+          : activeAcademyId === 'skill'
+            ? skillProgrammesSource.nodes
+            : [];
+
         return createLearningNodeRegistry({
-          nodes: [...filteredPlatformNodes, ...cbcGradesNodes]
+          nodes: [...filteredPlatformNodes, ...academyContentNodes]
         });
       }
     }
