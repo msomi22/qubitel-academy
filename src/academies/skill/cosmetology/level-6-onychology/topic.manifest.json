@@ -7,8 +7,8 @@
   "status": "active",
   "learningAreas": [
     {
-      "id": "intro",
-      "title": "Introduction",
+      "id": "basics",
+      "title": "Nail Science Basics",
       "description": "Scope of nail science, professional services, safety, contraindications and the learning journey.",
       "sequence": 10
     }
@@ -17,7 +17,7 @@
     {
       "id": "onychology-001",
       "file": "lessons/onychology-introduction-lesson-001.js",
-      "learningAreaId": "intro"
+      "learningAreaId": "basics"
     }
   ],
   "practice": [],
