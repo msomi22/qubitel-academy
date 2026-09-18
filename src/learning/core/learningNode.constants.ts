@@ -54,4 +54,10 @@ export const LEARNING_NODE_APPEARANCE_KEYS = {
   soundEffect: 'soundEffect'
 } as const;
 
+export const LEARNING_NODE_NAMING_LIMITS = {
+  label: 32,
+  id: 40,
+  routeSegment: 24
+} as const;
+
 export const DEFAULT_LEARNING_NODE_VERSION = 1;
