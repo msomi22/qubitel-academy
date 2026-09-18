@@ -223,9 +223,10 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
               const icon = ICON_BY_KIND[child.kind] || '📄';
               const kindLabel = LABEL_BY_KIND[child.kind] || child.kind;
               const hasActions = child.actions && child.actions.length > 0;
-              const isDisabled = child.kind === 'learningArea'
-                ? !hasActions || !isLearningNodeReady(registry, child)
-                : !hasActions;
+              const readinessAwareKinds = new Set(['programme', 'level', 'module', 'learningArea']);
+              const isDisabled = !hasActions || (
+                readinessAwareKinds.has(child.kind) && !isLearningNodeReady(registry, child)
+              );
 
               if (child.kind === 'learningArea') {
                 return (
