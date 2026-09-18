@@ -19,6 +19,7 @@ import customer_experience_customer_support_category from './customer-experience
 import customer_experience_customer_support_complaint_handling_topic from './customer-experience/customer-support/complaint-handling/topic.manifest.json' with { type: 'json' };
 import skill_academy from './skill/academy.manifest.json' with { type: 'json' };
 import skill_cosmetology_category from './skill/cosmetology/category.manifest.json' with { type: 'json' };
+import skill_cosmetology_level_6_foundations_topic from './skill/cosmetology/level-6-foundations/topic.manifest.json' with { type: 'json' };
 import skill_cosmetology_programme_overview_topic from './skill/cosmetology/programme-overview/topic.manifest.json' with { type: 'json' };
 import tech_academy from './tech/academy.manifest.json' with { type: 'json' };
 import tech_aptitude_category from './tech/aptitude/category.manifest.json' with { type: 'json' };
@@ -94,6 +95,7 @@ export const topicManifestRecords = [
   { path: './cbc/grade-3/kiswahili/topic.manifest.json', manifest: cbc_grade_3_kiswahili_topic },
   { path: './cbc/grade-3/mathematics/topic.manifest.json', manifest: cbc_grade_3_mathematics_topic },
   { path: './customer-experience/customer-support/complaint-handling/topic.manifest.json', manifest: customer_experience_customer_support_complaint_handling_topic },
+  { path: './skill/cosmetology/level-6-foundations/topic.manifest.json', manifest: skill_cosmetology_level_6_foundations_topic },
   { path: './skill/cosmetology/programme-overview/topic.manifest.json', manifest: skill_cosmetology_programme_overview_topic },
   { path: './tech/aptitude/numerical-reasoning/topic.manifest.json', manifest: tech_aptitude_numerical_reasoning_topic },
   { path: './tech/dsa/backtracking/topic.manifest.json', manifest: tech_dsa_backtracking_topic },
