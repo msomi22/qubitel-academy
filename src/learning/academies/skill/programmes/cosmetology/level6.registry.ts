@@ -8,8 +8,8 @@ export const COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID = 'cos-l6-m01-t01-scop
 
 const professionalScopeBook: LearningBookContent = {
   type: 'book',
-  title: 'Getting Started with Professional Cosmetology',
-  description: 'An introduction to professional scope, scientific thinking, client safety, and the Level 6 learning journey.',
+  title: 'Professional Scope',
+  description: 'Professional scope, scientific thinking, client safety, and professional judgement in cosmetology.',
   pages: [
     {
       id: 'professional-cosmetology',
@@ -118,7 +118,7 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
       { key: 'officialTitle', value: 'Cosmetology Foundations and Professional Practice' },
       { key: 'moduleNumber', value: 1 }
     ],
-    actions: [{ intent: 'resume' }],
+    actions: [{ intent: 'openChildren' }],
     appearances: [
       { key: 'icon', value: '🎓' },
       { key: 'tone', value: 'professional' }
@@ -137,7 +137,7 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
       { key: 'officialTitle', value: 'Professional Scope & Scientific Foundations' },
       { key: 'contentType', value: 'notes' }
     ],
-    actions: [{ intent: 'openChildren' }],
+    actions: [{ intent: 'resume' }],
     appearances: [
       { key: 'icon', value: '📚' },
       { key: 'tone', value: 'professional' }
