@@ -290,6 +290,10 @@ export default function LearningNodePageShell({
 function getKindLabel(kind) {
   const labels = {
     academy: 'Academy',
+    programme: 'Programme',
+    level: 'Level',
+    module: 'Module',
+    learningMaterial: 'Learning Material',
     grade: 'Grade',
     learningArea: 'Learning Area',
     theme: 'Theme',
