@@ -74,8 +74,10 @@ test('academy sidebar overrides keep CBC and Skill navigation independent', () =
   assert.match(skillSidebarSource, /label:\s*'Dashboard'/);
 });
 
-test('Skill dashboard exposes Programmes and LearningNode programme routes', () => {
-  assert.match(skillDashboardSource, />Programmes</);
+test('Skill dashboard stays simple and exposes LearningNode programme routes', () => {
+  assert.match(skillDashboardSource, /Browse Programmes/);
+  assert.doesNotMatch(skillDashboardSource, /Learning paths/);
+  assert.doesNotMatch(skillDashboardSource, /<h2[^>]*>Programmes<\/h2>/);
   assert.match(skillDashboardSource, /\/learn\/\$\{programme\.id\}/);
   assert.match(skillDashboardSource, /createSkillProgrammesRegistrySource/);
 });
