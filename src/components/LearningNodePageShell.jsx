@@ -110,6 +110,7 @@ export default function LearningNodePageShell({
   const isLearningAreaPage = currentNode.kind === 'learningArea';
   const shouldUseLearningAreaLayout = isLearningAreaPage && !shouldShowBookView;
   const isGradePage = currentNode.kind === 'grade';
+  const isProgrammePage = currentNode.kind === 'programme';
 
   const headingId = `learning-node-heading-${currentNode.id}`;
 
@@ -171,7 +172,7 @@ export default function LearningNodePageShell({
         } ${
           shouldUseLearningAreaLayout ? 'progress-card-learning-area-mode' : ''
         } ${
-          isGradePage ? 'progress-card-grade-mode' : ''
+          isGradePage || isProgrammePage ? 'progress-card-grade-mode' : ''
         }`}
         aria-labelledby={headingId}
       >
@@ -181,18 +182,26 @@ export default function LearningNodePageShell({
           </h1>
         ) : (
           <header className="learning-node-header">
-            {shouldUseLearningAreaLayout || isGradePage ? (
+            {shouldUseLearningAreaLayout || isGradePage || isProgrammePage ? (
               <>
                 <h1 id={headingId} className="sr-only">
                   {currentNode.label}
                 </h1>
                 <LearningNodeCompactHeader
-                  backTo={isGradePage ? '/categories' : parentPath}
-                  backLabel={isGradePage ? 'Grades' : navigation.parent?.label || 'Previous'}
+                  backTo={isGradePage || isProgrammePage ? '/categories' : parentPath}
+                  backLabel={
+                    isGradePage
+                      ? 'Grades'
+                      : isProgrammePage
+                        ? 'Programmes'
+                        : navigation.parent?.label || 'Previous'
+                  }
                   backAriaLabel={
                     isGradePage
                       ? 'Back to Grades'
-                      : `Back to ${navigation.parent?.label || 'previous'}`
+                      : isProgrammePage
+                        ? 'Back to Programmes'
+                        : `Back to ${navigation.parent?.label || 'previous'}`
                   }
                   breadcrumbs={(
                     <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
