@@ -5,7 +5,6 @@ import { LEARNING_NODE_KINDS } from '../../../../core/learningNode.constants.ts'
 export const COSMETOLOGY_LEVEL_6_NODE_ID = 'cos-l6';
 export const COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID = 'cos-l6-m01-foundations';
 export const COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID = 'cos-l6-m01-t01-scope';
-export const COSMETOLOGY_PROFESSIONAL_SCOPE_MATERIAL_NODE_ID = 'cos-l6-m01-lm01-start';
 
 const professionalScopeBook: LearningBookContent = {
   type: 'book',
@@ -119,7 +118,7 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
       { key: 'officialTitle', value: 'Cosmetology Foundations and Professional Practice' },
       { key: 'moduleNumber', value: 1 }
     ],
-    actions: [{ intent: 'openChildren' }],
+    actions: [{ intent: 'resume' }],
     appearances: [
       { key: 'icon', value: '🎓' },
       { key: 'tone', value: 'professional' }
@@ -132,10 +131,11 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
     label: 'Professional Scope',
     summary: 'Understand what professional cosmetology covers, how science supports practice, and where professional boundaries apply.',
     parentId: COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID,
-    childIds: [COSMETOLOGY_PROFESSIONAL_SCOPE_MATERIAL_NODE_ID],
+    content: professionalScopeBook,
     attributes: [
       { key: 'routeSegment', value: 'scope' },
-      { key: 'officialTitle', value: 'Professional Scope & Scientific Foundations' }
+      { key: 'officialTitle', value: 'Professional Scope & Scientific Foundations' },
+      { key: 'contentType', value: 'notes' }
     ],
     actions: [{ intent: 'openChildren' }],
     appearances: [
@@ -144,23 +144,5 @@ export const cosmetologyLevel6ContentNodes: LearningNode[] = [
     ],
     version: 1
   }),
-  createLearningNode({
-    id: COSMETOLOGY_PROFESSIONAL_SCOPE_MATERIAL_NODE_ID,
-    kind: LEARNING_NODE_KINDS.learningMaterial,
-    label: 'Getting Started',
-    summary: 'Read the introductory Level 6 learning material.',
-    parentId: COSMETOLOGY_PROFESSIONAL_SCOPE_TOPIC_NODE_ID,
-    content: professionalScopeBook,
-    attributes: [
-      { key: 'routeSegment', value: 'start' },
-      { key: 'officialTitle', value: 'Getting Started with Professional Cosmetology' },
-      { key: 'contentType', value: 'notes' }
-    ],
-    actions: [{ intent: 'resume' }],
-    appearances: [
-      { key: 'icon', value: '📖' },
-      { key: 'tone', value: 'professional' }
-    ],
-    version: 1
-  })
+
 ];
