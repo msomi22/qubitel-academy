@@ -2237,3 +2237,85 @@
     font-size: 0.8rem;
   }
 }
+
+/* Mobile book header overlap fix */
+@media (max-width: 760px) {
+  .progress-card-book-mode .learning-book-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.55rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .progress-card-book-mode .learning-book-header__primary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .progress-card-book-mode .book-toolbar-back {
+    justify-self: start;
+    max-width: 100%;
+    min-height: 44px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .progress-card-book-mode .learning-book-header__breadcrumbs {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 0.15rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .progress-card-book-mode .learning-book-header__breadcrumbs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .progress-card-book-mode .learning-book-header__breadcrumbs .breadcrumb-list {
+    width: max-content;
+    min-width: 100%;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+    white-space: nowrap;
+    font-size: 0.82rem;
+  }
+
+  .progress-card-book-mode .learning-book-header__breadcrumbs .breadcrumb-item,
+  .progress-card-book-mode .learning-book-header__breadcrumbs .breadcrumb-link,
+  .progress-card-book-mode .learning-book-header__breadcrumbs .breadcrumb-current {
+    flex: 0 0 auto;
+    max-width: none;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .progress-card-book-mode .book-content-tabs {
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .progress-card-book-mode .book-content-tab {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-card-book-mode .book-toolbar-back {
+    max-width: min(100%, 18rem);
+  }
+
+  .progress-card-book-mode .learning-book-header__breadcrumbs .breadcrumb-list {
+    font-size: 0.78rem;
+  }
+}
