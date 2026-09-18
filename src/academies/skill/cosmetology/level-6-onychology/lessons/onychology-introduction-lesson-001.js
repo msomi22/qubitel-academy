@@ -1,9 +1,9 @@
 import { defineLearningProblem } from '../../../../../problems/problemAuthoring.js';
 
 const lesson = defineLearningProblem({
-  id: 'cosmetology-onychology-introduction-lesson-001',
+  id: 'cos-l6-onychology-001',
   category: 'cosmetology',
-  topicId: 'level-6-onychology',
+  topicId: 'l6-onychology',
   title: 'Introduction to Onychology',
   difficulty: 'Foundation',
   estimatedTimeSeconds: 600,
