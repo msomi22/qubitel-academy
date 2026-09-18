@@ -1,3 +1,5 @@
+recommend using it as the course entry point and structuring the actual learning material roughly like this
+
 docs/cosmetology/
 │
 ├── README.md                     # Master course guide / table of contents
@@ -56,3 +58,47 @@ docs/cosmetology/
     ├── colour-theory.md
     ├── client-forms.md
     └── tvet-cross-reference.md
+
+
+Each chapter to follow one fixed teaching template
+
+
+# Module / Chapter
+
+## Why This Matters
+## Learning Outcomes
+## TVET-CDACC Alignment
+## Scientific Disciplines
+
+## Key Terminology
+
+## 1. Scientific Foundation
+## 2. Anatomy / Structure
+## 3. Physiology / Function
+## 4. Chemistry / Physics where applicable
+## 5. Conditions / Abnormalities
+## 6. Professional Application
+## 7. Products and Ingredients
+## 8. Tools and Equipment
+## 9. Safety and Contraindications
+## 10. Inclusive Cosmetology
+
+> SCIENCE BOX
+
+> WHY?
+
+> SALON APPLICATION
+
+> RED FLAG
+
+> TEXTURED HAIR / MELANIN-RICH SKIN NOTE
+
+## Client Case Study
+## Practical Connection
+## Chapter Summary
+## Key Terms Review
+## Knowledge Check
+## Short Answer Questions
+## Applied / Case Questions
+## Teacher Notes
+## Further Reading
