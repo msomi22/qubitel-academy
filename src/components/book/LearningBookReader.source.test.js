@@ -145,7 +145,7 @@ test('mobile reader exposes text-size controls', () => {
   assert.match(readerSource, /aria-label="Increase text size"/);
   assert.match(readerSource, /--learning-book-font-scale/);
   assert.match(readerStyleSource, /\.learning-book__reading-controls/);
-  assert.match(readerStyleSource, /font-size:\s*calc\(1\.08rem \* var\(--learning-book-font-scale, 1\)\)/);
+  assert.match(readerStyleSource, /font-size:\s*calc\(1rem \* var\(--learning-book-font-scale, 1\)\)/);
 });
 
 test('instructional images open in a zoomable fullscreen viewer', () => {
