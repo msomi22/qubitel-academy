@@ -14,7 +14,7 @@ The course is designed to:
 - support both classroom teaching and self-study;
 - remain modular enough to publish as web content, course notes, or a future book.
 
-The master course outline is maintained in [README.md](./README.md).
+The master curriculum specification is maintained in [curriculum specification](./curriculum_specification.md).
 
 ---
 
@@ -67,7 +67,7 @@ The course combines three layers:
 ```text
 docs/cosmetology/
 │
-├── README.md
+├── curriculum_specification.md
 ├── structuring.md
 │
 ├── 01-foundations/
@@ -682,7 +682,7 @@ The detailed cross-reference should be maintained separately in:
 
 [`reference/tvet-cross-reference.md`](./reference/tvet-cross-reference.md)
 
-The master course outline in [README.md](./README.md) currently maps major occupational competencies to the principal teaching modules.
+The master curriculum specification in [curriculum specification](./curriculum_specification.md) currently maps major occupational competencies to the principal teaching modules.
 
 TVET alignment should be treated as a **curriculum mapping reference**, not as a claim that this repository itself awards or replaces an accredited TVET qualification.
 
@@ -810,7 +810,7 @@ Where external standards or curricula are referenced:
 
 For each module:
 
-1. Confirm the module scope in [README.md](./README.md).
+1. Confirm the module scope in [curriculum specification](./curriculum_specification.md).
 2. Identify the relevant TVET competency areas.
 3. Identify the scientific disciplines involved.
 4. Build the detailed chapter outline.
@@ -828,7 +828,7 @@ For each module:
 
 ## 24. Suggested Content Status
 
-As the course grows, modules may use a simple status marker in the master README:
+As the course grows, modules may use a simple status marker in the master curriculum specification:
 
 - **Planned** — structure identified, content not written.
 - **Draft** — substantial content exists but still requires review.
