@@ -10,8 +10,7 @@ Angular would be stronger for a large enterprise team but heavier for this conte
 import { Suspense, lazy, useEffect, useRef } from 'react';
 import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
-import Sidebar from './components/Sidebar.jsx';
-import CbcSidebar from './components/CbcSidebar.jsx';
+import { resolveSidebarComponent } from './components/sidebarOverrideRegistry.js';
 import StatusBar from './components/StatusBar.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import OnboardingOverlay from './components/OnboardingOverlay.jsx';
@@ -88,7 +87,7 @@ export default function App() {
   const { pathname } = useLocation();
   const isExamRoute = pathname.startsWith('/exam/');
   const activeAcademyId = detectAcademyIdFromLocation();
-  const isCbcAcademy = activeAcademyId === 'cbc';
+  const AcademySidebar = resolveSidebarComponent(activeAcademyId);
 
   useEffect(() => {
     document.title = `${siteConfig.appName} | Learning Dashboard`;
@@ -103,7 +102,7 @@ export default function App() {
 
       {!isExamRoute ? <Navbar /> : null}
       <div className={`layout ${isExamRoute ? 'exam-route-layout' : ''}`}>
-        {!isExamRoute ? (isCbcAcademy ? <CbcSidebar /> : <Sidebar />) : null}
+        {!isExamRoute ? <AcademySidebar /> : null}
         <main className="page-wrap protect-content">
           {/* PageSkeleton replaces the blank LoadingCard for a better
               perceived-performance experience on route transitions */}
