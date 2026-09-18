@@ -3,11 +3,11 @@ import { createLearningNode } from '../../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../../core/learningNode.constants.ts';
 
 export const COSMETOLOGY_ONYCHOLOGY_MODULE_NODE_ID =
-  'cosmetology-l6-module-18-onychology';
+  'cos-l6-m18-onychology';
 export const COSMETOLOGY_ONYCHOLOGY_INTRO_TOPIC_NODE_ID =
-  'cosmetology-l6-onychology-introduction';
+  'cos-l6-m18-t01-intro';
 export const COSMETOLOGY_ONYCHOLOGY_INTRO_MATERIAL_NODE_ID =
-  'cosmetology-l6-onychology-introduction-notes';
+  'cos-l6-m18-lm01-overview';
 
 const onychologyIntroductionBook: LearningBookContent = {
   type: 'book',
@@ -89,12 +89,13 @@ export const cosmetologyOnychologyNodes: LearningNode[] = [
   createLearningNode({
     id: COSMETOLOGY_ONYCHOLOGY_MODULE_NODE_ID,
     kind: LEARNING_NODE_KINDS.module,
-    label: 'Module 18 — Onychology, Manicure, Pedicure and Nail Technology',
+    label: 'M18 · Onychology',
     summary: 'Nail science, nail care, enhancements, product chemistry, safety and professional nail services.',
-    parentId: 'cosmetology-level-6',
+    parentId: 'cos-l6',
     childIds: [COSMETOLOGY_ONYCHOLOGY_INTRO_TOPIC_NODE_ID],
     attributes: [
-      { key: 'routeSegment', value: 'onychology-nail-technology' },
+      { key: 'routeSegment', value: 'onychology' },
+      { key: 'officialTitle', value: 'Onychology, Manicure, Pedicure and Nail Technology' },
       { key: 'moduleNumber', value: 18 }
     ],
     actions: [{ intent: 'openChildren' }],
@@ -107,12 +108,13 @@ export const cosmetologyOnychologyNodes: LearningNode[] = [
   createLearningNode({
     id: COSMETOLOGY_ONYCHOLOGY_INTRO_TOPIC_NODE_ID,
     kind: LEARNING_NODE_KINDS.topic,
-    label: 'Introduction to Onychology',
+    label: 'Introduction',
     summary: 'Understand the scope of nail science, professional nail services, safety and the module learning journey.',
     parentId: COSMETOLOGY_ONYCHOLOGY_MODULE_NODE_ID,
     childIds: [COSMETOLOGY_ONYCHOLOGY_INTRO_MATERIAL_NODE_ID],
     attributes: [
-      { key: 'routeSegment', value: 'introduction-to-onychology' }
+      { key: 'routeSegment', value: 'intro' },
+      { key: 'officialTitle', value: 'Introduction to Onychology' }
     ],
     actions: [{ intent: 'openChildren' }],
     appearances: [
@@ -124,12 +126,13 @@ export const cosmetologyOnychologyNodes: LearningNode[] = [
   createLearningNode({
     id: COSMETOLOGY_ONYCHOLOGY_INTRO_MATERIAL_NODE_ID,
     kind: LEARNING_NODE_KINDS.learningMaterial,
-    label: 'Introduction to Onychology',
+    label: 'Onychology Overview',
     summary: 'Begin the Level 6 nail science learning area.',
     parentId: COSMETOLOGY_ONYCHOLOGY_INTRO_TOPIC_NODE_ID,
     content: onychologyIntroductionBook,
     attributes: [
-      { key: 'routeSegment', value: 'introduction' },
+      { key: 'routeSegment', value: 'overview' },
+      { key: 'officialTitle', value: 'Introduction to Onychology' },
       { key: 'contentType', value: 'notes' }
     ],
     actions: [{ intent: 'resume' }],
