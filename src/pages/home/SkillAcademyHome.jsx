@@ -101,27 +101,11 @@ export default function SkillAcademyHome({ homeModel }) {
         </div>
       </section>
 
-      <section className="glass dashboard-command-card dashboard-category-card" aria-labelledby="skill-programmes-title">
-        <div className="dashboard-command-card__head">
-          <div>
-            <p className="eyebrow">Learning paths</p>
-            <h2 id="skill-programmes-title">Programmes</h2>
-          </div>
-          <div className="dashboard-command-card__action">
-            <Link to="/categories">View all programmes</Link>
-          </div>
-        </div>
-
-        <div className="premium-category-grid">
-          {programmes.map((programme) => (
-            <ProgrammeCard key={programme.id} registry={registry} programme={programme} />
-          ))}
-        </div>
-
-        {programmes.length === 0 ? (
-          <p>Programmes will appear here when they are connected beneath the Skill Academy node.</p>
-        ) : null}
-      </section>
+      <div className="premium-category-grid skill-dashboard-programme-grid" aria-label="Available programmes">
+        {programmes.map((programme) => (
+          <ProgrammeCard key={programme.id} registry={registry} programme={programme} />
+        ))}
+      </div>
 
       {homeModel?.summary ? (
         <p className="sr-only">{homeModel.summary}</p>
