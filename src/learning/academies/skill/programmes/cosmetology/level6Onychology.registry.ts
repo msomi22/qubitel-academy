@@ -45,7 +45,7 @@ const onychologyIntroductionBook: LearningBookContent = {
       blocks: [
         {
           type: 'image',
-          src: '/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.png',
+          src: '/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.webp',
           alt: 'Labelled top view of a human fingernail showing the proximal nail fold, cuticle, lunula, lateral nail folds, nail plate, and free edge.',
           caption: 'Figure 18.1A — Nail Unit Top View. Major visible structures used during consultation, shaping, and nail services.'
         },
@@ -73,7 +73,7 @@ const onychologyIntroductionBook: LearningBookContent = {
       blocks: [
         {
           type: 'image',
-          src: '/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.png',
+          src: '/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.webp',
           alt: 'Labelled longitudinal cross-section of the human nail unit showing the proximal nail fold, eponychium, cuticle, nail matrix, lunula, nail plate, nail bed, hyponychium, and free edge.',
           caption: 'Figure 18.1B — Nail Unit Cross-Section. Hidden supporting structures of the nail unit, including the growth region and protective seals.'
         },

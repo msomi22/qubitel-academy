@@ -184,11 +184,11 @@ test('Onychology overview embeds separate top-view and cross-section nail figure
 
   assert.equal(
     topViewImage?.src,
-    '/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.png'
+    '/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.webp'
   );
   assert.equal(
     crossSectionImage?.src,
-    '/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.png'
+    '/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.webp'
   );
 
   const serialized = JSON.stringify(pages).toLowerCase();

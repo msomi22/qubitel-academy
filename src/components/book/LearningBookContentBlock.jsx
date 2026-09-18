@@ -68,7 +68,12 @@ export default function LearningBookContentBlock({ block, isAnimationCopy = fals
   if (blockType === 'image' && typeof block.src === 'string') {
     return (
       <figure className="learning-book__block learning-book__block--image">
-        <img src={block.src} alt={typeof block.alt === 'string' ? block.alt : ''} loading="lazy" />
+        <img
+          src={block.src}
+          alt={typeof block.alt === 'string' ? block.alt : ''}
+          loading="lazy"
+          decoding="async"
+        />
         {block.caption && <figcaption>{block.caption}</figcaption>}
       </figure>
     );

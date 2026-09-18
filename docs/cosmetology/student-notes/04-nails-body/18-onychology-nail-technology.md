@@ -77,13 +77,13 @@ Some structures can be identified from the surface. Others lie beneath the nail 
 
 ### Figure 18.1A — Nail Unit Top View
 
-![Figure 18.1A — Nail Unit Top View](../../../../public/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.png)
+![Figure 18.1A — Nail Unit Top View](../../../../public/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.webp)
 
 **Figure 18.1A:** Major visible structures of the natural nail used during consultation, shaping, and nail services. Identify the proximal nail fold, cuticle, lunula, lateral nail folds, nail plate, and free edge.
 
 ### Figure 18.1B — Nail Unit Cross-Section
 
-![Figure 18.1B — Nail Unit Cross-Section](../../../../public/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.png)
+![Figure 18.1B — Nail Unit Cross-Section](../../../../public/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.webp)
 
 **Figure 18.1B:** Hidden supporting structures of the nail unit. Identify the proximal nail fold, eponychium, cuticle, nail matrix, lunula, nail plate, nail bed, hyponychium, and free edge.
 
