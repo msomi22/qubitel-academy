@@ -16,6 +16,7 @@ const homeSource = readSource('../../pages/Home.jsx');
 const overrideSource = readSource('../../pages/home/homeOverrideRegistry.js');
 const learningNodeShellSource = readSource('../../components/LearningNodePageShell.jsx');
 const learningBookHeaderSource = readSource('../../components/book/LearningBookHeader.jsx');
+const learningNodeBookViewSource = readSource('../../components/LearningNodeBookView.jsx');
 const learningNodeChildGridSource = readSource('../../components/LearningNodeChildGrid.jsx');
 const cbcDashboardStyleSource = readSource('../../styles/cbc-academy-home.css');
 const cbcHeroActionStyleSource = readSource('../../styles/cbc-home/02-hero-actions.css');
@@ -76,12 +77,14 @@ test('academy sidebar overrides keep CBC and Skill navigation independent', () =
   assert.match(skillSidebarSource, /label:\s*'Dashboard'/);
 });
 
-test('Skill dashboard stays simple and exposes LearningNode programme routes', () => {
+test('Skill dashboard stays intentionally minimal and renders without the generic loading placeholder', () => {
   assert.match(skillDashboardSource, /Browse Programmes/);
+  assert.match(skillDashboardSource, /Learn practical skills/);
   assert.doesNotMatch(skillDashboardSource, /Learning paths/);
-  assert.doesNotMatch(skillDashboardSource, /<h2[^>]*>Programmes<\/h2>/);
-  assert.match(skillDashboardSource, /\/learn\/\$\{programme\.id\}/);
-  assert.match(skillDashboardSource, /createSkillProgrammesRegistrySource/);
+  assert.doesNotMatch(skillDashboardSource, /premium-category-grid/);
+  assert.doesNotMatch(skillDashboardSource, /createSkillProgrammesRegistrySource/);
+  assert.match(homeSource, /isImmediateSkillHome/);
+  assert.match(homeSource, /resolveHomeComponent\(activeAcademyNode\)/);
 });
 
 test('Skill LearningNode navigation reuses the compact CBC-style header pattern', () => {
@@ -103,6 +106,21 @@ test('book navigation uses a contextual back label while retaining the CBC Theme
   assert.match(
     learningNodeShellSource,
     /backLabel=\{isSkillAcademyPage \? navigation\.parent\?\.label : undefined\}/
+  );
+});
+
+test('active direct-book tab stays on the same page', () => {
+  assert.match(
+    learningNodeBookViewSource,
+    /sibling\.id === node\.id[\s\S]*?\? undefined[\s\S]*?: createNodeUiPath/
+  );
+  assert.match(
+    learningBookHeaderSource,
+    /return tab\.path && !isActive \?/
+  );
+  assert.match(
+    learningBookHeaderSource,
+    /if \(!isActive\) onSelectContentType\(tab\.key\)/
   );
 });
 
