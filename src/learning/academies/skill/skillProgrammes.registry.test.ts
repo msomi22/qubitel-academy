@@ -125,3 +125,24 @@ test('Skill LearningNode navigation names stay within platform limits', () => {
     }
   }
 });
+
+
+test('Skill LearningNode child labels do not duplicate parent labels', () => {
+  const registry = createSkillRegistry();
+  const normalize = (value) => String(value || '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
+  for (const node of registry.nodesById.values()) {
+    if (!node.parentId) continue;
+    const parent = getNodeById(registry, node.parentId);
+    if (!parent) continue;
+
+    assert.notEqual(
+      normalize(node.label),
+      normalize(parent.label),
+      `${node.id} repeats its parent label "${parent.label}"`
+    );
+  }
+});
