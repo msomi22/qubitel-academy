@@ -2,6 +2,10 @@ import type { LearningNode } from '../../core/index.ts';
 import { createLearningNode } from '../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../core/learningNode.constants.ts';
 import { SKILL_ACADEMY_NODE_ID } from '../academyRegistry.ts';
+import {
+  COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID,
+  cosmetologyLevel6ContentNodes
+} from './programmes/cosmetology/level6.registry.ts';
 
 export const COSMETOLOGY_PROGRAMME_NODE_ID = 'cosmetology';
 
@@ -14,6 +18,7 @@ function createCosmetologyLevel(level: number): LearningNode {
     label: `Level ${level}`,
     summary: `Cosmetology Level ${level} learning pathway.`,
     parentId: COSMETOLOGY_PROGRAMME_NODE_ID,
+    childIds: level === 6 ? [COSMETOLOGY_FOUNDATIONS_MODULE_NODE_ID] : [],
     attributes: [
       { key: 'routeSegment', value: `level-${level}` },
       { key: 'programmeId', value: COSMETOLOGY_PROGRAMME_NODE_ID },
@@ -64,7 +69,8 @@ export const cosmetologyProgrammeNode = createLearningNode({
 
 export const skillProgrammeNodes: LearningNode[] = [
   cosmetologyProgrammeNode,
-  ...cosmetologyLevels
+  ...cosmetologyLevels,
+  ...cosmetologyLevel6ContentNodes
 ];
 
 export function createSkillProgrammesRegistrySource() {
