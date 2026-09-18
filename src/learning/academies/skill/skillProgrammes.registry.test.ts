@@ -14,6 +14,7 @@ import {
 } from '../../registry/index.ts';
 import { createNodeUiPath } from '../../routing/index.ts';
 import { getLearningNodeAcademyIdForRuntimeAcademy } from '../../home/activeAcademyNode.ts';
+import { LEARNING_NODE_NAMING_LIMITS } from '../../core/learningNode.constants.ts';
 
 function createSkillRegistry() {
   const academyNode = getAcademyRootNodeById('skill-academy');
@@ -60,13 +61,13 @@ test('Cosmetology exposes Levels 3 through 6 and only Level 6 is ready', () => {
 
 test('Level 6 exposes Foundations and Onychology as ready learning modules', () => {
   const registry = createSkillRegistry();
-  const modules = getChildren(registry, 'cosmetology-level-6');
+  const modules = getChildren(registry, 'cos-l6');
 
   assert.deepEqual(
     modules.map((node) => node.label),
     [
-      'Module 1 — Cosmetology Foundations and Professional Practice',
-      'Module 18 — Onychology, Manicure, Pedicure and Nail Technology'
+      'M1 · Foundations',
+      'M18 · Onychology'
     ]
   );
   assert.ok(modules.every((node) => node.kind === 'module'));
@@ -96,4 +97,31 @@ test('non-CBC LearningNode UI routes use stable /learn/:nodeId routes', () => {
     }),
     '/learn/cosmetology'
   );
+});
+
+
+test('Skill LearningNode navigation names stay within platform limits', () => {
+  const registry = createSkillRegistry();
+  const nodes = Array.from(registry.nodesById.values());
+
+  for (const node of nodes) {
+    assert.ok(
+      node.label.length <= LEARNING_NODE_NAMING_LIMITS.label,
+      `${node.id} label exceeds ${LEARNING_NODE_NAMING_LIMITS.label} characters`
+    );
+    assert.ok(
+      node.id.length <= LEARNING_NODE_NAMING_LIMITS.id,
+      `${node.id} exceeds ${LEARNING_NODE_NAMING_LIMITS.id} characters`
+    );
+    assert.match(node.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+
+    const routeSegment = node.attributes?.find((attribute) => attribute.key === 'routeSegment')?.value;
+    if (typeof routeSegment === 'string') {
+      assert.ok(
+        routeSegment.length <= LEARNING_NODE_NAMING_LIMITS.routeSegment,
+        `${node.id} route segment exceeds ${LEARNING_NODE_NAMING_LIMITS.routeSegment} characters`
+      );
+      assert.match(routeSegment, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+    }
+  }
 });
