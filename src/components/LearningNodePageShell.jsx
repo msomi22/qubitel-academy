@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, useSearchParams } from 'react-router-dom';
-import { createNodeRoutePath } from '../learning/routing';
+import { createNodeUiPath } from '../learning/routing';
 import { getNavigationContext } from '../learning/navigation/index.ts';
 import LearningNodeBreadcrumbs from './LearningNodeBreadcrumbs.jsx';
 import LearningNodeChildGrid from './LearningNodeChildGrid.jsx';
@@ -89,7 +89,7 @@ export default function LearningNodePageShell({
   
   const parentPath =
     showParentBackButton && currentNode.parentId
-      ? createNodeRoutePath(registry, currentNode.parentId, {
+      ? createNodeUiPath(registry, currentNode.parentId, {
         includeRoot: false,
         includeAcademyRoot: false
       })
