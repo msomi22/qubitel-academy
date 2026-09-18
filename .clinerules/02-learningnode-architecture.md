@@ -116,6 +116,33 @@ Apply these limits to all new or modified LearningNodes. Legacy nodes may be mig
 - Use short learning-material labels: `Getting Started`, `Nail Structure`.
 - IDs should encode only enough hierarchy to remain unique and understandable.
 
+### Parent/child uniqueness
+
+Each hierarchy level must add information.
+
+- A child label must not duplicate its parent label.
+- Avoid near-duplicates that simply restate the parent with words such as `Introduction to`, `Overview of`, or the node type.
+- Module, topic, and learning-material labels should describe different scopes.
+- The module names the broad subject.
+- The topic names the concept cluster.
+- The learning material names the specific resource or lesson.
+
+Good:
+
+```text
+M18 · Onychology
+→ Nail Science Basics
+→ Onychology Overview
+```
+
+Bad:
+
+```text
+M18 · Onychology
+→ Introduction to Onychology
+→ Introduction to Onychology
+```
+
 Good:
 
 ```text
