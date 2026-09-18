@@ -1,0 +1,11 @@
+{
+  "id": "cosmetology",
+  "displayName": "Cosmetology",
+  "academy": "skill",
+  "description": "Hair, skin, nail, beauty, salon and professional cosmetology learning.",
+  "domain": "Professional Skills",
+  "featured": true,
+  "topics": [
+    "programme-overview"
+  ]
+}
