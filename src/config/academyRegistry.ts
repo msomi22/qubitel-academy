@@ -38,6 +38,15 @@ export const academyRegistry: Record<AcademyId, AcademyConfig> = {
     subdomains: ['cx.academy.qubitel.net'],
     storageKey: 'qubitel-academy:v2:customer-experience',
     categoryIds: []
+  },
+
+  skill: {
+    id: 'skill',
+    displayName: 'Skill Academy',
+    productName: 'Skill Academy',
+    subdomains: ['skill.academy.qubitel.net'],
+    storageKey: 'qubitel-academy:v2:skill',
+    categoryIds: ['cosmetology']
   }
 };
 
