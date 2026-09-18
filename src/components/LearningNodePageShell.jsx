@@ -111,6 +111,15 @@ export default function LearningNodePageShell({
   const shouldUseLearningAreaLayout = isLearningAreaPage && !shouldShowBookView;
   const isGradePage = currentNode.kind === 'grade';
   const isProgrammePage = currentNode.kind === 'programme';
+  const isSkillAcademyPage = navigation.breadcrumbs.some((node) => node.id === 'skill-academy');
+  const isSkillNavigationPage = isSkillAcademyPage && [
+    'programme',
+    'level',
+    'module',
+    'topic'
+  ].includes(currentNode.kind);
+  const shouldUseCompactNavigationHeader =
+    shouldUseLearningAreaLayout || isGradePage || isSkillNavigationPage;
 
   const headingId = `learning-node-heading-${currentNode.id}`;
 
@@ -172,7 +181,7 @@ export default function LearningNodePageShell({
         } ${
           shouldUseLearningAreaLayout ? 'progress-card-learning-area-mode' : ''
         } ${
-          isGradePage || isProgrammePage ? 'progress-card-grade-mode' : ''
+          isGradePage || isSkillNavigationPage ? 'progress-card-grade-mode' : ''
         }`}
         aria-labelledby={headingId}
       >
@@ -182,7 +191,7 @@ export default function LearningNodePageShell({
           </h1>
         ) : (
           <header className="learning-node-header">
-            {shouldUseLearningAreaLayout || isGradePage || isProgrammePage ? (
+            {shouldUseCompactNavigationHeader ? (
               <>
                 <h1 id={headingId} className="sr-only">
                   {currentNode.label}
@@ -268,6 +277,7 @@ export default function LearningNodePageShell({
                 registry={registry}
                 nodeId={currentNode.id}
                 backPath={parentPath}
+                backLabel={isSkillAcademyPage ? navigation.parent?.label : undefined}
               />
             </section>
           ) : (
