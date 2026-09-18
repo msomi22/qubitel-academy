@@ -15,6 +15,8 @@ const sidebarOverrideSource = readSource('../../components/sidebarOverrideRegist
 const homeSource = readSource('../../pages/Home.jsx');
 const overrideSource = readSource('../../pages/home/homeOverrideRegistry.js');
 const learningNodeShellSource = readSource('../../components/LearningNodePageShell.jsx');
+const learningBookHeaderSource = readSource('../../components/book/LearningBookHeader.jsx');
+const learningNodeChildGridSource = readSource('../../components/LearningNodeChildGrid.jsx');
 const cbcDashboardStyleSource = readSource('../../styles/cbc-academy-home.css');
 const cbcHeroActionStyleSource = readSource('../../styles/cbc-home/02-hero-actions.css');
 const learningAreaHrefSource = cbcDashboardSource.match(
@@ -82,6 +84,34 @@ test('Skill dashboard stays simple and exposes LearningNode programme routes', (
   assert.match(skillDashboardSource, /createSkillProgrammesRegistrySource/);
 });
 
+test('Skill LearningNode navigation reuses the compact CBC-style header pattern', () => {
+  assert.match(learningNodeShellSource, /isSkillNavigationPage/);
+  assert.match(
+    learningNodeShellSource,
+    /'programme',[\s\S]*?'level',[\s\S]*?'module',[\s\S]*?'topic'/
+  );
+  assert.match(
+    learningNodeShellSource,
+    /shouldUseCompactNavigationHeader[\s\S]*?<LearningNodeCompactHeader/
+  );
+});
+
+test('book navigation uses a contextual back label while retaining the CBC Themes default', () => {
+  assert.match(learningBookHeaderSource, /backLabel = 'Themes'/);
+  assert.match(learningBookHeaderSource, /Back to \$\{backLabel\}/);
+  assert.match(learningBookHeaderSource, /<span>\{backLabel\}<\/span>/);
+  assert.match(
+    learningNodeShellSource,
+    /backLabel=\{isSkillAcademyPage \? navigation\.parent\?\.label : undefined\}/
+  );
+});
+
+test('generic child navigation groups topic nodes as Topics rather than More', () => {
+  assert.match(
+    learningNodeChildGridSource,
+    /topics:\s*\{\s*kinds:\s*\['topic'\],\s*label:\s*'Topics'\s*\}/
+  );
+});
 test('CBC LearningNode pages record resolved visits for Continue', () => {
   assert.match(learningNodeShellSource, /recordCbcLearningNodeVisit\(\{/);
   assert.match(learningNodeShellSource, /node:\s*currentNode/);
