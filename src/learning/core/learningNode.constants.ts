@@ -2,6 +2,10 @@ export const LEARNING_NODE_KINDS = {
   platform: 'platform',
   academy: 'academy',
   category: 'category',
+  programme: 'programme',
+  level: 'level',
+  module: 'module',
+  learningMaterial: 'learningMaterial',
   grade: 'grade',
   learningArea: 'learningArea',
   theme: 'theme',
@@ -48,6 +52,12 @@ export const LEARNING_NODE_APPEARANCE_KEYS = {
   animation: 'animation',
   mascot: 'mascot',
   soundEffect: 'soundEffect'
+} as const;
+
+export const LEARNING_NODE_NAMING_LIMITS = {
+  label: 32,
+  id: 40,
+  routeSegment: 24
 } as const;
 
 export const DEFAULT_LEARNING_NODE_VERSION = 1;

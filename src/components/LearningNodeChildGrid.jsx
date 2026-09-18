@@ -1,9 +1,14 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { createNodeRoutePath } from '../learning/routing';
+import { createNodeUiPath } from '../learning/routing';
 import { getChildren, isLearningNodeReady } from '../learning/registry/index.ts';
 
 const ICON_BY_KIND = {
+  programme: '🎓',
+  level: '📘',
+  module: '📚',
+  topic: '📄',
+  learningMaterial: '📒',
   learningArea: '📖',
   theme: '📚',
   strand: '📝',
@@ -20,6 +25,11 @@ const ICON_BY_KIND = {
 };
 
 const LABEL_BY_KIND = {
+  programme: 'Programme',
+  level: 'Level',
+  module: 'Module',
+  topic: 'Topic',
+  learningMaterial: 'Learning Material',
   learningArea: 'Learning Area',
   theme: 'Theme',
   strand: 'Strand',
@@ -36,12 +46,16 @@ const LABEL_BY_KIND = {
 };
 
 const KIND_GROUPS = {
+  programmes: { kinds: ['programme'], label: 'Programmes' },
+  levels: { kinds: ['level'], label: 'Levels' },
+  modules: { kinds: ['module'], label: 'Modules' },
+  topics: { kinds: ['topic'], label: 'Topics' },
   learningAreas: { kinds: ['learningArea'], label: 'Learning Areas' },
   themes: { kinds: ['theme'], label: 'Themes' },
   strands: { kinds: ['strand'], label: 'Strands' },
   subStrands: { kinds: ['subStrand'], label: 'Sub-strands' },
   content: {
-    kinds: ['notes', 'practice', 'revision', 'assessment', 'exam', 'activity', 'content'],
+    kinds: ['learningMaterial', 'notes', 'practice', 'revision', 'assessment', 'exam', 'activity', 'content'],
     label: 'Content'
   },
   lessons: { kinds: ['lesson'], label: 'Lessons' },
@@ -205,16 +219,17 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
             }`.trim()}
           >
             {group.children.map((child) => {
-              const path = createNodeRoutePath(registry, child, {
+              const path = createNodeUiPath(registry, child, {
                 includeRoot: false,
                 includeAcademyRoot: false
               });
               const icon = ICON_BY_KIND[child.kind] || '📄';
               const kindLabel = LABEL_BY_KIND[child.kind] || child.kind;
               const hasActions = child.actions && child.actions.length > 0;
-              const isDisabled = child.kind === 'learningArea'
-                ? !hasActions || !isLearningNodeReady(registry, child)
-                : !hasActions;
+              const readinessAwareKinds = new Set(['programme', 'level', 'module', 'topic', 'learningArea']);
+              const isDisabled = !hasActions || (
+                readinessAwareKinds.has(child.kind) && !isLearningNodeReady(registry, child)
+              );
 
               if (child.kind === 'learningArea') {
                 return (

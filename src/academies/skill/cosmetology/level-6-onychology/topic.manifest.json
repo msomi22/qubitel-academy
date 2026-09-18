@@ -1,0 +1,25 @@
+{
+  "id": "l6-onychology",
+  "displayName": "Onychology",
+  "academy": "skill",
+  "category": "cosmetology",
+  "description": "Nail science, manicure, pedicure, enhancement systems, product chemistry, infection prevention and professional nail services.",
+  "status": "active",
+  "learningAreas": [
+    {
+      "id": "overview",
+      "title": "Onychology Overview",
+      "description": "Nail science, professional services, safety, contraindications and the module learning journey.",
+      "sequence": 10
+    }
+  ],
+  "lessons": [
+    {
+      "id": "onychology-001",
+      "file": "lessons/onychology-introduction-lesson-001.js",
+      "learningAreaId": "overview"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}

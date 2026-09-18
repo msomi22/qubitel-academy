@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { NavLink, useSearchParams } from 'react-router-dom';
-import { createNodeRoutePath } from '../learning/routing';
+import { createNodeUiPath } from '../learning/routing';
 import { getNavigationContext } from '../learning/navigation/index.ts';
 import LearningNodeBreadcrumbs from './LearningNodeBreadcrumbs.jsx';
 import LearningNodeChildGrid from './LearningNodeChildGrid.jsx';
@@ -10,6 +10,7 @@ import LearningNodeBookView from './LearningNodeBookView.jsx';
 import LearningNodeCompactHeader from './LearningNodeCompactHeader.jsx';
 import { isCbcTheme } from './learningNodeBookView.model.ts';
 import { recordCbcLearningNodeVisit } from '../services/cbcLastActivityService.js';
+import { recordSkillLearningNodeVisit } from '../services/skillLastActivityService.js';
 import './LearningNodeUI.css';
 
 function getNodeAttributeValue(node, key) {
@@ -68,6 +69,10 @@ export default function LearningNodePageShell({
       node: currentNode,
       tab: searchParams.get('tab')
     });
+    recordSkillLearningNodeVisit({
+      registry,
+      node: currentNode
+    });
   }, [currentNode, registry, searchParams]);
 
   if (!currentNode) {
@@ -89,7 +94,7 @@ export default function LearningNodePageShell({
   
   const parentPath =
     showParentBackButton && currentNode.parentId
-      ? createNodeRoutePath(registry, currentNode.parentId, {
+      ? createNodeUiPath(registry, currentNode.parentId, {
         includeRoot: false,
         includeAcademyRoot: false
       })
@@ -105,6 +110,16 @@ export default function LearningNodePageShell({
   const isLearningAreaPage = currentNode.kind === 'learningArea';
   const shouldUseLearningAreaLayout = isLearningAreaPage && !shouldShowBookView;
   const isGradePage = currentNode.kind === 'grade';
+  const isProgrammePage = currentNode.kind === 'programme';
+  const isSkillAcademyPage = navigation.breadcrumbs.some((node) => node.id === 'skill-academy');
+  const isSkillNavigationPage = isSkillAcademyPage && [
+    'programme',
+    'level',
+    'module',
+    'topic'
+  ].includes(currentNode.kind);
+  const shouldUseCompactNavigationHeader =
+    shouldUseLearningAreaLayout || isGradePage || isSkillNavigationPage;
 
   const headingId = `learning-node-heading-${currentNode.id}`;
 
@@ -166,7 +181,7 @@ export default function LearningNodePageShell({
         } ${
           shouldUseLearningAreaLayout ? 'progress-card-learning-area-mode' : ''
         } ${
-          isGradePage ? 'progress-card-grade-mode' : ''
+          isGradePage || isSkillNavigationPage ? 'progress-card-grade-mode' : ''
         }`}
         aria-labelledby={headingId}
       >
@@ -176,18 +191,26 @@ export default function LearningNodePageShell({
           </h1>
         ) : (
           <header className="learning-node-header">
-            {shouldUseLearningAreaLayout || isGradePage ? (
+            {shouldUseCompactNavigationHeader ? (
               <>
                 <h1 id={headingId} className="sr-only">
                   {currentNode.label}
                 </h1>
                 <LearningNodeCompactHeader
-                  backTo={isGradePage ? '/categories' : parentPath}
-                  backLabel={isGradePage ? 'Grades' : navigation.parent?.label || 'Previous'}
+                  backTo={isGradePage || isProgrammePage ? '/categories' : parentPath}
+                  backLabel={
+                    isGradePage
+                      ? 'Grades'
+                      : isProgrammePage
+                        ? 'Programmes'
+                        : navigation.parent?.label || 'Previous'
+                  }
                   backAriaLabel={
                     isGradePage
                       ? 'Back to Grades'
-                      : `Back to ${navigation.parent?.label || 'previous'}`
+                      : isProgrammePage
+                        ? 'Back to Programmes'
+                        : `Back to ${navigation.parent?.label || 'previous'}`
                   }
                   breadcrumbs={(
                     <LearningNodeBreadcrumbs registry={registry} nodeId={currentNode.id} />
@@ -254,6 +277,7 @@ export default function LearningNodePageShell({
                 registry={registry}
                 nodeId={currentNode.id}
                 backPath={parentPath}
+                backLabel={isSkillAcademyPage ? navigation.parent?.label : undefined}
               />
             </section>
           ) : (
@@ -290,6 +314,10 @@ export default function LearningNodePageShell({
 function getKindLabel(kind) {
   const labels = {
     academy: 'Academy',
+    programme: 'Programme',
+    level: 'Level',
+    module: 'Module',
+    learningMaterial: 'Learning Material',
     grade: 'Grade',
     learningArea: 'Learning Area',
     theme: 'Theme',

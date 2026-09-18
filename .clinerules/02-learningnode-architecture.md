@@ -91,3 +91,128 @@ keep existing production routes working
 avoid broad blind renames
 avoid mixing unrelated refactors into focused PRs
 keep current academy behavior stable while introducing generic architecture
+
+## Navigation naming standard
+
+LearningNode names appear in cards, breadcrumbs, compact headers, back controls, mobile layouts, and URLs. Keep navigation names deliberately short.
+
+### Hard limits
+
+Apply these limits to all new or modified LearningNodes. Legacy nodes may be migrated incrementally.
+
+- `label`: maximum **32 characters**.
+- `id`: maximum **40 characters**.
+- `routeSegment`: maximum **24 characters**.
+- IDs and route segments must use lowercase kebab-case.
+
+### Naming rules
+
+- Prefer 2–4 words for visible navigation labels.
+- Do not repeat information already supplied by the parent node.
+- Put long official curriculum names in metadata such as `officialTitle`, not in `label`.
+- Put explanatory detail in `summary` or learning content, not in breadcrumbs.
+- Use compact module labels: `M1 · Foundations`, `M18 · Onychology`.
+- Use short topic labels: `Professional Scope`, `Nail Anatomy`.
+- Use short learning-material labels: `Getting Started`, `Nail Structure`.
+- IDs should encode only enough hierarchy to remain unique and understandable.
+
+### Avoid pass-through navigation
+
+Do not create a page whose only purpose is to make the learner click once more.
+
+- If a Topic has exactly one Learning Material and no independent navigation value, put that content directly on the Topic.
+- Use a separate Learning Material node only when there are multiple sibling resources, distinct resource types, or a real reason for the resource to have its own navigation identity.
+- Prefer the shallowest hierarchy that still expresses meaningful curriculum structure.
+- Programme → Level → Module → Topic is enough when the Topic can open its notes/book directly.
+
+Good:
+
+```text
+M1 · Foundations
+→ Professional Scope
+  ↳ opens notes directly
+```
+
+```text
+M18 · Onychology
+→ Onychology Overview
+  ↳ opens notes directly
+```
+
+Avoid:
+
+```text
+M1 · Foundations
+→ Professional Scope
+→ Getting Started
+→ Notes
+```
+
+```text
+M18 · Onychology
+→ Introduction
+→ Onychology Overview
+→ Notes
+```
+
+### Parent/child uniqueness
+
+Each hierarchy level must add information.
+
+- A child label must not duplicate its parent label.
+- Avoid near-duplicates that simply restate the parent with words such as `Introduction to`, `Overview of`, or the node type.
+- Module, topic, and learning-material labels should describe different scopes.
+- The module names the broad subject.
+- The topic names the concept cluster.
+- The learning material names the specific resource or lesson.
+
+Good:
+
+```text
+M18 · Onychology
+→ Onychology Overview
+```
+
+Bad:
+
+```text
+M18 · Onychology
+→ Introduction to Onychology
+→ Introduction to Onychology
+```
+
+Good:
+
+```text
+Cosmetology
+→ Level 6
+→ M18 · Onychology
+→ Nail Anatomy
+```
+
+Bad:
+
+```text
+Cosmetology
+→ Level 6
+→ Module 18 — Onychology, Manicure, Pedicure and Nail Technology
+→ Introduction to Onychology and Professional Nail Technology
+→ Comprehensive Introduction to Onychology Learning Material
+```
+
+Example identifiers:
+
+```text
+cos-l6
+cos-l6-m18-onychology
+cos-l6-m18-t01-anatomy
+cos-l6-m18-lm01-structure
+```
+
+The full official title remains available through metadata:
+
+```ts
+attributes: [
+  { key: 'officialTitle', value: 'Onychology, Manicure, Pedicure and Nail Technology' }
+]
+```

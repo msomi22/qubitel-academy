@@ -5,6 +5,7 @@ export default function LearningBookHeader({
   registry,
   nodeId,
   backPath,
+  backLabel = 'Themes',
   tabs,
   activeContentType,
   selectedContentType,
@@ -17,10 +18,10 @@ export default function LearningBookHeader({
           <NavLink
             className="book-toolbar-back"
             to={backPath}
-            aria-label="Back to Themes"
+            aria-label={`Back to ${backLabel}`}
           >
             <span aria-hidden="true">←</span>
-            <span>Themes</span>
+            <span>{backLabel}</span>
           </NavLink>
         )}
 
@@ -31,12 +32,11 @@ export default function LearningBookHeader({
 
       <div className="book-content-tabs" role="tablist" aria-label="Choose content type">
         {tabs.map((tab) => {
-          const isActive = tab.path
-            ? activeContentType === tab.key
-            : selectedContentType === tab.key;
+          const isActive =
+            activeContentType === tab.key || selectedContentType === tab.key;
           const className = `book-content-tab ${isActive ? 'book-content-tab-active' : ''}`;
 
-          return tab.path ? (
+          return tab.path && !isActive ? (
             <NavLink
               key={tab.key}
               role="tab"
@@ -54,7 +54,9 @@ export default function LearningBookHeader({
               role="tab"
               aria-selected={isActive}
               className={className}
-              onClick={() => onSelectContentType(tab.key)}
+              onClick={() => {
+                if (!isActive) onSelectContentType(tab.key);
+              }}
             >
               <span aria-hidden="true">{tab.icon}</span>
               <span>{tab.label}</span>

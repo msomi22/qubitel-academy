@@ -2,6 +2,7 @@ import { getActiveAcademy } from '../../config/detectAcademy.ts';
 import {
   CBC_ACADEMY_NODE_ID,
   CUSTOMER_EXPERIENCE_ACADEMY_NODE_ID,
+  SKILL_ACADEMY_NODE_ID,
   TECHNOLOGY_ACADEMY_NODE_ID,
   getAcademyRootNodeById
 } from '../academies/index.ts';
@@ -10,7 +11,8 @@ import type { LearningNode } from '../core/index.ts';
 export const RUNTIME_ACADEMY_TO_LEARNING_NODE_ID: Record<string, string> = {
   tech: TECHNOLOGY_ACADEMY_NODE_ID,
   cbc: CBC_ACADEMY_NODE_ID,
-  'customer-experience': CUSTOMER_EXPERIENCE_ACADEMY_NODE_ID
+  'customer-experience': CUSTOMER_EXPERIENCE_ACADEMY_NODE_ID,
+  skill: SKILL_ACADEMY_NODE_ID
 };
 
 export function getLearningNodeAcademyIdForRuntimeAcademy(runtimeAcademyId?: string): string {

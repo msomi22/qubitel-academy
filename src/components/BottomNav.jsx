@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom';
+import { getActiveAcademy } from '../config/detectAcademy.ts';
 
 const NAV_ITEMS = [
   {
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
   {
     to: '/categories',
     label: 'Topics',
+    academyLibrary: true,
     icon: (
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M4 6h16M7 12h10M10 18h4" />
@@ -50,7 +52,15 @@ const NAV_ITEMS = [
   }
 ];
 
+function academyLibraryLabel(academyId) {
+  if (academyId === 'cbc') return 'Grades';
+  if (academyId === 'skill') return 'Programmes';
+  return 'Topics';
+}
+
 export default function BottomNav() {
+  const activeAcademy = getActiveAcademy();
+
   return (
     <nav className="bottom-nav" aria-label="Mobile navigation">
       {NAV_ITEMS.map((item) => (
@@ -61,7 +71,7 @@ export default function BottomNav() {
           className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}
         >
           {item.icon}
-          <span>{item.label}</span>
+          <span>{item.academyLibrary ? academyLibraryLabel(activeAcademy.id) : item.label}</span>
         </NavLink>
       ))}
     </nav>

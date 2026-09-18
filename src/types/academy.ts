@@ -1,4 +1,4 @@
-export type AcademyId = 'tech' | 'cbc' | 'customer-experience';
+export type AcademyId = 'tech' | 'cbc' | 'customer-experience' | 'skill';
 export type ContentStatus = 'draft' | 'review' | 'active' | 'archived';
 
 export interface AcademyConfig {

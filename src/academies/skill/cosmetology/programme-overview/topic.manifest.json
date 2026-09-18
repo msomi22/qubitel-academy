@@ -1,0 +1,14 @@
+{
+  "id": "programme-overview",
+  "displayName": "Cosmetology Programme Overview",
+  "academy": "skill",
+  "category": "cosmetology",
+  "description": "Programme orientation and level structure for the Cosmetology learning pathway.",
+  "status": "active",
+  "questionBank": {
+    "mode": "empty"
+  },
+  "lessons": [],
+  "practice": [],
+  "assessments": []
+}

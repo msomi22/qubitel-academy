@@ -116,6 +116,24 @@ export function createNodeRoutePath(
   return normalizeRoutePath([...baseSegments, ...routeSegments].join('/'));
 }
 
+export function createNodeUiPath(
+  registry: LearningNodeRegistry,
+  nodeOrId: LearningNodeOrId,
+  options: LearningNodeRoutingOptions = {}
+): string | undefined {
+  const node = resolveNode(registry, nodeOrId);
+  if (!node) return undefined;
+
+  const breadcrumbs = getBreadcrumbs(registry, node.id, { includeCurrentInBreadcrumbs: true });
+  const academyRoot = breadcrumbs.find((breadcrumb) => breadcrumb.kind === 'academy');
+
+  if (academyRoot?.id === 'cbc-academy') {
+    return createNodeRoutePath(registry, node, options);
+  }
+
+  return `/learn/${encodeURIComponent(node.id)}`;
+}
+
 function addDuplicatePath(duplicatePaths: Map<string, string[]>, path: string, nodeId: string): void {
   const nodeIds = duplicatePaths.get(path) || [];
   if (!nodeIds.includes(nodeId)) {

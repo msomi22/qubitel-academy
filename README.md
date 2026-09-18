@@ -11,6 +11,7 @@ Qubitel Academy
 ├── Technology Academy
 ├── CBC Academy
 ├── Customer Experience Academy
+├── Skill Academy
 └── Future Academies
 ```
 
@@ -18,7 +19,7 @@ Qubitel Academy
 
 ## Platform direction
 
-Qubitel Academy is evolving into a unified multi-academy learning system where academies, grades, categories, topics, lessons, practice questions, assessments, and exams can be represented through a shared **LearningNode** model.
+Qubitel Academy is evolving into a unified multi-academy learning system where academies, programmes, levels, grades, categories, modules, topics, lessons, practice questions, assessments, and exams can be represented through a shared **LearningNode** model.
 
 The goal is to reduce hardcoded academy-specific structures and make the platform easier to extend, personalize, and maintain.
 
@@ -112,6 +113,50 @@ It is intended to support future customer service, communication, support operat
 
 ---
 
+### Skill Academy
+
+Skill Academy is the umbrella for technical, vocational, trade, practical, and professional-skills programmes.
+
+It is intentionally framework-neutral so the academy brand does not depend on a specific qualification-system name such as TVET.
+
+Production domain:
+
+```text
+skill.academy.qubitel.net
+```
+
+The first programme is **Cosmetology**.
+
+The learner-facing hierarchy is built with LearningNodes:
+
+```text
+Skill Academy
+└── Programme
+    └── Level / Qualification Stage
+        └── Module
+            └── Topic / Unit
+                ├── Learning Material
+                ├── Practice
+                └── Assessment
+```
+
+Current initial hierarchy:
+
+```text
+Skill Academy
+└── Cosmetology
+    ├── Level 3
+    ├── Level 4
+    ├── Level 5
+    └── Level 6
+```
+
+The primary learner-facing collection is called **Programmes**, in the same way CBC uses **Grades** as its academy-specific top-level learning collection.
+
+Skill Academy also has academy-specific dashboard, navigation, branding, progress/continue behavior, and programme browsing while reusing the shared platform and LearningNode infrastructure.
+
+---
+
 ## Architecture direction
 
 The platform is moving toward a shared content and learning architecture based on:
@@ -136,9 +181,22 @@ Examples:
 src/academies/tech/
 src/academies/cbc/
 src/academies/customer-experience/
+src/academies/skill/
 ```
 
 When adding content, keep it close to the academy or topic it belongs to and register it through the relevant manifest.
+
+The content-discovery manifest layer and the LearningNode hierarchy work together:
+
+```text
+src/academies/
+→ manifests and production content discovery
+
+src/learning/academies/
+→ LearningNode hierarchy, navigation, readiness, routing, and academy graph
+```
+
+For Skill Academy, catalogue implementation terms such as `category` do not control learner-facing terminology. For example, Cosmetology may live behind a category manifest for discovery compatibility, while learners see it correctly as a **Programme** LearningNode.
 
 ---
 
@@ -277,6 +335,7 @@ Expected custom domains:
 academy.qubitel.net
 cbc.academy.qubitel.net
 cx.academy.qubitel.net
+skill.academy.qubitel.net
 ```
 
 After deployment-related changes, confirm:
@@ -328,9 +387,15 @@ Do not put private secrets in frontend environment variables or `.env.example`. 
 
 ## Content authoring
 
-Content is organized through academy manifests, topic manifests, and content files.
+Content is organized through academy manifests, category manifests, topic manifests, LearningNode registries, and content files.
 
-Topic manifests declare lessons, practice items, assessments, and exams for each academy area.
+Topic manifests declare lessons, practice items, assessments, and exams for each academy area. LearningNodes define the semantic learning hierarchy and navigation graph.
+
+Core rule:
+
+> **Everything in the learning hierarchy should move toward LearningNode.**
+
+Every meaningful curriculum item should be represented as a LearningNode where practical, with parent/child relationships, intent-based actions, readiness, routing, and reusable page rendering.
 
 When adding new content:
 
@@ -338,7 +403,8 @@ When adding new content:
 2. Register it through the relevant manifest.
 3. Confirm it appears in the correct academy/profile.
 4. Validate learner-facing copy.
-5. Run tests and production build validation.
+5. Ensure the item is connected to the correct LearningNode hierarchy where applicable.
+6. Run tests and production build validation.
 
 ---
 
@@ -420,6 +486,8 @@ During the multi-academy migration:
 * avoid mixing unrelated refactors into focused PRs;
 * keep Technology Academy content stable;
 * migrate architecture incrementally through the LearningNode epic;
+* keep academy-specific UI overrides isolated behind reusable academy-aware registries/resolvers where possible;
+* preserve learner-facing terminology appropriate to each academy, such as Grades for CBC and Programmes for Skill Academy;
 * validate Cloudflare Pages deployment after app identity, routing, or deployment changes.
 
 

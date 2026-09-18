@@ -10,6 +10,7 @@ const defaults = {
   examAttempts: {},
   activeExamSessions: {},
   lastCbcActivity: null,
+  lastLearningNodeActivities: {},
   grade1VoiceType: 'female',
   complexDesignSubmissions: {}
 };
@@ -156,6 +157,48 @@ export const storageService = {
   },
   clearLastCbcActivity() {
     this.write({ lastCbcActivity: null });
+  },
+  setLastLearningNodeActivity(academyId, activity = {}) {
+    const academy = String(academyId || '').trim();
+    const nodeId = String(activity.nodeId || '').trim();
+    const nodeKind = String(activity.nodeKind || '').trim();
+    if (!academy || !nodeId) return null;
+
+    const state = this.read();
+    const nextActivity = {
+      academy,
+      nodeId,
+      nodeKind,
+      updatedAt: activity.updatedAt || new Date().toISOString()
+    };
+
+    if (activity.tab) nextActivity.tab = String(activity.tab).trim();
+
+    const lastLearningNodeActivities = {
+      ...(state.lastLearningNodeActivities || {}),
+      [academy]: nextActivity
+    };
+
+    this.write({ lastLearningNodeActivities });
+    return nextActivity;
+  },
+  getLastLearningNodeActivity(academyId) {
+    const academy = String(academyId || '').trim();
+    if (!academy) return null;
+
+    const activity = this.read().lastLearningNodeActivities?.[academy];
+    if (!activity || activity.academy !== academy || !activity.nodeId) return null;
+
+    return activity;
+  },
+  clearLastLearningNodeActivity(academyId) {
+    const academy = String(academyId || '').trim();
+    if (!academy) return;
+
+    const state = this.read();
+    const lastLearningNodeActivities = { ...(state.lastLearningNodeActivities || {}) };
+    delete lastLearningNodeActivities[academy];
+    this.write({ lastLearningNodeActivities });
   },
   setGradeOneVoiceType(voiceType) {
     const grade1VoiceType = voiceType === 'male' ? 'male' : 'female';

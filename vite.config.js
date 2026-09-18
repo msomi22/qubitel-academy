@@ -18,7 +18,8 @@ export default defineConfig({
     port: 5173,
     allowedHosts: [
       'cbc.academy.qubitel.net',
-      'cx.academy.qubitel.net'
+      'cx.academy.qubitel.net',
+      'skill.academy.qubitel.net'
     ]
   },
   build: {

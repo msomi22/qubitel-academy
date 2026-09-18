@@ -9,9 +9,15 @@ function readSource(relativePath) {
 const appSource = readSource('../../App.jsx');
 const cbcDashboardSource = readSource('../../pages/home/CbcAcademyHome.jsx');
 const cbcSidebarSource = readSource('../../components/CbcSidebar.jsx');
+const skillDashboardSource = readSource('../../pages/home/SkillAcademyHome.jsx');
+const skillSidebarSource = readSource('../../components/SkillSidebar.jsx');
+const sidebarOverrideSource = readSource('../../components/sidebarOverrideRegistry.js');
 const homeSource = readSource('../../pages/Home.jsx');
 const overrideSource = readSource('../../pages/home/homeOverrideRegistry.js');
 const learningNodeShellSource = readSource('../../components/LearningNodePageShell.jsx');
+const learningBookHeaderSource = readSource('../../components/book/LearningBookHeader.jsx');
+const learningNodeBookViewSource = readSource('../../components/LearningNodeBookView.jsx');
+const learningNodeChildGridSource = readSource('../../components/LearningNodeChildGrid.jsx');
 const cbcDashboardStyleSource = readSource('../../styles/cbc-academy-home.css');
 const cbcHeroActionStyleSource = readSource('../../styles/cbc-home/02-hero-actions.css');
 const learningAreaHrefSource = cbcDashboardSource.match(
@@ -24,8 +30,9 @@ test('root Dashboard route renders the academy-aware Home composition', () => {
   assert.doesNotMatch(homeSource, /DashboardPlaceholder/);
 });
 
-test('CBC alone resolves to the existing CBC dashboard override', () => {
+test('CBC and Skill resolve to their academy dashboard overrides', () => {
   assert.match(overrideSource, /'cbc-academy':\s*CbcAcademyHome/);
+  assert.match(overrideSource, /'skill-academy':\s*SkillAcademyHome/);
   assert.match(overrideSource, /\|\|\s*DefaultAcademyHome/);
   assert.doesNotMatch(overrideSource, /'technology-academy':\s*CbcAcademyHome/);
   assert.doesNotMatch(overrideSource, /'customer-experience-academy':\s*CbcAcademyHome/);
@@ -63,6 +70,66 @@ test('Tech and CX continue to use the default academy dashboard', () => {
   assert.doesNotMatch(overrideSource, /'customer-experience-academy':\s*CbcAcademyHome/);
 });
 
+test('academy sidebar overrides keep CBC and Skill navigation independent', () => {
+  assert.match(sidebarOverrideSource, /cbc:\s*CbcSidebar/);
+  assert.match(sidebarOverrideSource, /skill:\s*SkillSidebar/);
+  assert.match(skillSidebarSource, /label:\s*'Programmes'/);
+  assert.match(skillSidebarSource, /label:\s*'Dashboard'/);
+});
+
+test('Skill dashboard stays intentionally minimal and renders without the generic loading placeholder', () => {
+  assert.match(skillDashboardSource, /Browse Programmes/);
+  assert.match(skillDashboardSource, /Learn practical skills/);
+  assert.doesNotMatch(skillDashboardSource, /Learning paths/);
+  assert.doesNotMatch(skillDashboardSource, /premium-category-grid/);
+  assert.doesNotMatch(skillDashboardSource, /createSkillProgrammesRegistrySource/);
+  assert.match(homeSource, /isImmediateSkillHome/);
+  assert.match(homeSource, /resolveHomeComponent\(activeAcademyNode\)/);
+});
+
+test('Skill LearningNode navigation reuses the compact CBC-style header pattern', () => {
+  assert.match(learningNodeShellSource, /isSkillNavigationPage/);
+  assert.match(
+    learningNodeShellSource,
+    /'programme',[\s\S]*?'level',[\s\S]*?'module',[\s\S]*?'topic'/
+  );
+  assert.match(
+    learningNodeShellSource,
+    /shouldUseCompactNavigationHeader[\s\S]*?<LearningNodeCompactHeader/
+  );
+});
+
+test('book navigation uses a contextual back label while retaining the CBC Themes default', () => {
+  assert.match(learningBookHeaderSource, /backLabel = 'Themes'/);
+  assert.match(learningBookHeaderSource, /Back to \$\{backLabel\}/);
+  assert.match(learningBookHeaderSource, /<span>\{backLabel\}<\/span>/);
+  assert.match(
+    learningNodeShellSource,
+    /backLabel=\{isSkillAcademyPage \? navigation\.parent\?\.label : undefined\}/
+  );
+});
+
+test('active direct-book tab stays on the same page', () => {
+  assert.match(
+    learningNodeBookViewSource,
+    /sibling\.id === node\.id[\s\S]*?\? undefined[\s\S]*?: createNodeUiPath/
+  );
+  assert.match(
+    learningBookHeaderSource,
+    /return tab\.path && !isActive \?/
+  );
+  assert.match(
+    learningBookHeaderSource,
+    /if \(!isActive\) onSelectContentType\(tab\.key\)/
+  );
+});
+
+test('generic child navigation groups topic nodes as Topics rather than More', () => {
+  assert.match(
+    learningNodeChildGridSource,
+    /topics:\s*\{\s*kinds:\s*\['topic'\],\s*label:\s*'Topics'\s*\}/
+  );
+});
 test('CBC LearningNode pages record resolved visits for Continue', () => {
   assert.match(learningNodeShellSource, /recordCbcLearningNodeVisit\(\{/);
   assert.match(learningNodeShellSource, /node:\s*currentNode/);

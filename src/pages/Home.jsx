@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { usePreferences } from '../hooks/usePreferences.js';
-import { getAcademyHomeViewModel } from '../learning/home/index.ts';
+import { getAcademyHomeViewModel, getActiveAcademyLearningNode } from '../learning/home/index.ts';
 import { LoadingAcademyHome } from './home/DefaultAcademyHome.jsx';
 import { resolveHomeComponent } from './home/homeOverrideRegistry.js';
 
@@ -8,8 +8,15 @@ export default function Home() {
   const { completed, randomCount = 0 } = usePreferences();
   const [homeModel, setHomeModel] = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
+  const activeAcademyNode = getActiveAcademyLearningNode();
+  const isImmediateSkillHome = activeAcademyNode.id === 'skill-academy';
 
   useEffect(() => {
+    if (isImmediateSkillHome) {
+      setLoadingStats(false);
+      return undefined;
+    }
+
     let alive = true;
 
     setLoadingStats(true);
@@ -26,7 +33,12 @@ export default function Home() {
     return () => {
       alive = false;
     };
-  }, [completed]);
+  }, [completed, isImmediateSkillHome]);
+
+  if (isImmediateSkillHome) {
+    const SkillHome = resolveHomeComponent(activeAcademyNode);
+    return <SkillHome homeModel={null} loadingStats={false} randomCount={randomCount} />;
+  }
 
   if (!homeModel) {
     return <LoadingAcademyHome />;

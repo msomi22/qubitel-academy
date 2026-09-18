@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 190" role="img" aria-label="Skill Academy logo">
+  <defs>
+    <linearGradient id="skillDarkBg" x1="24" y1="24" x2="166" y2="166" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect width="760" height="190" fill="transparent"/>
+  <rect x="24" y="24" width="142" height="142" rx="36" fill="url(#skillDarkBg)"/>
+  <path d="M64 116 91 89l19 19 36-42" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="64" cy="116" r="7" fill="#ccfbf1"/>
+  <circle cx="91" cy="89" r="7" fill="#ccfbf1"/>
+  <circle cx="110" cy="108" r="7" fill="#ccfbf1"/>
+  <circle cx="146" cy="66" r="7" fill="#ccfbf1"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif" font-weight="900">
+    <text x="202" y="91" font-size="54" fill="#f8fafc">Skill</text>
+    <text x="202" y="143" font-size="54" fill="#5eead4">Academy</text>
+  </g>
+</svg>

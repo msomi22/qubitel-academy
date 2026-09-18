@@ -9,15 +9,21 @@ import { getActiveAcademy } from '../config/detectAcademy.ts';
 
 const MOBILE_NAV_ITEMS = [
   { to: '/', label: 'Dashboard', end: true },
-  { to: '/categories', label: 'Categories' },
+  { to: '/categories', label: 'Categories', academyLibrary: true },
   { to: '/recent', label: 'Recent' },
   { to: '/progress', label: 'Progress' },
   { to: '/settings', label: 'Settings' }
 ];
 
+function academyLibraryLabel(academyId) {
+  if (academyId === 'cbc') return 'Grades';
+  if (academyId === 'skill') return 'Programmes';
+  return 'Categories';
+}
+
 function pageTitle(pathname, academyName, academyId) {
   if (pathname === '/') return `${academyName} Dashboard`;
-  if (pathname === '/categories') return academyId === 'cbc' ? 'Grades' : 'Categories';
+  if (pathname === '/categories') return academyLibraryLabel(academyId);
   if (pathname === '/dsa') return 'DSA Practice';
   if (pathname === '/random') return 'Random Practice';
   if (pathname === '/recent') return 'Recent';
@@ -141,7 +147,7 @@ export default function Navbar() {
             end={item.end}
             className={({ isActive }) => (isActive ? 'active' : '')}
           >
-            {item.label}
+            {item.academyLibrary ? academyLibraryLabel(activeAcademy.id) : item.label}
           </NavLink>
         ))}
         <SupportButton className="mobile-support-link" />
