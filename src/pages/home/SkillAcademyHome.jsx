@@ -7,6 +7,7 @@ import {
   isLearningNodeReady
 } from '../../learning/registry/index.ts';
 import { getAppearance } from '../../learning/core/index.ts';
+import { getSkillLastActivityContinueState } from '../../services/skillLastActivityService.js';
 import '../../styles/dashboard-hero.css';
 import '../../styles/categories-premium-grid.css';
 
@@ -67,6 +68,9 @@ export default function SkillAcademyHome({ homeModel }) {
   const academyNode = getAcademyRootNodeById('skill-academy');
   const programmes = academyNode ? getChildren(registry, academyNode.id) : [];
   const firstReadyProgramme = programmes.find((programme) => isLearningNodeReady(registry, programme));
+  const continueState = getSkillLastActivityContinueState(registry);
+  const continueHref = continueState?.href || (firstReadyProgramme ? `/learn/${firstReadyProgramme.id}` : '');
+  const continueLabel = continueState?.title || (firstReadyProgramme ? `Continue ${firstReadyProgramme.label}` : '');
 
   return (
     <div className="learning-dashboard-page dashboard-command-center">
@@ -83,9 +87,9 @@ export default function SkillAcademyHome({ homeModel }) {
             <Link className="btn dashboard-command-primary" to="/categories">
               Browse Programmes
             </Link>
-            {firstReadyProgramme ? (
-              <Link className="btn ghost dashboard-command-secondary" to={`/learn/${firstReadyProgramme.id}`}>
-                Continue {firstReadyProgramme.label}
+            {continueHref ? (
+              <Link className="btn ghost dashboard-command-secondary" to={continueHref}>
+                {continueLabel}
               </Link>
             ) : null}
           </div>
