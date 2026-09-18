@@ -7,6 +7,7 @@ function readSource(relativePath) {
 }
 
 const readerSource = readSource('./LearningBookReader.jsx');
+const bookContentBlockSource = readSource('./LearningBookContentBlock.jsx');
 const bookViewSource = readSource('../LearningNodeBookView.jsx');
 const readerStyleSource = readSource('../../styles/learning-book-reader.css');
 const learningNodeStyleSource = readSource('../LearningNodeUI.css');
@@ -135,4 +136,39 @@ test('vertical intent cancels swipe tracking while horizontal turns stay thresho
   assert.doesNotMatch(readerSource, /preventDefault\(/);
   assert.doesNotMatch(readerSource, /setPointerCapture\(/);
   assert.match(readerStyleSource, /\.learning-book__volume[\s\S]*?touch-action:\s*pan-y/);
+});
+
+
+test('mobile reader exposes text-size controls', () => {
+  assert.match(readerSource, /const \[fontScale, setFontScale\] = useState\(1\)/);
+  assert.match(readerSource, /aria-label="Decrease text size"/);
+  assert.match(readerSource, /aria-label="Increase text size"/);
+  assert.match(readerSource, /--learning-book-font-scale/);
+  assert.match(readerStyleSource, /\.learning-book__reading-controls/);
+  assert.match(readerStyleSource, /font-size:\s*calc\(1\.08rem \* var\(--learning-book-font-scale, 1\)\)/);
+});
+
+test('instructional images open in a zoomable fullscreen viewer', () => {
+  assert.match(bookContentBlockSource, /createPortal/);
+  assert.match(bookContentBlockSource, /learning-book-image-viewer/);
+  assert.match(bookContentBlockSource, /Open image viewer/);
+  assert.match(bookContentBlockSource, /Math\.min\(3, value \+ 0\.5\)/);
+  assert.match(bookContentBlockSource, /Tap to enlarge/);
+  assert.match(readerStyleSource, /\.learning-book-image-viewer\s*\{/);
+  assert.match(readerStyleSource, /touch-action:\s*pan-x pan-y pinch-zoom/);
+});
+
+test('mobile book header separates back control from scrollable breadcrumbs', () => {
+  assert.match(
+    learningNodeStyleSource,
+    /@media \(max-width: 760px\)[\s\S]*?\.progress-card-book-mode \.learning-book-header__primary[\s\S]*?display:\s*grid/
+  );
+  assert.match(
+    learningNodeStyleSource,
+    /\.progress-card-book-mode \.learning-book-header__breadcrumbs[\s\S]*?overflow-x:\s*auto/
+  );
+  assert.match(
+    learningNodeStyleSource,
+    /\.progress-card-book-mode \.learning-book-header__breadcrumbs \.breadcrumb-list[\s\S]*?white-space:\s*nowrap/
+  );
 });
