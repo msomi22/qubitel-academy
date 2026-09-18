@@ -7,14 +7,15 @@ export const QUBITEL_ACADEMY_ROOT_NODE_ID = 'qubitel-academy';
 export const QUBITEL_ACADEMY_CHILD_NODE_IDS = [
   'technology-academy',
   'cbc-academy',
-  'customer-experience-academy'
+  'customer-experience-academy',
+  'skill-academy'
 ] as const;
 
 const QUBITEL_ACADEMY_ROOT_NODE = createLearningNode({
   id: QUBITEL_ACADEMY_ROOT_NODE_ID,
   kind: 'platform',
   label: 'Qubitel Academy',
-  summary: 'Multi-academy learning platform for technology, CBC, customer experience, and future academies.',
+  summary: 'Multi-academy learning platform for technology, CBC, customer experience, skills, and future academies.',
   childIds: [...QUBITEL_ACADEMY_CHILD_NODE_IDS],
   attributes: [
     { key: 'scope', value: 'platform' },
@@ -72,6 +73,11 @@ export function createMinimalAcademyPlaceholderNodes(): LearningNode[] {
     createAcademyNode({
       id: 'customer-experience-academy',
       label: 'Customer Experience Academy',
+      parentId: QUBITEL_ACADEMY_ROOT_NODE_ID
+    }),
+    createAcademyNode({
+      id: 'skill-academy',
+      label: 'Skill Academy',
       parentId: QUBITEL_ACADEMY_ROOT_NODE_ID
     })
   ];
