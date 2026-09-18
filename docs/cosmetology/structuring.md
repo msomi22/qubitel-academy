@@ -70,37 +70,38 @@ docs/cosmetology/
 ├── curriculum_specification.md
 ├── structuring.md
 │
-├── 01-foundations/
-│   ├── 01-cosmetology-foundations.md
-│   ├── 02-anatomy-physiology.md
-│   ├── 03-microbiology-safety.md
-│   ├── 04-cosmetic-chemistry.md
-│   ├── 05-electricity-equipment.md
-│   └── 06-client-consultation.md
-│
-├── 02-hair-science/
-│   ├── 07-trichology.md
-│   ├── 08-hair-care-styling-science.md
-│   ├── 09-braiding-dreadlocking-textured-hair.md
-│   ├── 10-barbering-haircutting.md
-│   ├── 11-hair-additions-extensions.md
-│   ├── 12-chemical-reformation.md
-│   └── 13-hair-colour-science.md
-│
-├── 03-skin-aesthetics/
-│   ├── 14-cutaneous-biology.md
-│   ├── 15-facial-skin-care.md
-│   ├── 16-hair-removal.md
-│   └── 17-makeup-colour-science.md
-│
-├── 04-nails-body/
-│   ├── 18-onychology-nail-technology.md
-│   └── 19-body-massage-kinesiology.md
-│
-├── 05-professional-studies/
-│   ├── 20-salon-management.md
-│   ├── 21-research-evidence.md
-│   └── 22-industry-training.md
+├── student-notes/
+│   ├── 01-foundations/
+│   │   ├── 01-cosmetology-foundations.md
+│   │   ├── 02-anatomy-physiology.md
+│   │   ├── 03-microbiology-safety.md
+│   │   ├── 04-cosmetic-chemistry.md
+│   │   ├── 05-electricity-equipment.md
+│   │   └── 06-client-consultation.md
+│   │
+│   ├── 02-hair-science/
+│   │   ├── 07-trichology.md
+│   │   ├── 08-hair-care-styling-science.md
+│   │   ├── 09-braiding-dreadlocking-textured-hair.md
+│   │   ├── 10-barbering-haircutting.md
+│   │   ├── 11-hair-additions-extensions.md
+│   │   ├── 12-chemical-reformation.md
+│   │   └── 13-hair-colour-science.md
+│   │
+│   ├── 03-skin-aesthetics/
+│   │   ├── 14-cutaneous-biology.md
+│   │   ├── 15-facial-skin-care.md
+│   │   ├── 16-hair-removal.md
+│   │   └── 17-makeup-colour-science.md
+│   │
+│   ├── 04-nails-body/
+│   │   ├── 18-onychology-nail-technology.md
+│   │   └── 19-body-massage-kinesiology.md
+│   │
+│   └── 05-professional-studies/
+│       ├── 20-salon-management.md
+│       ├── 21-research-evidence.md
+│       └── 22-industry-training.md
 │
 ├── assessments/
 │   ├── module-quizzes/
@@ -109,10 +110,11 @@ docs/cosmetology/
 │   └── mock-exams/
 │
 ├── teacher-guide/
+│   ├── lesson-plans/
+│   ├── answer-keys/
+│   ├── marking-schemes/
 │   ├── teaching-methodology.md
-│   ├── lesson-planning.md
-│   ├── assessment-guide.md
-│   └── marking-rubrics.md
+│   └── assessment-guide.md
 │
 └── reference/
     ├── glossary.md
@@ -125,12 +127,43 @@ docs/cosmetology/
     ├── client-forms.md
     └── tvet-cross-reference.md
 ```
+```
 
 ---
 
 ## 4. Folder Responsibilities
 
-### `01-foundations/`
+### `student-notes/`
+
+This is the canonical home for the **student textbook/course notes**.
+
+It contains the full learning material for Modules 1–22 and is organised into the five curriculum parts:
+
+- `01-foundations/`;
+- `02-hair-science/`;
+- `03-skin-aesthetics/`;
+- `04-nails-body/`;
+- `05-professional-studies/`.
+
+Student chapters should be self-contained and learner-facing. They may include explanations, diagrams, worked examples, science boxes, salon applications, red flags, learner case studies, summaries, revision questions, and practical connections.
+
+They should not contain teacher-only answer keys, expected responses, marking criteria, lesson timing, or assessor instructions.
+
+### 4.1 Audience and Content Separation
+
+| Area | Audience | Content |
+|---|---|---|
+| `student-notes/` | Students | Main textbook/course notes |
+| `assessments/` | Students + teachers | Learner-facing tests, assignments, case studies, and mock exams |
+| `teacher-guide/` | Teachers/trainers | Lesson support, answers, marking schemes, rubrics, facilitation guidance |
+| `reference/` | Students + teachers | Shared lookup and reference material |
+| `curriculum_specification.md` | Authors/teachers/curriculum designers | What the course must cover |
+| `structuring.md` | Authors/contributors | How the course material must be organised and written |
+
+The same subject should not be duplicated unnecessarily across student and teacher materials. Student notes explain the subject; teacher resources explain **how to teach, assess, and mark it**.
+
+
+### `student-notes/01-foundations/`
 
 Scientific and professional knowledge required before specialised services are studied.
 
@@ -145,7 +178,7 @@ Includes:
 - physical science and equipment;
 - consultation and referral.
 
-### `02-hair-science/`
+### `student-notes/02-hair-science/`
 
 Hair and scalp science and all major hair-service theory.
 
@@ -163,7 +196,7 @@ Includes:
 - chemical reformation;
 - hair colour science.
 
-### `03-skin-aesthetics/`
+### `student-notes/03-skin-aesthetics/`
 
 Skin science and aesthetic services.
 
@@ -177,7 +210,7 @@ Includes:
 - colour science;
 - facial morphology.
 
-### `04-nails-body/`
+### `student-notes/04-nails-body/`
 
 Nail science, nail services, body anatomy, movement, and massage.
 
@@ -191,7 +224,7 @@ Includes:
 - kinesiology;
 - body massage.
 
-### `05-professional-studies/`
+### `student-notes/05-professional-studies/`
 
 Business, research, and workplace preparation.
 
@@ -220,6 +253,12 @@ Use this area for:
 ### `teacher-guide/`
 
 Teacher-only or educator-focused resources.
+
+Student-facing assessments should not contain their model answers or marking logic. Keep those separately in teacher-only areas such as:
+
+- `teacher-guide/answer-keys/`;
+- `teacher-guide/marking-schemes/`;
+- `teacher-guide/lesson-plans/`.
 
 Use this area for:
 
@@ -330,9 +369,41 @@ Not every heading must contain the same amount of content, but the sequence shou
 ## Applied / Case Questions
 
 ## Teacher Notes
+<!-- Teacher Notes placeholder: in the published student-notes version, teacher-only guidance should live in teacher-guide/. This heading may link to the corresponding teacher resource during authoring rather than expose teacher-only answers or marking guidance. -->
 
 ## Further Reading
 ```
+
+---
+
+## 6.1 Student Chapter vs Teacher Guide
+
+The standard chapter template above describes the **student learning chapter**.
+
+The student chapter should contain the teaching content itself.
+
+A corresponding teacher guide may contain:
+
+- recommended teaching time;
+- prior knowledge;
+- suggested lesson sequence;
+- demonstrations;
+- discussion prompts;
+- common misconceptions;
+- model answers;
+- marking guidance;
+- extension activities;
+- classroom-management or facilitation notes.
+
+Example pairing:
+
+```text
+student-notes/02-hair-science/07-trichology.md
+teacher-guide/lesson-plans/07-trichology.md
+teacher-guide/answer-keys/07-trichology-quiz-answers.md
+```
+
+This allows the student material to remain useful as a standalone textbook while giving educators a richer companion resource.
 
 ---
 
@@ -853,6 +924,8 @@ The repository should be structured so that the same source material can eventua
 - LMS integration.
 
 Markdown remains the canonical authoring format unless the project later adopts a dedicated content schema.
+
+The separation between `student-notes/`, `teacher-guide/`, `assessments/`, and `reference/` should be preserved so the same source repository can support a student textbook/package and teacher companion without exposing teacher-only material in the learner edition.
 
 ---
 
