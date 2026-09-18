@@ -1,9 +1,13 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { createNodeRoutePath } from '../learning/routing';
+import { createNodeUiPath } from '../learning/routing';
 import { getChildren, isLearningNodeReady } from '../learning/registry/index.ts';
 
 const ICON_BY_KIND = {
+  programme: '🎓',
+  level: '📘',
+  module: '📚',
+  learningMaterial: '📒',
   learningArea: '📖',
   theme: '📚',
   strand: '📝',
@@ -20,6 +24,10 @@ const ICON_BY_KIND = {
 };
 
 const LABEL_BY_KIND = {
+  programme: 'Programme',
+  level: 'Level',
+  module: 'Module',
+  learningMaterial: 'Learning Material',
   learningArea: 'Learning Area',
   theme: 'Theme',
   strand: 'Strand',
@@ -36,12 +44,15 @@ const LABEL_BY_KIND = {
 };
 
 const KIND_GROUPS = {
+  programmes: { kinds: ['programme'], label: 'Programmes' },
+  levels: { kinds: ['level'], label: 'Levels' },
+  modules: { kinds: ['module'], label: 'Modules' },
   learningAreas: { kinds: ['learningArea'], label: 'Learning Areas' },
   themes: { kinds: ['theme'], label: 'Themes' },
   strands: { kinds: ['strand'], label: 'Strands' },
   subStrands: { kinds: ['subStrand'], label: 'Sub-strands' },
   content: {
-    kinds: ['notes', 'practice', 'revision', 'assessment', 'exam', 'activity', 'content'],
+    kinds: ['learningMaterial', 'notes', 'practice', 'revision', 'assessment', 'exam', 'activity', 'content'],
     label: 'Content'
   },
   lessons: { kinds: ['lesson'], label: 'Lessons' },
@@ -205,7 +216,7 @@ export default function LearningNodeChildGrid({ registry, nodeId, nodes, hideSec
             }`.trim()}
           >
             {group.children.map((child) => {
-              const path = createNodeRoutePath(registry, child, {
+              const path = createNodeUiPath(registry, child, {
                 includeRoot: false,
                 includeAcademyRoot: false
               });
