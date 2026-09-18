@@ -1,10 +1,10 @@
 import { defineLearningProblem } from '../../../../../problems/problemAuthoring.js';
 
 const lesson = defineLearningProblem({
-  id: 'cosmetology-professional-practice-lesson-001',
+  id: 'cos-l6-foundations-001',
   category: 'cosmetology',
-  topicId: 'level-6-foundations',
-  title: 'Professional Scope and Scientific Foundations',
+  topicId: 'l6-foundations',
+  title: 'Professional Scope',
   difficulty: 'Foundation',
   estimatedTimeSeconds: 600,
   question: 'Understand professional scope, scientific reasoning, client safety, and referral boundaries in cosmetology.',
