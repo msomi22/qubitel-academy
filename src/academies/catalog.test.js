@@ -74,7 +74,7 @@ test('Skill Academy exposes Cosmetology as its first programme catalog boundary'
   );
   assert.deepEqual(
     academyCatalogs.skill.topics.map((topic) => `${topic.category}/${topic.id}`),
-    ['cosmetology/programme-overview']
+    ['cosmetology/programme-overview', 'cosmetology/level-6-foundations']
   );
 });
 
