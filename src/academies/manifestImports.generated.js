@@ -17,6 +17,9 @@ import cbc_grade_3_mathematics_topic from './cbc/grade-3/mathematics/topic.manif
 import customer_experience_academy from './customer-experience/academy.manifest.json' with { type: 'json' };
 import customer_experience_customer_support_category from './customer-experience/customer-support/category.manifest.json' with { type: 'json' };
 import customer_experience_customer_support_complaint_handling_topic from './customer-experience/customer-support/complaint-handling/topic.manifest.json' with { type: 'json' };
+import skill_academy from './skill/academy.manifest.json' with { type: 'json' };
+import skill_cosmetology_category from './skill/cosmetology/category.manifest.json' with { type: 'json' };
+import skill_cosmetology_programme_overview_topic from './skill/cosmetology/programme-overview/topic.manifest.json' with { type: 'json' };
 import tech_academy from './tech/academy.manifest.json' with { type: 'json' };
 import tech_aptitude_category from './tech/aptitude/category.manifest.json' with { type: 'json' };
 import tech_aptitude_numerical_reasoning_topic from './tech/aptitude/numerical-reasoning/topic.manifest.json' with { type: 'json' };
@@ -58,6 +61,7 @@ import tech_system_scalability_topic from './tech/system/scalability/topic.manif
 export const academyManifestRecords = [
   { path: './cbc/academy.manifest.json', manifest: cbc_academy },
   { path: './customer-experience/academy.manifest.json', manifest: customer_experience_academy },
+  { path: './skill/academy.manifest.json', manifest: skill_academy },
   { path: './tech/academy.manifest.json', manifest: tech_academy }
 ];
 
@@ -65,6 +69,7 @@ export const categoryManifestRecords = [
   { path: './cbc/grade-1/category.manifest.json', manifest: cbc_grade_1_category },
   { path: './cbc/grade-3/category.manifest.json', manifest: cbc_grade_3_category },
   { path: './customer-experience/customer-support/category.manifest.json', manifest: customer_experience_customer_support_category },
+  { path: './skill/cosmetology/category.manifest.json', manifest: skill_cosmetology_category },
   { path: './tech/aptitude/category.manifest.json', manifest: tech_aptitude_category },
   { path: './tech/dsa/category.manifest.json', manifest: tech_dsa_category },
   { path: './tech/engineering-leadership/category.manifest.json', manifest: tech_engineering_leadership_category },
@@ -89,6 +94,7 @@ export const topicManifestRecords = [
   { path: './cbc/grade-3/kiswahili/topic.manifest.json', manifest: cbc_grade_3_kiswahili_topic },
   { path: './cbc/grade-3/mathematics/topic.manifest.json', manifest: cbc_grade_3_mathematics_topic },
   { path: './customer-experience/customer-support/complaint-handling/topic.manifest.json', manifest: customer_experience_customer_support_complaint_handling_topic },
+  { path: './skill/cosmetology/programme-overview/topic.manifest.json', manifest: skill_cosmetology_programme_overview_topic },
   { path: './tech/aptitude/numerical-reasoning/topic.manifest.json', manifest: tech_aptitude_numerical_reasoning_topic },
   { path: './tech/dsa/backtracking/topic.manifest.json', manifest: tech_dsa_backtracking_topic },
   { path: './tech/dsa/binary-search/topic.manifest.json', manifest: tech_dsa_binary_search_topic },
