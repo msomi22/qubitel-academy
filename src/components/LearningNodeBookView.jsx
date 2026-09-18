@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getChildren } from '../learning/registry/index.ts';
-import { createNodeRoutePath } from '../learning/routing';
+import { createNodeUiPath } from '../learning/routing';
 import LearningNodeContentRenderer from './LearningNodeContentRenderer.jsx';
 import LearningBookReader from './book/LearningBookReader.jsx';
 import LearningBookContentBlock from './book/LearningBookContentBlock.jsx';
@@ -114,10 +114,12 @@ function getDirectSiblingContentTabs(registry, node) {
         key: contentType,
         label: tabMeta.label,
         icon: tabMeta.icon,
-        path: createNodeRoutePath(registry, sibling.id, {
-          includeRoot: false,
-          includeAcademyRoot: false
-        })
+        path: sibling.id === node.id
+          ? undefined
+          : createNodeUiPath(registry, sibling.id, {
+              includeRoot: false,
+              includeAcademyRoot: false
+            })
       };
     });
 }
