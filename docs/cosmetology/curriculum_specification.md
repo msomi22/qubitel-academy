@@ -221,6 +221,26 @@ The complete programme is divided into five major parts.
 21. Research Methods and Evidence-Based Cosmetology
 22. Industry Training, Portfolio and Professional Development
 
+
+### Course Resource Architecture
+
+The curriculum is delivered through four clearly separated resource layers:
+
+| Resource layer | Primary audience | Purpose |
+|---|---|---|
+| `student-notes/` | Students and independent learners | The main textbook-style learning material for Modules 1–22 |
+| `assessments/` | Students and teachers | Quizzes, assignments, case studies, practical tasks, and mock examinations |
+| `teacher-guide/` | Teachers, trainers, and assessors | Teaching guidance, lesson planning, answer keys, marking schemes, rubrics, and delivery support |
+| `reference/` | Students and teachers | Shared reference material such as glossaries, ingredient references, condition guides, colour theory, forms, and TVET cross-references |
+
+The module chapters listed in this curriculum should therefore be authored as **student-facing notes** inside `student-notes/`.
+
+Teacher-only material should not be embedded inside the student notes. Where a student chapter needs teacher support, the corresponding teacher resource should live under `teacher-guide/`.
+
+Assessment questions may appear inside student chapters for immediate revision, while standalone tests, assignments, case studies, and mock examinations should live under `assessments/`. Model answers, answer keys, and marking guidance should live under `teacher-guide/`.
+
+The `reference/` area is shared by both students and teachers unless a specific file is explicitly identified as teacher-only.
+
 ---
 
 ## Part I — SCIENTIFIC & PROFESSIONAL FOUNDATIONS
@@ -2435,6 +2455,15 @@ A manufacturer claims that a shampoo “permanently repairs all damaged hair bon
 
 ## 12. TEACHER'S GUIDE COMPONENT
 
+Teacher-facing material should be maintained separately under `teacher-guide/` so that student notes remain clean, self-contained learning material.
+
+Recommended teacher-only subareas include:
+
+- `teacher-guide/lesson-plans/`;
+- `teacher-guide/answer-keys/`;
+- `teacher-guide/marking-schemes/`;
+- shared teaching methodology and assessment guidance.
+
 The educator edition should include:
 
 Lesson objectives.
@@ -2473,6 +2502,10 @@ Research-project rubric.
 
 ## 13. STUDENT RESOURCE COMPONENT
 
+The canonical student learning material should live under `student-notes/`, organised by the five curriculum parts and Modules 1–22.
+
+These files should function as the primary **student textbook/course notes** and should be complete enough for guided classroom use or independent study.
+
 The student edition should contain:
 
 Complete notes.
@@ -2502,6 +2535,21 @@ Research guidance.
 Glossary.
 
 Index.
+
+---
+
+### Student and Teacher Separation Principle
+
+The student notes should contain teaching content, examples, explanations, revision activities, and learner-facing case studies.
+
+Teacher-only content such as model answers, expected responses, marking criteria, lesson timing, facilitation prompts, and assessor guidance should remain in `teacher-guide/`.
+
+This separation supports future publication of:
+
+- a student textbook or notes package;
+- a teacher/educator companion guide;
+- a separate assessment bank;
+- shared reference handbooks.
 
 ---
 
