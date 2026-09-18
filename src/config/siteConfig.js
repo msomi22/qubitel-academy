@@ -17,8 +17,8 @@ const academyBrandAssets = {
     logoDark: '/academy-logos/cx-logo-dark.svg'
   },
   skill: {
-    logoLight: '/brand-logo-light.svg',
-    logoDark: '/brand-logo-dark.svg'
+    logoLight: '/academy-logos/skill-logo-light.svg',
+    logoDark: '/academy-logos/skill-logo-dark.svg'
   }
 };
 const activeBrandAssets = academyBrandAssets[activeAcademy.id] || academyBrandAssets.tech;
