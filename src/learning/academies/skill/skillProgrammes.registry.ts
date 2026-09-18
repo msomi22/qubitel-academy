@@ -14,7 +14,7 @@ import {
 export const COSMETOLOGY_PROGRAMME_NODE_ID = 'cosmetology';
 
 function createCosmetologyLevel(level: number): LearningNode {
-  const id = `cosmetology-level-${level}`;
+  const id = `cos-l${level}`;
 
   return createLearningNode({
     id,
@@ -29,7 +29,7 @@ function createCosmetologyLevel(level: number): LearningNode {
         ]
       : [],
     attributes: [
-      { key: 'routeSegment', value: `level-${level}` },
+      { key: 'routeSegment', value: `l${level}` },
       { key: 'programmeId', value: COSMETOLOGY_PROGRAMME_NODE_ID },
       { key: 'programmeName', value: 'Cosmetology' },
       { key: 'level', value: level }
