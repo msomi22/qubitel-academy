@@ -4,7 +4,7 @@ const lesson = defineLearningProblem({
   id: 'cos-l6-onychology-001',
   category: 'cosmetology',
   topicId: 'l6-onychology',
-  title: 'Introduction to Onychology',
+  title: 'Onychology Overview',
   difficulty: 'Foundation',
   estimatedTimeSeconds: 600,
   question: 'Understand the scope of onychology, professional nail services, client safety, and referral boundaries.',
