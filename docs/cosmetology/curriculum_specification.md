@@ -1,34 +1,60 @@
-# COMPLETE COSMETOLOGY SCIENCE & PROFESSIONAL PRACTICE
+# Complete Cosmetology Science & Professional Practice
 
-## Comprehensive Student and Educator Course Guide
+> **Master Curriculum Specification** — Comprehensive Student and Educator Course Guide
 
-### Scientific Foundations • Hair • Skin • Nails • Beauty Therapy • Professional Practice • Business • Research
+**Scientific Foundations • Hair • Skin • Nails • Beauty Therapy • Professional Practice • Business • Research**
+
+This document defines the scope, learning outcomes, module structure, competency alignment, assessment approach, and publishing expectations for the cosmetology course.
+
+- **Primary audience:** cosmetology students, teachers, trainers, and independent learners
+- **Curriculum basis:** Kenyan TVET-CDACC Cosmetology Levels 3–6, expanded with internationally recognised cosmetology and beauty-therapy subject areas
+- **Teaching approach:** science-first, practice-connected, safety-conscious, and evidence-aware
+- **Companion authoring guide:** [Course Content Structure & Authoring Guide](./structuring.md)
+
+> **Important:** This is an independent curriculum and learning-resource specification. It does not itself award or replace an accredited TVET-CDACC, CIDESCO, City & Guilds, Milady, Pivot Point, or other professional qualification.
+
+### Contents
+
+1. [Purpose of This Course](#1-purpose-of-this-course)
+2. [Course Philosophy](#2-course-philosophy)
+3. [Overall Course Outcomes](#3-overall-course-outcomes)
+4. [Important Professional Boundaries](#4-important-professional-boundaries)
+5. [Course Structure](#5-course-structure)
+6. [TVET-CDACC Competency Mapping](#6-tvet-cdacc-competency-mapping)
+7. [Global Benchmarking](#7-global-benchmarking)
+8. [Standard Chapter Format](#8-standard-chapter-format)
+9. [Teaching Features](#9-teaching-features)
+10. [Assessment Framework](#10-assessment-framework)
+11. [Question Design](#11-question-design)
+12. [Teacher's Guide Component](#12-teachers-guide-component)
+13. [Student Resource Component](#13-student-resource-component)
+14. [Recommended Appendices](#14-recommended-appendices)
+15. [Final Course Outcome](#15-final-course-outcome)
 
 ---
 
-# 1. PURPOSE OF THIS COURSE
+## 1. PURPOSE OF THIS COURSE
 
 This course provides a comprehensive theoretical and professional foundation in cosmetology.
 
 It is designed to help a learner understand not only **how cosmetology services are performed**, but also:
 
-* why they work;
-* what happens biologically and chemically;
-* when a service is appropriate;
-* when a service should not be performed;
-* how products interact with hair, skin and nails;
-* how infections and injuries are prevented;
-* how clients are assessed and advised;
-* how professional salons are operated;
-* how cosmetology claims can be evaluated scientifically.
+- why they work;
+- what happens biologically and chemically;
+- when a service is appropriate;
+- when a service should not be performed;
+- how products interact with hair, skin and nails;
+- how infections and injuries are prevented;
+- how clients are assessed and advised;
+- how professional salons are operated;
+- how cosmetology claims can be evaluated scientifically.
 
 The curriculum is mapped to the occupational areas appearing in the Kenyan TVET-CDACC Cosmetology Levels 3–6 structure while incorporating subject areas commonly found in international cosmetology and beauty-therapy education.
 
-It is an independent learning and teaching resource and should not be represented as an official TVET-CDACC, CIDESCO, City & Guilds, Milady or other awarding-body qualification unless separately approved by the relevant body.
 
 ---
 
-# 2. COURSE PHILOSOPHY
+## 2. COURSE PHILOSOPHY
 
 Traditional cosmetology courses are often arranged around services:
 
@@ -78,7 +104,7 @@ This allows students to understand cosmetology instead of memorising procedures.
 
 ---
 
-# 3. OVERALL COURSE OUTCOMES
+## 3. OVERALL COURSE OUTCOMES
 
 By the end of the complete course, the learner should be able to:
 
@@ -114,7 +140,7 @@ By the end of the complete course, the learner should be able to:
 
 ---
 
-# 4. IMPORTANT PROFESSIONAL BOUNDARIES
+## 4. IMPORTANT PROFESSIONAL BOUNDARIES
 
 Cosmetology involves knowledge of conditions affecting hair, skin and nails, but cosmetologists are not automatically medical practitioners.
 
@@ -154,11 +180,11 @@ rather than:
 
 ---
 
-# 5. COURSE STRUCTURE
+## 5. COURSE STRUCTURE
 
 The complete programme is divided into five major parts.
 
-## PART I — SCIENTIFIC & PROFESSIONAL FOUNDATIONS
+### Part I — SCIENTIFIC & PROFESSIONAL FOUNDATIONS
 
 1. Cosmetology Foundations and Professional Practice
 2. Anatomy, Physiology and Histology
@@ -167,7 +193,7 @@ The complete programme is divided into five major parts.
 5. Electricity, Equipment and Physical Science
 6. Client Consultation, Analysis, Contraindications and Referral
 
-## PART II — HAIR SCIENCE & HAIRDRESSING
+### Part II — HAIR SCIENCE & HAIRDRESSING
 
 7. Trichology — Hair and Scalp Science
 8. Hair Care, Shampooing, Conditioning and Styling Science
@@ -177,19 +203,19 @@ The complete programme is divided into five major parts.
 12. Hair Chemical Reformation
 13. Hair Colour Science
 
-## PART III — SKIN & AESTHETIC SCIENCES
+### Part III — SKIN & AESTHETIC SCIENCES
 
 14. Cutaneous Biology — Skin Science
 15. Facial Skin Care and Esthetics
 16. Hair Removal Science
 17. Makeup, Facial Morphology and Colour Science
 
-## PART IV — NAIL & BODY SCIENCES
+### Part IV — NAIL & BODY SCIENCES
 
 18. Onychology, Manicure, Pedicure and Nail Technology
 19. Body Massage, Myology and Kinesiology
 
-## PART V — PROFESSIONAL, BUSINESS & RESEARCH STUDIES
+### Part V — PROFESSIONAL, BUSINESS & RESEARCH STUDIES
 
 20. Salon Management, Entrepreneurship and Digital Literacy
 21. Research Methods and Evidence-Based Cosmetology
@@ -197,50 +223,50 @@ The complete programme is divided into five major parts.
 
 ---
 
-# PART I — SCIENTIFIC & PROFESSIONAL FOUNDATIONS
+## Part I — SCIENTIFIC & PROFESSIONAL FOUNDATIONS
 
-# MODULE 1 — COSMETOLOGY FOUNDATIONS & PROFESSIONAL PRACTICE
+### Module 1 — COSMETOLOGY FOUNDATIONS & PROFESSIONAL PRACTICE
 
-## Scientific / academic areas
+#### Scientific and Academic Areas
 
-* Cosmetology
-* Professional Ethics
-* Communication Studies
-* Occupational Studies
-* Psychology
-* Customer Service
+- Cosmetology
+- Professional Ethics
+- Communication Studies
+- Occupational Studies
+- Psychology
+- Customer Service
 
-## Learning outcomes
+#### Learning Outcomes
 
 The learner should be able to:
 
-* define cosmetology and its major branches;
-* describe career opportunities within the beauty industry;
-* explain professional behaviour and ethical practice;
-* demonstrate appropriate professional communication;
-* explain personal presentation and workplace conduct;
-* understand professional boundaries.
+- define cosmetology and its major branches;
+- describe career opportunities within the beauty industry;
+- explain professional behaviour and ethical practice;
+- demonstrate appropriate professional communication;
+- explain personal presentation and workplace conduct;
+- understand professional boundaries.
 
-## Topics
+#### Topics
 
-### 1.1 Introduction to cosmetology
+##### 1.1 Introduction to cosmetology
 
 Meaning and scope of cosmetology.
 
 Branches including:
 
-* hairdressing;
-* barbering;
-* trichology-related hair care;
-* skin care;
-* esthetics;
-* makeup;
-* nail technology;
-* massage;
-* beauty therapy;
-* salon management.
+- hairdressing;
+- barbering;
+- trichology-related hair care;
+- skin care;
+- esthetics;
+- makeup;
+- nail technology;
+- massage;
+- beauty therapy;
+- salon management.
 
-### 1.2 History of beauty and grooming
+##### 1.2 History of beauty and grooming
 
 Traditional beauty practices.
 
@@ -250,7 +276,7 @@ Evolution of cosmetic products.
 
 Modern professional cosmetology.
 
-### 1.3 Professional image
+##### 1.3 Professional image
 
 Personal hygiene.
 
@@ -262,7 +288,7 @@ Time management.
 
 Reliability.
 
-### 1.4 Professional ethics
+##### 1.4 Professional ethics
 
 Confidentiality.
 
@@ -278,7 +304,7 @@ Professional boundaries.
 
 Non-discrimination.
 
-### 1.5 Communication
+##### 1.5 Communication
 
 Verbal communication.
 
@@ -296,9 +322,9 @@ Conflict resolution.
 
 ---
 
-# MODULE 2 — HUMAN ANATOMY, PHYSIOLOGY & HISTOLOGY
+### Module 2 — HUMAN ANATOMY, PHYSIOLOGY & HISTOLOGY
 
-## Scientific disciplines
+#### Scientific Disciplines
 
 **Anatomy** — study of body structure.
 
@@ -320,13 +346,13 @@ Conflict resolution.
 
 **Endocrinology** — study of hormones.
 
-## Learning outcomes
+#### Learning Outcomes
 
 Students should understand body structures relevant to cosmetology and relate those structures to hair, skin, nail and massage services.
 
-## Topics
+#### Topics
 
-### 2.1 Cells
+##### 2.1 Cells
 
 Cell membrane.
 
@@ -340,7 +366,7 @@ Cell division.
 
 Cell metabolism.
 
-### 2.2 Tissues
+##### 2.2 Tissues
 
 Epithelial tissue.
 
@@ -350,7 +376,7 @@ Muscular tissue.
 
 Nervous tissue.
 
-### 2.3 Skeletal system
+##### 2.3 Skeletal system
 
 Skull.
 
@@ -368,7 +394,7 @@ Leg.
 
 Foot.
 
-### 2.4 Muscular system
+##### 2.4 Muscular system
 
 Facial muscles.
 
@@ -382,7 +408,7 @@ Back muscles.
 
 Leg and foot muscles.
 
-### 2.5 Circulatory system
+##### 2.5 Circulatory system
 
 Heart.
 
@@ -394,7 +420,7 @@ Capillaries.
 
 Blood circulation.
 
-### 2.6 Lymphatic system
+##### 2.6 Lymphatic system
 
 Lymph.
 
@@ -404,7 +430,7 @@ Lymph nodes.
 
 Immune function.
 
-### 2.7 Nervous system
+##### 2.7 Nervous system
 
 Central nervous system.
 
@@ -416,7 +442,7 @@ Motor nerves.
 
 Touch, temperature and pain.
 
-### 2.8 Endocrine system
+##### 2.8 Endocrine system
 
 Hormones.
 
@@ -430,17 +456,17 @@ Stress hormones.
 
 Relationship of hormones to:
 
-* hair growth;
-* sebaceous activity;
-* pigmentation;
-* skin condition;
-* nail growth.
+- hair growth;
+- sebaceous activity;
+- pigmentation;
+- skin condition;
+- nail growth.
 
 ---
 
-# MODULE 3 — MICROBIOLOGY, INFECTION CONTROL & OCCUPATIONAL SAFETY
+### Module 3 — MICROBIOLOGY, INFECTION CONTROL & OCCUPATIONAL SAFETY
 
-## Scientific disciplines
+#### Scientific Disciplines
 
 Microbiology.
 
@@ -458,7 +484,7 @@ Epidemiology.
 
 Occupational Health and Safety.
 
-## Core note
+#### Core Note
 
 Microbiology explains **what microorganisms are**.
 
@@ -466,9 +492,9 @@ Infection control explains **how their transmission is prevented**.
 
 These concepts should never be treated as the same subject.
 
-## Topics
+#### Topics
 
-### 3.1 Microorganisms
+##### 3.1 Microorganisms
 
 Bacteria.
 
@@ -480,7 +506,7 @@ Parasites.
 
 Biofilms.
 
-### 3.2 Infection
+##### 3.2 Infection
 
 Pathogens.
 
@@ -492,7 +518,7 @@ Portals of entry.
 
 Susceptible hosts.
 
-### 3.3 Cross-contamination
+##### 3.3 Cross-contamination
 
 Client-to-client.
 
@@ -504,7 +530,7 @@ Equipment-to-client.
 
 Surface-to-client.
 
-### 3.4 Infection-control terminology
+##### 3.4 Infection-control terminology
 
 **Cleaning:** physical removal of visible dirt and organic material.
 
@@ -514,7 +540,7 @@ Surface-to-client.
 
 **Antisepsis:** use of suitable antimicrobial agents on living tissue.
 
-### 3.5 Standard precautions
+##### 3.5 Standard precautions
 
 Hand hygiene.
 
@@ -530,7 +556,7 @@ Waste disposal.
 
 Linen management.
 
-### 3.6 Salon safety
+##### 3.6 Salon safety
 
 Chemical storage.
 
@@ -548,11 +574,11 @@ Emergency procedures.
 
 ---
 
-# MODULE 4 — CHEMISTRY, BIOCHEMISTRY & COSMETIC SCIENCE
+### Module 4 — CHEMISTRY, BIOCHEMISTRY & COSMETIC SCIENCE
 
 This should be one of the strongest scientific chapters in the course.
 
-## Scientific disciplines
+#### Scientific Disciplines
 
 General Chemistry.
 
@@ -572,13 +598,13 @@ Toxicology.
 
 Ingredient Science.
 
-## Learning outcomes
+#### Learning Outcomes
 
 Students should be able to explain why common cosmetic products behave as they do.
 
-## Topics
+#### Topics
 
-### 4.1 Matter
+##### 4.1 Matter
 
 Elements.
 
@@ -590,7 +616,7 @@ Compounds.
 
 Mixtures.
 
-### 4.2 Chemical bonds
+##### 4.2 Chemical bonds
 
 Ionic bonds.
 
@@ -600,7 +626,7 @@ Hydrogen bonds.
 
 Disulfide bonds.
 
-### 4.3 Acids, bases and pH
+##### 4.3 Acids, bases and pH
 
 pH scale.
 
@@ -614,7 +640,7 @@ Buffers.
 
 A change of one pH unit represents approximately a tenfold change in hydrogen-ion activity.
 
-### 4.4 Solutions and mixtures
+##### 4.4 Solutions and mixtures
 
 Solutions.
 
@@ -626,7 +652,7 @@ Gels.
 
 Aerosols.
 
-### 4.5 Surfactants
+##### 4.5 Surfactants
 
 Surfactants contain regions attracted to water and regions attracted to oils.
 
@@ -634,12 +660,12 @@ They help oil, sebum and soil become dispersed in water.
 
 Applications include:
 
-* shampoos;
-* cleansers;
-* body washes;
-* emulsifying systems.
+- shampoos;
+- cleansers;
+- body washes;
+- emulsifying systems.
 
-### 4.6 Cosmetic ingredient classes
+##### 4.6 Cosmetic ingredient classes
 
 Surfactants.
 
@@ -667,7 +693,7 @@ Conditioning polymers.
 
 Silicones.
 
-### 4.7 Emulsion science
+##### 4.7 Emulsion science
 
 Oil-in-water emulsions.
 
@@ -677,19 +703,19 @@ Emulsifiers.
 
 Product stability.
 
-### 4.8 Rheology
+##### 4.8 Rheology
 
 Rheology examines how substances flow and deform.
 
 It helps explain the texture and spreadability of:
 
-* creams;
-* lotions;
-* gels;
-* shampoos;
-* conditioners.
+- creams;
+- lotions;
+- gels;
+- shampoos;
+- conditioners.
 
-### 4.9 Toxicology and safety
+##### 4.9 Toxicology and safety
 
 Dose.
 
@@ -709,9 +735,9 @@ Manufacturer directions.
 
 ---
 
-# MODULE 5 — ELECTRICITY, EQUIPMENT & PHYSICAL SCIENCE
+### Module 5 — ELECTRICITY, EQUIPMENT & PHYSICAL SCIENCE
 
-## Topics
+#### Topics
 
 Basic electricity.
 
@@ -749,9 +775,9 @@ Contraindications associated with equipment.
 
 ---
 
-# MODULE 6 — CLIENT CONSULTATION, ANALYSIS & REFERRAL
+### Module 6 — CLIENT CONSULTATION, ANALYSIS & REFERRAL
 
-## Areas
+#### Areas
 
 Consultation Science.
 
@@ -763,7 +789,7 @@ Risk Assessment.
 
 Record Management.
 
-## Topics
+#### Topics
 
 Client history.
 
@@ -799,7 +825,7 @@ Aftercare.
 
 Referral.
 
-## Core principle
+#### Core Principle
 
 A cosmetologist should know the difference between:
 
@@ -815,15 +841,15 @@ Medical diagnosis belongs to appropriately qualified healthcare professionals.
 
 ---
 
-# PART II — HAIR SCIENCE
+## Part II — HAIR SCIENCE
 
-# MODULE 7 — TRICHOLOGY: HAIR & SCALP SCIENCE
+### Module 7 — TRICHOLOGY: HAIR & SCALP SCIENCE
 
-## Scientific discipline
+#### Scientific Discipline
 
 **Trichology**
 
-## Topics
+#### Topics
 
 Hair follicle.
 
@@ -847,7 +873,7 @@ Melanin.
 
 Sebaceous glands.
 
-## Hair growth cycle
+#### Hair growth cycle
 
 Anagen.
 
@@ -857,7 +883,7 @@ Telogen.
 
 Exogen.
 
-## Hair characteristics
+#### Hair characteristics
 
 Texture.
 
@@ -875,7 +901,7 @@ Growth pattern.
 
 Curl pattern.
 
-## Hair fibre chemistry
+#### Hair fibre chemistry
 
 Hair consists primarily of keratin proteins.
 
@@ -885,7 +911,7 @@ Cysteine residues contribute to disulfide bonds.
 
 These bonds influence hair fibre strength and shape.
 
-## Scalp and hair conditions
+#### Scalp and hair conditions
 
 Dandruff-related conditions.
 
@@ -907,9 +933,9 @@ The learner should know when salon service should stop and professional referral
 
 ---
 
-# MODULE 8 — HAIR CARE, SHAMPOOING, CONDITIONING & STYLING SCIENCE
+### Module 8 — HAIR CARE, SHAMPOOING, CONDITIONING & STYLING SCIENCE
 
-## Topics
+#### Topics
 
 Scalp analysis.
 
@@ -939,7 +965,7 @@ Protein-containing products.
 
 Moisturising products.
 
-## Styling science
+#### Styling science
 
 Wet styling.
 
@@ -977,11 +1003,11 @@ Texture.
 
 ---
 
-# MODULE 9 — PLAITING, BRAIDING, DREADLOCKING & TEXTURED HAIR
+### Module 9 — PLAITING, BRAIDING, DREADLOCKING & TEXTURED HAIR
 
 Mapped particularly to TVET plaiting/braiding and dreadlocking competencies.
 
-## Topics
+#### Topics
 
 Textured-hair biology.
 
@@ -1025,7 +1051,7 @@ Edge damage.
 
 Client aftercare.
 
-## Core scientific principle
+#### Core Scientific Principle
 
 A hairstyle should never be assessed only by appearance.
 
@@ -1037,9 +1063,9 @@ Excessive long-term traction can damage the follicular environment.
 
 ---
 
-# MODULE 10 — BARBERING & HAIRCUTTING SCIENCE
+### Module 10 — BARBERING & HAIRCUTTING SCIENCE
 
-## Academic foundations
+#### Academic Foundations
 
 Trichology.
 
@@ -1051,7 +1077,7 @@ Cranial Anatomy.
 
 Ergonomics.
 
-## Topics
+#### Topics
 
 Head shape.
 
@@ -1099,9 +1125,9 @@ Infection prevention.
 
 ---
 
-# MODULE 11 — HAIR ADDITIONS, WIGS & EXTENSIONS
+### Module 11 — HAIR ADDITIONS, WIGS & EXTENSIONS
 
-## Topics
+#### Topics
 
 Natural versus synthetic fibres.
 
@@ -1147,9 +1173,9 @@ Material science.
 
 ---
 
-# MODULE 12 — HAIR CHEMICAL REFORMATION
+### Module 12 — HAIR CHEMICAL REFORMATION
 
-## Scientific disciplines
+#### Scientific Disciplines
 
 Hair Fibre Chemistry.
 
@@ -1157,7 +1183,7 @@ Cosmetic Chemistry.
 
 Trichology.
 
-## Essential science
+#### Essential Science
 
 Chemical texture services alter chemical interactions within the hair fibre.
 
@@ -1183,7 +1209,7 @@ pH.
 
 Neutralisation.
 
-## Topics
+#### Topics
 
 Permanent waving.
 
@@ -1223,9 +1249,9 @@ Aftercare.
 
 ---
 
-# MODULE 13 — HAIR COLOUR SCIENCE
+### Module 13 — HAIR COLOUR SCIENCE
 
-## Scientific disciplines
+#### Scientific Disciplines
 
 Colorimetry.
 
@@ -1237,7 +1263,7 @@ Hair Fibre Chemistry.
 
 Cosmetic Chemistry.
 
-## Topics
+#### Topics
 
 Visible colour.
 
@@ -1301,11 +1327,11 @@ Previously processed hair.
 
 ---
 
-# PART III — SKIN & AESTHETIC SCIENCES
+## Part III — SKIN & AESTHETIC SCIENCES
 
-# MODULE 14 — CUTANEOUS BIOLOGY: SKIN SCIENCE
+### Module 14 — CUTANEOUS BIOLOGY: SKIN SCIENCE
 
-## Scientific disciplines
+#### Scientific Disciplines
 
 Cutaneous Biology.
 
@@ -1315,7 +1341,7 @@ Physiology.
 
 Dermatological Concepts.
 
-## Skin layers
+#### Skin layers
 
 Epidermis.
 
@@ -1323,7 +1349,7 @@ Dermis.
 
 Subcutaneous tissue.
 
-## Important cells
+#### Important cells
 
 Keratinocytes.
 
@@ -1335,7 +1361,7 @@ Merkel cells.
 
 Fibroblasts.
 
-## Important structures
+#### Important structures
 
 Sebaceous glands.
 
@@ -1351,7 +1377,7 @@ Collagen.
 
 Elastin.
 
-## Topics
+#### Topics
 
 Keratinisation.
 
@@ -1381,7 +1407,7 @@ Skin conditions.
 
 Contraindications.
 
-## Important boundary
+#### Important Boundary
 
 Students may learn the appearance and terminology associated with skin diseases and disorders.
 
@@ -1389,9 +1415,9 @@ They should not be taught to make unauthorised medical diagnoses.
 
 ---
 
-# MODULE 15 — FACIAL SKIN CARE & ESTHETICS
+### Module 15 — FACIAL SKIN CARE & ESTHETICS
 
-## Topics
+#### Topics
 
 Client consultation.
 
@@ -1421,7 +1447,7 @@ Contraindications.
 
 Aftercare.
 
-## Cosmetic ingredient science
+#### Cosmetic ingredient science
 
 Cleansers.
 
@@ -1451,15 +1477,15 @@ The course should clearly distinguish cosmetic use from prescription treatment.
 
 ---
 
-# MODULE 16 — HAIR REMOVAL SCIENCE
+### Module 16 — HAIR REMOVAL SCIENCE
 
-## Scientific foundation
+#### Scientific Foundation
 
 Follicular Biology / Pilology.
 
 Cutaneous Biology.
 
-## Topics
+#### Topics
 
 Hair growth cycle.
 
@@ -1501,9 +1527,9 @@ Inflammatory reactions.
 
 ---
 
-# MODULE 17 — MAKEUP, FACIAL MORPHOLOGY & COLOUR SCIENCE
+### Module 17 — MAKEUP, FACIAL MORPHOLOGY & COLOUR SCIENCE
 
-## Academic foundations
+#### Academic Foundations
 
 Cosmetic Science.
 
@@ -1515,7 +1541,7 @@ Facial Anatomy.
 
 Design.
 
-## Topics
+#### Topics
 
 Colour wheel.
 
@@ -1575,15 +1601,15 @@ Cosmetic ingredients.
 
 ---
 
-# PART IV — NAIL & BODY SCIENCES
+## Part IV — NAIL & BODY SCIENCES
 
-# MODULE 18 — ONYCHOLOGY, MANICURE, PEDICURE & NAIL TECHNOLOGY
+### Module 18 — ONYCHOLOGY, MANICURE, PEDICURE & NAIL TECHNOLOGY
 
-## Scientific discipline
+#### Scientific Discipline
 
 **Onychology**
 
-## Nail anatomy
+#### Nail anatomy
 
 Nail matrix.
 
@@ -1601,7 +1627,7 @@ Eponychium.
 
 Hyponychium.
 
-## Nail physiology
+#### Nail physiology
 
 Keratinisation.
 
@@ -1611,7 +1637,7 @@ Blood supply.
 
 Factors influencing growth.
 
-## Nail conditions
+#### Nail conditions
 
 Brittleness.
 
@@ -1629,7 +1655,7 @@ Trauma-related changes.
 
 Referral criteria.
 
-## Professional nail services
+#### Professional nail services
 
 Manicure.
 
@@ -1659,7 +1685,7 @@ Maintenance.
 
 Infection control.
 
-## Nail chemistry
+#### Nail chemistry
 
 Monomers.
 
@@ -1679,9 +1705,9 @@ Sensitisation.
 
 ---
 
-# MODULE 19 — BODY MASSAGE, MYOLOGY & KINESIOLOGY
+### Module 19 — BODY MASSAGE, MYOLOGY & KINESIOLOGY
 
-## Scientific disciplines
+#### Scientific Disciplines
 
 Myology.
 
@@ -1693,7 +1719,7 @@ Physiology.
 
 Massage Science.
 
-## Topics
+#### Topics
 
 Muscle anatomy.
 
@@ -1711,7 +1737,7 @@ Posture.
 
 Ergonomics.
 
-## Massage movements
+#### Massage movements
 
 Effleurage.
 
@@ -1723,7 +1749,7 @@ Tapotement.
 
 Vibration.
 
-## Effects of massage
+#### Effects of massage
 
 Mechanical effects.
 
@@ -1735,7 +1761,7 @@ Relaxation.
 
 Sensory effects.
 
-## Contraindications
+#### Contraindications
 
 Fever.
 
@@ -1753,13 +1779,13 @@ Other conditions requiring appropriate medical clearance.
 
 ---
 
-# PART V — PROFESSIONAL, BUSINESS & RESEARCH STUDIES
+## Part V — PROFESSIONAL, BUSINESS & RESEARCH STUDIES
 
-# MODULE 20 — SALON MANAGEMENT, ENTREPRENEURSHIP & DIGITAL LITERACY
+### Module 20 — SALON MANAGEMENT, ENTREPRENEURSHIP & DIGITAL LITERACY
 
 This consolidates major TVET basic and Level 6 management competencies.
 
-## Business topics
+#### Business Topics
 
 Business models.
 
@@ -1815,7 +1841,7 @@ Legal and regulatory awareness.
 
 Insurance concepts.
 
-## Digital literacy
+#### Digital Literacy
 
 Word processing.
 
@@ -1845,11 +1871,11 @@ Digital marketing.
 
 ---
 
-# MODULE 21 — RESEARCH METHODS & EVIDENCE-BASED COSMETOLOGY
+### Module 21 — RESEARCH METHODS & EVIDENCE-BASED COSMETOLOGY
 
 Although research does not appear as a separate Cycle 04 unit in the material used to construct this programme, it should remain in this course because it creates a scientifically literate practitioner.
 
-## Topics
+#### Topics
 
 Research questions.
 
@@ -1891,7 +1917,7 @@ Referencing.
 
 Research reports.
 
-## Evidence-based cosmetology
+#### Evidence-Based Cosmetology
 
 Students should learn to investigate claims such as:
 
@@ -1913,13 +1939,13 @@ Marketing claims should not automatically be treated as scientific facts.
 
 ---
 
-# MODULE 22 — INDUSTRY TRAINING, PORTFOLIO & PROFESSIONAL DEVELOPMENT
+### Module 22 — INDUSTRY TRAINING, PORTFOLIO & PROFESSIONAL DEVELOPMENT
 
-## Purpose
+#### Purpose
 
 Theory becomes professionally meaningful when the learner can connect it with real clients, professional environments and observed services.
 
-## Portfolio components
+#### Portfolio Components
 
 Client consultation records.
 
@@ -1945,7 +1971,7 @@ Professional-development records.
 
 Research project.
 
-## Reflective practice
+#### Reflective Practice
 
 Students should repeatedly answer:
 
@@ -1959,7 +1985,7 @@ Students should repeatedly answer:
 
 ---
 
-# 6. TVET-CDACC COMPETENCY MAPPING
+## 6. TVET-CDACC COMPETENCY MAPPING
 
 The course should contain a mapping appendix showing where the Kenyan occupational units are taught.
 
@@ -1991,7 +2017,7 @@ The science modules deliberately cut across several TVET occupational units rath
 
 ---
 
-# 7. GLOBAL BENCHMARKING
+## 7. GLOBAL BENCHMARKING
 
 The curriculum should be benchmarked against the subject coverage used by major international beauty-education systems.
 
@@ -2123,11 +2149,11 @@ Internationally relevant industry standards.
 
 ---
 
-# 8. STANDARD CHAPTER FORMAT
+## 8. STANDARD CHAPTER FORMAT
 
 Every chapter in the final textbook should follow approximately the same structure.
 
-## Chapter opening
+### Chapter opening
 
 Chapter title.
 
@@ -2141,7 +2167,7 @@ TVET competency mapping.
 
 Learning outcomes.
 
-## Scientific foundation
+### Scientific foundation
 
 Relevant anatomy.
 
@@ -2153,11 +2179,11 @@ Relevant microbiology.
 
 Relevant physical principles.
 
-## Technical vocabulary
+### Technical vocabulary
 
 Important terminology with simple definitions.
 
-## Core learning material
+### Core learning material
 
 Detailed notes.
 
@@ -2169,11 +2195,11 @@ Comparisons.
 
 Examples.
 
-## Professional application
+### Professional application
 
 How the science applies in salon practice.
 
-## Product science
+### Product science
 
 Relevant ingredients.
 
@@ -2183,7 +2209,7 @@ Tools.
 
 Equipment.
 
-## Safety
+### Safety
 
 Hazards.
 
@@ -2195,25 +2221,25 @@ Patch/strand testing.
 
 PPE.
 
-## Red-flag box
+### Red-flag box
 
 Situations in which the service should be postponed, modified or referred.
 
-## Inclusive cosmetology
+### Inclusive cosmetology
 
 Considerations for:
 
-* different hair textures;
-* different skin tones;
-* different ages;
-* different cultural grooming practices;
-* accessibility and client needs.
+- different hair textures;
+- different skin tones;
+- different ages;
+- different cultural grooming practices;
+- accessibility and client needs.
 
-## Case study
+### Case study
 
 A realistic client scenario requiring interpretation rather than memorisation.
 
-## Knowledge check
+### Knowledge check
 
 Terminology questions.
 
@@ -2225,7 +2251,7 @@ Explain-why questions.
 
 Case-analysis questions.
 
-## Practical connection
+### Practical connection
 
 Observation exercise.
 
@@ -2235,7 +2261,7 @@ Student practice.
 
 Portfolio task.
 
-## Chapter summary
+### Chapter summary
 
 Key concepts.
 
@@ -2245,7 +2271,7 @@ Professional takeaways.
 
 ---
 
-# 9. TEACHING FEATURES
+## 9. TEACHING FEATURES
 
 To make the guide recognisable and easy to teach, recurring information boxes should be used throughout.
 
@@ -2301,7 +2327,7 @@ Provides additional explanation, classroom activities or misconceptions to addre
 
 ---
 
-# 10. ASSESSMENT FRAMEWORK
+## 10. ASSESSMENT FRAMEWORK
 
 A complete programme should not depend on MCQs alone.
 
@@ -2377,7 +2403,7 @@ Industry placement.
 
 ---
 
-# 11. QUESTION DESIGN
+## 11. QUESTION DESIGN
 
 Questions should increasingly move from:
 
@@ -2407,7 +2433,7 @@ A manufacturer claims that a shampoo “permanently repairs all damaged hair bon
 
 ---
 
-# 12. TEACHER'S GUIDE COMPONENT
+## 12. TEACHER'S GUIDE COMPONENT
 
 The educator edition should include:
 
@@ -2445,7 +2471,7 @@ Research-project rubric.
 
 ---
 
-# 13. STUDENT RESOURCE COMPONENT
+## 13. STUDENT RESOURCE COMPONENT
 
 The student edition should contain:
 
@@ -2479,13 +2505,13 @@ Index.
 
 ---
 
-# 14. RECOMMENDED APPENDICES
+## 14. RECOMMENDED APPENDICES
 
-## Appendix A
+### Appendix A
 
 Cosmetology terminology A–Z.
 
-## Appendix B
+### Appendix B
 
 Common prefixes, suffixes and medical/scientific word roots.
 
@@ -2509,69 +2535,69 @@ Examples:
 
 **-ology** — study of
 
-## Appendix C
+### Appendix C
 
 Hair/scalp condition reference.
 
-## Appendix D
+### Appendix D
 
 Skin condition reference.
 
-## Appendix E
+### Appendix E
 
 Nail condition reference.
 
-## Appendix F
+### Appendix F
 
 Cosmetic ingredients reference.
 
-## Appendix G
+### Appendix G
 
 pH reference chart.
 
-## Appendix H
+### Appendix H
 
 Colour wheel and hair-colour correction charts.
 
-## Appendix I
+### Appendix I
 
 Client consultation forms.
 
-## Appendix J
+### Appendix J
 
 Patch-test and strand-test records.
 
-## Appendix K
+### Appendix K
 
 Salon cleaning and disinfection schedules.
 
-## Appendix L
+### Appendix L
 
 Risk-assessment templates.
 
-## Appendix M
+### Appendix M
 
 Research-project guide.
 
-## Appendix N
+### Appendix N
 
 Student portfolio templates.
 
-## Appendix O
+### Appendix O
 
 TVET-CDACC competency cross-reference.
 
-## Appendix P
+### Appendix P
 
 Glossary.
 
-## Appendix Q
+### Appendix Q
 
 Index.
 
 ---
 
-# 15. FINAL COURSE OUTCOME
+## 15. FINAL COURSE OUTCOME
 
 A learner completing this programme should no longer simply know:
 
@@ -2602,3 +2628,10 @@ The learner should instead be able to reason:
 > How should the service be documented?
 
 That is the difference between learning a collection of beauty procedures and receiving a genuine **professional cosmetology education**.
+
+
+---
+
+## Related Course Documents
+
+- [Course Content Structure & Authoring Guide](./structuring.md) — repository organisation, chapter-writing rules, quality standards, and authoring workflow.
