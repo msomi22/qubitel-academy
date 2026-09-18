@@ -116,6 +116,45 @@ Apply these limits to all new or modified LearningNodes. Legacy nodes may be mig
 - Use short learning-material labels: `Getting Started`, `Nail Structure`.
 - IDs should encode only enough hierarchy to remain unique and understandable.
 
+### Avoid pass-through navigation
+
+Do not create a page whose only purpose is to make the learner click once more.
+
+- If a Topic has exactly one Learning Material and no independent navigation value, put that content directly on the Topic.
+- Use a separate Learning Material node only when there are multiple sibling resources, distinct resource types, or a real reason for the resource to have its own navigation identity.
+- Prefer the shallowest hierarchy that still expresses meaningful curriculum structure.
+- Programme → Level → Module → Topic is enough when the Topic can open its notes/book directly.
+
+Good:
+
+```text
+M1 · Foundations
+→ Professional Scope
+  ↳ opens notes directly
+```
+
+```text
+M18 · Onychology
+→ Onychology Overview
+  ↳ opens notes directly
+```
+
+Avoid:
+
+```text
+M1 · Foundations
+→ Professional Scope
+→ Getting Started
+→ Notes
+```
+
+```text
+M18 · Onychology
+→ Introduction
+→ Onychology Overview
+→ Notes
+```
+
 ### Parent/child uniqueness
 
 Each hierarchy level must add information.
@@ -131,7 +170,6 @@ Good:
 
 ```text
 M18 · Onychology
-→ Nail Science Basics
 → Onychology Overview
 ```
 
@@ -150,7 +188,6 @@ Cosmetology
 → Level 6
 → M18 · Onychology
 → Nail Anatomy
-→ Nail Structure
 ```
 
 Bad:
