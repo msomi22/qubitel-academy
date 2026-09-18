@@ -1,23 +1,23 @@
 {
-  "id": "level-6-foundations",
-  "displayName": "Level 6 Foundations",
+  "id": "l6-foundations",
+  "displayName": "Foundations",
   "academy": "skill",
   "category": "cosmetology",
   "description": "Professional scope, scientific foundations, client safety, and professional practice for Cosmetology Level 6.",
   "status": "active",
   "learningAreas": [
     {
-      "id": "professional-practice",
-      "title": "Professional Practice",
+      "id": "scope",
+      "title": "Professional Scope",
       "description": "Professional scope, scientific reasoning, consultation, safety, and referral boundaries.",
       "sequence": 10
     }
   ],
   "lessons": [
     {
-      "id": "professional-practice-lesson-001",
+      "id": "foundations-001",
       "file": "lessons/professional-practice-lesson-001.js",
-      "learningAreaId": "professional-practice"
+      "learningAreaId": "scope"
     }
   ],
   "practice": [],
