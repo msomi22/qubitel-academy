@@ -15,7 +15,7 @@ A figure should be added to this index as soon as the chapter outline identifies
 
 | Figure ID | Module | Figure Title | What It Must Show | Student Note Location | Status |
 |---|---:|---|---|---|---|
-| 18.1 | 18 | Anatomy of the Nail Unit | Top view and cross-section showing proximal nail fold, eponychium, cuticle, lunula, nail plate, lateral nail folds, free edge, matrix, nail bed, and hyponychium | `student-notes/04-nails-body/18-onychology-nail-technology.md` | Planned |
+| 18.1 | 18 | Anatomy of the Nail Unit | Top view and cross-section showing proximal nail fold, eponychium, cuticle, lunula, nail plate, lateral nail folds, free edge, matrix, nail bed, and hyponychium | `student-notes/04-nails-body/18-onychology-nail-technology.md` + runtime `M18 · Onychology → Onychology Overview` | Complete |
 | 18.2 | 18 | Nail Growth from the Matrix | Matrix cell production, keratinisation, and forward movement of the nail plate | `student-notes/04-nails-body/18-onychology-nail-technology.md` | Planned |
 | 18.3 | 18 | Common Nail Shapes | Square, round, oval, squoval, almond, coffin, and stiletto | `student-notes/04-nails-body/18-onychology-nail-technology.md` | Planned |
 | 18.4 | 18 | Nail Structure for Enhancements | Apex, stress area, free edge, sidewalls, and correct balance | `student-notes/04-nails-body/18-onychology-nail-technology.md` | Planned |
