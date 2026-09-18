@@ -29,6 +29,11 @@ test('detects Customer Experience academy from cx subdomain', () => {
   assert.equal(detectAcademyIdFromHostname('cx.academy.qubitel.net'), 'customer-experience');
 });
 
+test('detects Skill Academy from skill subdomain', () => {
+  assert.equal(detectAcademyIdFromHostname('skill.academy.qubitel.net'), 'skill');
+  assert.equal(detectAcademyIdFromHostname('SKILL.ACADEMY.QUBITEL.NET.'), 'skill');
+});
+
 test('allows local academy override for manual testing', () => {
   assert.equal(
     detectAcademyIdFromLocation({ hostname: 'localhost', search: '?academy=cbc' } as Location),
@@ -37,6 +42,10 @@ test('allows local academy override for manual testing', () => {
   assert.equal(
     detectAcademyIdFromLocation({ hostname: '127.0.0.1', search: '?academy=customer-experience' } as Location),
     'customer-experience'
+  );
+  assert.equal(
+    detectAcademyIdFromLocation({ hostname: 'localhost', search: '?academy=skill' } as Location),
+    'skill'
   );
   assert.equal(
     detectAcademyIdFromLocation({ hostname: 'preview.pages.dev', search: '?academy=cbc' } as Location),
@@ -54,5 +63,9 @@ test('keeps learner storage isolated by academy using Qubitel keys', () => {
   assert.equal(
     getAcademyStorageKey('cx.academy.qubitel.net'),
     'qubitel-academy:v2:customer-experience'
+  );
+  assert.equal(
+    getAcademyStorageKey('skill.academy.qubitel.net'),
+    'qubitel-academy:v2:skill'
   );
 });
