@@ -45,7 +45,8 @@ By the end of this section, the learner should be able to:
 
 ## Required Visuals
 
-- **Figure 18.1 — Anatomy of the Nail Unit** — complete and embedded.
+- **Figure 18.1A — Nail Unit Top View** — complete and embedded.
+- **Figure 18.1B — Nail Unit Cross-Section** — complete and embedded.
 - Figure 18.2 — Nail Growth from the Matrix — planned.
 - Figure 18.3 — Common Nail Shapes — planned.
 - Figure 18.4 — Nail Structure for Enhancements — planned.
@@ -70,13 +71,21 @@ Understanding nail science helps a cosmetologist protect the natural nail, choos
 
 ## 2. Anatomy of the Nail Unit
 
-![Figure 18.1 — Anatomy of the human nail unit](../../../../public/cosmetology/visuals/04-nails-body/18-01-nail-unit-anatomy.svg)
-
-**Figure 18.1:** Top view and longitudinal cross-section of the human nail unit. The figure shows the proximal nail fold, eponychium, cuticle, lunula, nail plate, lateral nail folds, free edge, nail matrix, nail bed, and hyponychium.
-
 The **nail unit** includes the nail plate, the tissues that produce and support it, and the skin folds that surround it.
 
-Some structures can be seen from the surface. Others lie beneath the nail plate or proximal nail fold and are better understood in cross-section.
+Some structures can be identified from the surface. Others lie beneath the nail plate or proximal nail fold and are best understood in cross-section.
+
+### Figure 18.1A — Nail Unit Top View
+
+![Figure 18.1A — Nail Unit Top View](../../../../public/cosmetology/visuals/04-nails-body/18-01a-nail-unit-top-view.png)
+
+**Figure 18.1A:** Major visible structures of the natural nail used during consultation, shaping, and nail services. Identify the proximal nail fold, cuticle, lunula, lateral nail folds, nail plate, and free edge.
+
+### Figure 18.1B — Nail Unit Cross-Section
+
+![Figure 18.1B — Nail Unit Cross-Section](../../../../public/cosmetology/visuals/04-nails-body/18-01b-nail-unit-cross-section.png)
+
+**Figure 18.1B:** Hidden supporting structures of the nail unit. Identify the proximal nail fold, eponychium, cuticle, nail matrix, lunula, nail plate, nail bed, hyponychium, and free edge.
 
 ### 2.1 Nail Plate
 
