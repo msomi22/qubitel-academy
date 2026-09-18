@@ -615,3 +615,173 @@
     transition: none;
   }
 }
+
+/* Mobile reading accessibility */
+.learning-book__reading-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin: 0 0 0.55rem;
+  padding-inline: 0.15rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.82rem;
+  color: var(--learning-book-ink-muted);
+}
+
+.learning-book__reading-controls button {
+  min-width: 44px;
+  min-height: 40px;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--learning-book-control-border);
+  border-radius: 999px;
+  background: var(--learning-book-control-surface);
+  color: var(--learning-book-control-text);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.learning-book__reading-controls button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.learning-book__image-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: zoom-in;
+}
+
+.learning-book__image-button img {
+  display: block;
+  width: 100%;
+  max-height: min(46dvh, 360px);
+  object-fit: contain;
+  border: 1px solid var(--learning-book-rule);
+  border-radius: 8px;
+}
+
+.learning-book__image-hint {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0.3rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #fff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.learning-book-image-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  background: rgba(3, 8, 18, 0.97);
+  color: #fff;
+}
+
+.learning-book-image-viewer__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  min-height: 64px;
+  padding: max(0.65rem, env(safe-area-inset-top)) 0.8rem 0.65rem;
+  border-bottom: 1px solid rgba(255,255,255,0.14);
+  background: rgba(15,23,42,0.96);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.learning-book-image-viewer__toolbar button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(94,234,212,0.5);
+  border-radius: 999px;
+  background: rgba(45,212,191,0.12);
+  color: #ccfbf1;
+  font-weight: 800;
+}
+
+.learning-book-image-viewer__canvas {
+  overflow: auto;
+  padding: 1rem;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y pinch-zoom;
+  text-align: center;
+}
+
+.learning-book-image-viewer__canvas img {
+  display: block;
+  height: auto;
+  max-width: none;
+  margin: 0 auto;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@container (max-width: 899px) {
+  .learning-book__page-content {
+    font-size: calc(clamp(0.94rem, 3.25vw, 1.04rem) * var(--learning-book-font-scale, 1));
+    line-height: 1.62;
+  }
+
+  .learning-book__block-title,
+  .learning-book__block--heading {
+    font-size: 1.15em;
+    line-height: 1.3;
+  }
+
+  .learning-book__block--image img,
+  .learning-book__image-button img {
+    max-height: none;
+  }
+
+  .learning-book__block--image figcaption {
+    font-size: 0.92em;
+    line-height: 1.45;
+  }
+
+  .learning-book__reading-controls {
+    justify-content: space-between;
+    margin-bottom: 0.45rem;
+    font-size: 0.88rem;
+  }
+}
+
+@container (max-width: 480px) {
+  .learning-book__page-content {
+    padding: 1rem;
+    font-size: calc(1rem * var(--learning-book-font-scale, 1));
+    line-height: 1.64;
+  }
+
+  .learning-book__reading-controls button {
+    min-height: 44px;
+  }
+
+  .learning-book-image-viewer__toolbar {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .learning-book-image-viewer__canvas {
+    padding: 0.6rem;
+  }
+}
