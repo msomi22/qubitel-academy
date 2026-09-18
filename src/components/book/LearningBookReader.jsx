@@ -60,6 +60,7 @@ export default function LearningBookReader({
 }) {
   const [isSpread, setIsSpread] = useState(false);
   const [turn, setTurn] = useState(null);
+  const [fontScale, setFontScale] = useState(1);
   const readerRef = useRef(null);
   const turnTimerRef = useRef(null);
   const isTurningRef = useRef(false);
@@ -347,7 +348,28 @@ export default function LearningBookReader({
       ref={readerRef}
       className={`learning-book ${isSpread ? 'learning-book--spread' : 'learning-book--single'}`}
       aria-label={`${bookTitle || 'Learning material'} book reader`}
+      style={{ '--learning-book-font-scale': fontScale }}
     >
+      <div className="learning-book__reading-controls" aria-label="Reading text size controls">
+        <span>Text size</span>
+        <button
+          type="button"
+          aria-label="Decrease text size"
+          onClick={() => setFontScale((value) => Math.max(0.9, Number((value - 0.1).toFixed(1))))}
+          disabled={fontScale <= 0.9}
+        >
+          A−
+        </button>
+        <button
+          type="button"
+          aria-label="Increase text size"
+          onClick={() => setFontScale((value) => Math.min(1.4, Number((value + 0.1).toFixed(1))))}
+          disabled={fontScale >= 1.4}
+        >
+          A+
+        </button>
+      </div>
+
       <div className="learning-book__stage">
         <div
           className="learning-book__volume"
