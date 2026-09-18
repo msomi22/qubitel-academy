@@ -10,6 +10,7 @@ import {
   isLearningNodeReady
 } from '../learning/registry/index.ts';
 import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
+import { createSkillProgrammesRegistrySource } from '../learning/academies/skill/skillProgrammes.registry.ts';
 import { getAppearance } from '../learning/core/index.ts';
 import { usePreferences } from '../hooks/usePreferences.js';
 import {
@@ -57,6 +58,43 @@ function GradePickerCard({ grade, isAvailable, onSelect }) {
   );
 }
 
+function ProgrammePickerCard({ programme, isAvailable, onSelect }) {
+  const icon = getAppearance(programme, 'icon') || '🎓';
+  const status = isAvailable ? 'Ready' : 'Soon';
+  const cardClassName = [
+    'premium-category-card',
+    'grade-picker-card',
+    'programme-picker-card',
+    'accent-emerald',
+    isAvailable ? 'is-available' : 'is-disabled'
+  ].join(' ');
+
+  return (
+    <button
+      type="button"
+      onClick={() => isAvailable && onSelect(programme)}
+      className={cardClassName}
+      disabled={!isAvailable}
+    >
+      <span className="grade-picker-card__icon-tile" aria-hidden="true">
+        <span className="grade-picker-card__icon">{icon}</span>
+      </span>
+
+      <span className="grade-picker-card__content">
+        <strong className="grade-picker-card__title">{programme.label}</strong>
+        <span className="grade-picker-card__domain">Professional Programme</span>
+        <span className="grade-picker-card__summary">{programme.summary}</span>
+      </span>
+
+      <span className="grade-picker-card__badge">{status}</span>
+
+      {isAvailable ? (
+        <span className="grade-picker-card__arrow" aria-hidden="true">→</span>
+      ) : null}
+    </button>
+  );
+}
+
 export default function CategoriesPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -86,10 +124,32 @@ export default function CategoriesPage() {
     };
   }, [activeAcademy.id]);
 
+  const skillProgrammeModel = useMemo(() => {
+    if (activeAcademy.id !== 'skill') return null;
+
+    const academyNode = getAcademyRootNodeById('skill-academy');
+    if (!academyNode) return null;
+
+    const skillSource = createSkillProgrammesRegistrySource();
+    const registry = createLearningNodeRegistry({
+      nodes: [academyNode, ...skillSource.nodes]
+    });
+
+    return {
+      registry,
+      programmes: getChildren(registry, academyNode.id)
+        .filter((child) => child.kind === 'programme')
+    };
+  }, [activeAcademy.id]);
+
   const gradeSelectionIntent = useMemo(
     () => readCbcGradeSelectionIntent(searchParams),
     [searchParams]
   );
+
+  const handleProgrammeClick = (programme) => {
+    navigate(`/learn/${programme.id}`);
+  };
 
   const handleGradeClick = (grade) => {
     if (!cbcGradeModel) return;
@@ -103,7 +163,7 @@ export default function CategoriesPage() {
     if (destination) navigate(destination);
   };
 
-  if (activeAcademy.id !== 'cbc') {
+  if (activeAcademy.id !== 'cbc' && activeAcademy.id !== 'skill') {
     return (
       <main className="page progress-page-focused premium-categories-page">
         <section className="categories-page-intro" aria-labelledby="categories-heading">
@@ -123,6 +183,43 @@ export default function CategoriesPage() {
             emptyDescription: 'Try a broader search or clear the domain filter.'
           }}
         />
+      </main>
+    );
+  }
+
+  if (activeAcademy.id === 'skill') {
+    return (
+      <main className="page progress-page-focused grades-page skill-programmes-page">
+        <section className="glass progress-table-card grades-card" aria-labelledby="programmes-heading">
+          <header className="grades-overview-header">
+            <h1>{activeAcademy.displayName}</h1>
+          </header>
+
+          <section className="grades-overview-content" aria-labelledby="programmes-heading">
+            <p className="sr-only">Programmes</p>
+            <h2 id="programmes-heading">Programmes</h2>
+            <p>Choose a programme to start learning.</p>
+          </section>
+
+          <div className="premium-category-grid">
+            {(skillProgrammeModel?.programmes || []).map((programme) => {
+              const hasActions = Boolean(programme.actions?.length);
+              const isAvailable = hasActions && isLearningNodeReady(
+                skillProgrammeModel.registry,
+                programme
+              );
+
+              return (
+                <ProgrammePickerCard
+                  key={programme.id}
+                  programme={programme}
+                  isAvailable={isAvailable}
+                  onSelect={handleProgrammeClick}
+                />
+              );
+            })}
+          </div>
+        </section>
       </main>
     );
   }
