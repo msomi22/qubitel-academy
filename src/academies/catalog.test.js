@@ -67,6 +67,17 @@ test('CBC exposes Grade 1 and Grade 3 while Customer Experience stays registered
   assert.deepEqual(academyCatalogs['customer-experience'].topics, []);
 });
 
+test('Skill Academy exposes Cosmetology as its first programme catalog boundary', () => {
+  assert.deepEqual(
+    academyCatalogs.skill.categories.map((category) => category.id),
+    ['cosmetology']
+  );
+  assert.deepEqual(
+    academyCatalogs.skill.topics.map((topic) => `${topic.category}/${topic.id}`),
+    ['cosmetology/programme-overview']
+  );
+});
+
 test('CBC Grade 1 declares the shared subject structure with content under learning areas', () => {
   const gradeOneTopics = academyCatalogs.cbc.topics.filter((topic) => topic.category === 'grade-1');
 
