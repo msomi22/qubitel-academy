@@ -7,6 +7,7 @@ test('platform root resolves academy children', () => {
   assert.deepEqual(getChildren(reg(), 'qubitel-academy').map((n) => n.id), [
     'technology-academy',
     'cbc-academy',
-    'customer-experience-academy'
+    'customer-experience-academy',
+    'skill-academy'
   ]);
 });
