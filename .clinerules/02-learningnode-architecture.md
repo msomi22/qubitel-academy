@@ -91,3 +91,62 @@ keep existing production routes working
 avoid broad blind renames
 avoid mixing unrelated refactors into focused PRs
 keep current academy behavior stable while introducing generic architecture
+
+## Navigation naming standard
+
+LearningNode names appear in cards, breadcrumbs, compact headers, back controls, mobile layouts, and URLs. Keep navigation names deliberately short.
+
+### Hard limits
+
+- `label`: maximum **32 characters**.
+- `id`: maximum **40 characters**.
+- `routeSegment`: maximum **24 characters**.
+- IDs and route segments must use lowercase kebab-case.
+
+### Naming rules
+
+- Prefer 2–4 words for visible navigation labels.
+- Do not repeat information already supplied by the parent node.
+- Put long official curriculum names in metadata such as `officialTitle`, not in `label`.
+- Put explanatory detail in `summary` or learning content, not in breadcrumbs.
+- Use compact module labels: `M1 · Foundations`, `M18 · Onychology`.
+- Use short topic labels: `Professional Scope`, `Nail Anatomy`.
+- Use short learning-material labels: `Getting Started`, `Nail Structure`.
+- IDs should encode only enough hierarchy to remain unique and understandable.
+
+Good:
+
+```text
+Cosmetology
+→ Level 6
+→ M18 · Onychology
+→ Nail Anatomy
+→ Nail Structure
+```
+
+Bad:
+
+```text
+Cosmetology
+→ Level 6
+→ Module 18 — Onychology, Manicure, Pedicure and Nail Technology
+→ Introduction to Onychology and Professional Nail Technology
+→ Comprehensive Introduction to Onychology Learning Material
+```
+
+Example identifiers:
+
+```text
+cos-l6
+cos-l6-m18-onychology
+cos-l6-m18-t01-anatomy
+cos-l6-m18-lm01-structure
+```
+
+The full official title remains available through metadata:
+
+```ts
+attributes: [
+  { key: 'officialTitle', value: 'Onychology, Manicure, Pedicure and Nail Technology' }
+]
+```
