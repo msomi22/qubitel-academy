@@ -170,6 +170,7 @@ export default function LearningNodeBookView({
   registry,
   nodeId,
   backPath,
+  backLabel,
   standardCbcTheme = false
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -416,6 +417,7 @@ export default function LearningNodeBookView({
         registry={registry}
         nodeId={nodeId}
         backPath={backPath}
+        backLabel={backLabel}
         tabs={visibleContentTabs}
         activeContentType={activeContentType}
         selectedContentType={selectedContentType}
