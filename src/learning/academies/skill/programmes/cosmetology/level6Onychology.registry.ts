@@ -11,7 +11,7 @@ export const COSMETOLOGY_ONYCHOLOGY_INTRO_MATERIAL_NODE_ID =
 
 const onychologyIntroductionBook: LearningBookContent = {
   type: 'book',
-  title: 'Introduction to Onychology',
+  title: 'Onychology Overview',
   description: 'A professional introduction to nail science, nail services, scope of practice, and client safety.',
   pages: [
     {
@@ -108,12 +108,12 @@ export const cosmetologyOnychologyNodes: LearningNode[] = [
   createLearningNode({
     id: COSMETOLOGY_ONYCHOLOGY_INTRO_TOPIC_NODE_ID,
     kind: LEARNING_NODE_KINDS.topic,
-    label: 'Introduction',
+    label: 'Nail Science Basics',
     summary: 'Understand the scope of nail science, professional nail services, safety and the module learning journey.',
     parentId: COSMETOLOGY_ONYCHOLOGY_MODULE_NODE_ID,
     childIds: [COSMETOLOGY_ONYCHOLOGY_INTRO_MATERIAL_NODE_ID],
     attributes: [
-      { key: 'routeSegment', value: 'intro' },
+      { key: 'routeSegment', value: 'basics' },
       { key: 'officialTitle', value: 'Introduction to Onychology' }
     ],
     actions: [{ intent: 'openChildren' }],
@@ -132,7 +132,7 @@ export const cosmetologyOnychologyNodes: LearningNode[] = [
     content: onychologyIntroductionBook,
     attributes: [
       { key: 'routeSegment', value: 'overview' },
-      { key: 'officialTitle', value: 'Introduction to Onychology' },
+      { key: 'officialTitle', value: 'Onychology Overview' },
       { key: 'contentType', value: 'notes' }
     ],
     actions: [{ intent: 'resume' }],
