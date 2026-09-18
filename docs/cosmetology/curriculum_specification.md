@@ -224,7 +224,7 @@ The complete programme is divided into five major parts.
 
 ### Course Resource Architecture
 
-The curriculum is delivered through four clearly separated resource layers:
+The curriculum is delivered through five clearly separated resource layers:
 
 | Resource layer | Primary audience | Purpose |
 |---|---|---|
@@ -232,6 +232,7 @@ The curriculum is delivered through four clearly separated resource layers:
 | `assessments/` | Students and teachers | Quizzes, assignments, case studies, practical tasks, and mock examinations |
 | `teacher-guide/` | Teachers, trainers, and assessors | Teaching guidance, lesson planning, answer keys, marking schemes, rubrics, and delivery support |
 | `reference/` | Students and teachers | Shared reference material such as glossaries, ingredient references, condition guides, colour theory, forms, and TVET cross-references |
+| `visuals/` | Students and teachers | Original instructional diagrams, labeled anatomy figures, process illustrations, comparison charts, tool-identification images, and safety visuals used inline in the course |
 
 The module chapters listed in this curriculum should therefore be authored as **student-facing notes** inside `student-notes/`.
 
@@ -240,6 +241,33 @@ Teacher-only material should not be embedded inside the student notes. Where a s
 Assessment questions may appear inside student chapters for immediate revision, while standalone tests, assignments, case studies, and mock examinations should live under `assessments/`. Model answers, answer keys, and marking guidance should live under `teacher-guide/`.
 
 The `reference/` area is shared by both students and teachers unless a specific file is explicitly identified as teacher-only.
+
+### Illustration Requirement
+
+Student notes are **illustrated learning material**, not text-only notes.
+
+Where a concept is inherently visual, the relevant figure should appear directly beside or immediately after the explanation. A learner should not be expected to imagine an anatomical structure, tool, process, pattern, shape, or visible condition when a clear instructional illustration can show it.
+
+The core rule is:
+
+> **If a structure is named, show it. If a process is described, illustrate it. If a tool, shape, condition, or visual comparison is taught, show the learner what it looks like.**
+
+Illustrations are therefore required where appropriate for:
+
+- anatomy and labeled structures;
+- cross-sections and internal structures;
+- biological and chemical processes;
+- growth cycles and stages;
+- service sequences and workflows;
+- tools and equipment;
+- shapes, angles, sectioning, and design principles;
+- normal-versus-abnormal comparisons;
+- product or material behaviour;
+- safety, contraindications, and referral decisions.
+
+For example, a lesson that teaches the nail matrix, nail plate, nail bed, lunula, eponychium, cuticle, hyponychium, and nail folds must include a labeled nail anatomy figure showing those structures.
+
+A student chapter should not be marked **Complete** if a required instructional visual is still missing.
 
 ---
 
