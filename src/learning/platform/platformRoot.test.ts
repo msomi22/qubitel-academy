@@ -30,7 +30,8 @@ test('declares stable future academy child ids', () => {
   assert.deepEqual(root.childIds, [
     'technology-academy',
     'cbc-academy',
-    'customer-experience-academy'
+    'customer-experience-academy',
+    'skill-academy'
   ]);
   assert.deepEqual([...QUBITEL_ACADEMY_CHILD_NODE_IDS], root.childIds);
 });
@@ -45,7 +46,8 @@ test('returned root node cannot mutate the internal source node', () => {
   assert.deepEqual(secondRoot.childIds, [
     'technology-academy',
     'cbc-academy',
-    'customer-experience-academy'
+    'customer-experience-academy',
+    'skill-academy'
   ]);
   assert.equal(secondRoot.attributes?.some((attribute) => attribute.key === 'mutated'), false);
 });
@@ -62,7 +64,8 @@ test('connects minimal academy placeholder children when supplied', () => {
   assert.deepEqual(getChildren(registry, 'qubitel-academy').map((node) => node.id), [
     'technology-academy',
     'cbc-academy',
-    'customer-experience-academy'
+    'customer-experience-academy',
+    'skill-academy'
   ]);
 });
 
