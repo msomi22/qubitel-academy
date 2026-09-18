@@ -43,11 +43,7 @@ export const cosmetologyProgrammeNode = createLearningNode({
   summary: 'Hair, skin, nails, beauty therapy, salon practice and professional cosmetology.',
   parentId: SKILL_ACADEMY_NODE_ID,
   childIds: cosmetologyLevels.map((node) => node.id),
-  content: {
-    type: 'programmeOverview',
-    title: 'Cosmetology',
-    description: 'A structured professional learning pathway covering scientific foundations and practical cosmetology from Level 3 through Level 6.'
-  },
+  content: 'A structured professional learning pathway covering scientific foundations and practical cosmetology from Level 3 through Level 6.',
   attributes: [
     { key: 'routeSegment', value: 'cosmetology' },
     { key: 'programmeId', value: COSMETOLOGY_PROGRAMME_NODE_ID },
