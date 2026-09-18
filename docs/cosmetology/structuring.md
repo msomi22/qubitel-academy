@@ -116,6 +116,13 @@ docs/cosmetology/
 │   ├── teaching-methodology.md
 │   └── assessment-guide.md
 │
+├── visuals/
+│   ├── 01-foundations/
+│   ├── 02-hair-science/
+│   ├── 03-skin-aesthetics/
+│   ├── 04-nails-body/
+│   └── 05-professional-studies/
+│
 └── reference/
     ├── glossary.md
     ├── cosmetic-ingredients.md
@@ -156,6 +163,7 @@ They should not contain teacher-only answer keys, expected responses, marking cr
 | `assessments/` | Students + teachers | Learner-facing tests, assignments, case studies, and mock exams |
 | `teacher-guide/` | Teachers/trainers | Lesson support, answers, marking schemes, rubrics, facilitation guidance |
 | `reference/` | Students + teachers | Shared lookup and reference material |
+| `visuals/` | Students + teachers | Instructional images and diagrams embedded in the notes |
 | `curriculum_specification.md` | Authors/teachers/curriculum designers | What the course must cover |
 | `structuring.md` | Authors/contributors | How the course material must be organised and written |
 
@@ -268,6 +276,47 @@ Use this area for:
 - marking rubrics;
 - classroom activities.
 
+### `visuals/`
+
+This is the canonical home for **instructional illustrations used inside the student notes**.
+
+Visuals are part of the learning content, not decorative extras. They should be embedded close to the text they explain.
+
+Use this area for:
+
+- labeled anatomy diagrams;
+- cross-sectional illustrations;
+- process and lifecycle diagrams;
+- step-by-step service visuals;
+- tool and equipment identification charts;
+- shapes, angles, sectioning, and design diagrams;
+- normal-versus-abnormal comparison visuals;
+- product and material science illustrations;
+- safety and contraindication decision visuals.
+
+Organise visuals using the same five-part structure as the student notes.
+
+Example:
+
+```text
+visuals/04-nails-body/
+├── 18-01-nail-unit-anatomy.png
+├── 18-02-nail-cross-section.png
+├── 18-03-nail-growth-cycle.png
+├── 18-04-nail-shapes.png
+└── 18-05-nail-service-contraindications.png
+```
+
+Every visual should have:
+
+- a figure ID;
+- a descriptive filename;
+- meaningful alt text;
+- a figure caption in the student notes;
+- accurate labels;
+- sufficient resolution for screen and print use;
+- a consistent educational illustration style.
+
 ### `reference/`
 
 Reusable reference material that supports multiple modules.
@@ -331,6 +380,9 @@ Not every heading must contain the same amount of content, but the sequence shou
 ## Scientific Disciplines
 
 ## Key Terminology
+
+## Required Visuals
+<!-- List every figure required by this chapter before writing the full notes. -->
 
 ## 1. Scientific Foundation
 
@@ -485,6 +537,70 @@ Where useful, include:
 - ingredient examples;
 - formulas;
 - client scenarios.
+
+---
+
+## 8.1 Mandatory Visual Instruction Rule
+
+Visual teaching is mandatory whenever the concept depends on appearance, spatial relationship, sequence, or comparison.
+
+Use the following rule:
+
+> **If a student needs to see it to understand it properly, the chapter must show it.**
+
+### A visual is required when teaching:
+
+1. **Anatomy or structure**  
+   Example: hair follicle, skin layers, nail unit, muscles, bones.
+
+2. **Named parts or components**  
+   Example: matrix, lunula, cuticle, cortex, medulla, dermis.
+
+3. **Processes or cycles**  
+   Example: hair-growth cycle, keratinisation, polymerisation, oxidation, infection chain.
+
+4. **Shapes, angles, patterns, or spatial relationships**  
+   Example: nail shapes, haircutting elevation, braid parting, face shapes, massage directions.
+
+5. **Tools and equipment**  
+   Example: nail tools, clippers, e-file bits, facial equipment.
+
+6. **Conditions or visible abnormalities**  
+   Example: normal nail versus onycholysis, healthy scalp versus inflammatory findings.
+
+7. **Comparisons**  
+   Example: oil-in-water versus water-in-oil emulsion, temporary versus permanent hair colour.
+
+8. **Safety or decision-making**  
+   Example: contraindication flowchart, service-proceed/modify/refer decision tree.
+
+### Placement rule
+
+A visual should appear **inside the student chapter close to the concept it explains**.
+
+Do not place all illustrations in a detached gallery at the end of the course.
+
+Example:
+
+```markdown
+## Anatomy of the Nail Unit
+
+![Figure 18.1 — Anatomy of the nail unit](../../visuals/04-nails-body/18-01-nail-unit-anatomy.png)
+
+**Figure 18.1:** Major visible and internal structures of the nail unit.
+
+The nail unit consists of...
+```
+
+### Visual gap marker
+
+During drafting, if a required illustration has not yet been created, insert an explicit marker:
+
+```markdown
+> **VISUAL REQUIRED — Figure 18.1:** Labeled top and cross-sectional anatomy of the nail unit showing the matrix, nail plate, nail bed, lunula, eponychium, cuticle, nail folds, hyponychium, and free edge.
+```
+
+A chapter must not move to **Complete** status while any `VISUAL REQUIRED` marker remains unresolved.
 
 ---
 
@@ -825,6 +941,7 @@ A complete chapter should normally contain:
 - clear learning outcomes;
 - scientific terminology;
 - explanatory notes;
+- required instructional visuals identified, created, and embedded;
 - professional application;
 - safety and contraindications;
 - inclusive cosmetology considerations;
@@ -884,15 +1001,18 @@ For each module:
 2. Identify the relevant TVET competency areas.
 3. Identify the scientific disciplines involved.
 4. Build the detailed chapter outline.
-5. Write the scientific foundation first.
-6. Connect the science to professional practice.
-7. Add safety, contraindications, and scope boundaries.
-8. Add inclusive cosmetology considerations.
-9. Add examples and client cases.
-10. Add assessment questions.
-11. Review terminology and factual accuracy.
-12. Add references and further reading.
-13. Update the master course navigation when the chapter is ready.
+5. Identify every point where an instructional visual is required and record it in the chapter's **Required Visuals** section and the visual index.
+6. Write the scientific foundation first.
+7. Connect the science to professional practice.
+8. Add safety, contraindications, and scope boundaries.
+9. Add inclusive cosmetology considerations.
+10. Create or source approved original/licensed visuals and embed them beside the relevant teaching text.
+11. Add examples and client cases.
+12. Add assessment questions.
+13. Review terminology, visual labels, and factual accuracy.
+14. Add references and further reading.
+15. Confirm that no unresolved **VISUAL REQUIRED** markers remain before marking the chapter Complete.
+16. Update the master course navigation when the chapter is ready.
 
 ---
 
