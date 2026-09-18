@@ -10,6 +10,7 @@ import LearningNodeBookView from './LearningNodeBookView.jsx';
 import LearningNodeCompactHeader from './LearningNodeCompactHeader.jsx';
 import { isCbcTheme } from './learningNodeBookView.model.ts';
 import { recordCbcLearningNodeVisit } from '../services/cbcLastActivityService.js';
+import { recordSkillLearningNodeVisit } from '../services/skillLastActivityService.js';
 import './LearningNodeUI.css';
 
 function getNodeAttributeValue(node, key) {
@@ -67,6 +68,10 @@ export default function LearningNodePageShell({
       registry,
       node: currentNode,
       tab: searchParams.get('tab')
+    });
+    recordSkillLearningNodeVisit({
+      registry,
+      node: currentNode
     });
   }, [currentNode, registry, searchParams]);
 
