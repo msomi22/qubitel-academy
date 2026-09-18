@@ -77,13 +77,10 @@ test('Level 6 exposes Foundations and Onychology as ready learning modules', () 
     const topics = getChildren(registry, moduleNode.id);
     assert.equal(topics.length, 1);
     assert.equal(topics[0].kind, 'topic');
-
-    const materials = getChildren(registry, topics[0].id);
-    assert.equal(materials.length, 1);
-    assert.equal(materials[0].kind, 'learningMaterial');
-    assert.equal(materials[0].content?.type, 'book');
-    assert.ok(Array.isArray(materials[0].content?.pages));
-    assert.ok(materials[0].content.pages.length > 0);
+    assert.equal(topics[0].content?.type, 'book');
+    assert.ok(Array.isArray(topics[0].content?.pages));
+    assert.ok(topics[0].content.pages.length > 0);
+    assert.equal(getChildren(registry, topics[0].id).length, 0);
   }
 });
 
@@ -143,6 +140,27 @@ test('Skill LearningNode child labels do not duplicate parent labels', () => {
       normalize(node.label),
       normalize(parent.label),
       `${node.id} repeats its parent label "${parent.label}"`
+    );
+  }
+});
+
+
+test('Skill topics do not add single learning-material pass-through nodes', () => {
+  const registry = createSkillRegistry();
+
+  for (const node of registry.nodesById.values()) {
+    if (node.kind !== 'topic') continue;
+
+    const children = getChildren(registry, node.id);
+    const isSingleMaterialPassThrough =
+      !node.content
+      && children.length === 1
+      && children[0].kind === 'learningMaterial';
+
+    assert.equal(
+      isSingleMaterialPassThrough,
+      false,
+      `${node.id} should carry its single learning material directly`
     );
   }
 });
