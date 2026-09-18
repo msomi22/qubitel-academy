@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { createNodeRoutePath } from '../learning/routing';
+import { createNodeUiPath } from '../learning/routing';
 import { getPreviousSibling, getNextSibling, getSiblings } from '../learning/navigation/index.ts';
 
 export default function LearningNodeSiblingNav({ registry, nodeId }) {
@@ -28,7 +28,7 @@ export default function LearningNodeSiblingNav({ registry, nodeId }) {
       <div className="sibling-nav-buttons">
         {previousSibling ? (
           <NavLink
-            to={createNodeRoutePath(registry, previousSibling.id, {
+            to={createNodeUiPath(registry, previousSibling.id, {
               includeRoot: false,
               includeAcademyRoot: false
             })}
@@ -49,7 +49,7 @@ export default function LearningNodeSiblingNav({ registry, nodeId }) {
 
         {nextSibling ? (
           <NavLink
-            to={createNodeRoutePath(registry, nextSibling.id, {
+            to={createNodeUiPath(registry, nextSibling.id, {
               includeRoot: false,
               includeAcademyRoot: false
             })}
