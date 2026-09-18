@@ -13,7 +13,7 @@ This document defines the scope, learning outcomes, module structure, competency
 
 > **Important:** This is an independent curriculum and learning-resource specification. It does not itself award or replace an accredited TVET-CDACC, CIDESCO, City & Guilds, Milady, Pivot Point, or other professional qualification.
 
-### Contents
+## Contents
 
 1. [Purpose of This Course](#1-purpose-of-this-course)
 2. [Course Philosophy](#2-course-philosophy)
