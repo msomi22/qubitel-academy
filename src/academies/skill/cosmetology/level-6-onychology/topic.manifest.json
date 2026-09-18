@@ -1,0 +1,25 @@
+{
+  "id": "level-6-onychology",
+  "displayName": "Onychology, Manicure, Pedicure and Nail Technology",
+  "academy": "skill",
+  "category": "cosmetology",
+  "description": "Nail science, manicure, pedicure, enhancement systems, product chemistry, infection prevention and professional nail services.",
+  "status": "active",
+  "learningAreas": [
+    {
+      "id": "introduction-to-onychology",
+      "title": "Introduction to Onychology",
+      "description": "Scope of nail science, professional services, safety, contraindications and the learning journey.",
+      "sequence": 10
+    }
+  ],
+  "lessons": [
+    {
+      "id": "onychology-introduction-lesson-001",
+      "file": "lessons/onychology-introduction-lesson-001.js",
+      "learningAreaId": "introduction-to-onychology"
+    }
+  ],
+  "practice": [],
+  "assessments": []
+}
