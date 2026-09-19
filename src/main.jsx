@@ -68,6 +68,7 @@ import './styles/cbc-exam-start-button-fix.css';
 import './styles/alphabet-mastery.css';
 import './styles/number-audio-grid.css';
 import './styles/interaction-state-fix.css';
+import './styles/scroll-affordances.css';
 
 function loadCloudflareAnalytics() {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
