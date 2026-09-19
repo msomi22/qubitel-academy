@@ -969,3 +969,38 @@
     }
   }
 }
+
+
+@layer components {
+  /* In focused authored book pages, let the authored content wrapper consume the
+     full page body so interactive learning blocks can use reclaimed space. */
+  @media (max-width: 760px) {
+    body.book-reader-focus-active
+      .learning-book__resting-page-body > .book-content-scroll--authored {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      height: auto;
+      min-height: 0;
+    }
+
+    body.book-reader-focus-active
+      .book-content-scroll--authored > .book-content-inner {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    body.book-reader-focus-active
+      .book-content-scroll--authored
+      .alphabet-mastery-board--book {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    body.book-reader-focus-active .learning-book__resting-page-body {
+      padding-bottom: 0;
+    }
+  }
+}
