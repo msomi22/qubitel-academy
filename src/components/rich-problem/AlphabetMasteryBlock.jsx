@@ -383,7 +383,7 @@ export default function AlphabetMasteryBlock({ block, presentation = 'standalone
     <section
       aria-label={isBookPresentation ? 'Alphabet Mastery' : undefined}
       aria-labelledby={isBookPresentation ? undefined : 'alphabet-mastery-heading'}
-      className={`workspace-block problem-rich-block alphabet-mastery-board ${isBookPresentation ? 'alphabet-mastery-board--book' : ''}`}
+      className={`workspace-block problem-rich-block alphabet-mastery-board ${isBookPresentation ? 'alphabet-mastery-board--book' : ''} ${isAutoReadActive ? 'is-auto-read-active' : ''}`}
     >
       {!isBookPresentation ? (
         <div className="alphabet-mastery-hero">
