@@ -888,3 +888,32 @@
     }
   }
 }
+
+
+@layer components {
+  /* Focused book pages should use reclaimed vertical space for learning content. */
+  @media (max-width: 760px) {
+    body.book-reader-focus-active .alphabet-mastery-board--book {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      height: 100%;
+    }
+
+    body.book-reader-focus-active .alphabet-mastery-board--book .alphabet-mastery-card-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      max-height: none;
+      overflow-y: auto;
+    }
+
+    body.book-reader-focus-active .alphabet-mastery-board--book .alphabet-mastery-grid {
+      min-height: 100%;
+      align-content: start;
+    }
+
+    body.book-reader-focus-active .alphabet-mastery-board--book .alphabet-mastery-letter-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+}
