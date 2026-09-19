@@ -965,7 +965,7 @@
   /* Sibling/topic navigation is contextual navigation, not a reading control. */
   @media (max-width: 760px) {
     body.book-reader-focus-active .learning-node-footer {
-      display: none;
+      display: none !important;
     }
   }
 }
