@@ -830,3 +830,61 @@
     }
   }
 }
+
+
+@layer components {
+  /* Focus mode gives educational cards priority over setup chrome.
+     Active Auto Read keeps only the controls needed to pause or stop it. */
+  @media (max-width: 760px) {
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book:not(.is-auto-read-active)
+      .alphabet-mastery-toolbar {
+      display: none;
+    }
+
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-tab,
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-toolbar-count,
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-sound-status,
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-interval-control {
+      display: none;
+    }
+
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-toolbar {
+      display: block;
+      padding: 0.35rem 0.5rem;
+    }
+
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-auto-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      grid-column: auto;
+      gap: 0.35rem;
+      width: 100%;
+    }
+
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-auto-timer {
+      min-height: 36px;
+      padding: 0.35rem 0.55rem;
+    }
+
+    body.book-reader-focus-active
+      .alphabet-mastery-board--book.is-auto-read-active
+      .alphabet-mastery-auto-timer small {
+      display: none;
+    }
+  }
+}
