@@ -861,3 +861,101 @@
     transition: none;
   }
 }
+
+
+/* Focus-mode refinement: let the book own the reclaimed mobile viewport. */
+@media (max-width: 760px) {
+  body.book-reader-focus-active .status-bar,
+  body.book-reader-header-only .status-bar {
+    display: none !important;
+  }
+
+  body.book-reader-focus-active .app-shell .page-wrap,
+  body.book-reader-header-only .app-shell .page-wrap {
+    width: 100vw !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body.book-reader-focus-active .book-reader,
+  body.book-reader-header-only .book-reader,
+  body.book-reader-focus-active .learning-book,
+  body.book-reader-header-only .learning-book,
+  body.book-reader-focus-active .learning-book__stage,
+  body.book-reader-header-only .learning-book__stage,
+  body.book-reader-focus-active .learning-book__volume,
+  body.book-reader-header-only .learning-book__volume {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  body.book-reader-focus-active .learning-book__stage,
+  body.book-reader-header-only .learning-book__stage {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  body.book-reader-focus-active .learning-book__volume {
+    height: 100dvh !important;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  body.book-reader-header-only .learning-book__volume {
+    height: calc(100dvh - var(--nav-height, 64px)) !important;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+
+  body.book-reader-focus-active .learning-book__pages,
+  body.book-reader-header-only .learning-book__pages {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  body.book-reader-focus-active .learning-book__page-content,
+  body.book-reader-header-only .learning-book__page-content {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  body.book-reader-focus-active .learning-book__controls,
+  body.book-reader-header-only .learning-book__controls {
+    gap: 0.25rem;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  body.book-reader-focus-active .learning-book__indicator,
+  body.book-reader-header-only .learning-book__indicator {
+    min-width: 72px;
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+  }
+}
+
+@media (max-width: 390px) {
+  body.book-reader-focus-active .learning-book__control span:nth-child(2),
+  body.book-reader-header-only .learning-book__control span:nth-child(2) {
+    display: none;
+  }
+
+  body.book-reader-focus-active .learning-book__control,
+  body.book-reader-header-only .learning-book__control {
+    min-width: 44px;
+    width: 44px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body.book-reader-focus-active .learning-book__indicator,
+  body.book-reader-header-only .learning-book__indicator {
+    font-size: 0.8rem;
+  }
+}
