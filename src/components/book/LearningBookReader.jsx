@@ -7,7 +7,9 @@ const SWIPE_DISTANCE_PX = 52;
 const SWIPE_INTENT_DISTANCE_PX = 10;
 const SWIPE_DIRECTION_RATIO = 1.25;
 const MOBILE_READER_QUERY = '(max-width: 760px)';
-const CHROME_SCROLL_THRESHOLD_PX = 24;
+const CHROME_SCROLL_THRESHOLD_PX = 32;
+const CHROME_TRANSITION_LOCK_MS = 240;
+const SCROLL_INTENT_RELEASE_MS = 320;
 
 const INTERACTIVE_TARGET_SELECTOR = [
   'a',
@@ -71,6 +73,10 @@ export default function LearningBookReader({
   const pendingTargetRef = useRef(null);
   const swipeRef = useRef(null);
   const scrollRef = useRef({ anchorTop: 0, lastTop: 0 });
+  const userScrollIntentRef = useRef(false);
+  const chromeTransitionLockedRef = useRef(false);
+  const chromeTransitionTimerRef = useRef(null);
+  const scrollIntentTimerRef = useRef(null);
 
   const totalPages = pages.length;
   const clampedPageIndex = totalPages > 0
@@ -103,6 +109,35 @@ export default function LearningBookReader({
     pendingTargetRef.current = null;
     setTurn(null);
   }, [clearTurnTimer]);
+
+  const clearMobileInteractionTimers = useCallback(() => {
+    if (chromeTransitionTimerRef.current !== null) {
+      window.clearTimeout(chromeTransitionTimerRef.current);
+      chromeTransitionTimerRef.current = null;
+    }
+
+    if (scrollIntentTimerRef.current !== null) {
+      window.clearTimeout(scrollIntentTimerRef.current);
+      scrollIntentTimerRef.current = null;
+    }
+  }, []);
+
+  const setChromeModeFromScroll = useCallback((nextMode, currentTop) => {
+    if (chromeTransitionLockedRef.current) return;
+
+    chromeTransitionLockedRef.current = true;
+    scrollRef.current = { anchorTop: currentTop, lastTop: currentTop };
+    setMobileChromeMode(nextMode);
+
+    if (chromeTransitionTimerRef.current !== null) {
+      window.clearTimeout(chromeTransitionTimerRef.current);
+    }
+
+    chromeTransitionTimerRef.current = window.setTimeout(() => {
+      chromeTransitionLockedRef.current = false;
+      chromeTransitionTimerRef.current = null;
+    }, CHROME_TRANSITION_LOCK_MS);
+  }, []);
 
   const requestPageTurn = useCallback((direction) => {
     if (isTurningRef.current || totalPages === 0) return;
@@ -195,10 +230,13 @@ export default function LearningBookReader({
 
   useEffect(() => {
     finishTurn();
+    clearMobileInteractionTimers();
     swipeRef.current = null;
+    userScrollIntentRef.current = false;
+    chromeTransitionLockedRef.current = false;
     scrollRef.current = { anchorTop: 0, lastTop: 0 };
     setMobileChromeMode('visible');
-  }, [finishTurn, isSpread, resetKey]);
+  }, [clearMobileInteractionTimers, finishTurn, isSpread, resetKey]);
 
   useEffect(() => {
     if (isSpread) {
@@ -214,8 +252,11 @@ export default function LearningBookReader({
   }, [currentPageIndex, finishTurn, turn]);
 
   useEffect(() => {
-    return () => clearTurnTimer();
-  }, [clearTurnTimer]);
+    return () => {
+      clearTurnTimer();
+      clearMobileInteractionTimers();
+    };
+  }, [clearMobileInteractionTimers, clearTurnTimer]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -243,6 +284,13 @@ export default function LearningBookReader({
   const handlePointerDown = (event) => {
     const interactiveTarget = isInteractiveTarget(event.target);
 
+    if (scrollIntentTimerRef.current !== null) {
+      window.clearTimeout(scrollIntentTimerRef.current);
+      scrollIntentTimerRef.current = null;
+    }
+
+    userScrollIntentRef.current = false;
+
     if (isMobileViewport && interactiveTarget) {
       setMobileChromeMode('focused');
     }
@@ -260,6 +308,13 @@ export default function LearningBookReader({
   const handlePointerUp = (event) => {
     const swipe = swipeRef.current;
     swipeRef.current = null;
+
+    if (userScrollIntentRef.current) {
+      scrollIntentTimerRef.current = window.setTimeout(() => {
+        userScrollIntentRef.current = false;
+        scrollIntentTimerRef.current = null;
+      }, SCROLL_INTENT_RELEASE_MS);
+    }
 
     if (!swipe || swipe.pointerId !== event.pointerId || isTurningRef.current) return;
 
@@ -281,11 +336,15 @@ export default function LearningBookReader({
     const hasVerticalIntent = Math.abs(deltaY) >= SWIPE_INTENT_DISTANCE_PX
       && Math.abs(deltaY) > Math.abs(deltaX) * SWIPE_DIRECTION_RATIO;
 
-    if (hasVerticalIntent) swipeRef.current = null;
+    if (hasVerticalIntent) {
+      userScrollIntentRef.current = true;
+      swipeRef.current = null;
+    }
   };
 
   const handlePointerCancel = () => {
     swipeRef.current = null;
+    userScrollIntentRef.current = false;
   };
 
   const handleContentScroll = (event) => {
@@ -294,19 +353,21 @@ export default function LearningBookReader({
     const currentTop = event.currentTarget.scrollTop;
     const scrollState = scrollRef.current;
 
-    if (Math.abs(currentTop - scrollState.anchorTop) < CHROME_SCROLL_THRESHOLD_PX) {
+    if (!userScrollIntentRef.current || chromeTransitionLockedRef.current) {
+      scrollState.anchorTop = currentTop;
       scrollState.lastTop = currentTop;
       return;
     }
 
-    if (currentTop > scrollState.anchorTop) {
-      setMobileChromeMode('focused');
-    } else {
-      setMobileChromeMode('header');
-    }
-
-    scrollState.anchorTop = currentTop;
+    const distanceFromAnchor = currentTop - scrollState.anchorTop;
     scrollState.lastTop = currentTop;
+
+    if (Math.abs(distanceFromAnchor) < CHROME_SCROLL_THRESHOLD_PX) return;
+
+    setChromeModeFromScroll(
+      distanceFromAnchor > 0 ? 'focused' : 'header',
+      currentTop
+    );
   };
 
   const handleReaderClick = (event) => {
