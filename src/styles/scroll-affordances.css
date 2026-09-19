@@ -1,73 +1,58 @@
 @layer components {
   .vertical-scroll-affordance {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--accent, #5eead4) 72%, transparent)
-      color-mix(in srgb, var(--line, #334155) 36%, transparent);
+    scrollbar-gutter: stable;
+    scrollbar-color:
+      color-mix(in srgb, var(--accent, #5eead4) 82%, #64748b)
+      color-mix(in srgb, var(--line, #334155) 44%, transparent);
   }
 
   .vertical-scroll-affordance::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   .vertical-scroll-affordance::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--line, #334155) 24%, transparent);
+    background: color-mix(in srgb, var(--line, #334155) 34%, transparent);
     border-radius: 999px;
   }
 
   .vertical-scroll-affordance::-webkit-scrollbar-thumb {
-    min-height: 32px;
+    min-height: 36px;
     border: 2px solid transparent;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--accent, #5eead4) 78%, #64748b);
+    background: color-mix(in srgb, var(--accent, #5eead4) 88%, #64748b);
     background-clip: padding-box;
   }
 
-  @media (max-width: 760px) {
-    .vertical-scroll-affordance[data-scroll-up='false'][data-scroll-down='true'] {
-      -webkit-mask-image: linear-gradient(
-        to bottom,
-        #000 0,
-        #000 calc(100% - 30px),
-        transparent 100%
-      );
-      mask-image: linear-gradient(
-        to bottom,
-        #000 0,
-        #000 calc(100% - 30px),
-        transparent 100%
-      );
-    }
+  /* Scroll shadows are deliberately stronger than native overlay scrollbars.
+     They remain visible on iOS/macOS where browser scrollbars may disappear. */
+  .vertical-scroll-affordance[data-scroll-up='false'][data-scroll-down='true'] {
+    box-shadow:
+      inset 0 -22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent);
+  }
 
-    .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='false'] {
-      -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0,
-        #000 30px,
-        #000 100%
-      );
-      mask-image: linear-gradient(
-        to bottom,
-        transparent 0,
-        #000 30px,
-        #000 100%
-      );
-    }
+  .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='false'] {
+    box-shadow:
+      inset 0 22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent);
+  }
 
-    .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='true'] {
-      -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0,
-        #000 30px,
-        #000 calc(100% - 30px),
-        transparent 100%
-      );
-      mask-image: linear-gradient(
-        to bottom,
-        transparent 0,
-        #000 30px,
-        #000 calc(100% - 30px),
-        transparent 100%
-      );
-    }
+  .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='true'] {
+    box-shadow:
+      inset 0 22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent),
+      inset 0 -22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent);
+  }
+
+  /* Book-reader content gets an explicit, high-contrast edge cue because it is
+     the most important scrollable learning surface on touch devices. */
+  .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-down='true'],
+  .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-down='true'],
+  .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-down='true'] {
+    border-bottom: 3px solid color-mix(in srgb, var(--accent, #5eead4) 78%, transparent);
+  }
+
+  .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-up='true'],
+  .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-up='true'],
+  .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-up='true'] {
+    border-top: 3px solid color-mix(in srgb, var(--accent, #5eead4) 78%, transparent);
   }
 }
