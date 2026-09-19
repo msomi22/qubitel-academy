@@ -196,6 +196,8 @@ export default function LearningBookReader({
   useEffect(() => {
     finishTurn();
     swipeRef.current = null;
+    scrollRef.current = { anchorTop: 0, lastTop: 0 };
+    setMobileChromeMode('visible');
   }, [finishTurn, isSpread, resetKey]);
 
   useEffect(() => {
@@ -241,10 +243,8 @@ export default function LearningBookReader({
   const handlePointerDown = (event) => {
     const interactiveTarget = isInteractiveTarget(event.target);
 
-    if (isMobileViewport) {
-      if (interactiveTarget || mobileChromeMode === 'visible') {
-        setMobileChromeMode('focused');
-      }
+    if (isMobileViewport && interactiveTarget) {
+      setMobileChromeMode('focused');
     }
 
     if (isTurningRef.current || interactiveTarget) return;
@@ -312,9 +312,11 @@ export default function LearningBookReader({
   const handleReaderClick = (event) => {
     if (!isMobileViewport || isInteractiveTarget(event.target)) return;
 
-    if (mobileChromeMode === 'focused') {
+    if (mobileChromeMode === 'visible') {
+      setMobileChromeMode('focused');
+    } else if (mobileChromeMode === 'focused') {
       setMobileChromeMode('header');
-    } else if (mobileChromeMode === 'header') {
+    } else {
       setMobileChromeMode('visible');
     }
   };
