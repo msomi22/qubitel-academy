@@ -917,3 +917,14 @@
     }
   }
 }
+
+
+/* Keep the alphabet grid content-sized inside the full-height focus viewport. */
+@media (max-width: 760px) {
+  body.book-reader-focus-active
+    .alphabet-mastery-board--book
+    .alphabet-mastery-grid {
+    min-height: 0 !important;
+    align-content: start;
+  }
+}
