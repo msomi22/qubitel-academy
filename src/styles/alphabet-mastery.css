@@ -839,7 +839,7 @@
     body.book-reader-focus-active
       .alphabet-mastery-board--book:not(.is-auto-read-active)
       .alphabet-mastery-toolbar {
-      display: none;
+      display: none !important;
     }
 
     body.book-reader-focus-active
@@ -854,13 +854,13 @@
     body.book-reader-focus-active
       .alphabet-mastery-board--book.is-auto-read-active
       .alphabet-mastery-interval-control {
-      display: none;
+      display: none !important;
     }
 
     body.book-reader-focus-active
       .alphabet-mastery-board--book.is-auto-read-active
       .alphabet-mastery-toolbar {
-      display: block;
+      display: block !important;
       padding: 0.35rem 0.5rem;
     }
 
