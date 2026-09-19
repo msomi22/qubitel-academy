@@ -19,6 +19,7 @@ import { siteConfig } from './config/siteConfig.js';
 import { useContentProtection } from './hooks/useContentProtection.js';
 import { usePreferences } from './hooks/usePreferences.js';
 import useTvRemoteNavigation from './hooks/useTvRemoteNavigation.js';
+import useScrollAffordances from './hooks/useScrollAffordances.js';
 import { detectAcademyIdFromLocation } from './config/detectAcademy.ts';
 
 const Home = lazy(() => import('./pages/Home.jsx'));
@@ -83,6 +84,7 @@ function RouteScrollReset() {
 export default function App() {
   useContentProtection();
   useTvRemoteNavigation();
+  useScrollAffordances();
   const { theme } = usePreferences();
   const { pathname } = useLocation();
   const isExamRoute = pathname.startsWith('/exam/');
