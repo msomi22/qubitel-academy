@@ -6,6 +6,8 @@ const TURN_FALLBACK_MS = 850;
 const SWIPE_DISTANCE_PX = 52;
 const SWIPE_INTENT_DISTANCE_PX = 10;
 const SWIPE_DIRECTION_RATIO = 1.25;
+const MOBILE_READER_QUERY = '(max-width: 760px)';
+const CHROME_SCROLL_THRESHOLD_PX = 24;
 
 const INTERACTIVE_TARGET_SELECTOR = [
   'a',
@@ -61,11 +63,14 @@ export default function LearningBookReader({
   const [isSpread, setIsSpread] = useState(false);
   const [turn, setTurn] = useState(null);
   const [fontScale, setFontScale] = useState(1);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [mobileChromeMode, setMobileChromeMode] = useState('visible');
   const readerRef = useRef(null);
   const turnTimerRef = useRef(null);
   const isTurningRef = useRef(false);
   const pendingTargetRef = useRef(null);
   const swipeRef = useRef(null);
+  const scrollRef = useRef({ anchorTop: 0, lastTop: 0 });
 
   const totalPages = pages.length;
   const clampedPageIndex = totalPages > 0
@@ -137,6 +142,43 @@ export default function LearningBookReader({
   ]);
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined;
+
+    const mediaQuery = window.matchMedia(MOBILE_READER_QUERY);
+    const syncViewport = () => {
+      setIsMobileViewport(mediaQuery.matches);
+      if (!mediaQuery.matches) setMobileChromeMode('visible');
+    };
+
+    syncViewport();
+    mediaQuery.addEventListener?.('change', syncViewport);
+    return () => mediaQuery.removeEventListener?.('change', syncViewport);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+
+    const body = document.body;
+    body.classList.toggle('book-reader-mobile-active', isMobileViewport);
+    body.classList.toggle(
+      'book-reader-focus-active',
+      isMobileViewport && mobileChromeMode === 'focused'
+    );
+    body.classList.toggle(
+      'book-reader-header-only',
+      isMobileViewport && mobileChromeMode === 'header'
+    );
+
+    return () => {
+      body.classList.remove(
+        'book-reader-mobile-active',
+        'book-reader-focus-active',
+        'book-reader-header-only'
+      );
+    };
+  }, [isMobileViewport, mobileChromeMode]);
+
+  useEffect(() => {
     const reader = readerRef.current;
     if (!reader || typeof ResizeObserver === 'undefined') return undefined;
 
@@ -197,7 +239,15 @@ export default function LearningBookReader({
   }, [requestPageTurn]);
 
   const handlePointerDown = (event) => {
-    if (isTurningRef.current || isInteractiveTarget(event.target)) return;
+    const interactiveTarget = isInteractiveTarget(event.target);
+
+    if (isMobileViewport) {
+      if (interactiveTarget || mobileChromeMode === 'visible') {
+        setMobileChromeMode('focused');
+      }
+    }
+
+    if (isTurningRef.current || interactiveTarget) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
     swipeRef.current = {
@@ -238,6 +288,37 @@ export default function LearningBookReader({
     swipeRef.current = null;
   };
 
+  const handleContentScroll = (event) => {
+    if (!isMobileViewport) return;
+
+    const currentTop = event.currentTarget.scrollTop;
+    const scrollState = scrollRef.current;
+
+    if (Math.abs(currentTop - scrollState.anchorTop) < CHROME_SCROLL_THRESHOLD_PX) {
+      scrollState.lastTop = currentTop;
+      return;
+    }
+
+    if (currentTop > scrollState.anchorTop) {
+      setMobileChromeMode('focused');
+    } else {
+      setMobileChromeMode('header');
+    }
+
+    scrollState.anchorTop = currentTop;
+    scrollState.lastTop = currentTop;
+  };
+
+  const handleReaderClick = (event) => {
+    if (!isMobileViewport || isInteractiveTarget(event.target)) return;
+
+    if (mobileChromeMode === 'focused') {
+      setMobileChromeMode('header');
+    } else if (mobileChromeMode === 'header') {
+      setMobileChromeMode('visible');
+    }
+  };
+
   const handleTurnAnimationEnd = (event) => {
     if (event.target !== event.currentTarget) return;
     finishTurn();
@@ -249,7 +330,7 @@ export default function LearningBookReader({
     return (
       <article className={`learning-book__page learning-book__page--${side}`}>
         <div className="learning-book__page-content">
-          <div className="learning-book__resting-page-body">
+          <div className="learning-book__resting-page-body" onScroll={handleContentScroll}>
             {renderPage(pages[pageIndex], {
               pageIndex,
               pageNumber: pageIndex + 1,
@@ -348,6 +429,8 @@ export default function LearningBookReader({
       ref={readerRef}
       className={`learning-book ${isSpread ? 'learning-book--spread' : 'learning-book--single'}`}
       aria-label={`${bookTitle || 'Learning material'} book reader`}
+      data-mobile-chrome={mobileChromeMode}
+      onClick={handleReaderClick}
       style={{ '--learning-book-font-scale': fontScale }}
     >
       <div className="learning-book__reading-controls" aria-label="Reading text size controls">
