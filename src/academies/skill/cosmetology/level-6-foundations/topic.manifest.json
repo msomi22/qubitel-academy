@@ -21,5 +21,8 @@
     }
   ],
   "practice": [],
-  "assessments": []
+  "assessments": [],
+  "questionBank": {
+    "mode": "empty"
+  }
 }

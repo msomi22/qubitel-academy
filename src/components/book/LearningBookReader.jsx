@@ -6,6 +6,10 @@ const TURN_FALLBACK_MS = 850;
 const SWIPE_DISTANCE_PX = 52;
 const SWIPE_INTENT_DISTANCE_PX = 10;
 const SWIPE_DIRECTION_RATIO = 1.25;
+const MOBILE_READER_QUERY = '(max-width: 760px)';
+const CHROME_SCROLL_THRESHOLD_PX = 32;
+const CHROME_TRANSITION_LOCK_MS = 240;
+const SCROLL_INTENT_RELEASE_MS = 320;
 
 const INTERACTIVE_TARGET_SELECTOR = [
   'a',
@@ -61,11 +65,18 @@ export default function LearningBookReader({
   const [isSpread, setIsSpread] = useState(false);
   const [turn, setTurn] = useState(null);
   const [fontScale, setFontScale] = useState(1);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [mobileChromeMode, setMobileChromeMode] = useState('visible');
   const readerRef = useRef(null);
   const turnTimerRef = useRef(null);
   const isTurningRef = useRef(false);
   const pendingTargetRef = useRef(null);
   const swipeRef = useRef(null);
+  const scrollRef = useRef({ anchorTop: 0, lastTop: 0 });
+  const userScrollIntentRef = useRef(false);
+  const chromeTransitionLockedRef = useRef(false);
+  const chromeTransitionTimerRef = useRef(null);
+  const scrollIntentTimerRef = useRef(null);
 
   const totalPages = pages.length;
   const clampedPageIndex = totalPages > 0
@@ -98,6 +109,35 @@ export default function LearningBookReader({
     pendingTargetRef.current = null;
     setTurn(null);
   }, [clearTurnTimer]);
+
+  const clearMobileInteractionTimers = useCallback(() => {
+    if (chromeTransitionTimerRef.current !== null) {
+      window.clearTimeout(chromeTransitionTimerRef.current);
+      chromeTransitionTimerRef.current = null;
+    }
+
+    if (scrollIntentTimerRef.current !== null) {
+      window.clearTimeout(scrollIntentTimerRef.current);
+      scrollIntentTimerRef.current = null;
+    }
+  }, []);
+
+  const setChromeModeFromScroll = useCallback((nextMode, currentTop) => {
+    if (chromeTransitionLockedRef.current) return;
+
+    chromeTransitionLockedRef.current = true;
+    scrollRef.current = { anchorTop: currentTop, lastTop: currentTop };
+    setMobileChromeMode(nextMode);
+
+    if (chromeTransitionTimerRef.current !== null) {
+      window.clearTimeout(chromeTransitionTimerRef.current);
+    }
+
+    chromeTransitionTimerRef.current = window.setTimeout(() => {
+      chromeTransitionLockedRef.current = false;
+      chromeTransitionTimerRef.current = null;
+    }, CHROME_TRANSITION_LOCK_MS);
+  }, []);
 
   const requestPageTurn = useCallback((direction) => {
     if (isTurningRef.current || totalPages === 0) return;
@@ -137,6 +177,43 @@ export default function LearningBookReader({
   ]);
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return undefined;
+
+    const mediaQuery = window.matchMedia(MOBILE_READER_QUERY);
+    const syncViewport = () => {
+      setIsMobileViewport(mediaQuery.matches);
+      if (!mediaQuery.matches) setMobileChromeMode('visible');
+    };
+
+    syncViewport();
+    mediaQuery.addEventListener?.('change', syncViewport);
+    return () => mediaQuery.removeEventListener?.('change', syncViewport);
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return undefined;
+
+    const body = document.body;
+    body.classList.toggle('book-reader-mobile-active', isMobileViewport);
+    body.classList.toggle(
+      'book-reader-focus-active',
+      isMobileViewport && mobileChromeMode === 'focused'
+    );
+    body.classList.toggle(
+      'book-reader-header-only',
+      isMobileViewport && mobileChromeMode === 'header'
+    );
+
+    return () => {
+      body.classList.remove(
+        'book-reader-mobile-active',
+        'book-reader-focus-active',
+        'book-reader-header-only'
+      );
+    };
+  }, [isMobileViewport, mobileChromeMode]);
+
+  useEffect(() => {
     const reader = readerRef.current;
     if (!reader || typeof ResizeObserver === 'undefined') return undefined;
 
@@ -153,8 +230,13 @@ export default function LearningBookReader({
 
   useEffect(() => {
     finishTurn();
+    clearMobileInteractionTimers();
     swipeRef.current = null;
-  }, [finishTurn, isSpread, resetKey]);
+    userScrollIntentRef.current = false;
+    chromeTransitionLockedRef.current = false;
+    scrollRef.current = { anchorTop: 0, lastTop: 0 };
+    setMobileChromeMode('visible');
+  }, [clearMobileInteractionTimers, finishTurn, isSpread, resetKey]);
 
   useEffect(() => {
     if (isSpread) {
@@ -170,8 +252,11 @@ export default function LearningBookReader({
   }, [currentPageIndex, finishTurn, turn]);
 
   useEffect(() => {
-    return () => clearTurnTimer();
-  }, [clearTurnTimer]);
+    return () => {
+      clearTurnTimer();
+      clearMobileInteractionTimers();
+    };
+  }, [clearMobileInteractionTimers, clearTurnTimer]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -197,7 +282,20 @@ export default function LearningBookReader({
   }, [requestPageTurn]);
 
   const handlePointerDown = (event) => {
-    if (isTurningRef.current || isInteractiveTarget(event.target)) return;
+    const interactiveTarget = isInteractiveTarget(event.target);
+
+    if (scrollIntentTimerRef.current !== null) {
+      window.clearTimeout(scrollIntentTimerRef.current);
+      scrollIntentTimerRef.current = null;
+    }
+
+    userScrollIntentRef.current = false;
+
+    if (isMobileViewport && interactiveTarget) {
+      setMobileChromeMode('focused');
+    }
+
+    if (isTurningRef.current || interactiveTarget) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
     swipeRef.current = {
@@ -210,6 +308,13 @@ export default function LearningBookReader({
   const handlePointerUp = (event) => {
     const swipe = swipeRef.current;
     swipeRef.current = null;
+
+    if (userScrollIntentRef.current) {
+      scrollIntentTimerRef.current = window.setTimeout(() => {
+        userScrollIntentRef.current = false;
+        scrollIntentTimerRef.current = null;
+      }, SCROLL_INTENT_RELEASE_MS);
+    }
 
     if (!swipe || swipe.pointerId !== event.pointerId || isTurningRef.current) return;
 
@@ -231,11 +336,50 @@ export default function LearningBookReader({
     const hasVerticalIntent = Math.abs(deltaY) >= SWIPE_INTENT_DISTANCE_PX
       && Math.abs(deltaY) > Math.abs(deltaX) * SWIPE_DIRECTION_RATIO;
 
-    if (hasVerticalIntent) swipeRef.current = null;
+    if (hasVerticalIntent) {
+      userScrollIntentRef.current = true;
+      swipeRef.current = null;
+    }
   };
 
   const handlePointerCancel = () => {
     swipeRef.current = null;
+    userScrollIntentRef.current = false;
+  };
+
+  const handleContentScroll = (event) => {
+    if (!isMobileViewport) return;
+
+    const currentTop = event.currentTarget.scrollTop;
+    const scrollState = scrollRef.current;
+
+    if (!userScrollIntentRef.current || chromeTransitionLockedRef.current) {
+      scrollState.anchorTop = currentTop;
+      scrollState.lastTop = currentTop;
+      return;
+    }
+
+    const distanceFromAnchor = currentTop - scrollState.anchorTop;
+    scrollState.lastTop = currentTop;
+
+    if (Math.abs(distanceFromAnchor) < CHROME_SCROLL_THRESHOLD_PX) return;
+
+    setChromeModeFromScroll(
+      distanceFromAnchor > 0 ? 'focused' : 'header',
+      currentTop
+    );
+  };
+
+  const handleReaderClick = (event) => {
+    if (!isMobileViewport || isInteractiveTarget(event.target)) return;
+
+    if (mobileChromeMode === 'visible') {
+      setMobileChromeMode('focused');
+    } else if (mobileChromeMode === 'focused') {
+      setMobileChromeMode('header');
+    } else {
+      setMobileChromeMode('visible');
+    }
   };
 
   const handleTurnAnimationEnd = (event) => {
@@ -249,7 +393,7 @@ export default function LearningBookReader({
     return (
       <article className={`learning-book__page learning-book__page--${side}`}>
         <div className="learning-book__page-content">
-          <div className="learning-book__resting-page-body">
+          <div className="learning-book__resting-page-body" onScroll={handleContentScroll}>
             {renderPage(pages[pageIndex], {
               pageIndex,
               pageNumber: pageIndex + 1,
@@ -348,6 +492,8 @@ export default function LearningBookReader({
       ref={readerRef}
       className={`learning-book ${isSpread ? 'learning-book--spread' : 'learning-book--single'}`}
       aria-label={`${bookTitle || 'Learning material'} book reader`}
+      data-mobile-chrome={mobileChromeMode}
+      onClick={handleReaderClick}
       style={{ '--learning-book-font-scale': fontScale }}
     >
       <div className="learning-book__reading-controls" aria-label="Reading text size controls">
