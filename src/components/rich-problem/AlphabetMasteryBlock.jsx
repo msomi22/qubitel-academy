@@ -383,7 +383,7 @@ export default function AlphabetMasteryBlock({ block, presentation = 'standalone
     <section
       aria-label={isBookPresentation ? 'Alphabet Mastery' : undefined}
       aria-labelledby={isBookPresentation ? undefined : 'alphabet-mastery-heading'}
-      className="workspace-block problem-rich-block alphabet-mastery-board"
+      className={`workspace-block problem-rich-block alphabet-mastery-board ${isBookPresentation ? 'alphabet-mastery-board--book' : ''}`}
     >
       {!isBookPresentation ? (
         <div className="alphabet-mastery-hero">
@@ -409,7 +409,7 @@ export default function AlphabetMasteryBlock({ block, presentation = 'standalone
 
         <div className="alphabet-mastery-auto-controls" aria-label="Auto Read controls">
           <label className="alphabet-mastery-interval-control">
-            <span>Every</span>
+            <span>{isBookPresentation ? 'Speed' : 'Every'}</span>
             <select
               aria-label="Auto Read interval"
               value={autoReadIntervalSeconds}
@@ -423,7 +423,7 @@ export default function AlphabetMasteryBlock({ block, presentation = 'standalone
 
           {!isAutoReadActive ? (
             <button className="alphabet-mastery-auto-button" onClick={handleStartAutoRead} type="button">
-              Auto Read
+              {isBookPresentation ? 'Auto' : 'Auto Read'}
             </button>
           ) : (
             <>
