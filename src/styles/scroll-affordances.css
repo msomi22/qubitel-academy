@@ -1,0 +1,147 @@
+@layer components {
+  .vertical-scroll-affordance {
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    scrollbar-color:
+      color-mix(in srgb, var(--accent, #5eead4) 82%, #64748b)
+      color-mix(in srgb, var(--line, #334155) 44%, transparent);
+    transition: box-shadow 160ms ease, border-color 160ms ease;
+  }
+
+  .vertical-scroll-affordance::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .vertical-scroll-affordance::-webkit-scrollbar-track {
+    background: color-mix(in srgb, var(--line, #334155) 34%, transparent);
+    border-radius: 999px;
+  }
+
+  .vertical-scroll-affordance::-webkit-scrollbar-thumb {
+    min-height: 36px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent, #5eead4) 88%, #64748b);
+    background-clip: padding-box;
+  }
+
+  /* Scroll shadows are deliberately stronger than native overlay scrollbars.
+     They remain visible on iOS/macOS where browser scrollbars may disappear. */
+  .vertical-scroll-affordance[data-scroll-up='false'][data-scroll-down='true'] {
+    box-shadow:
+      inset 0 -22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent);
+  }
+
+  .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='false'] {
+    box-shadow:
+      inset 0 22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent);
+  }
+
+  .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='true'] {
+    box-shadow:
+      inset 0 22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent),
+      inset 0 -22px 22px -18px color-mix(in srgb, var(--accent, #5eead4) 72%, transparent);
+  }
+
+  /* Book-reader content gets an explicit, high-contrast edge cue because it is
+     the most important scrollable learning surface on touch devices. */
+  .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-down='true'],
+  .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-down='true'],
+  .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-down='true'] {
+    border-bottom: 3px solid color-mix(in srgb, var(--accent, #5eead4) 78%, transparent);
+  }
+
+  .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-up='true'],
+  .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-up='true'],
+  .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-up='true'] {
+    border-top: 3px solid color-mix(in srgb, var(--accent, #5eead4) 78%, transparent);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vertical-scroll-affordance:hover {
+      scrollbar-color:
+        color-mix(in srgb, var(--accent, #5eead4) 96%, white)
+        color-mix(in srgb, var(--line, #334155) 62%, transparent);
+    }
+
+    .vertical-scroll-affordance:hover::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    .vertical-scroll-affordance:hover::-webkit-scrollbar-track {
+      background: color-mix(in srgb, var(--line, #334155) 50%, transparent);
+    }
+
+    .vertical-scroll-affordance:hover::-webkit-scrollbar-thumb {
+      background: color-mix(in srgb, var(--accent, #5eead4) 96%, white);
+      background-clip: padding-box;
+    }
+
+    .vertical-scroll-affordance[data-scroll-up='false'][data-scroll-down='true']:hover {
+      box-shadow:
+        inset 0 -30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent);
+    }
+
+    .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='false']:hover {
+      box-shadow:
+        inset 0 30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent);
+    }
+
+    .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='true']:hover {
+      box-shadow:
+        inset 0 30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent),
+        inset 0 -30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent);
+    }
+
+    .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-down='true']:hover,
+    .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-down='true']:hover,
+    .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-down='true']:hover {
+      border-bottom-color: color-mix(in srgb, var(--accent, #5eead4) 96%, white);
+    }
+
+    .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-up='true']:hover,
+    .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-up='true']:hover,
+    .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-up='true']:hover {
+      border-top-color: color-mix(in srgb, var(--accent, #5eead4) 96%, white);
+    }
+  }
+}
+
+
+/* Desktop hover cue must stay outside cascade layers because several scroll
+   surfaces define unlayered box-shadow/border styles later in their own files. */
+@media (hover: hover) and (pointer: fine) {
+  .vertical-scroll-affordance:hover {
+    outline: 2px solid color-mix(in srgb, var(--accent, #5eead4) 72%, transparent);
+    outline-offset: -2px;
+  }
+
+  .vertical-scroll-affordance[data-scroll-down='true']:hover {
+    box-shadow:
+      inset 0 -34px 30px -20px color-mix(in srgb, var(--accent, #5eead4) 92%, transparent) !important;
+  }
+
+  .vertical-scroll-affordance[data-scroll-up='true']:hover {
+    box-shadow:
+      inset 0 34px 30px -20px color-mix(in srgb, var(--accent, #5eead4) 92%, transparent) !important;
+  }
+
+  .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='true']:hover {
+    box-shadow:
+      inset 0 34px 30px -20px color-mix(in srgb, var(--accent, #5eead4) 92%, transparent),
+      inset 0 -34px 30px -20px color-mix(in srgb, var(--accent, #5eead4) 92%, transparent) !important;
+  }
+
+  .vertical-scroll-affordance:hover::-webkit-scrollbar {
+    width: 12px !important;
+  }
+
+  .vertical-scroll-affordance:hover::-webkit-scrollbar-track {
+    background: color-mix(in srgb, var(--line, #334155) 62%, transparent) !important;
+  }
+
+  .vertical-scroll-affordance:hover::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--accent, #5eead4) 98%, white) !important;
+    background-clip: padding-box !important;
+  }
+}
