@@ -283,6 +283,8 @@ export default function LearningBookReader({
 
   const handlePointerDown = (event) => {
     const interactiveTarget = isInteractiveTarget(event.target);
+    const paginationControl = event.target instanceof Element
+      && Boolean(event.target.closest('.learning-book__controls'));
 
     if (scrollIntentTimerRef.current !== null) {
       window.clearTimeout(scrollIntentTimerRef.current);
@@ -291,7 +293,7 @@ export default function LearningBookReader({
 
     userScrollIntentRef.current = false;
 
-    if (isMobileViewport && interactiveTarget) {
+    if (isMobileViewport && interactiveTarget && !paginationControl) {
       setMobileChromeMode('focused');
     }
 
