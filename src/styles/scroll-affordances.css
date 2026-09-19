@@ -5,6 +5,7 @@
     scrollbar-color:
       color-mix(in srgb, var(--accent, #5eead4) 82%, #64748b)
       color-mix(in srgb, var(--line, #334155) 44%, transparent);
+    transition: box-shadow 160ms ease, border-color 160ms ease;
   }
 
   .vertical-scroll-affordance::-webkit-scrollbar {
@@ -54,5 +55,54 @@
   .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-up='true'],
   .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-up='true'] {
     border-top: 3px solid color-mix(in srgb, var(--accent, #5eead4) 78%, transparent);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vertical-scroll-affordance:hover {
+      scrollbar-color:
+        color-mix(in srgb, var(--accent, #5eead4) 96%, white)
+        color-mix(in srgb, var(--line, #334155) 62%, transparent);
+    }
+
+    .vertical-scroll-affordance:hover::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    .vertical-scroll-affordance:hover::-webkit-scrollbar-track {
+      background: color-mix(in srgb, var(--line, #334155) 50%, transparent);
+    }
+
+    .vertical-scroll-affordance:hover::-webkit-scrollbar-thumb {
+      background: color-mix(in srgb, var(--accent, #5eead4) 96%, white);
+      background-clip: padding-box;
+    }
+
+    .vertical-scroll-affordance[data-scroll-up='false'][data-scroll-down='true']:hover {
+      box-shadow:
+        inset 0 -30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent);
+    }
+
+    .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='false']:hover {
+      box-shadow:
+        inset 0 30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent);
+    }
+
+    .vertical-scroll-affordance[data-scroll-up='true'][data-scroll-down='true']:hover {
+      box-shadow:
+        inset 0 30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent),
+        inset 0 -30px 28px -20px color-mix(in srgb, var(--accent, #5eead4) 88%, transparent);
+    }
+
+    .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-down='true']:hover,
+    .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-down='true']:hover,
+    .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-down='true']:hover {
+      border-bottom-color: color-mix(in srgb, var(--accent, #5eead4) 96%, white);
+    }
+
+    .learning-book__resting-page-body.vertical-scroll-affordance[data-scroll-up='true']:hover,
+    .alphabet-mastery-card-scroll.vertical-scroll-affordance[data-scroll-up='true']:hover,
+    .number-audio-card-scroll.vertical-scroll-affordance[data-scroll-up='true']:hover {
+      border-top-color: color-mix(in srgb, var(--accent, #5eead4) 96%, white);
+    }
   }
 }
