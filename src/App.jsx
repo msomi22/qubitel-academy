@@ -35,6 +35,9 @@ const ProblemPage = lazy(() => import('./pages/ProblemPage.jsx'));
 const ExamSessionPage = lazy(() => import('./pages/ExamSessionPage.jsx'));
 const LearningNodePage = lazy(() => import('./pages/LearningNodePage.jsx'));
 
+const techItilLearningNodeEnabled =
+  import.meta.env.VITE_ENABLE_TECH_ITIL_LEARNING_NODE !== 'false';
+
 function isProblemRoute(pathname = '') {
   return pathname.startsWith('/problem/') || pathname.startsWith('/practice/');
 }
@@ -114,6 +117,14 @@ export default function App() {
               <Route path="/categories" element={<CategoriesPage />} />
               <Route path="/dsa" element={<DSAPage />} />
               <Route path="/system-design" element={<SystemDesignPage />} />
+              <Route
+                path="/category/itil"
+                element={
+                  techItilLearningNodeEnabled
+                    ? <LearningNodePage nodeIdOverride="itil" />
+                    : <CategoryPage fixedCategoryId="itil" />
+                }
+              />
               <Route path="/category/:categoryId" element={<CategoryPage />} />
               <Route path="/random" element={<RandomQuestionPage />} />
               <Route path="/recent" element={<RecentPage />} />
