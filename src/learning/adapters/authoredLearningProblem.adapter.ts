@@ -64,7 +64,9 @@ function adaptBodyBlock(
 ): LearningContentBlock {
   const block = requireBodyBlock(candidate, index, sourceId);
   const blockId = `${sourceId}-block-${String(index + 1).padStart(3, '0')}`;
-  const title = requireText(block.title, `body[${index}].title`, sourceId);
+  const authoredTitle = typeof block.title === 'string' && block.title.trim()
+    ? block.title
+    : undefined;
 
   if (block.type === 'checklist') {
     if (!Array.isArray(block.items) || block.items.length === 0) {
@@ -80,7 +82,7 @@ function adaptBodyBlock(
     return {
       id: blockId,
       type: 'list',
-      title,
+      ...(authoredTitle ? { title: authoredTitle } : {}),
       items,
       metadata: {
         sourceBlockId: blockId,
@@ -126,7 +128,7 @@ function adaptBodyBlock(
     return {
       id: blockId,
       type: 'list',
-      title,
+      ...(authoredTitle ? { title: authoredTitle } : {}),
       items: rows.map((row) => (
         row.map((cell, columnIndex) => `${columns[columnIndex]}: ${cell}`).join(' · ')
       )),
@@ -146,6 +148,8 @@ function adaptBodyBlock(
       + `${block.type} at index ${index}.`
     );
   }
+
+  const title = requireText(block.title, `body[${index}].title`, sourceId);
 
   return {
     id: blockId,
