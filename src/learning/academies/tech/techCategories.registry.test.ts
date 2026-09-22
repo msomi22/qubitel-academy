@@ -124,9 +124,16 @@ test('preserves the complete authored ITIL problem while projecting renderable b
   const pages = content.pages as Array<Record<string, unknown>>;
   assert.equal(pages.length, 1);
   const blocks = pages[0].blocks as Array<Record<string, unknown>>;
-  assert.equal(blocks.length, itilFoundationGuide.body.length);
+  const appendedBlockCount = [
+    itilFoundationGuide.explanation,
+    itilFoundationGuide.finalTakeaway
+  ].filter(Boolean).length;
+
+  assert.equal(blocks.length, itilFoundationGuide.body.length + appendedBlockCount);
   assert.deepEqual(
-    blocks.map((block) => (block.metadata as Record<string, unknown>).sourceBlockIndex),
+    blocks
+      .slice(0, itilFoundationGuide.body.length)
+      .map((block) => (block.metadata as Record<string, unknown>).sourceBlockIndex),
     itilFoundationGuide.body.map((_, index) => index)
   );
 });
