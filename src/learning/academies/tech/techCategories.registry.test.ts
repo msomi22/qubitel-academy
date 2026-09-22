@@ -136,6 +136,12 @@ test('preserves the complete authored ITIL problem while projecting renderable b
       .map((block) => (block.metadata as Record<string, unknown>).sourceBlockIndex),
     itilFoundationGuide.body.map((_, index) => index)
   );
+
+  const untitledTableIndex = itilFoundationGuide.body.findIndex((block) => (
+    block.type === 'table' && !('title' in block)
+  ));
+  assert.notEqual(untitledTableIndex, -1);
+  assert.equal(blocks[untitledTableIndex].title, undefined);
 });
 
 test('keeps authored Sliding Window content order stable', () => {
