@@ -1,9 +1,5 @@
 import foundationGuide from
   '../../../../academies/tech/itil/itil-foundation/lessons/foundation-certification-guide.js';
-import {
-  adaptAuthoredLearningProblemToBook,
-  type AuthoredLearningProblem
-} from '../../../adapters/authoredLearningProblem.adapter.ts';
 import type { LearningNode } from '../../../core/index.ts';
 import { createLearningNode } from '../../../core/index.ts';
 import { LEARNING_NODE_KINDS } from '../../../core/learningNode.constants.ts';
@@ -13,7 +9,7 @@ export const ITIL_CATEGORY_NODE_ID = 'itil';
 export const ITIL_FOUNDATION_TOPIC_NODE_ID = 'itil-foundation';
 export const ITIL_FOUNDATION_GUIDE_NODE_ID = 'itil-5-foundation-certification-guide';
 
-const authoredGuide = foundationGuide as AuthoredLearningProblem;
+const authoredGuide = foundationGuide;
 
 const foundationGuideNode = createLearningNode({
   id: ITIL_FOUNDATION_GUIDE_NODE_ID,
@@ -21,11 +17,7 @@ const foundationGuideNode = createLearningNode({
   label: authoredGuide.title,
   summary: authoredGuide.prompt,
   parentId: ITIL_FOUNDATION_TOPIC_NODE_ID,
-  content: adaptAuthoredLearningProblemToBook(authoredGuide, {
-    manifestId: ITIL_FOUNDATION_GUIDE_NODE_ID,
-    pageId: `${ITIL_FOUNDATION_GUIDE_NODE_ID}-page-001`,
-    pageSubtitle: 'ITIL Foundation'
-  }),
+  content: authoredGuide,
   attributes: [
     { key: 'routeSegment', value: ITIL_FOUNDATION_GUIDE_NODE_ID },
     { key: 'academyId', value: 'tech' },
