@@ -107,41 +107,13 @@ test('preserves authored Sliding Window content field-for-field inside LearningN
   });
 });
 
-test('preserves the complete authored ITIL problem while projecting renderable book content', () => {
+test('preserves authored ITIL content field-for-field inside its LearningNode', () => {
   const registry = createPilotRegistry();
   const node = registry.nodesById.get(ITIL_FOUNDATION_GUIDE_NODE_ID);
 
   assert.ok(node);
   assert.equal(node.kind, 'lesson');
-  assert.ok(node.content && typeof node.content === 'object' && !Array.isArray(node.content));
-
-  const content = node.content as Record<string, unknown>;
-  assert.equal(content.type, 'book');
-
-  const metadata = content.metadata as Record<string, unknown>;
-  assert.deepEqual(metadata.sourceProblem, itilFoundationGuide);
-
-  const pages = content.pages as Array<Record<string, unknown>>;
-  assert.equal(pages.length, 1);
-  const blocks = pages[0].blocks as Array<Record<string, unknown>>;
-  const appendedBlockCount = [
-    itilFoundationGuide.explanation,
-    itilFoundationGuide.finalTakeaway
-  ].filter(Boolean).length;
-
-  assert.equal(blocks.length, itilFoundationGuide.body.length + appendedBlockCount);
-  assert.deepEqual(
-    blocks
-      .slice(0, itilFoundationGuide.body.length)
-      .map((block) => (block.metadata as Record<string, unknown>).sourceBlockIndex),
-    itilFoundationGuide.body.map((_, index) => index)
-  );
-
-  const untitledTableIndex = itilFoundationGuide.body.findIndex((block) => (
-    block.type === 'table' && !('title' in block)
-  ));
-  assert.notEqual(untitledTableIndex, -1);
-  assert.equal(blocks[untitledTableIndex].title, undefined);
+  assert.deepEqual(node.content, itilFoundationGuide);
 });
 
 test('keeps authored Sliding Window content order stable', () => {
