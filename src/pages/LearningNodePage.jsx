@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { createLearningNodeRegistry, mergeLearningNodeSources } from '../learning/registry/index.ts';
+import { createLearningNodeRegistry } from '../learning/registry/index.ts';
 import { createGrade1EnglishActivitiesRegistrySource } from '../learning/academies/cbc/grade1/englishActivities.registry.ts';
 import { createCbcGradesRegistrySource } from '../learning/academies/cbc/cbcGrades.registry.ts';
 import { createSkillProgrammesRegistrySource } from '../learning/academies/skill/skillProgrammes.registry.ts';
+import { createTechCategoriesRegistrySource } from '../learning/academies/tech/techCategories.registry.ts';
 import { createQubitelAcademyPlatformRegistry, getAcademyRootNodes } from '../learning/academies/index.ts';
 import { detectAcademyIdFromLocation } from '../config/detectAcademy.ts';
 import { createNodeRoutePath } from '../learning/routing';
@@ -117,6 +118,7 @@ export default function LearningNodePage({ nodeIdOverride, semanticRoute = false
     const grade1Source = createGrade1EnglishActivitiesRegistrySource();
     const cbcGradesSource = createCbcGradesRegistrySource();
     const skillProgrammesSource = createSkillProgrammesRegistrySource();
+    const techCategoriesSource = createTechCategoriesRegistrySource();
     const platformRegistry = createQubitelAcademyPlatformRegistry();
 
     const platformNodes = Array.from(platformRegistry.nodesById.values());
@@ -147,7 +149,7 @@ export default function LearningNodePage({ nodeIdOverride, semanticRoute = false
     }
 
     return createLearningNodeRegistry({
-      nodes: [...platformNodes, ...grade1Nodes]
+      nodes: [...platformNodes, ...grade1Nodes, ...techCategoriesSource.nodes]
     });
   }, [activeAcademyId]);
 
