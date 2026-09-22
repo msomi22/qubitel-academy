@@ -1,9 +1,11 @@
 import type { LearningNode } from '../../core/index.ts';
 import { createLearningNode } from '../../core/index.ts';
 import { dsaNodes } from './dsa/dsa.registry.ts';
+import { itilNodes } from './itil/itil.registry.ts';
 
 export const techCategoryNodes: LearningNode[] = [
-  ...dsaNodes
+  ...dsaNodes,
+  ...itilNodes
 ];
 
 export function createTechCategoriesRegistrySource() {
