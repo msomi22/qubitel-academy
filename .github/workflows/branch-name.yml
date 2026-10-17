@@ -1,8 +1,12 @@
 name: Enforce Branch Naming
 
 on:
-  pull_request:
-    types: [opened, edited, synchronize]
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        description: Branch name to validate manually
+        required: true
+        type: string
 
 jobs:
   check-branch-name:
@@ -11,7 +15,7 @@ jobs:
     steps:
       - name: Validate branch name
         run: |
-          BRANCH_NAME="${{ github.head_ref }}"
+          BRANCH_NAME="${{ inputs.branch_name }}"
           echo "Checking branch: $BRANCH_NAME"
 
           if [[ ! "$BRANCH_NAME" =~ ^(feature|bugfix|hotfix|release|docs)\/[a-zA-Z0-9._-]+$ ]]; then
