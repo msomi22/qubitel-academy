@@ -2,7 +2,6 @@
 
 **Status:** Approved direction; implementation not started  
 **Scope:** Shared academy experience, starting with CBC Academy  
-**Reference experience:** [IkoValid](https://ikovalid.com/) — clarity and minimal friction, not identical appearance  
 **Primary goal:** Make every academy intuitive, lightweight, accessible and mobile-first without changing learning content or capabilities.
 
 ## 1. Principles
