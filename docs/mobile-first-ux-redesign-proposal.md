@@ -130,3 +130,103 @@ No backend redesign, content migration, new curriculum model, new analytics dash
 ## 11. Open design details for implementation review
 
 Final visual tokens and the exact minimum global navigation should be decided from deployed-page screenshots and actual use cases. The structure, sequencing and content-first direction above are approved; these smaller visual decisions can be reviewed phase by phase.
+
+
+---
+
+## 12. Global learning-platform UX references (design inspiration)
+
+**Review status:** Proposal for further review, not final UI approval.
+
+The proposed page patterns borrow selectively from:
+- **Khan Academy:** readily browsable course, unit and lesson structure; clear educational hierarchy.
+- **Duolingo:** a clear next action and restrained progress communication, **not** mandatory linear journeys or gamification.
+- **freeCodeCamp:** focused practice and one exercise at a time.
+- **Coursera:** clear separation of course material types and assignments.
+- **Moodle:** structured sections and activities, without adopting its more elaborate navigation chrome.
+
+Do not clone these platforms or introduce features merely because competitors have them. Validate the mobile layouts against Qubitel's actual content and learners.
+
+## 13. Refined content page: topic learning workspace
+
+The content page is **not** a single static article, and should not show one basic note plus one embedded quiz. A topic provides several **available learning modes**, such as:
+
+- **Notes:** Student-facing notes divided into short pages (for example 10 pages), with clear **Previous / Next**, “Page 3 of 10”, and a compact **Jump to page** control. Render one page at a time and avoid overwhelming students with the whole book on one screen.
+- **Lessons:** Links or rendered lesson materials where present; preserve actual content types rather than assume all lessons are videos.
+- **Practice:** Topic-related questions and exercises; the practice interface is described below.
+- **Assessments:** **View available assessments only**, with cards/rows and links to the existing separate assessment experience. Do **not** embed assessment taking in the content workspace.
+- **Other configured content:** Revision, teacher lesson plans or additional content types where supported, with permissions and relevance respected.
+
+Only show modes that exist for the selected topic. Use a compact tab row or equivalent accessible mobile control; allow overflow when necessary rather than shrinking labels or wrapping multiple rows. Never introduce empty placeholders as if they were real content.
+
+**Navigation expectation:** Learners can switch between Notes and Practice without first walking up the topic hierarchy. Switching modes should preserve the selected note page, selected practice question and answers when supported; returning from an assessment should lead back to its proper topic context. Preserve routes and deep links.
+
+### Notes layout
+
+1. Minimal contextual header: academy / topic, parent/back affordance.
+2. Compact modes: Notes / Lessons / Practice / Assessments, conditional on content.
+3. Note title and page count, optionally modest progress based on real page position.
+4. One concise note page: learning blocks, illustrations, media or links supplied by the current content.
+5. Previous / Next at the bottom, plus unobtrusive page-jump control.
+6. For 10 pages, make page changes fast and predictable. Do not convert this into a long scrolling article.
+
+## 14. Practice question workspace: interactive UX proposal
+
+**Design objective:** One focused practice question at a time, minimal navigation, easy retry, immediate instructional feedback when supported, and no exam-like restrictions by default.
+
+### Suggested visual hierarchy
+
+1. Compact header with **topic name** and clear way back to the topic/notes.
+2. Context: **Practice**, “Question 2 of 5”; an unobtrusive count of checked questions.
+3. Slim progress indicator based on **checked questions** (not merely visited questions); avoid falsely portraying unanswered questions as completed.
+4. One question prompt, exactly its configured answer controls (single-select, multi-select, true/false, text, etc.).
+5. **Check answer** for question types supporting immediate checks; show a concise explanation and correct answer when the content includes or permits it.
+6. Bottom **Previous / Next** controls, with a compact **Questions** picker for direct navigation.
+7. Optional **Notes** shortcut to review related material without abandoning question state.
+8. Optional **Practice summary** with checked/correct/unanswered state and links to review; **Practise again** resets only the current attempt.
+
+### Behavior and interaction rules
+
+- Single choice chooses one answer; multi-select toggles multiple answers; question types must follow existing backend/content definitions.
+- Selected answers remain when moving forward, backward or jumping to another question.
+- Checking an answer is explicit when applicable. Revising an answer after a check invalidates the previous checked result until checked again.
+- Show explanation only after check where pedagogically appropriate. Preserve legitimate content-specific settings.
+- The picker lists all questions; distinguish current question, checked result and unanswered state accessibly.
+- Previous is disabled on the first question; Next is disabled on the last, which can instead offer **Summary**. Allow reviewing and correcting questions even after visiting Summary.
+- Do not force checking every question before moving on unless the practice type specifically requires that.
+- The example prototype used five **illustrative** greetings questions, including single- and multiple-select. It does not represent verified Qubitel question inventory or data persistence.
+- A demo may use local client-side state; real implementation should use the current Qubitel question, completion and preference mechanisms.
+- **Practice is distinct from assessment.** Students can retry and learn from explanations; assessment submission, timing, marking and attempt policies remain in the separate assessment flow.
+
+### Mobile layout principles
+
+- Full-width readable question card without nesting multiple decorative cards.
+- Comfortable radio/checkbox tap targets; selected state must not rely on color alone.
+- Keep explanation close to the answer, after the check action.
+- Make primary Check/Next controls findable, without obscuring learning text.
+- No permanent sidebar, game-like clutter or unnecessary statistics.
+- Show only controls grounded in real content and functionality.
+
+## 15. Assessment availability versus assessment-taking
+
+The **Assessments** mode in the content workspace means **browse available assessments** for a topic.
+
+Expected journey:
+
+`Topic workspace → Assessments tab → List of available assessments → Select assessment → Separate assessment interface`
+
+The content workspace **must not administer assessments**, render their full question-taking UI or reproduce exam timers/submission flows. Maintain existing exam routes and return-path behavior. List metadata (e.g. question count/time) only when available and reliable. Do not manufacture exams, availability or durations.
+
+## 16. Review checklist before implementing the content workspace
+
+- [ ] Confirm real CBC Notes / Lessons / Practice / Assessments content relationships and permitted modes.
+- [ ] Inspect existing book page transition and content renderer behavior.
+- [ ] Preserve page position and question state when switching modes where appropriate.
+- [ ] Validate next/previous, jump-to-page, question navigation and state on phones and with keyboard input.
+- [ ] Validate existing practice question types, answers and feedback semantics.
+- [ ] Verify that assessment listing **only links out** to the separate exam experience.
+- [ ] Verify the topic remains a valid return destination from practice and assessments.
+- [ ] Check direct-route refresh, browser back navigation, accessibility, performance and non-CBC academies.
+- [ ] Review the landing, recursive collection and revised content patterns together before implementation.
+
+**Current decision:** Landing and Collection directions are acceptable. Content / Practice refinements above are documented **for further review**, not approved for code implementation. Keep the work documentation-only until explicitly authorized.
